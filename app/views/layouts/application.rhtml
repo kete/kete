@@ -208,20 +208,42 @@
                   <div id="advanced_search_dropdown_trigger">
                     <noscript><%= image_tag 'magnifier.png', :width => 16, :height => 16 %></noscript>
                   </div>
-                  <%= text_field_tag 'search_terms', nil, { :accesskey => '3', :tabindex => '2' } %>
-                  <%= submit_tag t('layouts.application.search_button'), { :class => 'submit', :tabindex => '2' } %>
+
+		  <% show_private_only_search = false
+  	  	     private_disabled, private_value = true, nil
+
+		     if Kete.use_private_global_search_input? && Basket.privacy_exists
+		       show_private_only_search = true
+
+		       if logged_in?
+		         private_disabled = false
+		         @can_private_search = true
+		       else
+	  	         private_value = t('.log_in_for_private_search')
+		       end
+		     end
+		  -%>
+		  
+		  <% if show_private_only_search -%>
+		  <%= text_field_tag 'private_search_terms', private_value, { :accesskey => '3', :tabindex => '2', :disabled => private_disabled } %>
+		  <%= t('.search_or') %>
+		    <% if @can_private_search -%>
+		      <%= hidden_field_tag('private_search_terms_message', default_search_terms_for_js(true)) %>
+		      <%= hidden_field_tag('search_terms_message', default_search_terms_for_js) %>
+		    <% end -%>
+		  <% end -%>
+		  <%= text_field_tag 'search_terms', nil, { :accesskey => '3', :tabindex => '2' } %>
+                  <%= submit_tag t('layouts.application.search_button'), { :class => 'submit', :tabindex => '2', :id => 'global_search_submit' } %>
                 </div>
                 <%= render 'search/mini_controls', :id => 'advanced_search_dropdown', :type => 'menu' %>
                 <%= add_search_icon_and_default_text_to_search_box('advanced_search_dropdown', 'advanced_search_dropdown_trigger') %>
-                <%= javascript_tag("$('search_terms').observe('change', function(event) {
-                  if (this.value == '') {
-                    advanced_search_dropdown_reset_relevance(true);
-                  } else {
-                    advanced_search_dropdown_show_relevance(true);
-                    $$('#advanced_search_dropdown #sort_type').first().down('.none').selected = true;
-                    $$('#advanced_search_dropdown #sort_direction_field').first().hide();
-                  }
-                });") %>
+
+		<%= add_private_search_default_text_to_search_box if @can_private_search %>
+		
+                <%= add_js_observer_for_search_terms -%>
+		
+		<%= add_js_observer_for_search_terms(true) if @can_private_search -%>
+		
               <% end %>
             </div><!-- /head-search-wrapper -->
             <%= header_links_to_baskets %>

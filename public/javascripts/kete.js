@@ -306,6 +306,25 @@ function addDefaultValueToSearchTerms(default_value) {
 }
 
 /**
+ * Add default value to a private input field that hides when element gains focus
+ */
+function addDefaultValueToPrivateSearchTerms(default_value) {
+  if($('private_search_terms').value == '') {
+    $('private_search_terms').value = default_value;
+  }
+  $('private_search_terms').observe('focus', function() {
+    if($('private_search_terms').value == default_value) {
+      $('private_search_terms').value = '';
+    }
+  });
+  $('private_search_terms').observe('blur', function() {
+    if($('private_search_terms').value == '' && !$('advanced_search_dropdown').visible()) {
+      $('private_search_terms').value = default_value;
+    }
+  });
+}
+
+/**
  * Now setup everything to run when needed once the page is loaded
  */
 

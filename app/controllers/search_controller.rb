@@ -122,7 +122,7 @@ class SearchController < ApplicationController
     # the search is done with the limitations of the contributor_id or source_item
     # i.e. search for 'bob smith' within topics related to source_item 'daddy smith'
 
-    @controller_name_for_zoom_class = params[:controller_name_for_zoom_class] || zoom_class_controller(DEFAULT_SEARCH_CLASS)
+    @controller_name_for_zoom_class = params[:controller_name_for_zoom_class] || zoom_class_controller(Kete.default_search_class)
 
     @current_class = zoom_class_from_controller(@controller_name_for_zoom_class)
 
@@ -400,7 +400,7 @@ class SearchController < ApplicationController
   end
 
   def redirect_to_default_all
-    redirect_to basket_all_url(:controller_name_for_zoom_class => zoom_class_controller(DEFAULT_SEARCH_CLASS))
+    redirect_to basket_all_url(:controller_name_for_zoom_class => zoom_class_controller(Kete.default_search_class))
   end
 
   # takes search_terms from form
@@ -410,7 +410,7 @@ class SearchController < ApplicationController
       params[:urlified_name] : params[:target_basket]
 
     controller_name = params[:controller_name_for_zoom_class].nil? ? \
-      zoom_class_controller(DEFAULT_SEARCH_CLASS) : params[:controller_name_for_zoom_class]
+      zoom_class_controller(Kete.default_search_class) : params[:controller_name_for_zoom_class]
 
     location_hash = { :urlified_name => basket_name,
                       :controller_name_for_zoom_class => controller_name,
@@ -426,10 +426,13 @@ class SearchController < ApplicationController
                       :authenticity_token => nil }
 
     if is_a_private_search?
+      params[:search_terms] = params[:private_search_terms] if params[:private_search_terms].present?
       location_hash.merge!({ :privacy_type => params[:privacy_type] })
     end
 
-    if !params[:search_terms].blank?
+    if params[:search_terms].present? &&
+        (params[:search_terms_message].blank? ||
+         params[:search_terms_message] != params[:search_terms])
       # we are searching
       location_hash.merge!({ :search_terms_slug => to_search_terms_slug(params[:search_terms]),
                              :search_terms => params[:search_terms],
@@ -931,7 +934,15 @@ class SearchController < ApplicationController
 
   # Check if we are meant to be running a private search #=> Boolean
   def is_a_private_search?
-    @private_search ||= params[:privacy_type] == "private"
+    return @private_search if @private_search.present?
+
+    if params[:private_search_terms].present? &&
+        params[:private_search_terms_message].present? &&
+        params[:private_search_terms] != params[:private_search_terms_message]
+      params[:privacy_type] = "private"
+    end
+
+    @private_search = params[:privacy_type] == "private"
   end
 
   # Which zoom database to use #=> String (public/private)

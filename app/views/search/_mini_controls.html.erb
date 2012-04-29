@@ -15,7 +15,7 @@ horizontal = display_refine
 
     <%= "<tr><td valign='top'><table>" if horizontal %>
 
-    <% if display_search_field_for?(type, DISPLAY_SEARCH_TERMS_FIELD) %>
+    <% if display_search_field_for?(type, Kete.display_search_terms_field) %>
     <tr>
       <td colspan="3" class="header">
         <label for="search_terms"><%= t('search.mini_controls.search_terms') %></label>
@@ -28,7 +28,7 @@ horizontal = display_refine
     </tr>
     <% end %>
 
-    <% if display_search_field_for?(type, DISPLAY_DATE_RANGE_FIELDS) %>
+    <% if display_search_field_for?(type, Kete.display_date_range_fields) %>
     <tr>
       <td colspan="3" class="header">
         <label for="date_since"><%= t('search.mini_controls.date') %></label>
@@ -48,10 +48,10 @@ horizontal = display_refine
     </tr>
 
     <% controls_permitted = display_menu || @current_basket.show_privacy_controls_with_inheritance? %>
-    <% if display_search_field_for?(type, DISPLAY_PRIVACY_FIELDS) && logged_in? && controls_permitted && Basket.privacy_exists %>
+    <% if !Kete.use_private_global_search_input? && display_search_field_for?(type, Kete.display_privacy_fields) && logged_in? && controls_permitted && Basket.privacy_exists %>
     <tr>
       <% default = @current_basket.private_default_with_inheritance? ? 'private' : 'public' %>
-      <% @current_privacy = ((params[:privacy_type] unless clear_values) || (DEFAULT_SEARCH_PRIVACY if display_menu) || default) %>
+      <% @current_privacy = ((params[:privacy_type] unless clear_values) || (Kete.default_search_privacy if display_menu) || default) %>
       <td class="label"><%= t('search.mini_controls.that_are') %></td>
       <% %w{ public private }.each do |privacy_type| %>
         <td class="fields">
@@ -62,7 +62,7 @@ horizontal = display_refine
     </tr>
     <% end %>
 
-    <% if display_search_field_for?(type, DISPLAY_ITEM_TYPE_FIELD) %>
+    <% if display_search_field_for?(type, Kete.display_item_type_field) %>
     <tr>
       <td class="label"><%= t('search.mini_controls.show') %></td>
       <td colspan="2" class="fields">
@@ -82,20 +82,20 @@ horizontal = display_refine
       <td class="label"><%=t 'search.mini_controls.about_a' %></td>
       <td colspan="2" class="fields">
         <%= topic_type_select_with_indent('topic_type', nil, TopicType.find(1).full_set,
-                                          :name, :name, (clear_values ? SEARCH_SELECTED_TOPIC_TYPE : params[:topic_type]), {},
+                                          :name, :name, (clear_values ? Kete.search_selected_topic_type : params[:topic_type]), {},
                                           [[t('search.mini_controls.any_topic_type'), '']]) %>
         <%= toggle_topic_types_field_js_helper_for(id) -%>
       </td>
     </tr>
     <% end %>
 
-    <% if display_search_field_for?(type, DISPLAY_BASKET_FIELD) %>
+    <% if display_search_field_for?(type, Kete.display_basket_field) %>
     <tr>
       <td class="label"><%= t('search.mini_controls.within') %></td>
       <td colspan="2" class="fields">
         <%
         selected = params[:urlified_name]
-        selected = (SEARCH_SELECT_CURRENT_BASKET ? @current_basket.urlified_name : @site_basket.urlified_name) if clear_values
+        selected = (Kete.search_select_current_basket ? @current_basket.urlified_name : @site_basket.urlified_name) if clear_values
         options = basket_option_for(@site_basket, :label => t('search.mini_controls.all_of', :site_basket_name => @site_basket.name))
         baskets = Basket.all(:conditions => ["id NOT IN (?)", @standard_baskets]) +
                   [@help_basket, @about_basket, @documentation_basket]
@@ -107,7 +107,7 @@ horizontal = display_refine
     </tr>
     <% end %>
 
-    <% if display_search_field_for?(type, DISPLAY_SORTING_FIELDS) %>
+    <% if display_search_field_for?(type, Kete.display_sorting_fields) %>
     <tr>
       <td class="label"><%= t('search.mini_controls.sorted_by') %></td>
       <td colspan="2" class="fields">
@@ -125,7 +125,7 @@ horizontal = display_refine
     </tr>
     <% end %>
 
-    <% if display_search_field_for?(type, DISPLAY_CHOICES_FIELD) && (@extended_field || categories_field) %>
+    <% if display_search_field_for?(type, Kete.display_choices_field) && (@extended_field || categories_field) %>
     <tr>
       <td class="label"><%= t('search.mini_controls.categorised') %></td>
       <td colspan="2" class="fields">

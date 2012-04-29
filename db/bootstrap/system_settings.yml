@@ -837,3 +837,11 @@ system_settings_096:
   id: "96"
   value: "false"
   section: System
+system_settings_097:
+  name: Use Private Global Search Input
+  technically_advanced: true
+  required_to_be_configured: true
+  explanation: "If true, the global search input will have an additional search terms field that will be explicitly for private searches. Public/Private search radio buttons will be excluded from search menu."
+  id: "97"
+  value: "false"
+  section: Search

@@ -205,31 +205,92 @@ module ApplicationHelper
     end
   end
 
-  def default_search_terms
+  def default_search_terms(private_search_input = false)
     search_location_name = Kete.pretty_site_name
     search_text_key = 'search_value'
 
-    if SEARCH_SELECT_CURRENT_BASKET && @current_basket != @site_basket
+    if Kete.search_select_current_basket && @current_basket != @site_basket
       search_location_name = @current_basket.name
       search_text_key = 'search_value_within'
+    end
+
+    if Kete.use_private_global_search_input?
+      privacy_scope = String.new
+      if private_search_input
+        privacy_scope = t("layouts.application.private_search")
+      else
+        privacy_scope = t("layouts.application.public_search")
+      end
+      privacy_scope += ' ' unless privacy_scope.blank?
+        
+      search_location_name = privacy_scope + search_location_name
     end
 
     search_text_key = "new_#{search_text_key}" if params[:controller] == 'search'
     t("layouts.application.#{search_text_key}", :search_location_name => search_location_name)
   end
 
-  def default_search_terms_for_js
-    escape_javascript(default_search_terms)
+  def default_search_terms_for_js(private_search_input = false)
+    escape_javascript(default_search_terms(private_search_input))
+  end
+
+  def search_terms_private_prefix
+    @search_terms_private_prefix ||= 'private_'
+  end
+
+  def clear_search_terms_js_if_default(is_private_input = false)
+    prefix = is_private_input ? search_terms_private_prefix : String.new
+    "if($('#{prefix}search_terms').value == '#{default_search_terms_for_js(is_private_input)}') { $('#{prefix}search_terms').value = ''; }"
   end
 
   def add_search_icon_and_default_text_to_search_box(id, trigger_id)
+    toggle_js_code = "$('#{id}').toggle();
+                      #{clear_search_terms_js_if_default}
+    "
+    if logged_in? && Kete.use_private_global_search_input? && Basket.privacy_exists
+      toggle_js_code += "
+                         #{clear_search_terms_js_if_default(true)}
+                        "
+    end
+
     search_dropdown_link = link_to(image_tag('search.png', :width => 20, :height => 13), '#',
-                                   :onclick => "$('#{id}').toggle();
-                                                if($('search_terms').value == '#{default_search_terms_for_js}') {
-                                                  $('search_terms').value = '';
-                                                }", :title => t('application_helper.add_search_icon_and_default_text_to_search_box.more_search_options'))
+                                   :onclick => toggle_js_code, :title => t('application_helper.add_search_icon_and_default_text_to_search_box.more_search_options'))
     javascript_tag("$('#{trigger_id}').insert('#{escape_javascript(search_dropdown_link)}');") +
     javascript_tag("addDefaultValueToSearchTerms('#{default_search_terms_for_js}');")
+  end
+
+  def add_private_search_default_text_to_search_box
+    javascript_tag("addDefaultValueToPrivateSearchTerms('#{default_search_terms_for_js(true)}');")
+  end
+
+  def add_js_observer_for_search_terms(for_private_terms = false)
+    prefix = for_private_terms ? search_terms_private_prefix : String.new
+    clear_other_search_term_input_js = String.new
+
+    if @can_private_search
+      clear_conditional_template = "if (this.value != 'to_be_replaced') {
+      "
+
+      for_private_input = for_private_terms ? true : false
+      opposite_search_prefix = for_private_terms ? String.new : search_terms_private_prefix
+
+      clear_other_search_term_input_js += clear_conditional_template.sub('to_be_replaced',
+                                                                         default_search_terms_for_js(for_private_input))
+      clear_other_search_term_input_js += "console.log('should change #{opposite_search_prefix}search_terms');"
+      clear_other_search_term_input_js += "$('#{opposite_search_prefix}search_terms').value = '#{default_search_terms_for_js(!for_private_input)}';
+      }"
+    end
+
+    javascript_tag("$('#{prefix}search_terms').observe('change', function(event) {
+                  if (this.value == '') {
+                    advanced_search_dropdown_reset_relevance(true);
+                  } else {
+                    #{clear_other_search_term_input_js}
+                    advanced_search_dropdown_show_relevance(true);
+                    $$('#advanced_search_dropdown #sort_type').first().down('.none').selected = true;
+                    $$('#advanced_search_dropdown #sort_direction_field').first().hide();
+                  }
+                });")
   end
 
   # Clear any values that shouldn't be there when we make a new search or refine a search
@@ -271,7 +332,7 @@ module ApplicationHelper
     pre_text = String.new
     site_link_text = String.new
     current_basket_html = String.new
-    default_controller = zoom_class_controller(DEFAULT_SEARCH_CLASS)
+    default_controller = zoom_class_controller(Kete.default_search_class)
     if @current_basket != @site_basket
       pre_text = "#{t('application_helper.header_browse_links.browse')}: "
       site_link_text = @site_basket.name

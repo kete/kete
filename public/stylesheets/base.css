@@ -496,7 +496,7 @@ a:hover {
   padding: 0;
   margin: 0;
 }
-#head-search-wrapper .search_fields input#search_terms {
+#head-search-wrapper .search_fields input#search_terms input#private_search_terms {
   color: gray;
   width: 200px;
 }

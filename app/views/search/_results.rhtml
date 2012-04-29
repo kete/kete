@@ -18,6 +18,13 @@
 
 <h3><%= @title %></h3>
 
+<% if logged_in? && Kete.use_private_global_search_input? && Basket.privacy_exists %>
+  <% opposite_privacy = params[:privacy_type].present? && params[:privacy_type] == 'private' ? 'public' : 'private' -%>
+
+  <h3 id="privacy-switch"><%= t('.try_opposite_privacy_setting') %>
+    <%= link_to(t(".#{opposite_privacy}_switch"), url_for(params.merge(:privacy_type => opposite_privacy, :page => nil)), :id => 'privacy-type-switch') -%></h3>
+<% end -%>
+
 <div class="prev-next before-results"><%= will_paginate @results, :next_label => t('slideshows_helper.next'), :previous_label => t('slideshows_helper.previous') %></div>
 
 <% search_source_result = ''

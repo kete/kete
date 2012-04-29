@@ -38,6 +38,12 @@ GENERAL NOTE: if you are upgrading your production Kete instance rather than dev
 GENERAL NOTE: if you are running in production mode, you may also want to do a "rake tmp:cache:clear" as your last step to any of these.
 However, if you updated your code via a Capistrano deploy, this is probably not necessary.
 
+== 2012/04/29 - Enhancement #312 - optional split search global search fields
+
+1.      Upgrade your code base
+2.      run "rake kete:upgrade"
+3.	restart your rails instance
+
 == 2011/09/24 - TinyMCE needs to be version 0.1.7 or greater and new imageselector plugin needs to be installed.
 
 1.      gem uninstall tiny_mce
