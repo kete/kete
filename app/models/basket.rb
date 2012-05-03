@@ -383,10 +383,10 @@ class Basket < ActiveRecord::Base
 
   # attribute options methods
   def self.link_to_index_topic_as_options
-    [[I18n.t('basket_model.details_and_comments'), 'full topic and comments'],
+    [[I18n.t('basket_model.dont_link'), ''],
+     [I18n.t('basket_model.details_and_comments'), 'full topic and comments'],
      [I18n.t('basket_model.only_details'), 'full topic'],
-     [I18n.t('basket_model.only_comments'), 'comments'],
-     [I18n.t('basket_model.dont_link'), '']]
+     [I18n.t('basket_model.only_comments'), 'comments']]
   end
 
   def self.recent_topics_as_options
