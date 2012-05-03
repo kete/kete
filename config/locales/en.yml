@@ -72,6 +72,7 @@ en:
     disallowed: disallowed
     display: display
     do_not_reply: "This {{t.base.email}} was sent in bulk to authorized {{t.base.member.pluralize}}. Please don't reply to this {{t.base.email}}."
+    download: download
     downloaded: downloaded
     edit: edit
     edited: edited
@@ -447,7 +448,7 @@ en:
     delete: "{{t.base.delete.capitalize}}"
     deleted_model: "{{t.base.deleted.capitalize}} {{model}}"
     delimiter: Delimiter
-    download: Download
+    download: "{{t.base.download.capitalize}}"
     edit: "{{t.base.edit.capitalize}}"
     export: Export
     filtered: (Filtered)
@@ -572,7 +573,7 @@ en:
       rejected: "{{t.base.membership.capitalize}} {{t.base.rejected}}"
       request: "{{t.base.request.capitalize}} {{t.base.membership}}"
     link_to_original_of:
-      phrase: "{{t.base.view}}"
+      phrase: "( {{t.base.download}} )"
     link_to_preview_of:
       not_available: "{{t.base.not_available}}"
     link_to_related_item_function:
@@ -618,8 +619,8 @@ en:
   audio:
     details:
       filename: "Filename:"
-      listen: listen
-      not_available: "{{t.base.not_available}} for download"
+      listen: "( {{t.base.download}} )"
+      not_available: "{{t.base.not_available}} for {{t.base.download}}"
       size: "Size:"
       type: "Recording {{t.base.type}}:"
     edit:
@@ -758,7 +759,7 @@ en:
       enabled: "{{t.base.enabled.capitalize}}"
       file_privacy: "{{t.base.default.capitalize}} Original File Privacy:"
       file_privacy_current_inheritance: "The {{t.base.site.capitalize}} {{t.base.has}} files <strong>{{current_inheritance}}</strong> {{t.base.by}} {{t.base.default}}"
-      file_privacy_example: "{{t.base.you.capitalize}} may use this to restrict the download of an {{t.base.item}}'s original file.  For example, {{t.base.you}} may set a {{t.base.zoom_types.document}} to be '{{t.base.public}}' and {{t.base.show}} the {{t.base.information}} about it, but limit downloading the actual {{t.base.zoom_types.document}} file to {{t.base.basket}} {{t.base.member.pluralize}}.  Note this applies across all versions of an {{t.base.item}}."
+      file_privacy_example: "{{t.base.you.capitalize}} may use this to restrict the {{t.base.download}} of an {{t.base.item}}'s original file.  For example, {{t.base.you}} may set a {{t.base.zoom_types.document}} to be '{{t.base.public}}' and {{t.base.show}} the {{t.base.information}} about it, but limit {{t.base.download}}ing the actual {{t.base.zoom_types.document}} file to {{t.base.basket}} {{t.base.member.pluralize}}.  Note this applies across all versions of an {{t.base.item}}."
       file_privacy_private_example: "{{t.base.can_be_downloaded.capitalize}} {{t.base.only}} {{t.base.by}} authorized {{t.base.basket}} {{t.base.member.pluralize}}"
       file_privacy_public_example: "{{t.base.can_be_downloaded.capitalize}} {{t.base.by}} {{t.base.everyone}}"
       file_visibility: "{{t.base.private.capitalize}} Original Files Visibility:"
@@ -1159,7 +1160,7 @@ en:
   documents:
     details:
       filename: "Filename:"
-      not_available: "{{t.base.not_available}} for download"
+      not_available: "{{t.base.not_available}} for {{t.base.download}}"
       replace_description: "{{t.base.replace.capitalize}} {{t.base.description}} with {{t.base.zoom_types.document}} text"
       size: "Size:"
       type: "{{t.base.zoom_types.document.capitalize}} {{t.base.type}}:"
@@ -1429,7 +1430,7 @@ en:
   images:
     details:
       filename: "Original Filename:"
-      not_available: "{{t.base.not_available}} for download"
+      not_available: "{{t.base.not_available}} for {{t.base.download}}"
       size: "Original Size:"
       type: "Original {{t.base.zoom_types.image.capitalize}} {{t.base.type.capitalize}}:"
       view: "{{t.base.view}}"
