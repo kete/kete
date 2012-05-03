@@ -231,8 +231,7 @@
         <div id="top-menu">
           <ul class="user-nav nav-list">
             <%= ("<li class='locale_selection first'>" + render('account/locale_selection', :classes => ['menu_center']) + "</li>") if LANGUAGE_CHOICES_POSITION == 'top_menu_center' %>
-            <% account_hash = { :urlified_name => @site_basket.urlified_name,
-                                :controller => 'account' } -%>
+            <% account_hash = { :controller => 'account' } -%>
             <% if !logged_in? -%>
               <li class="first"><%= link_to_unless_current t('layouts.application.register'),
                                                            account_hash.merge({ :action => 'signup' }),
@@ -243,7 +242,7 @@
             <% else -%>
               <li id="user_baskets_list" class="first">
                 <%= link_to_unless_current "#{current_user.user_name}",
-                                           account_hash.merge({ :action => 'show' }),
+                                           account_hash.merge({ :action => 'show', :urlified_name => @site_basket.urlified_name, }),
                                            :tabindex => '2' %>
                 <%= link_to "<em>V</em>",
                             account_hash.merge({ :action => 'baskets' }),
@@ -261,8 +260,7 @@
               </li>
 	      <%= add_ons_logged_in_user_list if respond_to?(:add_ons_logged_in_user_list) -%>
               <li><%= link_to_unless_current t('layouts.application.logout'),
-                                             account_hash.merge({ :action => 'logout',
-	      :urlified_name => @current_basket.urlified_name }),
+                                             account_hash.merge({ :action => 'logout' }),
                                              :tabindex => '2' %></li>
             <% end -%>
             <%= ("<li class='locale_selection'>" + render('account/locale_selection', :classes => ['menu_right']) + "</li>") if LANGUAGE_CHOICES_POSITION == 'top_menu_farthest_right' %>
