@@ -308,6 +308,8 @@
 
           <%= @content_for_layout %>
 
+	  <%= render(:partial => "topics/content_wrapper_end") if ACTIVE_SCAFFOLD_CONTROLLERS.include?(params[:controller]) -%>
+	  
           <div style="clear:both;"></div>
         </div><!--  /container -->
 
