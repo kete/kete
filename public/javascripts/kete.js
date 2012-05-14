@@ -292,15 +292,18 @@ function showOrHidePrivateOnlyAsNeededFor(id) {
 function addDefaultValueToSearchTerms(default_value) {
   if($('search_terms').value == '') {
     $('search_terms').value = default_value;
+    $('search_terms').addClassName('search-term-place-holder');
   }
   $('search_terms').observe('focus', function() {
     if($('search_terms').value == default_value) {
       $('search_terms').value = '';
+      $('search_terms').removeClassName('search-term-place-holder');
     }
   });
   $('search_terms').observe('blur', function() {
     if($('search_terms').value == '' && !$('advanced_search_dropdown').visible()) {
       $('search_terms').value = default_value;
+      $('search_terms').addClassName('search-term-place-holder');
     }
   });
 }
