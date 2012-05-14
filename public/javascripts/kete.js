@@ -314,15 +314,18 @@ function addDefaultValueToSearchTerms(default_value) {
 function addDefaultValueToPrivateSearchTerms(default_value) {
   if($('private_search_terms').value == '') {
     $('private_search_terms').value = default_value;
+    $('private_search_terms').addClassName('private-search-term-place-holder');
   }
   $('private_search_terms').observe('focus', function() {
     if($('private_search_terms').value == default_value) {
       $('private_search_terms').value = '';
+      $('private_search_terms').removeClassName('private-search-term-place-holder');
     }
   });
   $('private_search_terms').observe('blur', function() {
     if($('private_search_terms').value == '' && !$('advanced_search_dropdown').visible()) {
       $('private_search_terms').value = default_value;
+      $('private_search_terms').addClassName('private-search-term-place-holder');
     }
   });
 }
