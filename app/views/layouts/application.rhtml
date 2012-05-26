@@ -48,7 +48,7 @@
 
   <%# Include TinyMCE before other JS to avoid problems
     # TinyMCE is not compatible with bundle_fu %>
-  <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.6.2/jquery.min.js"></script>
+  <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
 
   <%= javascript_tag('jQuery.noConflict();') -%>
 
@@ -233,12 +233,8 @@
             <%= ("<li class='locale_selection first'>" + render('account/locale_selection', :classes => ['menu_center']) + "</li>") if LANGUAGE_CHOICES_POSITION == 'top_menu_center' %>
             <% account_hash = { :controller => 'account' } -%>
             <% if !logged_in? -%>
-              <li class="first"><%= link_to_unless_current t('layouts.application.register'),
-                                                           account_hash.merge({ :action => 'signup' }),
-                                                           :tabindex => '2' %></li>
-              <li><%= link_to_unless_current t('layouts.application.login'),
-                                             account_hash.merge({ :action => 'login' }),
-                                             :tabindex => '2' %></li>
+              <li class="first"><%= link_to_unless_current(t('layouts.application.register'), account_hash.merge({ :action => 'signup' }), :tabindex => '2') %></li>
+              <li><%= link_to_login(t('layouts.application.login'), account_hash.merge({ :action => 'login' }), { :tabindex => '2' }) %></li>
             <% else -%>
               <li id="user_baskets_list" class="first">
                 <%= link_to_unless_current "#{current_user.user_name}",
