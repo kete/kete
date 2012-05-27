@@ -266,6 +266,11 @@ module ApplicationHelper
     link_to_unless_current phrase, url_for_options, html_options
   end
 
+  # making this a dedicated method so that it can be overwritten in add-ons
+  def link_to_register(phrase, url_for_options, html_options)
+    link_to_unless_current phrase, url_for_options, html_options
+  end
+
   def link_to_index_for(basket, options = { })
     link_to basket.name, basket_index_url({ :urlified_name => basket.urlified_name }), options
   end

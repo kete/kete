@@ -233,7 +233,7 @@
             <%= ("<li class='locale_selection first'>" + render('account/locale_selection', :classes => ['menu_center']) + "</li>") if LANGUAGE_CHOICES_POSITION == 'top_menu_center' %>
             <% account_hash = { :controller => 'account' } -%>
             <% if !logged_in? -%>
-              <li class="first"><%= link_to_unless_current(t('layouts.application.register'), account_hash.merge({ :action => 'signup' }), :tabindex => '2') %></li>
+              <li class="first"><%= link_to_register(t('layouts.application.register'), account_hash.merge({ :action => 'signup' }), { :tabindex => '2' }) %></li>
               <li><%= link_to_login(t('layouts.application.login'), account_hash.merge({ :action => 'login' }), { :tabindex => '2' }) %></li>
             <% else -%>
               <li id="user_baskets_list" class="first">
