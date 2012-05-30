@@ -20,7 +20,7 @@ gem "libxml-ruby"
 gem "avatar"
 gem "htmlentities"
 gem "xml-simple"
-gem "feedzirra"
+gem "kete-feedzirra"
 gem "tiny_mce"
 gem "tiny_mce_plugin_imageselector", '>= 0.0.7'
 gem "http_url_validation_improved"
