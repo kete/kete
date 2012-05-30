@@ -12,11 +12,11 @@ For non-WP pages call script in <HEAD>:
 
 var anarchy_url = '/javascripts/anarchy_media' // http address for the anarchy-media folder (no trailing slash).
 var accepted_domains=new Array("") 	// OPTIONAL - Restrict script use to your domains. Add root domain name (minus 'http' or 'www') in quotes, add extra domains in quotes and separated by comma.
-var viddownloadLink = 'none'	// Download link for flv and wmv links: One of 'none' (to turn downloading off) or 'inline' to display the link. ***Use $qtkiosk for qt***.
+var viddownloadLink = 'inline'	// Download link for flv and wmv links: One of 'none' (to turn downloading off) or 'inline' to display the link. ***Use $qtkiosk for qt***.
 
 // MP3 Flash player options
 var playerloop = 'no'		// Loop the music ... yes or no?
-var mp3downloadLink = 'none'	// Download for mp3 links: One of 'none' (to turn downloading off) or 'inline' to display the link.
+var mp3downloadLink = 'inline'	// Download for mp3 links: One of 'none' (to turn downloading off) or 'inline' to display the link.
 
 // Hex colours for the MP3 Flash Player (minus the #)
 var playerbg ='DDDDDD'				// Background colour

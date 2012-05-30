@@ -197,9 +197,10 @@ module CacheControllerHelpers
 
     def expire_related_caches_for_batch_of(items, controller, options = { })
       # we want to flush related items caches incase they updated something we display
-      unless call_generic_muted_worker_with(options.merge({ :method_name => "worker_expire_related_caches_for_batch_of",
-                                                            :items => items,
-                                                            :controller => controller}))
+      if !Kete.use_backgroundrb_for_cache_expirations? ||
+          !call_generic_muted_worker_with(options.merge({ :method_name => "worker_expire_related_caches_for_batch_of",
+                                                          :items => items,
+                                                          :controller => controller}))
         # fallback to inline if worker fails
         expire_group_of_related_caches(items, controller)
       end
@@ -262,9 +263,10 @@ module CacheControllerHelpers
       if item_or_user.kind_of?(User)
         # we want to flush contribution caches incase they updated something we display
         # we also want to update zoom for all items they have contributed to
-        unless call_generic_muted_worker_with(options.merge({ :method_name => "clear_caches_and_search_records_for",
-                                                              :class_key => :user,
-                                                              :object => item_or_user }))
+        if !Kete.use_backgroundrb_for_cache_expirations? ||
+            !call_generic_muted_worker_with(options.merge({ :method_name => "clear_caches_and_search_records_for",
+                                                            :class_key => :user,
+                                                            :object => item_or_user }))
 
           clear_caches_and_search_records_for(options.merge({ :user => item_or_user }))
         end

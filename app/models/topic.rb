@@ -13,6 +13,8 @@ class Topic < ActiveRecord::Base
   # , :counter_cache => true
   belongs_to :basket
 
+  named_scope :in_basket, lambda { |basket| { :conditions => { :basket_id => basket } } }
+
   # a topic may be the designated index page for it's basket
   belongs_to :index_for_basket, :class_name => 'Basket', :foreign_key => 'index_for_basket_id'
 

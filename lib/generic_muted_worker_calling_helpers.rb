@@ -4,8 +4,6 @@ module GenericMutedWorkerCallingHelpers
     include WorkerControllerHelpers
 
     def call_generic_muted_worker_with(options)
-      logger.debug("what are worker options " + options.inspect)
-
       return false if Rails.env == 'test'
 
       method_name = options.delete(:method_name)
