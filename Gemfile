@@ -40,7 +40,7 @@ gem "oai", :path => 'vendor/gems/oai-0.0.12'
 
 
 group :development do
-  gem 'capistrano', '2.11.0', :require => false
+  gem 'capistrano', '2.11.2', :require => false
   gem 'capistrano-ext', :require => false
   gem 'capistrano-configuration', :require => false
   gem 'piston'
