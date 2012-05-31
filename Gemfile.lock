@@ -21,7 +21,7 @@ GEM
     arrayfields (4.7.4)
     avatar (0.2.0)
     builder (3.0.0)
-    capistrano (2.11.2)
+    capistrano (2.9.0)
       highline
       net-scp (>= 1.0.0)
       net-sftp (>= 2.0.0)
@@ -118,7 +118,7 @@ PLATFORMS
 DEPENDENCIES
   RedCloth
   avatar
-  capistrano (= 2.11.2)
+  capistrano (= 2.9.0)
   capistrano-configuration
   capistrano-ext
   chronic

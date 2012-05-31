@@ -1,3 +1,5 @@
+require 'bundler/capistrano'
+
 # support multi-stage deployment
 # (requires capistrano-ext gem)
 # require 'capistrano/ext/multistage'
