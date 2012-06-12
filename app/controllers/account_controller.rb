@@ -178,12 +178,16 @@ class AccountController < ApplicationController
 
     @user.add_as_member_to_default_baskets
 
-    if !REQUIRE_ACTIVATION
+    if !Kete.require_activation?
       self.current_user = @user
       move_session_searches_to_current_user
       flash[:notice] = t('account_controller.signup.signed_up')
     else
-      flash[:notice] = t('account_controller.signup.signed_up_with_email')
+      if Kete.administrator_activates?
+        flash[:notice] = t('account_controller.signup.signed_up_admin_will_review')
+      else
+        flash[:notice] = t('account_controller.signup.signed_up_with_email')
+      end
     end
 
     redirect_back_or_default({ :locale => params[:user][:locale],
@@ -334,8 +338,15 @@ class AccountController < ApplicationController
     activator = params[:id] || params[:activation_code]
     @user = User.find_by_activation_code(activator)
     if @user and @user.activate
-      flash[:notice] = t('account_controller.activate.activated')
-      redirect_back_or_default(:controller => '/account', :action => 'login')
+      if Kete.administrator_activates?
+        flash[:notice] = t('account_controller.activate.admin_activated', :new_user => @user.resolved_name)
+        redirect_back_or_default(:controller => '/account',
+                                 :action => 'show',
+                                 :id => @user.id)
+      else
+        flash[:notice] = t('account_controller.activate.activated')
+        redirect_back_or_default(:controller => '/account', :action => 'login')
+      end
     else
       flash[:error] = t('account_controller.activate.not_activated')
     end

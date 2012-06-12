@@ -300,6 +300,8 @@ en:
       new_pass: "{{t.base.password.capitalize}}:"
       title: "{{t.base.reset.capitalize}} {{t.base.password}}"
     show:
+      activate: "{{t.base.activate}}"
+      activated: "{{t.base.activated.capitalize}}" 
       baskets: "{{t.base.basket.pluralize.capitalize}}"
       change_password: "{{t.base.change}} {{t.base.password}}"
       change_portrait: "To {{t.base.change}} {{t.base.your}} selected {{t.base.portrait}}:"
@@ -318,6 +320,7 @@ en:
       license_thumbnail: "{{t.base.license.capitalize}} thumbnail. "
       new_portrait: "{{t.base.new}} {{t.base.portrait}}"
       new_portrait_link: "{{t.base.new}} {{t.base.portrait}}"
+      not_activated: "Not {{t.base.activated}}" 
       other_portraits: "Other {{t.base.portrait.pluralize.capitalize}}"
       pending: Pending
       portrait_description: "{{t.base.portrait.pluralize.capitalize}} are a set of images you display on {{t.base.your}} {{t.base.profile}} page to {{t.base.user.pluralize}} who {{t.base.view}} it. It can be {{t.base.your}} own artwork uploaded to the {{t.base.site}}, or {{t.base.your}} favorite images. The first {{t.base.portrait}} {{t.base.added}} (which can be reordered later) becomes {{t.base.your}} 'selected' {{t.base.portrait}}, that is, the one you wish to use as an {{t.base.avatar}} around the {{t.base.site}}. It will be displayed on {{t.base.your}} {{t.base.profile}} page and next to {{t.base.any}} {{t.base.zoom_types.comment.pluralize}} you post."
@@ -362,6 +365,7 @@ en:
   account_controller:
     activate:
       activated: "{{t.base.your.capitalize}} {{t.base.account}} {{t.base.has_been}} {{t.base.activated}}.  {{t.base.please.capitalize}} {{t.base.login}}."
+      admin_activated: "{{t.base.account.capitalize}} {{t.base.has_been}} {{t.base.activated}}."
       not_activated: "Unable to {{t.base.activate}} the {{t.base.account}}.  {{t.base.please.capitalize}} check or {{t.base.enter}} manually."
     add_portrait:
       added_portrait: "'{{portrait_title}}' {{t.base.has_been}} {{t.base.added}} to {{t.base.your}} {{t.base.portrait.pluralize}}."
@@ -412,6 +416,7 @@ en:
       please_login: "{{t.base.you.capitalize}} must be {{t.base.logged_in.downcase}} to {{t.base.view}} {{t.base.user}} {{t.base.profile.pluralize}}."
     signup:
       signed_up: "Thanks for signing up!"
+      signed_up_admin_will_review: "Thanks for signing up! An administrator will review your account. Expect an {{t.base.email}} when {{t.base.your}} {{t.base.account}} has been {{t.base.activated}}."
       signed_up_with_email: "Thanks for signing up! Expect an {{t.base.email}} with a {{t.base.code}} shortly to {{t.base.activate}} {{t.base.your}} {{t.base.account}}."
     update:
       user_updated: "{{t.base.user.capitalize}} {{t.base.was_updated}}."
@@ -2439,6 +2444,10 @@ en:
     login_changed:
       description: "{{t.base.your.capitalize}} {{t.base.login}} for {{site_name}} {{t.base.was}} {{t.base.changed}} during an upgrade of the software the {{t.base.site}} runs on."
       login_using: "To login, {{t.base.please}} now use the following {{t.base.login}} ({{t.base.your}} {{t.base.password}} remains the same)"
+    notification_to_administrators_of_new:
+      new_user_created: "A new user has signed up to the site."
+      review_account: "Please review the account and {{t.base.activate}} if acceptable. If not contact the user via email."
+      username: "{{t.base.username.capitalize}}: "
     pending_review_for:
       pending_review: "{{t.base.your.capitalize}} submission of Revision # {{revision}} of this {{t.base.item}} is {{flag}} {{t.base.review}} of a {{t.base.moderator}}.  {{t.base.you.capitalize}} will be notified of the outcome of the {{t.base.review}}."
     private_notifications:
@@ -2501,6 +2510,7 @@ en:
     private_item_edited: "A {{t.base.private}} {{t.base.item}} {{t.base.has_been}} {{t.base.edited}}."
     private_item_edited_with_title: "The {{t.base.private}} {{t.base.item}} '{{item_title}}' {{t.base.has_been}} {{t.base.edited}}."
     rejected_submission: "A {{t.base.moderator}} {{t.base.has}} {{flag}} {{t.base.your}} submission."
+    review_new_account: "Review account for {{new_user}}"
     reviewed_submission: "A {{t.base.moderator}} {{t.base.has}} {{flag}} {{t.base.your}} submission."
     revision_live: "A {{t.base.moderator}} {{t.base.has}} {{t.base.made}} {{t.base.your}} submission the live revision."
     user_joined: "{{user_name}} {{t.base.has}} {{t.base.joined}} the {{basket_name}} {{t.base.basket}}"
