@@ -837,3 +837,11 @@ system_settings_096:
   id: "96"
   value: "false"
   section: System
+system_settings_097:
+  name: Administrator Activates
+  technically_advanced: false
+  required_to_be_configured: true
+  explanation: Does, instead of the user activating the account, a site administrator have to review the user and activate the user. Requires Activation must be true in addition to this setting being, true for this functionality.
+  id: "97"
+  value: "false"
+  section: Accounts

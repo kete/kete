@@ -7,7 +7,7 @@ class UserNotifier < ActionMailer::Base
   def forgot_password(user)
     setup_email(user)
     @subject    += I18n.t('user_notifier_model.password_change')
-    @body[:url]  = "#{SITE_URL}site/account/reset_password/#{ user.password_reset_code}"
+    @body[:url]  = "#{Kete.site_url}site/account/reset_password/#{ user.password_reset_code}"
   end
 
   def reset_password(user)
@@ -18,19 +18,28 @@ class UserNotifier < ActionMailer::Base
   def signup_notification(user)
     setup_email(user)
     @subject    += I18n.t('user_notifier_model.activate_account')
-    @body[:url]  = "#{SITE_URL}site/account/activate/#{user.activation_code}"
+    @body[:url]  = "#{Kete.site_url}site/account/activate/#{user.activation_code}"
+  end
+
+  def notification_to_administrators_of_new(user)
+    Role.find_by_name('site_admin').users.each do |admin|
+      setup_email(admin)
+      @subject    += I18n.t('user_notifier_model.review_new_account', :new_user => user.resolved_name)
+      @body[:new_user] = user
+      @body[:url]  = "#{Kete.site_url}site/account/show/#{user.id}"
+    end
   end
 
   def activation(user)
     setup_email(user)
     @subject    += I18n.t('user_notifier_model.account_activated')
-    @body[:url]  = "#{SITE_URL}"
+    @body[:url]  = "#{Kete.site_url}"
   end
 
   def banned(user)
     setup_email(user)
     @subject    += I18n.t('user_notifier_model.account_banned')
-    @body[:url]  = "#{SITE_URL}"
+    @body[:url]  = "#{Kete.site_url}"
   end
 
   def email_to(recipient, sender, subject, message, from_basket = nil)
@@ -179,8 +188,8 @@ class UserNotifier < ActionMailer::Base
 
   def setup_email(user)
     @recipients  = "#{user.email}"
-    @from        = "#{NOTIFIER_EMAIL}"
-    @subject     = "#{SITE_NAME} "
+    @from        = "#{Kete.notifier_email}"
+    @subject     = "#{Kete.site_name} "
     @sent_on     = Time.now
     @body[:user] = user
     @body[:recipient] = user # less confusing than user
@@ -200,5 +209,4 @@ class UserNotifier < ActionMailer::Base
       false
     end
   end
-
 end

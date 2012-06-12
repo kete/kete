@@ -1,7 +1,11 @@
 class UserObserver < ActiveRecord::Observer
   def after_create(user)
-    if REQUIRE_ACTIVATION
-      UserNotifier.deliver_signup_notification(user)
+    if Kete.require_activation?
+      if Kete.administrator_activates?
+        UserNotifier.deliver_notification_to_administrators_of_new(user)
+      else
+        UserNotifier.deliver_signup_notification(user)
+      end
     else
       user.activate
       user.notified_of_activation

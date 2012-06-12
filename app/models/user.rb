@@ -132,6 +132,10 @@ class User < ActiveRecord::Base
     @activated = false
   end
 
+  def has_been_activated?
+    activated_at.present? && activation_code.blank?
+  end
+
   # Encrypts some data with the salt.
   def self.encrypt(password, salt)
     Digest::SHA1.hexdigest("--#{salt}--#{password}--")
