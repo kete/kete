@@ -287,6 +287,15 @@ en:
       register_link: "{{t.base.register}}"
       remember_me: "Remember me:"
       title: "{{t.base.login.capitalize}} to {{site_name}}"
+    login_form:
+      admin_details: "{{t.account.login.admin_details}}"
+      forgot_password: "{{t.account.login.forgot_password}}"
+      forgot_password_link: "{{t.account.login.forgot_password_link}}"
+      login: "{{t.account.login.login}}"
+      password: "{{t.account.loging.password}}"
+      register: "{{t.account.login.register}}"
+      register_link: "{{t.account.login.register_link}}"
+      remember_me: "{{t.account.login.remember_me}}"
     portrait:
       title: "Drag and Drop {{t.base.portrait.pluralize}} within the 'Other {{t.base.portrait.pluralize.capitalize}}' section to reorder them or place on top of the current {{t.base.portrait}} to {{t.base.change}} it."
     portrait_controls:
