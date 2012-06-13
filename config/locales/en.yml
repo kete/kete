@@ -637,6 +637,11 @@ en:
     not_acceptable_content_type: "is {{t.base.not_acceptable}}. It should be a .mp3, .m4a, or other {{t.base.zoom_types.audio}} file."
     not_acceptable_size: "{{t.base.not_acceptable_size}}"
   authenticated_system_lib:
+    access_denied:
+      before_proceeding: "before proceeding to the next step."
+      enter_your_details: "{{t.base.enter}} {{t.base.your}} {{t.base.information}} or "
+      login: "{{t.base.login}} "
+      please: "{{t.base.please.capitalize}} "
     login_from_cookie:
       logged_in: "{{t.base.logged_in}} {{t.base.successfully}}"
   authorization_initializer:
