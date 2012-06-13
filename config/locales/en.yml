@@ -292,7 +292,7 @@ en:
       forgot_password: "{{t.account.login.forgot_password}}"
       forgot_password_link: "{{t.account.login.forgot_password_link}}"
       login: "{{t.account.login.login}}"
-      password: "{{t.account.loging.password}}"
+      password: "{{t.account.login.password}}"
       register: "{{t.account.login.register}}"
       register_link: "{{t.account.login.register_link}}"
       remember_me: "{{t.account.login.remember_me}}"
