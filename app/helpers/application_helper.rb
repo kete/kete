@@ -561,7 +561,10 @@ module ApplicationHelper
 
   def link_to_basket_contact_for(basket, include_name = true)
     link_text = t('application_helper.link_to_basket_contact_for.contact')
-    link_text += ' ' + basket.name if include_name
+    if include_name
+      name = (basket == @site_basket || basket == @about_basket) ? Kete.pretty_site_name : basket.name
+      link_text += ' ' + name
+    end
     link_to link_text, basket_contact_path(:urlified_name => basket.urlified_name)
   end
 
