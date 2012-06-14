@@ -208,16 +208,17 @@ module CacheControllerHelpers
 
     def expire_related_caches_for(item, controller = nil)
       related = Array.new
+      item_is_topic = item.is_a?(Topic) ? true : false
       if !controller.nil?
         related << controller
       else
-        if item.class.name != 'Topic'
-          related << 'topics'
-        else
+        if item_is_topic
           # topics need all it's related things expired
           ZOOM_CLASSES.each do |zoom_class|
             related << zoom_class_controller(zoom_class)
           end
+        else
+          related << 'topics'
         end
       end
       related << 'public_query'
@@ -225,6 +226,12 @@ module CacheControllerHelpers
       related << 'related-tools-restore'
       related << 'related-tools-import'
       related.each do |related_controller|
+        # clear related on index_page#index if this a homepage topic
+        if item_is_topic && item.index_for_basket.present?
+          # completely expire index page caches
+          expire_fragment(/#{item.index_for_basket.urlified_name}\/index_page\/index\/(.+)/)
+        end
+
         expire_fragment_for_all_versions(item,
                                          { :urlified_name => item.basket.urlified_name,
                                            :controller => zoom_class_controller(item.class.name),
