@@ -2296,6 +2296,7 @@ en:
     form:
       allow_insecure_elements: "{{t.base.allow.capitalize}} {{t.base.new}} {{t.base.form.pluralize}} and other possible insecure elements and attributes in the HTML?"
       comment_on_edit: "{{t.base.zoom_types.comment.capitalize}} on this {{t.base.edit}}"
+      confirm: "{{t.base.confirm.capitalize}}"
       create: "{{t.base.create.capitalize}}"
       current_image: "Current Image:"
       description: "{{t.base.description.capitalize}}"
@@ -2308,6 +2309,7 @@ en:
       file_privacy: "Attached file privacy"
       file_privacy_example: "{{t.base.please.capitalize}} note that once {{t.base.public}}, an attached file {{t.base.cannot_be}} {{t.base.made}} {{t.base.private}}."
       getting_tags: "Getting {{t.base.tag.pluralize}}. "
+      invalid_url: "is either badly formed (does it have 'http://' at the beginning?) or inaccesible. If you are SURE the URL is correct, please click 'Confirm' below."
       help: help
       move_baskets: "Move to another {{t.base.basket}}?"
       new: "{{t.base.new.capitalize}}"
