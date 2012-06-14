@@ -8,7 +8,7 @@ class WebLink < ActiveRecord::Base
 
   validates_presence_of :url
   validates_uniqueness_of :url, :case_sensitive => false
-  validates_http_url :url, :unless => :force_url
+  validates_http_url :url, :if => Proc.new { |web_link| web_link.new_record? && !web_link.force_url }
   
   # Private Item mixin
   include ItemPrivacy::All
