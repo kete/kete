@@ -18,7 +18,7 @@
 
 <h3><%= @title %></h3>
 
-<% if logged_in? && Kete.use_private_global_search_input? && Basket.privacy_exists %>
+<% if Kete.use_private_global_search_input? && Basket.privacy_exists %>
   <% opposite_privacy = params[:privacy_type].present? && params[:privacy_type] == 'private' ? 'public' : 'private' -%>
 
   <h3 id="privacy-switch"><%= t('.try_opposite_privacy_setting') %>
