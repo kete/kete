@@ -31,6 +31,12 @@ class Kete
       end
     end
 
+    def add_code_to_extensions_for(key, code)
+      extensions[:blocks] ||= Hash.new
+      extensions[:blocks][key] ||= Array.new
+      extensions[:blocks][key] << code
+    end
+
     # dynamically define reader methods for system settings
     # for background on metaclass method definition
     # see http://blog.jayfields.com/2007/10/ruby-defining-class-methods.html

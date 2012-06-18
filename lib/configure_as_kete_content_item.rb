@@ -4,6 +4,8 @@ module ConfigureAsKeteContentItem
       # each topic or content item lives in exactly one basket
       klass.send :belongs_to, :basket
 
+      klass.send :named_scope, :in_basket, lambda { |basket| { :conditions => { :basket_id => basket } } }
+      
       # where we handle creator and contributor tracking
       klass.send :include, HasContributors
 
@@ -88,9 +90,6 @@ module ConfigureAsKeteContentItem
       klass.send :validates_presence_of, :title
 
       klass.send :validates_as_sanitized_html, [:description, :extended_content]
-
-      # TODO: globalize stuff, uncomment later
-      # translates :title, :description
 
       klass.send :after_save, :update_taggings_basket_id
     end

@@ -28,20 +28,29 @@ if @item.new_record? && %w(StillImage Document Video AudioRecording).include?(zo
      @append_show_url = params[:append_show_url].present?  && params[:append_show_url] == 'true'
    end
 end
--%>
 
-<% if @editing -%>
-  <% @title, @url, @submit_text = "#{t('topics.form.editing')} #{@item_name}", { :urlified_name => @basket.urlified_name,
+if @editing
+   @title, @url, @submit_text = "#{t('topics.form.editing')} #{@item_name}", { :urlified_name => @basket.urlified_name,
                                                              :controller => controller,
                                                              :action => 'update',
                                                              :id => @item,
-                                                             :private => params[:private] }, t('topics.form.update') -%>
-<% else -%>
-  <% @title, @url, @submit_text = "#{t('topics.form.new')} #{@item_name}", { :urlified_name => @basket.urlified_name,
+                                                             :private => params[:private] }, t('topics.form.update')
+else
+  @title, @url, @submit_text = "#{t('topics.form.new')} #{@item_name}", { :urlified_name => @basket.urlified_name,
                                                          :controller => controller,
                                                          :action => 'create',
-                                                         :private => params[:private] }, t('topics.form.create') -%>
-<% end -%>
+                                                         :private => params[:private] }, t('topics.form.create')
+
+  if params[:controller] == 'web_links' && params[:action] == 'create' && @item.errors.present? && @item.errors.size == 1
+    @submit_text = t('topics.form.confirm')
+    @force_url = true
+    # HACK
+    # TODO: replace this in the model in Rails 3x
+    # in Rails 2.3.5 passing in a custom message to WebLink validates_http_url didn't work
+    @item.errors.add('url', t('.invalid_url'))
+  end
+end
+-%>
 
 <h2><%= @title -%></h2>
 
@@ -201,6 +210,10 @@ end
 
     <% if @item_type == :web_link && (show_privacy_controls_for?(@item, @basket) || !@editing) -%>
       <%= form.text_field :url, { :tabindex => '1', :label => t('topics.form.url'), :required => true } -%>
+      <% if @force_url -%>
+        <% Rails.logger.debug("what are errors: " + @item.errors.inspect) -%>
+        <%= form.hidden_field :force_url, :value => @force_true -%>
+      <% end -%>
     <% end -%>
 
     <div class="form-element">

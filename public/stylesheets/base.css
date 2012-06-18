@@ -1779,3 +1779,9 @@ sup.badge {
     margin-top: -8px;
 }
 
+input.center {
+    float: none;
+    display: block;
+    width: 100px;
+    margin: 10px auto;
+}

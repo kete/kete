@@ -2,9 +2,13 @@ class WebLink < ActiveRecord::Base
   # all the common configuration is handled by this module
   include ConfigureAsKeteContentItem
 
+  # some web sites will always refuse our url requests
+  # allow the user to say that the url is definitely valid
+  attr_accessor :force_url
+
   validates_presence_of :url
   validates_uniqueness_of :url, :case_sensitive => false
-  validates_http_url :url
+  validates_http_url :url, :if => Proc.new { |web_link| web_link.new_record? && !web_link.force_url }
   
   # Private Item mixin
   include ItemPrivacy::All
@@ -17,5 +21,4 @@ class WebLink < ActiveRecord::Base
   acts_as_licensed
   
   after_save :store_correct_versions_after_save
-  
 end
