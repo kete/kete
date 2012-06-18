@@ -844,11 +844,12 @@ system_settings_097:
   explanation: Does, instead of the user activating the account, a site administrator have to review the user and activate the user. Requires Activation must be true in addition to this setting being, true for this functionality.
   id: "97"
   value: "false"
-  section: Accountssystem_settings_097:
+  section: Accounts
+system_settings_098:
   name: Use Private Global Search Input
   technically_advanced: true
   required_to_be_configured: true
   explanation: "If true, the global search input will have an additional search terms field that will be explicitly for private searches. Public/Private search radio buttons will be excluded from search menu."
-  id: "97"
+  id: "98"
   value: "false"
   section: Search
