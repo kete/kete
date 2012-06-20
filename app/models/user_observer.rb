@@ -2,7 +2,9 @@ class UserObserver < ActiveRecord::Observer
   def after_create(user)
     if Kete.require_activation?
       if Kete.administrator_activates?
-        UserNotifier.deliver_notification_to_administrators_of_new(user)
+        Role.find_by_name('site_admin').users.each do |admin|
+          UserNotifier.deliver_notification_to_administrators_of_new(user, admin)
+        end
       else
         UserNotifier.deliver_signup_notification(user)
       end
