@@ -40,6 +40,19 @@ class BasketTest < ActiveSupport::TestCase
     assert_equal "something_wicked_this_way_comes", basket.urlified_name, "#{@base_class}.urlified_name should match this."
   end
 
+  def test_before_update_register_redirect_if_necessary
+    basket = Basket.create(@new_model.merge({ :name => "foo" }))
+    
+    basket.name = "bar"
+
+    basket.save!
+
+    assert_not_nil RedirectRegistration.find(:first,
+                                             :conditions => {
+                                               :source_url_pattern => '/foo/',
+                                               :target_url_pattern => '/bar/' })
+  end
+
   def test_update_index_topic
     basket = Basket.create(@new_model.merge({ :name => "something wicked this way comes" }))
     assert_nil basket.index_topic, "#{@base_class}.index_topic shouldn't have a value yet."

@@ -92,6 +92,8 @@ module ConfigureAsKeteContentItem
       klass.send :validates_as_sanitized_html, [:description, :extended_content]
 
       klass.send :after_save, :update_taggings_basket_id
+
+      klass.send :before_update, :register_redirect_if_necessary
     end
 
     def update_taggings_basket_id
@@ -120,6 +122,18 @@ module ConfigureAsKeteContentItem
 
     def to_i
       id
+    end
+
+    # Walter McGinnis, 2012-06-21
+    # create redirect_registration if basket_id has changed
+    def register_redirect_if_necessary
+      old_basket_id = self.class.find(:first, :select => "basket_id", :conditions => { :id => id }).basket_id
+      if old_basket_id != basket_id
+        old_urlified_name = Basket.find(:first, :select => "urlified_name", :conditions => { :id => old_basket_id }).urlified_name
+        new_urlified_name = Basket.find(:first, :select => "urlified_name", :conditions => { :id => basket_id }).urlified_name
+
+        RedirectRegistration.create!(:source_url_pattern => "/#{old_urlified_name}/", :target_url_pattern => "/#{new_urlified_name}/")
+      end
     end
   end
 end

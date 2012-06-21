@@ -1020,9 +1020,26 @@ class ApplicationController < ActionController::Base
   end
 
   def rescue_404
-    @displaying_error = true
-    @title = t('application_controller.rescue_404.title')
-    render :template => "errors/error404", :layout => "application", :status => "404"
+    redirect_registration = RedirectRegistration.match(request).first
+    unless redirect_registration
+      @displaying_error = true
+      @title = t('application_controller.rescue_404.title')
+      render :template => "errors/error404", :layout => "application", :status => "404"
+    else
+      new_url = String.new
+      partial_re = Regexp.new(/^\/.+\/$/)
+      if redirect_registration.source_url_pattern =~ partial_re &&
+          redirect_registration.target_url_pattern =~ partial_re
+
+        new_url = request.url.sub(redirect_registration.source_url_pattern, 
+                                  redirect_registration.target_url_pattern)
+      else
+        # target_url_pattern is actually direct replacement
+        new_url = redirect_registration.target_url_pattern
+      end
+
+      redirect_to new_url, :status => redirect_registration.status_code
+    end
   end
 
   def rescue_500(template)

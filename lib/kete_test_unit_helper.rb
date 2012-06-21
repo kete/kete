@@ -42,4 +42,17 @@ module KeteTestUnitHelper
     end
   end
 
+  def test_before_update_register_redirect_if_necessary
+    current_model = Module.class_eval(@base_class).create!(@new_model)
+    old_urlified_name = current_model.basket.urlified_name
+    new_basket = Basket.last
+
+    current_model.basket_id = Basket.last.id
+    current_model.save!
+
+    assert_not_nil RedirectRegistration.find(:first,
+                                             :conditions => {
+                                               :source_url_pattern => "/#{old_urlified_name}/",
+                                               :target_url_pattern => "/#{new_basket.urlified_name}/" })
+  end
 end
