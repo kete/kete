@@ -13,10 +13,9 @@ namespace :redirects do
       records = ExcelPreProcessor.new(source_file).records
 
       records.each do |record|
-        p record
         RedirectRegistration.create! record
       end
-      p records.count
+      p "Added #{records.count} redirect registrations."
     end
   end
 end
