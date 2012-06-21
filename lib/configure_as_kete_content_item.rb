@@ -132,7 +132,10 @@ module ConfigureAsKeteContentItem
         old_urlified_name = Basket.find(:first, :select => "urlified_name", :conditions => { :id => old_basket_id }).urlified_name
         new_urlified_name = Basket.find(:first, :select => "urlified_name", :conditions => { :id => basket_id }).urlified_name
 
-        RedirectRegistration.create!(:source_url_pattern => "/#{old_urlified_name}/", :target_url_pattern => "/#{new_urlified_name}/")
+        old_url = url_for_dc_identifier(self)
+        new_url = old_url.sub(old_urlified_name, new_urlified_name)
+
+        RedirectRegistration.create!(:source_url_pattern => old_url, :target_url_pattern => new_url)
       end
     end
   end
