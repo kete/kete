@@ -121,7 +121,7 @@
     <%= "(#{@user.login})" if @site_admin && @user.user_name != @user.login -%>
   </p>
 
-  <% if @user.show_email? || @viewer_is_user -%>
+  <% if @user.show_email? || @viewer_is_user || @site_admin -%>
   <p>
     <strong><%=t '.email' %></strong>
     <%= mail_to(@user.email, @user.email, :encode => "hex") -%>
