@@ -21,12 +21,12 @@
 <div class="prev-next before-results"><%= will_paginate @results, :next_label => t('slideshows_helper.next'), :previous_label => t('slideshows_helper.previous') %></div>
 
 <% search_source_result = ''
-   search_sources_amount = SearchSource.count(:conditions => ["source_target IN (?)", ['all', 'search']]) %>
-<% if search_sources_amount > 0 %>
+   @search_sources_amount = SearchSource.count(:conditions => ["source_target IN (?)", ['all', 'search']]) %>
+<% if @search_sources_amount > 0 %>
   <% search_source_result = display_search_sources(params[:search_terms],
                              { :target => [:all, :search],
                                :do_not_cache => true,
-                               :limit => (@number_per_page.to_f / search_sources_amount.to_f).ceil,
+                               :limit => (@number_per_page.to_f / @search_sources_amount.to_f).ceil,
                                :title => t('search.results.search_source_title') }) %>
   <% unless search_source_result.blank? %>
     <div id="search_page_search_sources"><%= search_source_result %></div>
@@ -45,7 +45,6 @@
   <% @results.each_with_index do |result,index|  %>
 
     <% if Kete.enable_maps? && params[:view_as] == 'map' -%>
-
       <% marker_options = { 'title' => result[:title] }
       summary_for_info_window = result[:short_summary].present? ? result[:short_summary] : String.new
       marker_options['description'] = link_to(h(result[:title]), result[:url], :tabindex => '1') + '<br />' + summary_for_info_window
@@ -70,7 +69,6 @@
 	
 	@markers << marker_options
       end -%>
-
     <% else -%>
 
       <% locals = { :title => result[:title],
@@ -113,6 +111,9 @@
     <%= gmaps("markers" => { 'data' => @markers.to_json, 'options' => { 'randomize' => true,
     'do_clustering' => true,
     'clusterer_maxZoom' => 20 } } ) -%>
+    <% if @search_sources_amount.present? && @search_sources_amount > 0 -%>
+      <%= javascript_tag("jQuery('.map_container').css('width', '600px'); jQuery('.gmaps4rails_map').css('width', '600px');") -%>
+    <% end -%>
   <% else -%>
     <%=t 'search.results.no_results_of_this_type_found', :zoom_class => zoom_class_humanize(@current_class).downcase %>
   <% end -%>
