@@ -693,8 +693,12 @@ class SearchController < ApplicationController
   # James - 2008-06-13
   # SLOW. Not sure why at this point, but it's 99% rendering, not DB.
   def find_related
+    # related items are now shown on basket homepage topics, small change to allow linking here
+    params[:relate_to_type] = 'Topic' if params[:relate_to_type] == 'IndexPage'
+
     @relate_to_item = params[:relate_to_type].constantize.find(params[:relate_to_item])
     @related_class = (params[:related_class] || "Topic")
+
     related_class_is_topic = @related_class == "Topic" ? true : false
     # this will throw exception if passed in related_class isn't valid
     related_class = only_valid_zoom_class(@related_class)
