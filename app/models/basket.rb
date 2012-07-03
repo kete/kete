@@ -632,4 +632,15 @@ class Basket < ActiveRecord::Base
     end
   end
 
+  # Walter McGinnis, 2012-06-21
+  # create redirect_registration if basket.urlified_name has changed
+  # important this is called after urlify_name before_save
+  before_update :register_redirect_if_necessary
+
+  def register_redirect_if_necessary
+    old_urlified_name = self.class.find(:first, :select => "urlified_name", :conditions => { :id => id }).urlified_name
+    if old_urlified_name != urlified_name
+      RedirectRegistration.create!(:source_url_pattern => "/#{old_urlified_name}/", :target_url_pattern => "/#{urlified_name}/")
+    end
+  end
 end

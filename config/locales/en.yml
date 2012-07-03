@@ -287,6 +287,15 @@ en:
       register_link: "{{t.base.register}}"
       remember_me: "Remember me:"
       title: "{{t.base.login.capitalize}} to {{site_name}}"
+    login_form:
+      admin_details: "{{t.account.login.admin_details}}"
+      forgot_password: "{{t.account.login.forgot_password}}"
+      forgot_password_link: "{{t.account.login.forgot_password_link}}"
+      login: "{{t.account.login.login}}"
+      password: "{{t.account.login.password}}"
+      register: "{{t.account.login.register}}"
+      register_link: "{{t.account.login.register_link}}"
+      remember_me: "{{t.account.login.remember_me}}"
     portrait:
       title: "Drag and Drop {{t.base.portrait.pluralize}} within the 'Other {{t.base.portrait.pluralize.capitalize}}' section to reorder them or place on top of the current {{t.base.portrait}} to {{t.base.change}} it."
     portrait_controls:
@@ -637,6 +646,11 @@ en:
     not_acceptable_content_type: "is {{t.base.not_acceptable}}. It should be a .mp3, .m4a, or other {{t.base.zoom_types.audio}} file."
     not_acceptable_size: "{{t.base.not_acceptable_size}}"
   authenticated_system_lib:
+    access_denied:
+      before_proceeding: "before proceeding to the next step."
+      enter_your_details: "{{t.base.enter}} {{t.base.your}} {{t.base.information}} or "
+      login: "{{t.base.login}} "
+      please: "{{t.base.please.capitalize}} "
     login_from_cookie:
       logged_in: "{{t.base.logged_in}} {{t.base.successfully}}"
   authorization_initializer:
@@ -2282,6 +2296,7 @@ en:
     form:
       allow_insecure_elements: "{{t.base.allow.capitalize}} {{t.base.new}} {{t.base.form.pluralize}} and other possible insecure elements and attributes in the HTML?"
       comment_on_edit: "{{t.base.zoom_types.comment.capitalize}} on this {{t.base.edit}}"
+      confirm: "{{t.base.confirm.capitalize}}"
       create: "{{t.base.create.capitalize}}"
       current_image: "Current Image:"
       description: "{{t.base.description.capitalize}}"
@@ -2294,6 +2309,7 @@ en:
       file_privacy: "Attached file privacy"
       file_privacy_example: "{{t.base.please.capitalize}} note that once {{t.base.public}}, an attached file {{t.base.cannot_be}} {{t.base.made}} {{t.base.private}}."
       getting_tags: "Getting {{t.base.tag.pluralize}}. "
+      invalid_url: "is either badly formed (does it have 'http://' at the beginning?) or inaccesible. If you are SURE the URL is correct, please click 'Confirm' below."
       help: help
       move_baskets: "Move to another {{t.base.basket}}?"
       new: "{{t.base.new.capitalize}}"

@@ -113,6 +113,17 @@ module AuthenticatedSystem
       respond_to do |accepts|
         accepts.html do
           store_location
+
+          flash[:notice] = I18n.t('authenticated_system_lib.access_denied.please')
+
+          if anonymous_ok_for?(session[:return_to])
+              flash[:notice] += I18n.t('authenticated_system_lib.access_denied.enter_your_details')
+          end
+
+          flash[:notice] += I18n.t('authenticated_system_lib.access_denied.login')
+
+          flash[:notice] += I18n.t('authenticated_system_lib.access_denied.before_proceeding')
+
           redirect_to :urlified_name => Basket.site_basket.urlified_name,
                       :controller => 'account',
                       :action => 'login'

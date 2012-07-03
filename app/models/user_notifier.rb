@@ -21,13 +21,11 @@ class UserNotifier < ActionMailer::Base
     @body[:url]  = "#{Kete.site_url}site/account/activate/#{user.activation_code}"
   end
 
-  def notification_to_administrators_of_new(user)
-    Role.find_by_name('site_admin').users.each do |admin|
-      setup_email(admin)
-      @subject    += I18n.t('user_notifier_model.review_new_account', :new_user => user.resolved_name)
-      @body[:new_user] = user
-      @body[:url]  = "#{Kete.site_url}site/account/show/#{user.id}"
-    end
+  def notification_to_administrators_of_new(user, admin)
+    setup_email(admin)
+    @subject    += I18n.t('user_notifier_model.review_new_account', :new_user => user.resolved_name)
+    @body[:new_user] = user
+    @body[:url]  = "#{Kete.site_url}site/account/show/#{user.id}"
   end
 
   def activation(user)

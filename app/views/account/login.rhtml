@@ -32,43 +32,7 @@
   <h2><%= h(@title) -%></h2>
 <% end -%>
 
-<fieldset>
-  <!--[form:login]-->
-  <% if Kete.is_configured? -%>
-  <p><%=t 'account.login.register',
-          :register_link => link_to(t('account.login.register_link'),
-                                    { :controller => 'account',
-                                      :action => 'signup',
-                                      :urlified_name => @site_basket.urlified_name},
-                                    :tabindex => '1') %></p>
-  <% else -%>
-  <p><%=t 'account.login.admin_details' %></p>
-  <% end -%>
-
-  <div class="form-element">
-    <label for="login"><%=t 'account.login.login' %></label>
-    <%= text_field_tag 'login', nil, :tabindex => '1' %>
-  </div>
-
-  <div class="form-element">
-    <label for="password"><%=t 'account.login.password' %></label>
-    <%= password_field_tag 'password', nil, :tabindex => '1' %>
-  </div>
-
-  <% if Kete.is_configured? -%>
-  <div class="form-element">
-    <label for="remember_me"><%=t 'account.login.remember_me' -%></label>
-    <%= check_box_tag 'remember_me', "1", false, :tabindex => '1' %>
-  </div>
-
-  <p><%=t 'account.login.forgot_password',
-          :forgot_password_link => link_to(t('account.login.forgot_password_link'),
-                                             { :controller => 'account',
-                                               :action => 'forgot_password',
-                                               :urlified_name => @site_basket.urlified_name},
-                                             :tabindex => '1') -%></p>
-  <% end -%>
-</fieldset>
+<%=  render :partial => "login_form" -%>
 
 </div>
 
@@ -84,7 +48,7 @@
 
 </div>
 <div style="clear:both;"></div>
-<div class="wrap"><%= submit_tag @button_text, { :class => @button_classes.join(' '), :tabindex => '1'} %></div>
+<%=  render :partial => "login_button" -%>
 <% end -%>
 
 <% end -%>
