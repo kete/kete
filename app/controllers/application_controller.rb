@@ -877,14 +877,25 @@ class ApplicationController < ActionController::Base
     tag
   end
 
-  # override in your add-on
-  # to declare your controller
-  # should return true for render_full_width_content_wrapper?
-  # remember to alias_method :previous_add_on_full_width_content_wrapper_controllers, :add_on_full_width_content_wrapper_controllers
-  # and return something like
-  # previous_add_on_full_width_content_wrapper_controllers + your_new_array_of_values
+  cattr_accessor :add_ons_full_width_content_wrapper_controllers, :add_ons_content_wrapper_end_controllers
+  
+  def self.add_ons_full_width_content_wrapper_controllers
+    @@add_ons_full_width_content_wrapper_controllers || Array.new
+  end
+
+  def self.add_ons_content_wrapper_end_controllers
+    @@add_ons_content_wrapper_end_controllers || Array.new
+  end
+
+  # override in your add-on by adding to corresponding class attribute
+  # i.e ApplicationController.class_eval { self.add_ons_full_width_content_wrapper_controllers += ['your_controller'] }
   def add_ons_full_width_content_wrapper_controllers
-    Array.new
+    self.class.add_ons_full_width_content_wrapper_controllers
+  end
+
+  # i.e ApplicationController.class_eval { self.add_ons_full_width_content_wrapper_controllers += ['your_controller'] }
+  def add_ons_content_wrapper_end_controllers
+    self.class.add_ons_content_wrapper_end_controllers
   end
   
   def render_full_width_content_wrapper?
@@ -907,16 +918,6 @@ class ApplicationController < ActionController::Base
     else
       return false
     end
-  end
-
-  # override in your add-on
-  # to declare your controller
-  # should return true for content_wrapper_end partial
-  # remember to alias_method :previous_add_on_content_wrapper_end_controllers, :add_on_content_wrapper_end_controllers
-  # and return something like
-  # previous_add_on_content_wrapper_end_controllers + your_new_array_of_values
-  def add_ons_content_wrapper_end_controllers
-    Array.new
   end
 
   def render_content_wrapper_end?
