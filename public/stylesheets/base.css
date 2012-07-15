@@ -1749,6 +1749,19 @@ ul.horizontal-list li {
     padding: 2px 5px;
     display: inline;
 }
+
+ul.horizontal-list li form {
+    display: inline;
+}
+
+ul.horizontal-list li form input {
+    display: inline;
+}
+
+ul.horizontal-list li form div {
+    display: inline;
+}
+
 /*
  * generic badge class for sup elements
  */
