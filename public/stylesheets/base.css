@@ -1793,3 +1793,13 @@ input.center {
     width: 100px;
     margin: 10px auto;
 }
+
+/*
+ * generic square button style for link
+ */
+.square-button {
+  border: 1px solid #444;
+  background-color: #ccc;
+  padding: 3px;
+  margin: 3px;
+}
