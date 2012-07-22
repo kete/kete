@@ -1101,7 +1101,7 @@ module ApplicationHelper
       value = content.select { |pair| pair[0] == field_name }.first.last rescue nil
       next if value.to_s.blank?
 
-      value = formatted_extended_content_value(field, field_name, value, item)
+      value = formatted_extended_content_value(field, field_name, value, item, mapping)
 
       if field.ftype == 'map' || field.ftype == 'map_address'
         next if value.blank?
@@ -1124,7 +1124,7 @@ module ApplicationHelper
     field_or_choice.label
   end
 
-  def formatted_extended_content_value(field, field_name, value, item)
+  def formatted_extended_content_value(field, field_name, value, item, mapping)
     # handle if the field is multiple
     values = Array.new
     if field.multiple?
@@ -1141,13 +1141,13 @@ module ApplicationHelper
     values.each do |value_input|
       value_output = \
       if field.ftype == 'map'
-        # TODO: move passed in style to class for width
-        # change class value accordingly
-        extended_field_map_editor(field_name, value_input, field, { :class => 'extended_field_sidebar_map' }, { :class => 'extended_field_sidebar_map' }, false, true, false)
+        css_class = mapping.embedded? ? 'extended_field_embedded_map' : 'extended_field_sidebar_map'
+
+        extended_field_map_editor(field_name, value_input, field, { :class => css_class }, { :class => css_class }, false, true, false)
       elsif field.ftype == 'map_address'
-        # TODO: move passed in style to class for width
-        # change class value accordingly
-        extended_field_map_editor(field_name, value_input, field, { :class => 'extended_field_sidebar_map' }, { :class => 'extended_field_sidebar_map' }, false, true, true)
+        css_class = mapping.embedded? ? 'extended_field_embedded_map' : 'extended_field_sidebar_map'
+
+        extended_field_map_editor(field_name, value_input, field, { :class => css_class }, { :class => css_class }, false, true, true)
       else
         formatted_value_from_xml(value_input, field, item)
       end

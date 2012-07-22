@@ -1344,6 +1344,10 @@ select.extended_field_choice_dropdown {
     width: 220px;
 }
 
+.extended_field_embedded_map {
+    width: 597px;
+}
+
 div.gmnoprint {
   white-space: normal !important;
 }
