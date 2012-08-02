@@ -877,6 +877,27 @@ class ApplicationController < ActionController::Base
     tag
   end
 
+  cattr_accessor :add_ons_full_width_content_wrapper_controllers, :add_ons_content_wrapper_end_controllers
+  
+  def self.add_ons_full_width_content_wrapper_controllers
+    @@add_ons_full_width_content_wrapper_controllers || Array.new
+  end
+
+  def self.add_ons_content_wrapper_end_controllers
+    @@add_ons_content_wrapper_end_controllers || Array.new
+  end
+
+  # override in your add-on by adding to corresponding class attribute
+  # i.e ApplicationController.class_eval { self.add_ons_full_width_content_wrapper_controllers += ['your_controller'] }
+  def add_ons_full_width_content_wrapper_controllers
+    self.class.add_ons_full_width_content_wrapper_controllers
+  end
+
+  # i.e ApplicationController.class_eval { self.add_ons_full_width_content_wrapper_controllers += ['your_controller'] }
+  def add_ons_content_wrapper_end_controllers
+    self.class.add_ons_content_wrapper_end_controllers
+  end
+  
   def render_full_width_content_wrapper?
     if @displaying_error
       return false
@@ -888,6 +909,8 @@ class ApplicationController < ActionController::Base
       return false
     elsif %w(tags search).include?(params[:controller])
       return false
+    elsif add_ons_full_width_content_wrapper_controllers.include?(params[:controller])
+      return true
     elsif params[:controller] == 'account' and params[:action] == 'show'
       return true
     elsif !['show', 'preview', 'show_private'].include?(params[:action])
@@ -895,6 +918,14 @@ class ApplicationController < ActionController::Base
     else
       return false
     end
+  end
+
+  def render_content_wrapper_end?
+    return true if ACTIVE_SCAFFOLD_CONTROLLERS.include?(params[:controller])
+
+    return true if add_ons_content_wrapper_end_controllers.include?(params[:controller])
+
+    false
   end
 
   def public_or_private_version_of(item)
@@ -1128,7 +1159,7 @@ class ApplicationController < ActionController::Base
   end
 
   # methods that should be available in views as well
-  helper_method :prepare_short_summary, :history_url, :render_full_width_content_wrapper?, :permitted_to_view_private_items?,
+  helper_method :prepare_short_summary, :history_url, :render_full_width_content_wrapper?, :render_content_wrapper_end?, :permitted_to_view_private_items?,
                 :permitted_to_edit_current_item?, :allowed_to_access_private_version_of?, :accessing_private_search_and_allowed?,
                 :get_acceptable_privacy_type_for, :current_user_can_see_flagging?, :current_user_can_see_add_links?,
                 :current_user_can_add_or_request_basket?, :basket_policy_request_with_permissions?, :current_user_can_see_action_menu?,
