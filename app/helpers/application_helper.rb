@@ -561,7 +561,10 @@ module ApplicationHelper
 
   def link_to_basket_contact_for(basket, include_name = true)
     link_text = t('application_helper.link_to_basket_contact_for.contact')
-    link_text += ' ' + basket.name if include_name
+    if include_name
+      name = (basket == @site_basket || basket == @about_basket) ? Kete.pretty_site_name : basket.name
+      link_text += ' ' + name
+    end
     link_to link_text, basket_contact_path(:urlified_name => basket.urlified_name)
   end
 
@@ -700,9 +703,15 @@ module ApplicationHelper
 
   def related_items_count_for_current_item
     @related_items_count_for_current_item ||= begin
-      conditions = "(content_item_relations.related_item_id = :cache_id AND content_item_relations.related_item_type = '#{zoom_class_from_controller(params[:controller])}')"
-      conditions += " OR (content_item_relations.topic_id = :cache_id)" if params[:controller] == 'topics'
-      ContentItemRelation.count(:conditions => [conditions, { :cache_id => @cache_id }])
+      cache_id = @cache_id
+      class_name = zoom_class_from_controller(params[:controller])
+      unless cache_id
+        cache_id = @topic.id if @topic.present?
+        class_name = 'Topic' if class_name == 'IndexPage'
+      end
+      conditions = "(content_item_relations.related_item_id = :cache_id AND content_item_relations.related_item_type = '#{class_name}')"
+      conditions += " OR (content_item_relations.topic_id = :cache_id)" if params[:controller] == 'topics' || params[:controller] == 'index_page'
+      ContentItemRelation.count(:conditions => [conditions, { :cache_id => cache_id }])
     end
   end
 
@@ -1092,7 +1101,7 @@ module ApplicationHelper
       value = content.select { |pair| pair[0] == field_name }.first.last rescue nil
       next if value.to_s.blank?
 
-      value = formatted_extended_content_value(field, field_name, value, item)
+      value = formatted_extended_content_value(field, field_name, value, item, mapping)
 
       if field.ftype == 'map' || field.ftype == 'map_address'
         next if value.blank?
@@ -1115,7 +1124,7 @@ module ApplicationHelper
     field_or_choice.label
   end
 
-  def formatted_extended_content_value(field, field_name, value, item)
+  def formatted_extended_content_value(field, field_name, value, item, mapping)
     # handle if the field is multiple
     values = Array.new
     if field.multiple?
@@ -1132,13 +1141,13 @@ module ApplicationHelper
     values.each do |value_input|
       value_output = \
       if field.ftype == 'map'
-        # TODO: move passed in style to class for width
-        # change class value accordingly
-        extended_field_map_editor(field_name, value_input, field, { :class => 'extended_field_sidebar_map' }, { :class => 'extended_field_sidebar_map' }, false, true, false)
+        css_class = mapping.embedded? ? 'extended_field_embedded_map' : 'extended_field_sidebar_map'
+
+        extended_field_map_editor(field_name, value_input, field, { :class => css_class }, { :class => css_class }, false, true, false)
       elsif field.ftype == 'map_address'
-        # TODO: move passed in style to class for width
-        # change class value accordingly
-        extended_field_map_editor(field_name, value_input, field, { :class => 'extended_field_sidebar_map' }, { :class => 'extended_field_sidebar_map' }, false, true, true)
+        css_class = mapping.embedded? ? 'extended_field_embedded_map' : 'extended_field_sidebar_map'
+
+        extended_field_map_editor(field_name, value_input, field, { :class => css_class }, { :class => css_class }, false, true, true)
       else
         formatted_value_from_xml(value_input, field, item)
       end

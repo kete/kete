@@ -96,5 +96,11 @@ require File.join(File.dirname(__FILE__), '/../lib/error_handler')
 # most application specific configuration has moved to files
 # under config/initializers/
 
+# Walter McGinnis, 2011-07-28
+# put our locales last, so our application's declarations take precedence
+I18n.load_path += Dir[ Rails.root.join('config', 'locales', '*.{rb,yml}') ]
+# TODO: we could do some deleting of existing load_path entries to speed up reload in future
+I18n.reload! # by this point previous load_path's values were already loaded
+
 # Load application extensions that have been registered by add-ons
 Kete.setup_extensions!

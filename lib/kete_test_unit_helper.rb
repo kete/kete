@@ -1,5 +1,5 @@
-# Walter McGinnis, 2007-10-25
-# added tests
+require 'kete_url_for'
+
 module KeteTestUnitHelper
   def test_raw_validation
     model = Module.class_eval(@base_class).new
@@ -41,5 +41,23 @@ module KeteTestUnitHelper
       assert model.errors.invalid?(attr_name.to_sym), "Should be an error message for :#{attr_name}"
     end
   end
+  
+  include KeteUrlFor
+  def test_before_update_register_redirect_if_necessary
+    current_model = Module.class_eval(@base_class).create!(@new_model)
+    old_urlified_name = current_model.basket.urlified_name
+    new_basket = Basket.last
 
+    current_model.basket_id = Basket.last.id
+    current_model.save!
+
+    new_url = url_for_dc_identifier(current_model)
+
+    old_url = new_url.sub(new_basket.urlified_name, old_urlified_name)
+
+    assert_not_nil RedirectRegistration.find(:first,
+                                             :conditions => {
+                                               :source_url_pattern => old_url,
+                                               :target_url_pattern => new_url })
+  end
 end

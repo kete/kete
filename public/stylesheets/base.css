@@ -1344,6 +1344,10 @@ select.extended_field_choice_dropdown {
     width: 220px;
 }
 
+.extended_field_embedded_map {
+    width: 597px;
+}
+
 div.gmnoprint {
   white-space: normal !important;
 }
@@ -1749,6 +1753,19 @@ ul.horizontal-list li {
     padding: 2px 5px;
     display: inline;
 }
+
+ul.horizontal-list li form {
+    display: inline;
+}
+
+ul.horizontal-list li form input {
+    display: inline;
+}
+
+ul.horizontal-list li form div {
+    display: inline;
+}
+
 /*
  * generic badge class for sup elements
  */
@@ -1774,3 +1791,19 @@ sup.badge {
     margin-top: -8px;
 }
 
+input.center {
+    float: none;
+    display: block;
+    width: 100px;
+    margin: 10px auto;
+}
+
+/*
+ * generic square button style for link
+ */
+.square-button {
+  border: 1px solid #444;
+  background-color: #ccc;
+  padding: 3px;
+  margin: 3px;
+}
