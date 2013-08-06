@@ -31,6 +31,21 @@ AUTHORIZATION_MIXIN = "object roles"
 # Bootstrap the Rails environment, frameworks, and default configuration
 require File.join(File.dirname(__FILE__), 'boot')
 
+# !! Fixing rubygems vs rake error: undefined local variable or method `version_requirements'
+if Gem::VERSION >= "1.3.6"
+  module Rails
+    class GemDependency
+
+      def requirement
+        r = super
+        (r == Gem::Requirement.default) ? nil : r
+      end
+    end
+  end
+end
+
+
+
 Rails::Initializer.run do |config|
   # Settings in config/environments/* take precedence over those specified here.
   # Application configuration should go into files in config/initializers
