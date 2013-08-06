@@ -1,3 +1,5 @@
+require 'thread' # fix incompatability between RubyGems 1.6.0+ and Rails < 2.3.11
+
 # Don't change this file!
 # Configure your app in config/environment.rb and config/environments/*.rb
 
