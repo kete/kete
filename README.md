@@ -1,4 +1,4 @@
-== Welcome to Kete 1.3
+# Welcome to Kete 1.3
 
 Kete is software that enables communities, whether the community is a town or a company, to collaboratively build their own digital libraries, archives and repositories.  Kete combines features from Knowledge and Content Management Systems as well as collaboration tools such as wikis, blogs, tags, and online forums to make it easy to add and relate content on a Kete site.
 
@@ -8,19 +8,19 @@ Kete is software that enables communities, whether the community is a town or a 
 
 For the most up to date information about Kete please see http://kete.net.nz/.
 
-== New Installations
+# New Installations
 
 A detailed and up to date Installation Guide can be found at http://kete.net.nz/documentation/topics/show/114.
 
-== Upgrading
+# Upgrading
 
 If you have an existing Kete site, you can find upgrade instructions at http://kete.net.nz/documentation/topics/show/342-upgrading-to-kete-13.
 
-== Promoting Your New Kete Site
+# Promoting Your New Kete Site
 
 As of Kete 1.1 you may submit your new Kete site to be listed in a directory of Kete sites on http://kete.net.nz/site/kete_sites/ during initial configuration or later by using the link found at Administrator's Toolbox > List Site on Kete.net.nz.
 
-== Credits
+# Credits
 
 The Kete software was originally envisioned by Joann Ransom at Horowhenua Library Trust for the Kete Horowhenua project (http://horowhenua.kete.net.nz/).  Walter McGinnis and Russel Garlick from Katipo Communications, Ltd. (http://katipo.co.nz/) collaborated with Joann on the concepts of how the software should work.  Walter did the initial implementation with help from fellow katipods, Bob Lyon and Richard Anderson.
 
@@ -32,7 +32,7 @@ Kete 1.2's major work was funded by Auckland City Libraries, Te Reo o Taranaki, 
 
 Kete is a Ruby on Rails application, so huge thanks go to those that have worked on Ruby and Ruby on Rails for providing a great foundation to build an application on top of.  Thanks also go to the team at IndexData (http://www.indexdata.com/) for their work on Zebra which Kete uses as the basis for its search and browsing functionality.
 
-Kete 1.3's major work was funded by Auckland City Libraries and New Zealand Chinese Association Auckland Branch, Te Reo o Taranaki, Katipo, and Manawatu Wanganui LASS. Several smaller bits were funded by Friends of Pukekura Park, Horowhenua Library Trust, Aotearoa Peoples Network Kaharoa, Te Arai Beach Preservation Society, EESI, and others. 
+Kete 1.3's major work was funded by Auckland City Libraries and New Zealand Chinese Association Auckland Branch, Te Reo o Taranaki, Katipo, and Manawatu Wanganui LASS. Several smaller bits were funded by Friends of Pukekura Park, Horowhenua Library Trust, Aotearoa Peoples Network Kaharoa, Te Arai Beach Preservation Society, EESI, and others.
 
 In addition, we had our first public fundraising drive for the Image Selector in the Rich Text Editor. We received donations from many of the above, as well as including Wellington City Libraries, John Billings, CALYX, KnowledgeWare Technologies, and Bill Howard.
 
