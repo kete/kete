@@ -1,4 +1,9 @@
 # Welcome to Kete 1.3
+[![Dependency Status](https://gemnasium.com/kete/kete.png)](https://gemnasium.com/kete/kete)
+[![Code Climate](https://codeclimate.com/github/kete/kete.png)](https://codeclimate.com/github/kete/kete)
+[![Coverage Status](https://coveralls.io/repos/kete/kete/badge.png?branch=master)](https://coveralls.io/r/kete/kete)
+[![Build Status](https://secure.travis-ci.org/kete/kete.png)](http://travis-ci.org/kete/kete)
+<a href="https://kiwiirc.com/client/irc.freenode.net/?nick=web_guest%7C?#kete"><img src="https://kiwiirc.com/buttons/irc.freenode.net/kete.png" alt="#kete IRC channel" height="18" width="130" style="max-width:100%;"></a>
 
 Kete is software that enables communities, whether the community is a town or a company, to collaboratively build their own digital libraries, archives and repositories.  Kete combines features from Knowledge and Content Management Systems as well as collaboration tools such as wikis, blogs, tags, and online forums to make it easy to add and relate content on a Kete site.
 
