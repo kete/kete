@@ -25,6 +25,10 @@ gem 'rmagick', "2.12.2"
 
 group :development, :test do
   gem "sqlite3", "~> 1.3.7"
+
+  gem 'webrat'
+  gem 'shoulda'
+  gem 'factory_girl', "1.2.4"
 #  gem "rspec-rails", "~> 2.13.0"
 #  # gem "shoulda", "~> 3.4.0"
 #  gem "capybara", "~> 2.0.2"

@@ -17,9 +17,7 @@ management_gems:
 testing_gems:
   webrat:
   shoulda:
-    lib_name: shoulda/rails
   factory_girl:
-    lib_name: factory_girl
 
 gems:
   nokogiri:
