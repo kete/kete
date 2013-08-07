@@ -28,6 +28,12 @@ public/videos/
 public/video/
 tmp/*
 webrat-*.html
-zebradb/conf/kete-zebra-servers.xml
 selenium-rc-server.pid
 selenium-web-server.pid
+
+# COnfig/setup Files in working Kete:
+zebradb/conf/kete-zebra-servers.xml
+config/kete-zebra-servers.xml
+config/zebra-private.cfg
+config/zebra-public.cfg
+public/javascripts/image_selector_config/providers.json
