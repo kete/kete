@@ -20,8 +20,8 @@ class BasketTest < ActiveSupport::TestCase
   include FriendlyUrlsTestUnitHelper
 
   # test our polymorphic association with our profiles
-  should_have_many :profile_mappings, :dependent => :destroy
-  should_have_many :profiles, :through => :profile_mappings
+  should have_many(:profile_mappings).dependent(:destroy)
+  should have_many(:profiles).through(:profile_mappings)
 
   context "The Basket class" do
     should "have valid an array of relevant forms with human readable labels" do

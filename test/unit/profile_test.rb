@@ -2,8 +2,8 @@ require 'test_helper'
 
 class ProfileTest < ActiveSupport::TestCase
   # quick and simple association testing
-  should_have_many :profile_mappings, :dependent => :destroy
-  should_have_many :baskets, :through => :profile_mappings
+  should have_many(:profile_mappings).dependent(:destroy)
+  should have_many(:baskets).through(:profile_mappings)
 
   # available_to_models is automatically set to 'Basket'
   # with a before_validation filter for the time being
@@ -11,8 +11,8 @@ class ProfileTest < ActiveSupport::TestCase
   # in the future, if profiles are used in other aspects of kete
   # we'll want to use the commented out test
   # in the meantime, we test that available_to_models is always 'Basket
-  # should_validate_presence_of :name, :available_to_models
-  should_validate_presence_of :name
+  # should validate_presence_of :name, :available_to_models
+  should validate_presence_of :name
 
   context "The Profile class" do
 
