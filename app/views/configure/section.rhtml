@@ -1,6 +1,6 @@
 <div id="<%= h(@section) -%>">
   <fieldset>
-    <% form_remote_tag :url => { :action => 'update', :section => @section } do %>
+    <%= form_tag({ :action => 'update', :section => @section }, :remote => true) do %>
     <% for @setting in @settings -%>
     <% if @setting.name != 'Is Configured' and (@advanced or !@setting.technically_advanced) -%>
     <%= error_messages_for :setting %>

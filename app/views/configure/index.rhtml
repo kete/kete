@@ -110,8 +110,7 @@
       <% end -%>
         <h3><%=t 'configure.index.finished_with_settings' %></h3>
         <p><%=t 'configure.index.click_finish' %></p>
-        <% form_remote_tag( :url => { :action => 'finish' },
-                            :href => url_for( :action => 'finish' ) ) do %>
+        <% form_tag( { :action => 'finish' }, :remote => true) do %>
         <div class="wrap"><%= submit_tag t('configure.index.finish_button') -%></div>
         <% end -%>
       </div>
@@ -138,11 +137,8 @@
                   <p><%=t 'configure.index.search_engine_primed' %></p>
                   <% else -%>
                   <p><%=t 'configure.index.search_engine_needs_bootstrapping' %></p>
-                  <% form_remote_tag( :url => { :action => 'prime_zebra' },
-                                      :before => "Element.hide('prime-button');Element.show('prime-spinner')",
-                                      :complete => "Element.hide('prime-spinner')",
-                                      :href => url_for( :action => 'prime_zebra' ) ) do %>
-                  <div id="prime-spinner"
+                  <%= form_tag({ :action => 'prime_zebra' }, :remote => true, :id => 'prime_zebra_form') do %>
+                 <div id="prime-spinner"
                   style="display:none; text-align:center"><img src="/images/indicator.gif"
                   width="16" height="16" alt="<%=t 'configure.index.completed' %>" /></div>
 
@@ -182,3 +178,17 @@
 <% end %>
 
 <%= render(:partial => "topics/content_wrapper_end" ) %>
+
+<%= javascript_tag do %>
+$(document).ready(function(){
+  $(document).on('ajax:before', '#prime_zebra_form', function(){ 
+    Element.hide('prime-button'); 
+    Element.show('prime-spinner')} 
+  );
+  $(document).on('ajax:complete', '#prime_zebra_form', function(){ 
+    Element.hide('prime-button'); 
+    Element.show('prime-spinner')} 
+  );
+});
+<% end -%>
+ 

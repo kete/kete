@@ -1,6 +1,6 @@
 <div id="zoom-dbs">
   <fieldset>
-    <% form_remote_tag :url => { :action => 'zoom_dbs_update' } do %>
+    <%= form_tag({ :action => 'zoom_dbs_update' }, :remote => true) do %>
     <h4><%=t 'configure.zoom_dbs_edit.security' %></h4>
     <% if @kete_password.blank? -%>
     <% # TODO: make the error message match -%>

@@ -9,9 +9,7 @@
       </p>
     </div>
 
-    <% form_remote_tag ( :url => { :action => 'send_information' },
-                         :before => "Element.hide('form_fields'); Element.show('spinner')",
-                         :href => url_for( :action => 'send_information' ) ) do -%>
+    <%= form_tag ({ :action => 'send_information' }, :remote => true, :id => 'send_information_form') do %>
       <div id="form_fields">
         <div id="linking_errors"></div>
         <p>
@@ -41,3 +39,13 @@
   </div>
 
 <% end -%>
+<%= javascript_tag do %>
+$(document).ready(function(){
+  $(document).on('ajax:before', '#send_information_form', function(){ 
+    Element.hide('form_fields'); 
+    Element.show('spinner')
+  );
+});
+<% end -%>
+ 
+
