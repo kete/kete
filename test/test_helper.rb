@@ -1,6 +1,6 @@
 ENV["RAILS_ENV"] = "test"
 require File.expand_path(File.dirname(__FILE__) + "/../config/environment")
-require 'test_help'
+require 'rails/test_help'
 
 # a registry of expected values
 require File.expand_path(File.dirname(__FILE__) + "/has_value")

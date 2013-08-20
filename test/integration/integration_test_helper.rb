@@ -5,7 +5,7 @@ SKIP_SYSTEM_CONFIGURATION = true
 # Standard test initialization code
 ENV["RAILS_ENV"] = "test"
 require File.expand_path(File.dirname(__FILE__) + "/../../config/environment")
-require 'test_help'
+require 'rails/test_help'
 
 # Require the <tt>common_test_methods</tt> file
 require File.expand_path(File.dirname(__FILE__) + "/../common_test_methods")
