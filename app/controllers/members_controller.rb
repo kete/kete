@@ -133,13 +133,13 @@ class MembersController < ApplicationController
       when 'open'
         current_user.has_role('member', @current_basket)
         @current_basket.administrators.each do |admin|
-          UserNotifier.deliver_join_notification_to(admin, current_user, @current_basket, 'joined')
+          UserNotifier.join_notification_to(admin, current_user, @current_basket, 'joined').deliver
         end
         flash[:notice] = t('members_controller.join.joined', :basket_name => @current_basket.name)
       when 'request'
         current_user.has_role('membership_requested', @current_basket)
         @current_basket.administrators.each do |admin|
-          UserNotifier.deliver_join_notification_to(admin, current_user, @current_basket, 'request')
+          UserNotifier.join_notification_to(admin, current_user, @current_basket, 'request').deliver
         end
         flash[:notice] = t('members_controller.join.requested')
       else
@@ -307,7 +307,7 @@ class MembersController < ApplicationController
       flash[:notice] = t('members_controller.change_request_status.rejected', :user_name => @user.user_name)
     end
 
-    UserNotifier.deliver_join_notification_to(@user, current_user, @current_basket, params[:status])
+    UserNotifier.join_notification_to(@user, current_user, @current_basket, params[:status]).deliver
     redirect_to :action => 'list'
   end
 

@@ -1114,9 +1114,9 @@ class ApplicationController < ActionController::Base
       next if user == current_user
       case type
       when :created
-        UserNotifier.send("deliver_private_#{email_type}_created", user, item, path_to_show_for(item, url_options))
+        UserNotifier.send("private_#{email_type}_created", user, item, path_to_show_for(item, url_options)).deliver
       when :edited
-        UserNotifier.send("deliver_private_#{email_type}_edited", user, item, path_to_show_for(item, url_options))
+        UserNotifier.send("private_#{email_type}_edited", user, item, path_to_show_for(item, url_options)).deliver
       end
     end
   end

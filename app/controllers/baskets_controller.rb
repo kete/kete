@@ -111,14 +111,14 @@ class BasketsController < ApplicationController
       # if an site admin makes a basket, make sure emailing notifications are skipped
       if basket_policy_request_with_permissions?
         @site_basket.administrators.each do |administrator|
-          UserNotifier.deliver_basket_notification_to(administrator, current_user, @basket, 'request')
+          UserNotifier.basket_notification_to(administrator, current_user, @basket, 'request').deliver
         end
         flash[:notice] = t('baskets_controller.create.to_be_reviewed')
         redirect_to "/#{@site_basket.urlified_name}"
       else
         if !@site_admin
           @site_basket.administrators.each do |administrator|
-            UserNotifier.deliver_basket_notification_to(administrator, current_user, @basket, 'created')
+            UserNotifier.basket_notification_to(administrator, current_user, @basket, 'created').deliver
           end
         end
         flash[:notice] = t('baskets_controller.create.created')
@@ -217,10 +217,10 @@ class BasketsController < ApplicationController
       # We send the emails right before a redirect so
       # it doesn't break anything if the emailing fails
       unless params[:accept_basket].blank?
-        UserNotifier.deliver_basket_notification_to(@basket.creator, current_user, @basket, 'approved')
+        UserNotifier.basket_notification_to(@basket.creator, current_user, @basket, 'approved').deliver
       end
       unless params[:reject_basket].blank?
-        UserNotifier.deliver_basket_notification_to(@basket.creator, current_user, @basket, 'rejected')
+        UserNotifier.basket_notification_to(@basket.creator, current_user, @basket, 'rejected').deliver
       end
 
       # Add this last because it takes the longest time to process
