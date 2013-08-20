@@ -13,7 +13,7 @@ class Topic < ActiveRecord::Base
   # , :counter_cache => true
   belongs_to :basket
 
-  named_scope :in_basket, lambda { |basket| { :conditions => { :basket_id => basket } } }
+  scope :in_basket, lambda { |basket| { :conditions => { :basket_id => basket } } }
 
   # a topic may be the designated index page for it's basket
   belongs_to :index_for_basket, :class_name => 'Basket', :foreign_key => 'index_for_basket_id'
@@ -152,11 +152,11 @@ class Topic < ActiveRecord::Base
 
   # Kieran Pilkington - 2008/10/21
   # Named scopes used in the index page controller for recent topics
-  named_scope :recent, lambda { |*args|
+  scope :recent, lambda { |*args|
     args = (args.first || {})
     { :order => 'created_at desc', :limit => 5 }.merge(args)
   }
-  named_scope :public, :conditions => ['title != ?', Kete.no_public_version_title]
+  scope :public, -> { where('title != ?', Kete.no_public_version_title) }
 
   after_save :update_taggings_basket_id
 

@@ -92,7 +92,7 @@ class Basket < ActiveRecord::Base
   # whether Site basket should keep its privacy browsing controls on
   # putting in the wrapper respond_to? logic so that upgrades of older Kete sites works
   if Basket.columns.any? { |c| c.name == 'show_privacy_controls' }
-    named_scope :should_show_privacy_controls, :conditions => { :show_privacy_controls => true }
+    scope :should_show_privacy_controls, -> { where(:show_privacy_controls => true) }
     cattr_accessor :privacy_exists
     @@privacy_exists = all_baskets.any? { |basket| basket.show_privacy_controls? }
     after_save :any_privacy_enabled_baskets?

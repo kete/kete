@@ -16,7 +16,7 @@ class RedirectRegistration < ActiveRecord::Base
   # match takes a request
   # and returns last (latest) redirect_registration that has a matching source_url_pattern
   # most complete match takes precedence
-  named_scope :match, lambda { |request| 
+  scope :match, lambda { |request| 
     url = request.url.downcase
     # take out locale
     I18n.available_locales.each do |locale|
