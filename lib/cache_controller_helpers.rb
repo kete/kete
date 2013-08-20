@@ -83,7 +83,7 @@ module CacheControllerHelpers
 
     def expire_fragment_for_all_versions(item, name = {})
       name = name.merge(:id => item.id)
-      file_path = "#{RAILS_ROOT}/tmp/cache/#{fragment_cache_key(name).gsub(/(\?|:)/, '.')}.cache"
+      file_path = "#{Rails.root}/tmp/cache/#{fragment_cache_key(name).gsub(/(\?|:)/, '.')}.cache"
       File.delete(file_path) if File.exists?(file_path)
 
       # Kieran Pilkington, 2008-12-15
@@ -323,7 +323,7 @@ module CacheControllerHelpers
     def has_fragment?(name = {})
       # strip out everything after id (title in friendly url)
       name[:id] = name[:id].to_i unless name[:id].blank?
-      File.exist?("#{RAILS_ROOT}/tmp/cache/#{fragment_cache_key(name).gsub(/(\?|:)/, '.')}.cache")
+      File.exist?("#{Rails.root}/tmp/cache/#{fragment_cache_key(name).gsub(/(\?|:)/, '.')}.cache")
     end
 
     # rss fragment caching

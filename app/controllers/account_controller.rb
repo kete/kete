@@ -416,7 +416,7 @@ class AccountController < ApplicationController
     expire_contributions_caches_for(current_user, :dont_rebuild_zoom => true)
     respond_to do |format|
       format.html { redirect_to_image_or_profile }
-      format.js { render :file => File.join(RAILS_ROOT, 'app/views/account/portrait_controls.js.rjs') }
+      format.js { render :file => File.join(Rails.root, 'app/views/account/portrait_controls.js.rjs') }
     end
   end
 
@@ -443,7 +443,7 @@ class AccountController < ApplicationController
     expire_contributions_caches_for(current_user, :dont_rebuild_zoom => true)
     respond_to do |format|
       format.html { redirect_to_image_or_profile }
-      format.js { render :file => File.join(RAILS_ROOT, 'app/views/account/portrait_controls.js.rjs') }
+      format.js { render :file => File.join(Rails.root, 'app/views/account/portrait_controls.js.rjs') }
     end
   end
 
@@ -459,7 +459,7 @@ class AccountController < ApplicationController
     expire_contributions_caches_for(current_user, :dont_rebuild_zoom => true)
     respond_to do |format|
       format.html { redirect_to_image_or_profile }
-      format.js { render :file => File.join(RAILS_ROOT, 'app/views/account/portrait_controls.js.rjs') }
+      format.js { render :file => File.join(Rails.root, 'app/views/account/portrait_controls.js.rjs') }
     end
   end
 

@@ -50,7 +50,7 @@ namespace :db do
       # this is inflexible, but good enough for first cut and solve our current problems
       if ENV['RAILS_ENV'] == 'test'
         # get the list of fixtures found under test/fixtures
-        test_fixtures = Dir.glob("#{RAILS_ROOT}/test/fixture*.yml")
+        test_fixtures = Dir.glob("#{RAILS.root}/test/fixture*.yml")
         # drop those that are already in bootstrap_fixtures
         test_fixtures = test_fixtures - bootstrap_fixtures
         # load remaining fixtures

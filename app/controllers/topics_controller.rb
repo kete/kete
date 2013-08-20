@@ -24,7 +24,7 @@ class TopicsController < ApplicationController
     @topic = Topic.new
     respond_to do |format|
       format.html
-      format.js { render :file => File.join(RAILS_ROOT, 'app/views/topics/pick_form.js.rjs') }
+      format.js { render :file => File.join(Rails.root, 'app/views/topics/pick_form.js.rjs') }
     end
   end
 

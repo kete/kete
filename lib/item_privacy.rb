@@ -312,14 +312,14 @@ module ItemPrivacy
     # in the correct folder.
     def full_filename(thumbnail = nil)
       file_system_path = (thumbnail ? thumbnail_class : self).attachment_options[:path_prefix].to_s.gsub("public", "")
-      File.join(RAILS_ROOT, attachment_path_prefix, file_system_path, *partitioned_path(thumbnail_name_for(thumbnail)))
+      File.join(Rails.root, attachment_path_prefix, file_system_path, *partitioned_path(thumbnail_name_for(thumbnail)))
     end
 
     # Make sure that the correct base path is stripped off in
     # AttachmentFu::Backends::FileSystemBackend.public_filename
     # Overridden from AttachmentFu
     def base_path
-      @base_path ||= File.join(RAILS_ROOT, attachment_path_prefix)
+      @base_path ||= File.join(Rails.root, attachment_path_prefix)
     end
 
     private

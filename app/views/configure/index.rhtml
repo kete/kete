@@ -170,7 +170,7 @@
     <% if APPLICATION_SERVER == 'passenger' %>
       <%= button_to t('configure.index.restart_server'), {:action => 'restart_server'} %>
     <% end %>
-    <% if RAILS_ENV == 'production' %>
+    <% if Rails.env == 'production' %>
       <%= button_to t('configure.index.clear_cache'), {:action => 'clear_cache'},
                     { :confirm => 'Are you sure? This can affect the performance of the site.'} %>
     <% end %>

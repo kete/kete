@@ -304,7 +304,7 @@ class ConfigureController < ApplicationController
   # controls once the site is configured
 
   def restart_server
-    ENV['RAILS_ENV'] = RAILS_ENV
+    ENV['RAILS_ENV'] = Rails.env
     rake_result = Rake::Task["kete:tools:restart"].execute(ENV)
     if rake_result
       flash[:notice] = t('configure_controller.restart_server.server_restarted')
@@ -315,7 +315,7 @@ class ConfigureController < ApplicationController
   end
 
   def clear_cache
-    ENV['RAILS_ENV'] = RAILS_ENV
+    ENV['RAILS_ENV'] = Rails.env
     rake_result = Rake::Task["tmp:cache:clear"].execute(ENV)
     if rake_result
       flash[:notice] = t('configure_controller.clear_cache.cache_cleared')

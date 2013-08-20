@@ -26,7 +26,7 @@ class TagsController < ApplicationController
 
     respond_to do |format|
       format.html
-      format.js { render :file => File.join(RAILS_ROOT, 'app/views/tags/tags_list.js.rjs') }
+      format.js { render :file => File.join(Rails.root, 'app/views/tags/tags_list.js.rjs') }
     end
   end
 

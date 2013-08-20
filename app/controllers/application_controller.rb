@@ -1197,7 +1197,7 @@ class ApplicationController < ActionController::Base
     when ActionController::InvalidAuthenticityToken then
       respond_to do |format|
         format.html { rescue_500('invalid_authenticity_token') }
-        format.js { render :file => File.join(RAILS_ROOT, 'app/views/errors/invalid_authenticity_token.js.rjs') }
+        format.js { render :file => File.join(Rails.root, 'app/views/errors/invalid_authenticity_token.js.rjs') }
       end
     else
       if exception.to_s.match(/Connect\ failed/)
@@ -1205,7 +1205,7 @@ class ApplicationController < ActionController::Base
       else
         respond_to do |format|
           format.html { rescue_500('error500') }
-          format.js { render :file => File.join(RAILS_ROOT, 'app/views/errors/error500.js.rjs') }
+          format.js { render :file => File.join(Rails.root, 'app/views/errors/error500.js.rjs') }
         end
       end
     end
