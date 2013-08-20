@@ -7,7 +7,7 @@ classes << 'language_choices_display'
     <% if LANGUAGE_CHOICES_DISPLAY_TYPE == 'links' %>
       <div><%= locale_links :default => I18n.locale %></div>
     <% else %>
-      <% form_tag({:controller => 'account', :action => 'change_locale'}, {:method => :get}) do %>
+      <%= form_tag({:controller => 'account', :action => 'change_locale'}, {:method => :get}) do %>
         <div>
           <noscript><label><%=t 'account.locale_selection.language' %></label></noscript>
           <%= locale_dropdown(nil, { :default => I18n.locale, :pre_text => t('account.locale_selection.choose_locale') }) -%>

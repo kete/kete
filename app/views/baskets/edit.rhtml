@@ -10,7 +10,7 @@
   <%= show_all_fields_link %>
 </h2>
 
-<% form_for :basket, :url => {:action => 'update', :id => @basket, :show_all_fields => params[:show_all_fields] } do |form| %>
+<%= form_for :basket, :url => {:action => 'update', :id => @basket, :show_all_fields => params[:show_all_fields] } do |form| %>
   <%= render :partial => 'form', :object => form %>
   <% if @basket.status == 'requested' -%>
     <div class="wrap">

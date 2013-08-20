@@ -1,7 +1,7 @@
 <div class="active-scaffold-header">
   <h2><%= t('licenses.install.title') %></h2>
 
-  <% form_tag :action => 'install_license' do %>
+  <%= form_tag :action => 'install_license' do %>
 
     <%= select_tag 'task', options_for_select([[t('licenses.install.choose_license'), '']] +
                                               @available_licenses.collect { |v| [v.humanize, v] }) %>

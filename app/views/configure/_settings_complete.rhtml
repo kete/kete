@@ -3,7 +3,7 @@
   <p><%=t 'configure.settings_complete.restart' %></p>
 <% else -%>
   <p><%=t 'configure.settings_complete.next' %></p>
-  <% form_tag({ :action => 'done_with_settings' }, :remote => true) do %>
+  <%= form_tag({ :action => 'done_with_settings' }, :remote => true) do %>
     <%= submit_tag t('configure.settings_complete.next_buton') -%>
   <% end -%>
 <% end -%>

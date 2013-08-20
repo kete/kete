@@ -20,7 +20,7 @@
 
 <h2><%= h(@title) -%></h2>
 
-<% form_tag :action => @form_target do %>
+<%= form_tag :action => @form_target do %>
         <fieldset>
                 <%= hidden_field_tag "flag", @flag %>
                 <%= hidden_field_tag "id", params[:id] %>

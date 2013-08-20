@@ -12,7 +12,7 @@
       [<a href="#" title="<%=t 'topics.tags.click_to_add' %>" onclick="Element.show('add_tag_form_div');Element.hide('add_tag_button');$('<%= item_key -%>_tag_list').activate();">+</a>]
     </div>
     <div id="add_tag_form_div">
-      <% form_remote_tag( :url => { :action => 'add_tags', :id => params[:id], :private => params[:private] },
+      <%= form_remote_tag( :url => { :action => 'add_tags', :id => params[:id], :private => params[:private] },
                           :before => "Element.show('data_spinner')",
                           :complete => "Element.hide('data_spinner')",
                           :html => { :id => 'add_tag_form' } ) do -%>

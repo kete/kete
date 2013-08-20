@@ -201,7 +201,7 @@
             </h1>
             <%= render 'account/locale_selection', :classes => ['header'] if LANGUAGE_CHOICES_POSITION == 'header' %>
             <div id="head-search-wrapper">
-              <% form_tag ({ :urlified_name => @site_basket.urlified_name,
+              <%= form_tag ({ :urlified_name => @site_basket.urlified_name,
                              :controller => 'search',
                              :action => 'terms_to_page_url_redirect' }) do %>
                 <div class="search_fields">

@@ -2,7 +2,7 @@
 
 <h2><%= h(@title) -%></h2>
 
-<% form_for :user do |f| -%>
+<%= form_for :user do |f| -%>
 <fieldset>
 
 <%= error_messages_for :user %>
@@ -35,7 +35,7 @@
   <div class="form_example"><%=t 'account.signup.user_name_example' %></div>
 </div>
 
-<% form_fields = @content_type.content_type_to_field_mappings -%>
+<%= form_fields = @content_type.content_type_to_field_mappings -%>
 <% if form_fields.size > 0 -%>
                 <%= render(:partial => 'extended_fields/extended_field_mapping',
                            :collection => form_fields,

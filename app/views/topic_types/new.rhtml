@@ -2,7 +2,7 @@
 
 <h2><%= h(@title) -%></h2>
 
-<% form_tag :action => 'create' do %>
+<%= form_tag :action => 'create' do %>
   <%= render :partial => 'form' %>
   <div class="wrap"><%= submit_tag t('topic_types.new.create_button') %></div>
 <% end %>

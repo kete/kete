@@ -110,7 +110,7 @@
       <% end -%>
         <h3><%=t 'configure.index.finished_with_settings' %></h3>
         <p><%=t 'configure.index.click_finish' %></p>
-        <% form_tag( { :action => 'finish' }, :remote => true) do %>
+        <%= form_tag( { :action => 'finish' }, :remote => true) do %>
         <div class="wrap"><%= submit_tag t('configure.index.finish_button') -%></div>
         <% end -%>
       </div>

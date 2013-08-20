@@ -1,6 +1,6 @@
 <div id="refine_search_dropdown_container">
 
-  <% form_tag(:overwrite_params => overwritten_search_params) do %>
+  <%= form_tag(:overwrite_params => overwritten_search_params) do %>
     <%= render 'search/mini_controls', :id => 'refine_search_dropdown', :type => 'refine' %>
   <% end %>
 

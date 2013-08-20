@@ -22,7 +22,7 @@
   <noscript>
     <%= render "topics/content_wrapper_start", :style_classes => "full-width notabs" %>
 
-    <% form_tag(:overwrite_params => overwritten_search_params) do %>
+    <%= form_tag(:overwrite_params => overwritten_search_params) do %>
 
       <div id="search-options-wrapper">
         <h4><%=t 'search.form.options' %></h4>

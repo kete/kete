@@ -12,7 +12,7 @@
 
 <% if any_fields_editable? %>
 
-  <% form_tag :action => 'update_appearance', :id => @basket, :show_all_fields => params[:show_all_fields] do %>
+  <%= form_tag :action => 'update_appearance', :id => @basket, :show_all_fields => params[:show_all_fields] do %>
   
     <fieldset>
 

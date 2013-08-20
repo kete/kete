@@ -1,7 +1,7 @@
 <% unless params[:topic] && params[:topic][:topic_type_id] -%>
   <% @title = t('topics.new.what_is_topic_about') -%>
   <h2><%= @title -%></h2>
-  <% form_tag do -%>
+  <%= form_tag do -%>
     <fieldset>
       <%= render :partial => 'pick_form' -%>
     </fieldset>

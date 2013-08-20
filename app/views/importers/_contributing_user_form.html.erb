@@ -3,7 +3,7 @@
 contributing_user = params[:contributing_user].present? ? User.find(params[:contributing_user]) : current_user
 %>
 
-<% form_tag(:action => 'choose_contributing_user', :target => params[:action]) do %>
+<%= form_tag(:action => 'choose_contributing_user', :target => params[:action]) do %>
   <fieldset style="margin-bottom: 10px;">
 
     <h4><%=t 'importers.contributing_user_form.title' %></h4>

@@ -23,7 +23,7 @@
     <% end -%>
   </ul>
 
-  <% form_for :basket, :url => {:action => 'update', :id => @basket, :show_all_fields => params[:show_all_fields] } do |form| %>
+  <%= form_for :basket, :url => {:action => 'update', :id => @basket, :show_all_fields => params[:show_all_fields] } do |form| %>
     <%= render :partial => 'homepage_form', :object => form %>
     <div style="margin:0;padding:0">
       <%= submit_tag t('baskets.homepage_options.button'), {:class => "save-button", :tabindex => '1'} %>

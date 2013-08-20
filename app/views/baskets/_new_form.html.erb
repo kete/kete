@@ -6,7 +6,7 @@
   <%= show_all_fields_link %>
 </h2>
 
-<% form_for :basket, :url => {:action => 'create', :show_all_fields => params[:show_all_fields] } do |form| %>
+<%= form_for :basket, :url => {:action => 'create', :show_all_fields => params[:show_all_fields] } do |form| %>
   <%= render :partial => 'form', :object => form %>
   <% if basket_policy_request_with_permissions? -%>
     <div class="wrap"><%= submit_tag t('baskets.new_form.request'), {:class => "save-button", :tabindex => '1'} %></div>
