@@ -33,8 +33,7 @@ class ImportersController < ApplicationController
   end
 
   def choose_contributing_user
-    @potential_contributing_users = User.all(:joins => "join roles_users on users.id = roles_users.user_id",
-                                             :conditions => ["roles_users.role_id in (?)", @current_basket.accepted_roles])
+    @potential_contributing_users = User.joins(:roles_user).where("roles_users.role_id in (?)", @current_basket.accepted_roles)
     @user_options = @potential_contributing_users.map { |u| [u.user_name, u.id] }
   end
 

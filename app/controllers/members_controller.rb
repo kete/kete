@@ -78,17 +78,19 @@ class MembersController < ApplicationController
     # members are paginated
     # since we are paginating we need to break a part
     # what the @current_basket.has_members method would do
-    @role = Role.find_by_name_and_authorizable_type_and_authorizable_id(role_name, 'Basket', @current_basket)
+    @role = Role.where(:name => role_name, :authorizable_type => 'Basket', :authorizable_id => @current_basket)
     if @role.nil?
       # no members
       @members = User.paginate_by_id(0, :page => 1)
     else
       not_anonymous_condition = "login != 'anonymous'"
       if params[:action] == 'rss'
-        options = { :order => 'roles_users.created_at desc', :limit => 50 }
-        options[:conditions] = not_anonymous_condition unless site_admin?
-
-        @members = @role.users.find(:all, options)
+        unless site_admin?
+          @members = @role.users.where(not_anonymous_condition).order('roles_users.created_at desc').limit(50)
+        else
+          @members = @role.users.order('roles_users.created_at desc').limit(50)
+        end
+          
       else
         options = { :include => :contributions, :order => order, :page => params[:page], :per_page => 20 }
         options[:conditions] = not_anonymous_condition unless site_admin?
@@ -106,22 +108,19 @@ class MembersController < ApplicationController
   private :list_members_in
 
   def potential_new_members
-    @existing_users = User.find(:all,
-                                :joins => "join roles_users on users.id = roles_users.user_id",
-                                :conditions => ["roles_users.role_id in (?)", @current_basket.accepted_roles])
+    @existing_users = User.joins(:roles_users).where("roles_users.role_id in (?)", @current_basket.accepted_roles)
 
     # don't allow, at least for now, anonymous users to be added to other baskets
     # besides site
     # may change in the future if there is a use case
-    @users_to_exclude = User.find_all_by_login('anonymous')
+    @users_to_exclude = User.where(:login => 'anonymous')
     @existing_users = @existing_users + @users_to_exclude
 
     @potential_new_members = Array.new
     unless params[:search_name].blank?
-      @potential_new_members = User.find(:all,
-                                       :conditions => ["id not in (:existing_users) and login like :searchtext or display_name like :searchtext",
-                                                       { :existing_users => @existing_users,
-                                                         :searchtext => '%' + params[:search_name] + '%' }])
+      @potential_new_members = User.where(
+          "id not in (?) and login like ? or display_name like ?",
+          @existing_users, '%'+params[:search_name]+'%', '%'+params[:search_name]+'%' )
     end
   end
 

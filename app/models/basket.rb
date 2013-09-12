@@ -2,6 +2,7 @@
 # using term basket here to spell out concept for developers
 # and to avoid confusion with the kete app
 class Basket < ActiveRecord::Base
+  scope :except_certain_baskets, lambda {|baskets| where("id not in (?) AND status = 'approved'", baskets)}
 
   # we use these for who can see what
   def self.member_level_options
@@ -92,7 +93,7 @@ class Basket < ActiveRecord::Base
   # whether Site basket should keep its privacy browsing controls on
   # putting in the wrapper respond_to? logic so that upgrades of older Kete sites works
   if Basket.columns.any? { |c| c.name == 'show_privacy_controls' }
-    scope :should_show_privacy_controls, -> { where(:show_privacy_controls => true) }
+    scope :should_show_privacy_controls, lambda { where(:show_privacy_controls => true) }
     cattr_accessor :privacy_exists
     @@privacy_exists = all_baskets.any? { |basket| basket.show_privacy_controls? }
     after_save :any_privacy_enabled_baskets?
@@ -193,20 +194,17 @@ class Basket < ActiveRecord::Base
       find_tag_order = :random
     end
 
-    tag_options = {
-      :select => 'tags.id, tags.name, count(taggings.id) AS taggings_count',
-      :joins => 'INNER JOIN taggings ON (tags.id = taggings.tag_id)',
-      :group => 'taggings.tag_id',
-      :order => find_tag_order,
-      :limit => tag_limit,
-      :offset => (((options[:page] || 1) - 1) * tag_limit),
-      :conditions => "taggings.context = 'public_tags'"
-    }
-    tag_options[:conditions] = "taggings.context IN ('public_tags', 'private_tags')" if private_tags
-    tag_options[:conditions] += " AND taggings.basket_id = #{self.id}" unless self == @@site_basket
 
+    tags = Tag.select('tags.id, tags.name, count(taggings.id) AS taggings_count').
+      joins( 'INNER JOIN taggings ON (tags.id = taggings.tag_id)').
+      group( 'taggings.tag_id').
+      order( find_tag_order).
+      limit( tag_limit).
+      offset( (((options[:page] || 1) - 1) * tag_limit) ).
+      where( tag_publicity_conditions(private_tags) ).all
+    
     @tag_counts_array = Array.new
-    Tag.all(tag_options).each do |tag|
+    tags.each do |tag|
       @tag_counts_array << {
         :id => tag.id,
         :name => tag.name,
@@ -218,18 +216,20 @@ class Basket < ActiveRecord::Base
     return @tag_counts_array
   end
 
+  def tag_publicity_conditions(private_tags = false)
+    conditions = "taggings.context = 'public_tags'"
+    conditions = "taggings.context IN ('public_tags', 'private_tags')" if private_tags
+    conditions += " AND taggings.basket_id = #{self.id}" unless self == @@site_basket
+    conditions
+  end
+
   def tag_counts_total(options)
     private_tags = options[:allow_private] || false
 
-    tag_options = {
-      :select => 'distinct taggings.tag_id',
-      :joins => 'INNER JOIN taggings ON (tags.id = taggings.tag_id)',
-      :conditions => "taggings.context = 'public_tags'"
-    }
-    tag_options[:conditions] = "taggings.context IN ('public_tags', 'private_tags')" if private_tags
-    tag_options[:conditions] += " AND taggings.basket_id = #{self.id}" unless self == @@site_basket
-
-    Tag.count(tag_options)
+    Tag.select( 'distinct taggings.tag_id').
+      joins('INNER JOIN taggings ON (tags.id = taggings.tag_id)').
+      where(tag_publicity_conditions(private_tags)).
+      count(tag_options)
   end
 
   # attribute options methods
@@ -638,7 +638,7 @@ class Basket < ActiveRecord::Base
   before_update :register_redirect_if_necessary
 
   def register_redirect_if_necessary
-    old_urlified_name = self.class.find(:first, :select => "urlified_name", :conditions => { :id => id }).urlified_name
+    old_urlified_name = self.class.select("urlified_name").where(:id => id).first.urlified_name
     if old_urlified_name != urlified_name
       RedirectRegistration.create!(:source_url_pattern => "/#{old_urlified_name}/", :target_url_pattern => "/#{urlified_name}/")
     end

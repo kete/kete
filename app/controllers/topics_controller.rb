@@ -129,7 +129,7 @@ class TopicsController < ApplicationController
       )
 
       # add a contributor to the previous topic update
-      version = @topic.versions.find(:first, :order => 'version DESC').version
+      version = @topic.versions.where(:order => 'version DESC').first.version
       @topic.add_as_contributor(current_user, version)
 
       # reload, get the correct privacy and return the user to the topic form

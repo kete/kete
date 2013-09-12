@@ -207,7 +207,7 @@ class ApplicationController < ActionController::Base
       when @documentation_basket.urlified_name
         @current_basket = @documentation_basket
       else
-        @current_basket = Basket.find_by_urlified_name(params[:urlified_name])
+        @current_basket = Basket.where(urlified_name: params[:urlified_name])
       end
     end
 
@@ -381,7 +381,7 @@ class ApplicationController < ActionController::Base
   def load_array_of_baskets
     zoom_class = zoom_class_from_controller(params[:controller])
     if ZOOM_CLASSES.include?(zoom_class) and zoom_class != 'Comment'
-      @baskets = Basket.find(:all, :order => 'name').map { |basket| [ basket.name, basket.id ] }
+      @baskets = Basket.where(:order => 'name').map { |basket| [ basket.name, basket.id ] }
     end
   end
 
@@ -761,7 +761,7 @@ class ApplicationController < ActionController::Base
       # James - 2008-12-21
       # Ensure the contribution is added against the latest version, not the current verrsion as it could
       # have been reverted automatically if full moderation is on for the basket.
-      version = item.versions.find(:first, :order => 'version DESC').version
+        version = item.versions.order('version DESC').first.version
 
       # add this to the user's empire of contributions
       # TODO: allow current_user whom is at least moderator to pick another user

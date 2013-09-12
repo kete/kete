@@ -7,7 +7,7 @@ class ExtendedField < ActiveRecord::Base
 
   # find an extended field based on params[:extended_field]
   def self.from_id_or_label(id_or_label)
-    self.first(:conditions => ['UPPER(label) = ?', id_or_label.upcase.gsub('_', ' ')]) || self.find_by_id(id_or_label)
+    where('UPPER(label) = ?', id_or_label.upcase.gsub('_', ' ')).first || self.find_by_id(id_or_label)
   end
 
   # James - 2008-12-05
@@ -107,11 +107,9 @@ class ExtendedField < ActiveRecord::Base
     if type_of == 'TopicType'
       # exclude ancestor's fields as well
       topic_types_to_exclude = type.ancestors + [type]
-      find(:all, :readonly => false,
-           :conditions => ["id not in (select extended_field_id from topic_type_to_field_mappings where topic_type_id in (?))", topic_types_to_exclude])
+      where("id not in (select extended_field_id from topic_type_to_field_mappings where topic_type_id in (?))", topic_types_to_exclude).readonly(false).all
     elsif type_of == 'ContentType'
-      find(:all, :readonly => false,
-           :conditions => ["id not in (select extended_field_id from content_type_to_field_mappings where content_type_id = ?)", type])
+      where("id not in (select extended_field_id from content_type_to_field_mappings where content_type_id = ?)", type).readonly(false).all
     else
       # TODO: this is an error, say something meaningful
     end
@@ -155,8 +153,7 @@ class ExtendedField < ActiveRecord::Base
   end
 
   def self.params_to_label(params_key)
-    find(:first,
-         :conditions => ExtendedField.clauses_for_has_label_that_matches(params_key)).label
+    where(self.clauses_for_has_label_that_matches(params_key) ).first.label
   end
 
   def is_a_choice?

@@ -122,10 +122,9 @@ class ExtendedFieldsController < ApplicationController
     search_term = search_term.split(' (').first if search_term =~ /.+ \(.+\)/
     logger.debug("What is search term: #{search_term}")
 
-    topic_type_ids = TopicType.find_by_id(parent_topic_type).full_set.collect { |a| a.id } rescue []
+    topic_type_ids = TopicType.where(:id => parent_topic_type).full_set.collect { |a| a.id } rescue []
 
-    topics = Topic.find(:all, :conditions => ["title LIKE ? AND topic_type_id IN (?)", "%#{search_term}%", topic_type_ids],
-                        :order => "title ASC", :limit => 10)
+    topics = Topic.where("title LIKE ? AND topic_type_id IN (?)", "%#{search_term}%", topic_type_ids).order("title ASC").limit(10)
     logger.debug("Topics are: #{topics.inspect}")
 
     topics = topics.map { |entry|
@@ -150,7 +149,7 @@ class ExtendedFieldsController < ApplicationController
     js = no_value_js
     unless value.blank?
       js = invalid_value_js
-      topic = Topic.find_by_id(value.split('/').last.to_i, :select => 'topic_type_id')
+      topic = Topic.where(:id => value.split('/').last.to_i).select('topic_type_id')
       if topic
         valid_topic_type_ids = parent_topic_type.full_set.collect { |topic_type| topic_type.id }
         js = valid_value_js if valid_topic_type_ids.include?(topic.topic_type_id)

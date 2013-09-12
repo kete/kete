@@ -19,11 +19,7 @@ class ConfigureController < ApplicationController
     @advanced = params[:advanced] || false
     @sections = SETUP_SECTIONS.collect { |s| s }
     if @advanced
-      SystemSetting.find(:all,
-                         :select => 'distinct section',
-                         :conditions => ["technically_advanced = :technically_advanced and section not in (:sections)",
-                                         { :technically_advanced => true,
-                                           :sections => @sections }]).each { |advanced_section| @sections << advanced_section.section }
+      SystemSetting.select(:section).distinct.where("technically_advanced = ? and section not in (?)", true, @sections).each { |advanced_section| @sections << advanced_section.section }
     end
     @admin_password_changed = User.find(1).crypted_password != '00742970dc9e6319f8019fd54864d3ea740f04b1' ? true : false
 
@@ -41,7 +37,7 @@ class ConfigureController < ApplicationController
   def section
     @section = params[:section]
     @advanced = params[:advanced]
-    @settings = SystemSetting.find_all_by_section(@section)
+    @settings = SystemSetting.where(:section => @section)
     if request.xhr?
       flash[:notice] = nil
       render :layout => false
@@ -53,7 +49,7 @@ class ConfigureController < ApplicationController
   def update
     @section = params[:section]
 
-    @settings = SystemSetting.find_all_by_section(@section).each {  |s| s.value = params[:setting][s.id.to_s][:value] }
+    @settings = SystemSetting.where(:section => @section).each {  |s| s.value = params[:setting][s.id.to_s][:value] }
 
     # run validations
     @settings.each(&:valid?)
@@ -103,7 +99,7 @@ class ConfigureController < ApplicationController
   end
 
   def zoom_dbs_edit
-    @zoom_dbs = ZoomDb.find(:all)
+    @zoom_dbs = ZoomDb.all()
     @kete_password = @zoom_dbs.first.zoom_password
     if request.xhr?
       render :layout => false
@@ -119,7 +115,7 @@ class ConfigureController < ApplicationController
     # so killing that pid is usually not enough
 
     @kete_password = params[:kete_password]
-    @zoom_dbs = ZoomDb.find(:all).each do |zoom_db|
+    @zoom_dbs = ZoomDb.all().each do |zoom_db|
       zoom_db.zoom_password = @kete_password
       zoom_db.port = params[:zoom_db][zoom_db.id.to_s][:port]
     end

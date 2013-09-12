@@ -79,29 +79,36 @@ class IndexPageController < ApplicationController
             # get an array of baskets that we need to exclude from the site recent topics list
             disabled_recent_topics_baskets = Array.new
             if @current_basket == @site_basket
-              disabled_recent_topics_baskets = ConfigurableSetting.find_all_by_name_and_value('disable_site_recent_topics_display', true.to_yaml, :select => :configurable_id, :conditions => ["configurable_id != ?", @site_basket])
+              disabled_recent_topics_baskets = ConfigurableSetting.where(:name => 'disable_site_recent_topics_display', :value => true.to_yaml).select(:configurable_id).where("configurable_id != ?", @site_basket)
               disabled_recent_topics_baskets.collect! { |setting| setting.configurable_id }
             end
             # If we have a blank array, reset it to nil so later on, it'll default to 0 (instead of causing the SQL to return nothing)
             disabled_recent_topics_baskets = nil unless disabled_recent_topics_baskets.size > 0
 
-            # form our find arguments
-            args = { :offset => 0, :limit => @recent_topics_limit, :include => :versions }
-            args[:conditions] = ["basket_id NOT IN (?) AND id != ?", (disabled_recent_topics_baskets || 0), (@topic || 0)]
 
             @recent_topics_items = Array.new
             @total_items = Topic.count
+            items_offset = 0
+
+            disabled_recent_topics_baskets ||= 0
+            @topic ||= 0
 
             # We need to loop over all topics until we have a complete array. If for example the
             # first 5 topics have all versions disputed, then we end up with nothing being displayed
             # on the homepage. By using a while, we can resolve this issue
-            while @recent_topics_items.size < @recent_topics_limit && args[:offset] <= @total_items
+            while @recent_topics_items.size < @recent_topics_limit && items_offset <= @total_items
               # Make the find query based on current basket and privacy level
               if @current_basket == @site_basket
-                recent_topics_items = @allow_private ? Topic.recent(args) : Topic.recent(args).public
+                recent_topics_items = Topic.recent.include(:versions).
+                                      offset(items_offset).limit(@recent_topics_limit).
+                                      exclude_baskets_and_id(disabled_recent_topics_baskets, @topic)
               else
-                recent_topics_items = @allow_private ? @current_basket.topics.recent(args) : @current_basket.topics.recent(args).public
+                recent_topics_items = @current_basket.topics.recent.include(:versions).
+                                      offset(items_offset).limit(@recent_topics_limit).
+                                      exclude_baskets_and_id(disabled_recent_topics_baskets, @topic)
               end
+
+              recent_topics_items = recent_topics_items.public unless @allow_private 
 
               # Cycle through the 5 recent topics, and get the latest unflagged
               # version with the privacy that the current user is able to see
@@ -132,7 +139,7 @@ class IndexPageController < ApplicationController
 
               # incase we don't have enough yet, loop over the next set
               # increase the offset by @recent_topics_limit amount
-              args[:offset] += @recent_topics_limit
+              items_offset += @recent_topics_limit
             end
 
             # with the final topic, sort by the versions created_at,

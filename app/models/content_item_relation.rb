@@ -56,11 +56,11 @@ class ContentItemRelation < ActiveRecord::Base
       find_class = options[:deleted] ? ContentItemRelation::Deleted : ContentItemRelation
 
       if related_item.instance_of?(Topic)
-        relation = find_class.find(:first, :conditions => ["topic_id = ? AND related_item_id = ? AND related_item_type = \"Topic\"", related_item.id, topic_id])
+        relation = find_class.where("topic_id = ? AND related_item_id = ? AND related_item_type = \"Topic\"", related_item.id, topic_id).first
       end
 
       # If no relationship has been found above, check the correct way around.
-      relation ||= find_class.find(:first, :conditions => ["topic_id = ? AND related_item_id = ? AND related_item_type = \"#{related_item.class.name}\"", topic_id, related_item.id])
+      relation ||= find_class.where("topic_id = ? AND related_item_id = ? AND related_item_type = \"#{related_item.class.name}\"", topic_id, related_item.id).first
 
     end
 

@@ -46,10 +46,7 @@ class Comment < ActiveRecord::Base
   # Helper class method to look up all comments for
   # commentable class name and commentable id.
   def self.find_comments_for_commentable(commentable_str, commentable_id)
-    find(:all,
-      :conditions => ["commentable_type = ? and commentable_id = ?", commentable_str, commentable_id],
-      :order => "lft"
-    )
+    where(:commentable_type => commentable_str, :commentable_id => commentable_id).order('lft')
   end
 
   # pulled almost directly from acts_as_commentable

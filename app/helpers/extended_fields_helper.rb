@@ -196,7 +196,7 @@ module ExtendedFieldsHelper
     else
 
       select(:record, :parent_id,
-        Choice.find(:all).reject { |c| c.id == record.id }.map { |c| [c.label, c.id] },
+        Choice.all.reject { |c| c.id == record.id }.map { |c| [c.label, c.id] },
         { :select => record.parent_id }, :name => input_name)
     end
   end

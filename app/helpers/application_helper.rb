@@ -168,17 +168,15 @@ module ApplicationHelper
 
     html = '<ul id="basket-list" class="nav-list">'
 
-    except_certain_baskets = @standard_baskets
-    except_certain_baskets += [@current_basket] if @current_basket != @site_basket
+    baskets = @standard_baskets
+    baskets += [@current_basket] if @current_basket != @site_basket
 
-    except_certain_baskets_args = { :conditions => ["id not in (?) AND status = 'approved'", except_certain_baskets] }
+    total_baskets_count = Basket.except_certain_baskets(baskets).count
 
-    total_baskets_count = Basket.count(except_certain_baskets_args)
-
-    except_certain_baskets_args[:limit] = baskets_limit
+    baskets_limit
 
     basket_count = 0
-    Basket.find(:all, except_certain_baskets_args).each do |basket|
+    Basket.except_certain_baskets(baskets).limit(baskets_limit).all.each do |basket|
       basket_count += 1
       html += li_with_correct_class(basket_count) + link_to_index_for(basket) + '</li>'
     end
@@ -371,10 +369,9 @@ module ApplicationHelper
 
   def render_baskets_as_menu
     html = '<ul id="sub-menu" class="menu basket-list-menu">'
-    except_certain_baskets_args = { :conditions => ["id not in (?) AND status = 'approved'", @standard_baskets] }
 
     basket_count = 0
-    Basket.find(:all, except_certain_baskets_args).each do |basket|
+    Basket.except_certain_baskets(@standard_baskets).all.each do |basket|
       basket_count += 1
       if basket == @current_basket
 
@@ -413,7 +410,7 @@ module ApplicationHelper
 
         basket_topic_count = 0
 
-        for topic in basket.topics.find(:all, :limit => limit, :order => order).reject { |t| t.disputed_or_not_available? }
+        for topic in basket.topics.order(order).limit(limit).all.reject { |t| t.disputed_or_not_available? }
           if topic != basket.index_topic
             html += li_with_correct_class(topic_count) + link_to_item(topic) + '</li>'
             basket_topic_count += 1

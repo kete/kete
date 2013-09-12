@@ -107,7 +107,7 @@ class User < ActiveRecord::Base
   # Authenticates a user by their login name and unencrypted password.  Returns the user or nil.
   def self.authenticate(login, password)
     # hide records with a nil activated_at
-    u = find :first, :conditions => ['login = ? and activated_at IS NOT NULL', login]
+    u = where('login = ? and activated_at IS NOT NULL', login).first
     # Walter McGinnis, 2007-06-08
     # can't login if they are banned
     u && u.authenticated?(password) && u.banned_at.nil? ? u : nil
@@ -256,9 +256,9 @@ class User < ActiveRecord::Base
   end
 
   def basket_permissions
-    select = "roles.id AS role_id, roles.name AS role_name, baskets.id AS basket_id, baskets.urlified_name AS basket_urlified_name, baskets.name AS basket_name"
-    join = "INNER JOIN baskets on roles.authorizable_id = baskets.id"
-    permissions = roles.find_all_by_authorizable_type('Basket', :select => select, :joins => join)
+    permissions = roles.find_all_by_authorizable_type('Basket').
+                        select("roles.id AS role_id, roles.name AS role_name, baskets.id AS basket_id, baskets.urlified_name AS basket_urlified_name, baskets.name AS basket_name").
+                        joins("INNER JOIN baskets on roles.authorizable_id = baskets.id")
 
     permissions_hash = Hash.new
     permissions.each do |permission|
