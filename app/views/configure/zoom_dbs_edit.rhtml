@@ -16,7 +16,7 @@
     <% for @zoom_db in @zoom_dbs -%>
     <h4><%=t 'configure.zoom_dbs_edit.search_engine_database' %> <%= @zoom_db.database_name %></h4>
     <%= error_messages_for :zoom_db %>
-      <% fields_for "zoom_db[]" do |f| %>
+      <%= fields_for "zoom_db[]" do |f| %>
       <div class="form-element">
         <label class="required" for="@zoom_db"><%=t 'configure.zoom_dbs_edit.port' %></label><br />
         <%= f.text_field :port %>

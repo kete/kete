@@ -41,7 +41,7 @@
 
     <%= render 'common_import_fields', :form => form %>
 
-    <% fields_for @import.import_archive_file do |archive_file| %>
+    <%= fields_for @import.import_archive_file do |archive_file| %>
       <div class="form-element">
         <label for="import_archive_file_uploaded_data"><%=t 'importers.new_related_set_from_archive_file.upload' %></label><br />
         <%= archive_file.file_field :uploaded_data %>

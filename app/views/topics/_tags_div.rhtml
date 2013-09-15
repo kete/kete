@@ -1,6 +1,6 @@
 <%= render(:partial => "topics/secondary_wrapper_start",
            :locals => { :div_id => "tags-box", :class_suffix => nil }) -%>
-    <% cache_with_privacy(item, {:part => "secondary_content_tags"}) do -%>
+    <%= cache_with_privacy(item, {:part => "secondary_content_tags"}) do -%>
     <h2><%=t 'topics.tags.title' %></h2>
     <div id="tags_list">
       <%= tags_for(item) -%>

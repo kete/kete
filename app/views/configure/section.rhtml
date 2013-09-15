@@ -6,7 +6,7 @@
     <%= error_messages_for :setting %>
     <div class="form-element">
       <label <% if @setting.required_to_be_configured -%>class="required" <% end -%>for="@setting"><%= h(@setting.name) -%>:</label><br />
-      <% fields_for "setting[]" do |f| %>
+      <%= fields_for "setting[]" do |f| %>
       <%= f.text_field :value %>
       <div class="form_example">
         <%= RedCloth.new(@setting.explanation).to_html.gsub("&#8220;", "\"").gsub("&#8221;", "\"").gsub("&#8217;", "'").gsub("&#8216;", "'").gsub("‘", "'").gsub("’", "'") -%>
@@ -14,7 +14,7 @@
       <% end -%>
     </div>
     <% else -%>
-    <% fields_for "setting[]" do |f| %>
+    <%= fields_for "setting[]" do |f| %>
     <%= f.hidden_field :value %>
     <% end -%>
     <% end -%>
