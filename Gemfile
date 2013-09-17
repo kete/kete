@@ -28,7 +28,7 @@ group :development, :test do
   gem "sqlite3", "~> 1.3.7"
 
   gem 'webrat'
-  gem 'shoulda'
+  gem 'shoulda', "2.0.0" # !! ruby 1.8.7 requirement
   gem 'factory_girl', "1.2.4"
 #  gem "rspec-rails", "~> 2.13.0"
 #  # gem "shoulda", "~> 3.4.0"
