@@ -4,4 +4,4 @@
 require File.expand_path('../config/application', __FILE__)
 require 'rake'
 
-Kete::Application.load_tasks
+KeteApp::Application.load_tasks

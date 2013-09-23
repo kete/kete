@@ -2,10 +2,8 @@
 require File.expand_path('../application', __FILE__)
 
 # Initialize the rails application
-Kete::Application.initialize!
+KeteApp::Application.initialize!
 
-# Specifies gem version of Rails to use when vendor/rails is not present
-RAILS_GEM_VERSION = '3.0.0' unless defined? RAILS_GEM_VERSION
 
 # Walter McGinnis, 2010-05-08
 # For holding info about the kete application instance

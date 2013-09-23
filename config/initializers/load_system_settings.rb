@@ -66,17 +66,3 @@ else
   Kete.define_reader_method_as('blank_title', BLANK_TITLE)
 end
 
-# Walter McGinnis (walter@katipo.co.nz), 2006-09-26
-# include Globalize # put that thing here
-# Locale.set_base_language('en-NZ') # and here :)'')
-
-if IS_CONFIGURED
-  # Walter McGinnis (walter@katipo.co.nz), 2006-12-06
-  # used by the acts_as_zoom plugin
-  ZoomDb.zoom_id_stub = "oai:" + SITE_NAME + ":"
-  ZoomDb.zoom_id_element_name = "identifier"
-  # in case your zoom_id is in a nested element
-  # separated by /'s
-  # no preceding / necessary
-  ZoomDb.zoom_id_xml_path_up_to_element = "record/header"
-end

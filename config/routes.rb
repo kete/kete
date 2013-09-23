@@ -1,4 +1,4 @@
-Kete::Application.routes.draw do
+KeteApp::Application.routes.draw do
 
   #map.filter 'locale'
   match 'locale' => '#index', :as => :filter
