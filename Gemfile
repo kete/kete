@@ -1,6 +1,6 @@
 source "https://rubygems.org"
 
-gem "rails", "3.0.0"
+gem "rails", "3.0.20"
 
 
 gem "mysql"
@@ -41,13 +41,13 @@ end
 
 # Note: the file config/required_software.yml is a good place to look for things that would be needed in a bundler file.
 
-gem 'oai', '0.0.12', :path => 'vendor/gems/oai-0.0.12'
+gem 'oai', '0.0.12'
 
 gem 'packet'
 gem 'RedCloth'
 gem 'hpricot'
 
-gem 'tiny_mce'
+##gem 'tiny_mce'
 gem 'avatar'
 gem 'zoom'
 gem 'chronic'
@@ -61,7 +61,7 @@ gem 'xml-simple'
 gem 'system_timer'
 gem 'memcache-client'
 gem 'mime-types'
-gem 'tiny_mce_plugin_imageselector', '>= 0.0.7'
+#gem 'tiny_mce_plugin_imageselector', '>= 0.0.7'
 gem 'kete-feedzirra'
 gem 'htmlentities'
 
@@ -94,3 +94,15 @@ gem 'http_url_validation_improved'
 # "gem install --no-rdoc --no-ri htmlentities"
 # "gem install --no-rdoc --no-ri packet --version='>= 0.1.14'"
 # {15:27}[1.8.7@Kete]~dir:master ✗ ➭
+
+
+# Gems originally found in vendor/plugins. Can have versions updated
+# (I've locked versions to avoid errors during upgrade).
+gem 'acts-as-taggable-on',          '1.0.6'  # ideally should be 1.0.0
+gem 'acts_as_versioned',            '0.5.2'    #2009-01-20
+gem 'will_paginate',                '2.3.8'        #'2009-03-09'
+gem 'validates_as_sanitized_html',  ''
+
+
+  
+
