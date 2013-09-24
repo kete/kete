@@ -98,10 +98,40 @@ gem 'http_url_validation_improved'
 
 # Gems originally found in vendor/plugins. Can have versions updated
 # (I've locked versions to avoid errors during upgrade).
-gem 'acts-as-taggable-on',          '1.0.6'  # ideally should be 1.0.0
-gem 'acts_as_versioned',            '0.5.2'    #2009-01-20
-gem 'will_paginate',                '2.3.8'        #'2009-03-09'
-gem 'validates_as_sanitized_html',  ''
+
+
+gem 'active_scaffold',              '3.0.0' # >> 2009-06-29
+#gem 'acts-as-taggable-on',          '1.0.6' # ideally should be 1.0.0
+gem "acts_as_authenticated", "2.0", :git => "git://github.com/gundestrup/acts_as_authenticated.git" # 2007-06-06
+#gem 'acts_as_configurable',         '0.0.3' # >> 2007-12-17
+#gem "acts_as_licensed", "#.#.#", :git => "git://github.com/shuber/sortable.git" # 2008-07-10
+#gem 'acts_as_list',                 '0.1.2' # >> 2007-11-18
+#gem "acts_as_sanitized", "#.#.#", :git => "git://github.com/shuber/sortable.git" # 2008-01-14
+gem "acts_as_soft_deletable", :git => "git://github.com/says/acts_as_soft_deletable.git" # 2009-02-16
+gem 'acts_as_versioned',            '0.6.0' # ideally should be 0.5.2
+## gem 'acts_as_zoom'
+#gem 'tdd-attachment_fu',            '0.9.9.b' # >> 2008-04-02, replaces 'attachment_fu'
+gem 'authorization',                '1.0.11' # >> 2008-10-01
+#gem 'auto_complete',                '0.0.1' # >> 2008-10-23
+#gem 'backgroundrb-rails3',          '1.1.0' # >> 2008-10-15, replaces 'backgroundrb'
+#gem 'better_nested_set',            '0.1.1' # >> 2008-08-04    
+#gem "brain_buster", "#.#.#", :git => "git://github.com/shuber/sortable.git" # 2009-05-25
+#gem "bundle-fu", "#.#.#", :git => "git://github.com/shuber/sortable.git" # 2009-02-16
+#gem "convert_attachment_to", "#.#.#", :git => "git://github.com/shuber/sortable.git" # 2008-07-10
+#gem "external_search_sources", "#.#.#", :git => "git://github.com/shuber/sortable.git" # 2010-01-06
+#gem 'foreign_key_migrations',       '0.3.0' # ~= 2008-06-30
+#gem 'mimetype-fu',                  '0.1.1' # >> 2008-07-17
+#gem "piggy_back", "#.#.#", :git => "git://github.com/shuber/sortable.git" # 2009-03-17
+#gem "random_finders", "#.#.#", :git => "git://github.com/shuber/sortable.git" # 2007-12-07
+#gem 'redbox',                       '1.0.3' # >> 2007-12-21
+#gem 'redhillonrails_core',          '1.0.4' # >> 2008-06-30
+#gem 'routing-filter',               '0.0.1' # ~= 2009-04-06
+#gem 'ssl_requirement',              '0.0.1' # >> 2008-05-29
+#gem 'nove-system_settings',         '0.1.0' # >> 2008-01-14, replaces 'system_settings'
+#gem 'translate-rails',              '0.0.1' # >> 2009-07-20, replaces translate
+#gem "validates_as_sanitized_html", "#.#.#", :git => "git://github.com/shuber/sortable.git" # >> 2010-12-14
+#gem 'validates_xml',                '1.0.3' # >> 2007-06-06
+gem 'will_paginate',                '3.0.1' # '2009-03-09', should be '2.3.8'
 
 
   

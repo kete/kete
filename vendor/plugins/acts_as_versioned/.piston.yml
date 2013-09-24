@@ -1,8 +1,0 @@
---- 
-format: 1
-handler: 
-  commit: 1bd3d255eb43562a44fd1f907d82ec80db2872d3
-  branch: master
-lock: false
-repository_url: git://github.com/technoweenie/acts_as_versioned.git
-repository_class: Piston::Git::Repository
