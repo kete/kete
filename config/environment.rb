@@ -116,11 +116,6 @@ end
 ## more research necessary, may use LibXML if it is compatible
 ## ActiveSupport::XmlMini.backend = 'Nokogiri'
 #
-## Kieran Pilkington, 2009/07/06
-## overwrite ActionController::Failsafe to catch some errors
-## see lib/error_handler.rb
-#require File.join(File.dirname(__FILE__), '/../lib/error_handler')
-#
 ## Include your application configuration below
 #
 ## Walter McGinnis, 2007-12-03

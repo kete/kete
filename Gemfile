@@ -100,7 +100,7 @@ gem 'http_url_validation_improved'
 # (I've locked versions to avoid errors during upgrade).
 
 
-gem 'active_scaffold',              '3.0.0' # >> 2009-06-29
+gem 'active_scaffold',              '3.0.5' # >> 2009-06-29
 #gem 'acts-as-taggable-on',          '1.0.6' # ideally should be 1.0.0
 gem "acts_as_authenticated", "2.0", :git => "git://github.com/gundestrup/acts_as_authenticated.git" # 2007-06-06
 #gem 'acts_as_configurable',         '0.0.3' # >> 2007-12-17
@@ -131,7 +131,7 @@ gem 'authorization',                '1.0.11' # >> 2008-10-01
 #gem 'translate-rails',              '0.0.1' # >> 2009-07-20, replaces translate
 #gem "validates_as_sanitized_html", "#.#.#", :git => "git://github.com/shuber/sortable.git" # >> 2010-12-14
 #gem 'validates_xml',                '1.0.3' # >> 2007-06-06
-gem 'will_paginate',                '3.0.1' # '2009-03-09', should be '2.3.8'
+gem 'will_paginate',                '2.3.11' # ~= '2009-03-09', should be '2.3.8'
 
 
   

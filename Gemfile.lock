@@ -29,7 +29,7 @@ GEM
       rack-mount (~> 0.6.14)
       rack-test (~> 0.5.7)
       tzinfo (~> 0.3.23)
-    active_scaffold (3.0.0)
+    active_scaffold (3.0.5)
       actionpack (~> 3.0.0)
       activerecord (~> 3.0.0)
       render_component
@@ -132,7 +132,7 @@ GEM
     verification (1.0.1)
       actionpack (~> 3.0.0)
       activesupport (~> 3.0.0)
-    will_paginate (3.0.1)
+    will_paginate (2.3.11)
     xml-simple (1.1.2)
     ya2yaml (0.31)
     zoom (0.4.1)
@@ -142,7 +142,7 @@ PLATFORMS
 
 DEPENDENCIES
   RedCloth
-  active_scaffold (= 3.0.0)
+  active_scaffold (= 3.0.5)
   acts_as_authenticated (= 2.0)!
   acts_as_soft_deletable!
   acts_as_versioned (= 0.6.0)
@@ -172,7 +172,7 @@ DEPENDENCIES
   sqlite3 (~> 1.3.7)
   system_timer
   unicode
-  will_paginate (= 3.0.1)
+  will_paginate (= 2.3.11)
   xml-simple
   ya2yaml
   zoom
