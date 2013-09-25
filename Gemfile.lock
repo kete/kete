@@ -137,7 +137,6 @@ GEM
     will_paginate (2.3.11)
     xml-simple (1.1.2)
     ya2yaml (0.31)
-    zoom (0.4.1)
 
 PLATFORMS
   ruby
@@ -179,4 +178,3 @@ DEPENDENCIES
   will_paginate (= 2.3.11)
   xml-simple
   ya2yaml
-  zoom

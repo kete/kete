@@ -17,9 +17,9 @@ gem 'background'  # or backgroundrb ?
 
 gem 'mini_exiftool', '< 2.0.0'
 
-# You'll need Zebra and Yaz installed (Z39.50 databse and ZOOM API).
-gem 'zoom'
-#gem 'acts_as_zoom' # included in gem/plugins 
+## You'll need Zebra and Yaz installed (Z39.50 databse and ZOOM API).
+#gem 'zoom'
+##gem 'acts_as_zoom' # included in gem/plugins 
 
 
 gem 'rmagick', "2.12.2"
@@ -49,7 +49,7 @@ gem 'hpricot'
 
 ##gem 'tiny_mce'
 gem 'avatar'
-gem 'zoom'
+#gem 'zoom'
 gem 'chronic'
 gem 'ya2yaml'
 gem 'libxml-ruby'
@@ -74,7 +74,7 @@ gem 'http_url_validation_improved'
 # 	nokogiri requires Ruby version >= 1.9.2.
 # "gem install --no-rdoc --no-ri tiny_mce"
 # "gem install --no-rdoc --no-ri avatar"
-# "gem install --no-rdoc --no-ri zoom"
+## "gem install --no-rdoc --no-ri zoom"
 # "gem install --no-rdoc --no-ri chronic"
 # "gem install --no-rdoc --no-ri ya2yaml"
 # "gem install --no-rdoc --no-ri libxml-ruby"
