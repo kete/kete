@@ -161,13 +161,13 @@
     # comment this line and uncomment the next after initial migration
     site_basket = Basket.find(1) unless skip_configuration # we skip a query here if running integration tests
     site_urlified_name = !site_basket.nil? ? site_basket.urlified_name : 'site'
-    match '' => 'index_page#index', :urlified_name => site_urlified_name
+    root :to => 'index_page#index', :urlified_name => site_urlified_name
   else
     # not configured, redirect to homepage which is configuration page
-    match '' => 'configure#index', :urlified_name => 'site'
+    root :to => 'configure#index', :urlified_name => 'site'
   end
 
-  match '*path', 'application#rescue_404' unless ActionController::Base.consider_all_requests_local
+  match '*path' => 'application#rescue_404' unless ActionController::Base.consider_all_requests_local
 end
 
 
