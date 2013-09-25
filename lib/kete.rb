@@ -80,5 +80,12 @@ class Kete
         metaclass.instance_eval { define_method("#{method_name}?", &code) }
       end
     end
+
+    def metaclass
+      # !! should be replace by Object#singleton_class (ruby 1.9.2)
+      class << self
+        self
+      end
+    end
   end
 end

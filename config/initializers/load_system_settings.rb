@@ -1,3 +1,7 @@
+# !! This entire file should be converted to using SystemSettings.something rather 
+#    than Kete.something, (no meta-defining methods).
+#    After this most of kete.rb can be removed.
+
 # if SystemSetting model doesn't exist, set IS_CONFIGURED to false
 if Object.const_defined?('SystemSetting') and ActiveRecord::Base.connection.table_exists?('system_settings')
   # make each setting a global constant
