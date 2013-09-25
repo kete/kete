@@ -1,7 +1,6 @@
 require 'rake'
 require 'rake/rdoctask'
 require 'rake/testtask'
-require 'tasks/rails'
 
 class ConfigureController < ApplicationController
   # everything else is handled by application.rb
