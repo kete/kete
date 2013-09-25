@@ -44,6 +44,7 @@ else
   if params[:controller] == 'web_links' && params[:action] == 'create' && @item.errors.present? && @item.errors.size == 1
     @submit_text = t('topics.form.confirm')
     @force_url = true
+    # !! someone elses error, but should probably be fixed.
     # HACK
     # TODO: replace this in the model in Rails 3x
     # in Rails 2.3.5 passing in a custom message to WebLink validates_http_url didn't work

@@ -94,30 +94,6 @@ module ActiveRecord
       self.class.name.tableize.singularize.to_sym
     end
   end
-
-  class Errors
-    # Kieran Pilkington, 2010-03-26
-    # The ability to use I18n in validation messages. Exsits in Rails 3. Remove when we upgrade.
-    alias :add_orig :add
-    def add(attribute, message = nil, options = {})
-      options[:default] = options[:default].call if options[:default].is_a?(Proc)
-      add_orig(attribute, message, options)
-    end
-  end
-end
-
-# Kieran Pilkington, 2009-07-09
-# Getting around issue within Rails that causes a hash to be stringified, but
-# no take options into account later because the values require symbols
-# Alias the old method, redefine and symbolize keys before continuing
-module ActionController
-  class UrlRewriter
-    private
-      alias :rewrite_url_orig :rewrite_url
-      def rewrite_url(options)
-        rewrite_url_orig options.symbolize_keys
-      end
-  end
 end
 
 module I18n
