@@ -49,88 +49,89 @@ class StillImage < ActiveRecord::Base
     user_portrait_relation
   end
 
-  include Embedded if ENABLE_EMBEDDED_SUPPORT
-
-  # Walter McGinnis, 2011-02-15
-  # oEmbed Functionality
-  include OembedProvidable
-
-  oembed_options = Hash.new
-  OembedProvider.required_attributes[:photo].each do |key|
-    oembed_options[key] = 'oembed_' + key.to_s
-
-    thumbnail_key = 'thumbnail_' + key.to_s
-    oembed_options[thumbnail_key.to_sym] = 'oembed_thumbnail_' + key.to_s
-  end
-
-  oembed_providable_as :photo, oembed_options
-
-  # largest file that fits within passed in maxheight/maxwidth
-  # a nil file means nothing matches
-  def oembed_file
-    @oembed_file ||= oembed_file_for(oembed_max_dimensions)
-  end
-
-  def oembed_thumbnail_file
-    @oembed_thumbnail_file ||= oembed_file_for(oembed_max_dimensions, true)
-  end
-
-  def oembed_file_for(max_dimensions, is_thumbnail = false)
-    the_file = nil
-    if is_thumbnail
-      if !thumbnail_file.bigger_than?(max_dimensions)
-        the_file = thumbnail_file
-      else
-        # no match
-        raise ActiveRecord::RecordNotFound if the_file.nil?
-      end
-    elsif max_dimensions.values.compact.present?
-      image_files.find(:all, :order => 'size DESC').each do |image_file|
-        unless image_file.bigger_than?(max_dimensions)
-          the_file = image_file
-          break
-        end
-      end
-        # no match
-      raise ActiveRecord::RecordNotFound if the_file.nil?
-    else
-      the_file = original_file
-    end
-    the_file
-  end
-
-  def self.define_oembed_method_for(required_attribute)
-    name_adjustments = [nil, 'thumbnail']
-
-    code = nil
-    name_adjustments.each do |adjustment|
-      method_name_stub = 'oembed_'
-      method_name_stub += adjustment + '_' if adjustment
-      method_name = method_name_stub + required_attribute.to_s
-
-      file_method_name = method_name_stub + 'file'
-
-      if required_attribute == :url
-        code = Proc.new {
-          return nil unless send(file_method_name)
-
-          site_url = Kete.site_url
-          site_url = site_url.chomp('/') if site_url.last == '/'
-          site_url + send(file_method_name).public_filename
-        }
-      else
-        code = Proc.new {
-          return nil unless send(file_method_name)
-          send(file_method_name).send(required_attribute)
-        }
-      end
-      define_method(method_name, &code)
-    end
-  end
-
-  OembedProvider.required_attributes[:photo].each { |attr| define_oembed_method_for(attr) }
-
-  include KeteCommonOembedSupport
+# !! Re-enable on switch to rails 3.2:
+#  include Embedded if ENABLE_EMBEDDED_SUPPORT
+#
+#  # Walter McGinnis, 2011-02-15
+#  # oEmbed Functionality
+#  include OembedProvidable
+#
+#  oembed_options = Hash.new
+#  OembedProvider.required_attributes[:photo].each do |key|
+#    oembed_options[key] = 'oembed_' + key.to_s
+#
+#    thumbnail_key = 'thumbnail_' + key.to_s
+#    oembed_options[thumbnail_key.to_sym] = 'oembed_thumbnail_' + key.to_s
+#  end
+#
+#  oembed_providable_as :photo, oembed_options
+#
+#  # largest file that fits within passed in maxheight/maxwidth
+#  # a nil file means nothing matches
+#  def oembed_file
+#    @oembed_file ||= oembed_file_for(oembed_max_dimensions)
+#  end
+#
+#  def oembed_thumbnail_file
+#    @oembed_thumbnail_file ||= oembed_file_for(oembed_max_dimensions, true)
+#  end
+#
+#  def oembed_file_for(max_dimensions, is_thumbnail = false)
+#    the_file = nil
+#    if is_thumbnail
+#      if !thumbnail_file.bigger_than?(max_dimensions)
+#        the_file = thumbnail_file
+#      else
+#        # no match
+#        raise ActiveRecord::RecordNotFound if the_file.nil?
+#      end
+#    elsif max_dimensions.values.compact.present?
+#      image_files.find(:all, :order => 'size DESC').each do |image_file|
+#        unless image_file.bigger_than?(max_dimensions)
+#          the_file = image_file
+#          break
+#        end
+#      end
+#        # no match
+#      raise ActiveRecord::RecordNotFound if the_file.nil?
+#    else
+#      the_file = original_file
+#    end
+#    the_file
+#  end
+#
+#  def self.define_oembed_method_for(required_attribute)
+#    name_adjustments = [nil, 'thumbnail']
+#
+#    code = nil
+#    name_adjustments.each do |adjustment|
+#      method_name_stub = 'oembed_'
+#      method_name_stub += adjustment + '_' if adjustment
+#      method_name = method_name_stub + required_attribute.to_s
+#
+#      file_method_name = method_name_stub + 'file'
+#
+#      if required_attribute == :url
+#        code = Proc.new {
+#          return nil unless send(file_method_name)
+#
+#          site_url = Kete.site_url
+#          site_url = site_url.chomp('/') if site_url.last == '/'
+#          site_url + send(file_method_name).public_filename
+#        }
+#      else
+#        code = Proc.new {
+#          return nil unless send(file_method_name)
+#          send(file_method_name).send(required_attribute)
+#        }
+#      end
+#      define_method(method_name, &code)
+#    end
+#  end
+#
+#  OembedProvider.required_attributes[:photo].each { |attr| define_oembed_method_for(attr) }
+#
+#  include KeteCommonOembedSupport
 
   private
 

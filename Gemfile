@@ -53,7 +53,7 @@ gem 'avatar'
 gem 'chronic'
 gem 'ya2yaml'
 gem 'libxml-ruby'
-gem 'oembed_provider'
+#gem 'oembed_provider_engine' # !! re-enable on Rails 3.2
 gem 'gmaps4rails', '1.4.2'
 
 gem 'unicode'

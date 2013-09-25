@@ -12,7 +12,8 @@ module ApplicationHelper
 
   include ZoomHelpers
 
-  include OembedProviderHelper
+# !! Re-enable on switch to rails 3.2:
+#  include OembedProviderHelper
 
   def stripped_title
     h(strip_tags(@title))
