@@ -5,8 +5,6 @@ require File.expand_path('../application', __FILE__)
 # For holding info about the kete application instance
 require File.join(File.dirname(__FILE__), '../lib/kete')
 
-# Initialize the rails application
-KeteApp::Application.initialize!
 
 # Walter McGinnis, 2007-10-18
 # moving this up before other things that need it
@@ -129,3 +127,6 @@ end
 #
 ## Load application extensions that have been registered by add-ons
 #Kete.setup_extensions!
+
+# Initialize the rails application
+KeteApp::Application.initialize!

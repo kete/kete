@@ -1,9 +1,6 @@
-KeteApp::Application.routes.draw do
+  KeteApp::Application.routes.draw do
 
-  #map.filter 'locale'
-  match 'locale' => '#index', :as => :filter
-
-  Translate::Routes.translation_ui(map) if RAILS_ENV != "production"
+  filter :locale
 
   match '/oai_pmh_repository' => 'oai_pmh_repository#index', :as => :oai
 
