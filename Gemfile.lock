@@ -47,6 +47,7 @@ GEM
       activemodel (= 3.0.20)
       activesupport (= 3.0.20)
     activesupport (3.0.20)
+    acts-as-taggable-on (1.0.6)
     acts_as_versioned (0.6.0)
       activerecord (~> 3.0.0.beta4)
     addressable (2.3.5)
@@ -144,6 +145,7 @@ PLATFORMS
 DEPENDENCIES
   RedCloth
   active_scaffold (= 3.0.5)
+  acts-as-taggable-on (= 1.0.6)
   acts_as_authenticated (= 2.0)!
   acts_as_soft_deletable!
   acts_as_versioned (= 0.6.0)
