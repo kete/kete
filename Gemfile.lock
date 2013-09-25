@@ -88,6 +88,7 @@ GEM
     mini_exiftool (1.7.0)
     mysql (2.9.1)
     nokogiri (1.3.3)
+    nove-system-settings (0.1.0)
     oai (0.0.12)
       builder (>= 2.0.0)
     oembed_provider (0.1.1)
@@ -162,6 +163,7 @@ DEPENDENCIES
   mini_exiftool (< 2.0.0)
   mysql
   nokogiri (= 1.3.3)
+  nove-system-settings (= 0.1.0)
   oai (= 0.0.12)
   oembed_provider
   packet

@@ -127,7 +127,7 @@ gem 'authorization',                '1.0.11' # >> 2008-10-01
 #gem 'redhillonrails_core',          '1.0.4' # >> 2008-06-30
 #gem 'routing-filter',               '0.0.1' # ~= 2009-04-06
 #gem 'ssl_requirement',              '0.0.1' # >> 2008-05-29
-#gem 'nove-system_settings',         '0.1.0' # >> 2008-01-14, replaces 'system_settings'
+gem 'nove-system-settings',         '0.1.0' # >> 2008-01-14, replaces 'system_settings'
 #gem 'translate-rails',              '0.0.1' # >> 2009-07-20, replaces translate
 #gem "validates_as_sanitized_html", "#.#.#", :git => "git://github.com/shuber/sortable.git" # >> 2010-12-14
 #gem 'validates_xml',                '1.0.3' # >> 2007-06-06
