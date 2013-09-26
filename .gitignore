@@ -37,3 +37,4 @@ config/kete-zebra-servers.xml
 config/zebra-private.cfg
 config/zebra-public.cfg
 public/javascripts/image_selector_config/providers.json
+_*
