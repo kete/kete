@@ -112,10 +112,6 @@ module FlaggingController
         @item.version_comment = I18n.t('flagging_controller_lib.restore.version_comment',
                                        :version => @version)
         @item.do_not_moderate = true
-        # turn off sanitizing in restores
-        # for the rare case when invalid code made it in
-        # otherwise validation may cause save action to fail
-        @item.do_not_sanitize = true
 
         versions_before_save = @item.versions.size
 

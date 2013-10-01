@@ -32,12 +32,6 @@ module ConfigureAsKeteContentItem
       # methods for merging values from versions together
       klass.send :include, Merge
 
-      # sanitize our descriptions and extended_content for security
-      # see validate_as_sanitized_html below, too
-      # but allow site admin to override
-      klass.send :attr_accessor, :do_not_sanitize
-      klass.send :acts_as_sanitized, :fields => [:description]
-
       # this allows us to turn on/off email notification per item
       klass.send :attr_accessor, :skip_email_notification
 

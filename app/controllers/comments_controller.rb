@@ -94,9 +94,8 @@ class CommentsController < ApplicationController
 
     version_after_update = @comment.max_version + 1
 
-    @successful = ensure_no_new_insecure_elements_in('comment')
     @comment.attributes = params[:comment]
-    @successful = @comment.save if @successful
+    @successful = @comment.save 
 
     if @successful
 

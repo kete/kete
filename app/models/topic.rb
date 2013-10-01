@@ -61,13 +61,6 @@ class Topic < ActiveRecord::Base
     end
   end
 
-  # this allows for turning off sanitizing before save
-  # and validates_as_sanitized_html
-  # such as the case that a sysadmin wants to include a form
-  attr_accessor :do_not_sanitize
-  # sanitize our descriptions for security
-  acts_as_sanitized :fields => [:description]
-
   # this allows us to turn on/off email notification per item
   attr_accessor :skip_email_notification
 

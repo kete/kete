@@ -49,9 +49,8 @@ class DocumentsController < ApplicationController
 
     version_after_update = @document.max_version + 1
 
-    @successful = ensure_no_new_insecure_elements_in('document')
     @document.attributes = params[:document]
-    @successful = @document.save if @successful
+    @successful = @document.save
 
     if @successful
 

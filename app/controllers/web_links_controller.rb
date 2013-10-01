@@ -47,9 +47,8 @@ class WebLinksController < ApplicationController
 
     version_after_update = @web_link.max_version + 1
 
-    @successful = ensure_no_new_insecure_elements_in('web_link')
     @web_link.attributes = params[:web_link]
-    @successful = @web_link.save if @successful
+    @successful = @web_link.save 
 
     if @successful
 

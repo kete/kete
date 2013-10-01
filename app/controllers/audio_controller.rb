@@ -50,9 +50,8 @@ class AudioController < ApplicationController
 
     version_after_update = @audio_recording.max_version + 1
 
-    @successful = ensure_no_new_insecure_elements_in('audio_recording')
     @audio_recording.attributes = params[:audio_recording]
-    @successful = @audio_recording.save if @successful
+    @successful = @audio_recording.save
 
     if @successful
 

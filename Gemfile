@@ -106,7 +106,6 @@ gem "acts_as_authenticated", "2.0", :git => "git://github.com/gundestrup/acts_as
 #gem 'acts_as_configurable',         '0.0.3' # >> 2007-12-17
 #gem "acts_as_licensed", "#.#.#", :git => "git://github.com/shuber/sortable.git" # 2008-07-10
 #gem 'acts_as_list',                 '0.1.2' # >> 2007-11-18
-#gem "acts_as_sanitized", "#.#.#", :git => "git://github.com/shuber/sortable.git" # 2008-01-14
 gem "acts_as_soft_deletable", :git => "git://github.com/says/acts_as_soft_deletable.git" # 2009-02-16
 gem 'acts_as_versioned',            '0.6.0' # ideally should be 0.5.2
 ## gem 'acts_as_zoom'
@@ -128,7 +127,6 @@ gem 'authorization',                '1.0.11' # >> 2008-10-01
 gem 'routing-filter',               '0.1.6' # ~= 2009-04-06
 #gem 'ssl_requirement',              '0.0.1' # >> 2008-05-29
 gem 'nove-system-settings',         '0.1.0' # >> 2008-01-14, replaces 'system_settings'
-#gem "validates_as_sanitized_html", "#.#.#", :git => "git://github.com/shuber/sortable.git" # >> 2010-12-14
 #gem 'validates_xml',                '1.0.3' # >> 2007-06-06
 gem 'will_paginate',                '2.3.11' # ~= '2009-03-09', should be '2.3.8'
 

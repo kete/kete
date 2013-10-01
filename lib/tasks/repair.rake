@@ -321,8 +321,6 @@ namespace :kete do
               end
             end
             if item.extended_content != original_extended_content
-              # make sure we set 'do_not_sanitize' to true or update_attribute will strip some HTML
-              item.do_not_sanitize = true
               item.update_attribute(:extended_content, item.extended_content)
             end
           end

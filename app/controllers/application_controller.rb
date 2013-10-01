@@ -112,11 +112,6 @@ class ApplicationController < ActionController::Base
   # we often need baskets for edits
   before_filter :load_array_of_baskets, :only => [ :edit, :update, :restore ]
 
-  # only site_admin can set item.do_not_sanitize to true
-  # however, non site admins can edit content with insecure elements so the the do_not_sanitize
-  # param is changed later on. See lib/extended_content_controller.rb#ensure_no_new_insecure_elements_in
-  before_filter :security_check_of_do_not_sanitize, :only => [ :create, :update ]
-
   # don't allow forms to set do_not_moderate
   before_filter :security_check_of_do_not_moderate, :only => [ :create, :update, :restore ]
 
@@ -236,14 +231,6 @@ class ApplicationController < ActionController::Base
     end
     @theme_font_family = @current_basket.settings[:theme_font_family] || @site_basket.settings[:theme_font_family] || 'sans-serif'
     @header_image = @current_basket.settings[:header_image] || @site_basket.settings[:header_image] || nil
-  end
-
-  def security_check_of_do_not_sanitize
-    item_class = zoom_class_from_controller(params[:controller])
-    item_class_for_param_key = item_class.tableize.singularize
-    if ZOOM_CLASSES.include?(item_class) && !params[item_class_for_param_key].nil? && !params[item_class_for_param_key][:do_not_sanitize].nil?
-      params[item_class_for_param_key][:do_not_sanitize] = false if !@site_admin
-    end
   end
 
   def security_check_of_do_not_moderate

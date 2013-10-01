@@ -200,8 +200,6 @@ namespace :kete do
         correctable_fields.each_with_index do |field, index|
           basket.send(field+"=", standard_basket_defaults[index])
         end
-        # make sure we set 'do_not_sanitize' to true or save will fail if the basket has html
-        basket.do_not_sanitize = true
         basket.save!
         p "Corrected settings of #{basket.name} basket"
       end
@@ -222,10 +220,8 @@ namespace :kete do
     desc 'Make all baskets with the status of NULL set to approved'
     task :make_baskets_approved_if_status_null => :environment do
       Basket.all.each do |basket|
-        # make sure we set 'do_not_sanitize' to true or update will fail if the basket has html
         basket.update_attributes!({ :status => 'approved',
-                                    :creator_id => 1,
-                                    :do_not_sanitize => true }) if basket.status.blank?
+                                    :creator_id => 1}) if basket.status.blank?
       end
     end
 

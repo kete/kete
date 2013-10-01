@@ -377,7 +377,6 @@ namespace :kete do
           # update basket_id
           topic.basket = to_basket
           topic.do_not_moderate = true
-          topic.do_not_sanitize = true
           topic.version_comment = "Moved from #{old_basket.name} to #{to_basket.name}"
 
           successful = topic.save
@@ -436,7 +435,6 @@ namespace :kete do
 
                     item.extended_content = after
                     item.do_not_moderate = true
-                    item.do_not_sanitize = true
                     item.version_comment = "Updated links to \"#{topic.title}\""
 
                     item_successful = item.save

@@ -61,13 +61,6 @@ class Basket < ActiveRecord::Base
     side_menu_number_of_topics side_menu_ordering_of_topics side_menu_direction_of_topics
     do_not_sanitize_footer_content replace_existing_footer }
 
-  # this allows for turning off sanitizing before save
-  # and validates_as_sanitized_html
-  # such as the case that a sysadmin wants to include a form
-  attr_accessor :do_not_sanitize
-  # sanitize our descriptions and extended_content for security
-  acts_as_sanitized :fields => [:index_page_extra_side_bar_html]
-
   # Kieran Pilkington, 2008-07-09
   # remove the roles from a basket before destroying it to prevent problems later on
   before_destroy :remove_users_and_roles

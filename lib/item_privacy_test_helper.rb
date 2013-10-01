@@ -761,13 +761,11 @@ module ItemPrivacyTestHelper
           d.description = "Version 3"
           d.version_comment = "Content from revision # 1."
           d.do_not_moderate = true
-          d.do_not_sanitize = true
           # this will save the above as version 3
           # (and will be the current public version)
           d.save!
           d.reload
           d.do_not_moderate = false
-          d.do_not_sanitize = false
           d
         end
 

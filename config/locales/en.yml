@@ -1291,10 +1291,6 @@ en:
           <p><span style="font-weight: bold;">Example</span></p>
           <p>http://horowhenua.kete.net.nz/site/topics/show/44</p>
           <h3>Thanks and once again sorry for the inconvenience.</h3>
-  extended_content_controller_lib:
-    ensure_no_new_insecure_elements_in:
-      contains_new_elements: "contains {{count}} {{t.base.new}} insecure elements but you're not authorized to {{t.base.add}} them."
-      contains_new_elements_admin: "contains {{count}} {{t.base.new}} insecure elements and you forgot to check the 'do not sanitize' checkbox."
   extended_content_lib:
     validate_extended_checkbox_field_content:
       must_be_valid: "{{label}} must be a {{t.base.valid}} checkbox {{t.base.value}} (Yes or No)"

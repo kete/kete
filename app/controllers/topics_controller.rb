@@ -143,10 +143,9 @@ class TopicsController < ApplicationController
     elsif @topic != @site_basket.index_topic || permit?("site_admin of :site_basket or admin of :site_basket")
       version_after_update = @topic.max_version + 1
 
-      @successful = ensure_no_new_insecure_elements_in('topic')
       @topic.attributes = params[:topic]
       logger.debug("before topic save")
-      @successful = @topic.save if @successful
+      @successful = @topic.save
       logger.debug("after topic save")
     else
       # they don't have permission
