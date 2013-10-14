@@ -99,9 +99,9 @@ namespace :kete do
       # are different from those in topics.yml
       # NOTE: if this gets uses again in another task, move this to a reusable method of its own
       basket_ids = { "1" => 1,
-                     "2" => HELP_BASKET,
-                     "3" => ABOUT_BASKET,
-                     "4" => DOCUMENTATION_BASKET }
+                     "2" => Basket::HELP_BASKET_ID,
+                     "3" => Basket::ABOUT_BASKET_ID,
+                     "4" => Basket::DOCUMENTATION_BASKET_ID, }
 
       # for each topic from yml
       topics_from_yml.each do |topic_array|

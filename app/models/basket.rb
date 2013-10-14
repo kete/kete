@@ -72,12 +72,15 @@ class Basket < ActiveRecord::Base
 
   # Kieran Pilkington, 2008/08/19
   # setup our default baskets on application load, rather than each request
+  HELP_BASKET_ID = 2
+  ABOUT_BASKET_ID = 3
+  DOCUMENTATION_BASKET_ID = 4
   cattr_accessor :site_basket, :help_basket, :about_basket, :documentation_basket, :standard_baskets
-  @@standard_baskets = [1, HELP_BASKET, ABOUT_BASKET, DOCUMENTATION_BASKET]
+  @@standard_baskets = [1, HELP_BASKET_ID, ABOUT_BASKET_ID, DOCUMENTATION_BASKET_ID]
   @@site_basket = all_baskets.find { |basket| basket.id == 1 }
-  @@help_basket = all_baskets.find { |basket| basket.id == HELP_BASKET }
-  @@about_basket = all_baskets.find { |basket| basket.id == ABOUT_BASKET }
-  @@documentation_basket = all_baskets.find { |basket| basket.id == DOCUMENTATION_BASKET }
+  @@help_basket = all_baskets.find { |basket| basket.id == HELP_BASKET_ID }
+  @@about_basket = all_baskets.find { |basket| basket.id == ABOUT_BASKET_ID }
+  @@documentation_basket = all_baskets.find { |basket| basket.id == DOCUMENTATION_BASKET_ID }
   after_save :reset_basket_class_variables
   before_destroy :reset_basket_class_variables
 
@@ -595,12 +598,12 @@ class Basket < ActiveRecord::Base
     case self.id
     when 1
       @@site_basket = Basket.find(1)
-    when HELP_BASKET
-      @@help_basket = Basket.find(HELP_BASKET)
-    when ABOUT_BASKET
-      @@about_basket = Basket.find(ABOUT_BASKET)
-    when DOCUMENTATION_BASKET
-      @@documentation_basket = Basket.find(DOCUMENTATION_BASKET)
+    when HELP_BASKET_ID
+      @@help_basket = Basket.find(HELP_BASKET_ID)
+    when ABOUT_BASKET_ID
+      @@about_basket = Basket.find(ABOUT_BASKET_ID)
+    when DOCUMENTATION_BASKET_ID
+      @@documentation_basket = Basket.find(DOCUMENTATION_BASKET_ID)
     end
     # after we change these, we need to reload routes for index_page path
     ActionController::Routing::Routes.reload!
