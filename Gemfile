@@ -103,7 +103,7 @@ gem 'http_url_validation_improved'
 gem 'active_scaffold',              '3.0.5' # >> 2009-06-29
 gem 'acts-as-taggable-on',          '1.0.6' # ideally should be 1.0.0
 gem "acts_as_authenticated", "2.0", :git => "git://github.com/gundestrup/acts_as_authenticated.git" # 2007-06-06
-#gem 'acts_as_configurable',         '0.0.3' # >> 2007-12-17
+gem 'acts_as_configurable',         '0.0.3' # >> 2007-12-17
 #gem "acts_as_licensed", "#.#.#", :git => "git://github.com/shuber/sortable.git" # 2008-07-10
 #gem 'acts_as_list',                 '0.1.2' # >> 2007-11-18
 gem "acts_as_soft_deletable", :git => "git://github.com/says/acts_as_soft_deletable.git" # 2009-02-16
