@@ -41,7 +41,7 @@ end
 
 # Note: the file config/required_software.yml is a good place to look for things that would be needed in a bundler file.
 
-gem 'oai', '0.0.12'
+gem 'oai', '0.3.0'
 
 gem 'packet'
 gem 'RedCloth'
@@ -58,7 +58,7 @@ gem 'gmaps4rails', '1.4.2'
 
 gem 'unicode'
 gem 'xml-simple'
-gem 'system_timer'
+#gem 'system_timer'
 gem 'memcache-client'
 gem 'mime-types'
 #gem 'tiny_mce_plugin_imageselector', '>= 0.0.7'
