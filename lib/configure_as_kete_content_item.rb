@@ -83,8 +83,6 @@ module ConfigureAsKeteContentItem
 
       klass.send :validates_presence_of, :title
 
-      klass.send :validates_as_sanitized_html, [:description, :extended_content]
-
       klass.send :after_save, :update_taggings_basket_id
 
       klass.send :before_update, :register_redirect_if_necessary

@@ -143,9 +143,6 @@ class Basket < ActiveRecord::Base
   # don't allow special characters in label that will break our xml
   # validates_format_of :name, :with => /^[^\'\"<>\:\&,\?\}\{\/\\]*$/, :message => ": \', \\, /, &, \", <, and > characters aren't allowed"
 
-  # check the quality of submitted html
-  validates_as_sanitized_html :index_page_extra_side_bar_html
-
   # we have an urlified_name attribute that hold the urlified version of the basket name
   before_save :urlify_name
 

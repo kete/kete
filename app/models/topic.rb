@@ -113,8 +113,6 @@ class Topic < ActiveRecord::Base
   validates_xml :extended_content
   validates_presence_of :title
 
-  validates_as_sanitized_html :description, :extended_content
-
   # TODO: add validation that prevents markup in short_summary
   # globalize stuff, uncomment later
   # translates :title, :description, :short_summary, :extended_content
