@@ -381,8 +381,8 @@ module ApplicationHelper
         html += '<ul>'
         topic_count = 0
 
-        order_with_inheritence = basket.settings[:side_menu_ordering_of_topics] || @site_basket.settings[:side_menu_ordering_of_topics]
-        direction_with_inheritence = basket.settings[:side_menu_direction_of_topics] || @site_basket.settings[:side_menu_direction_of_topics]
+        order_with_inheritence = basket.setting(:side_menu_ordering_of_topics) || @site_basket.setting(:side_menu_ordering_of_topics)
+        direction_with_inheritence = basket.setting(:side_menu_direction_of_topics) || @site_basket.setting(:side_menu_direction_of_topics)
 
         order = case order_with_inheritence
                 when "alphabetical"
@@ -401,10 +401,10 @@ module ApplicationHelper
                   end
                 end
 
-        if !basket.settings[:side_menu_number_of_topics].blank?
-          limit = basket.settings[:side_menu_number_of_topics].to_i
-        elsif !@site_basket.settings[:side_menu_number_of_topics].blank?
-          limit = @site_basket.settings[:side_menu_number_of_topics].to_i
+        if !basket.setting(:side_menu_number_of_topics).blank?
+          limit = basket.setting(:side_menu_number_of_topics).to_i
+        elsif !@site_basket.setting(:side_menu_number_of_topics).blank?
+          limit = @site_basket.setting(:side_menu_number_of_topics).to_i
         else
           limit = 10
         end
@@ -438,7 +438,7 @@ module ApplicationHelper
   end
 
   def current_user_can_see_flagging?
-    if @current_basket.settings[:show_flagging] == "at least moderator"
+    if @current_basket.setting(:show_flagging) == "at least moderator"
         can_see_flagging = logged_in? && @at_least_a_moderator
     else
         can_see_flagging = true
@@ -447,7 +447,7 @@ module ApplicationHelper
   end
 
   def current_user_can_see_add_links?
-    if @current_basket.settings[:show_add_links] == "at least moderator"
+    if @current_basket.setting(:show_add_links) == "at least moderator"
         can_see_add_links = logged_in? && @at_least_a_moderator
     else
         can_see_add_links = true
@@ -456,7 +456,7 @@ module ApplicationHelper
   end
 
   def current_user_can_see_action_menu?
-    if @current_basket.settings[:show_action_menu] == "at least moderator"
+    if @current_basket.setting(:show_action_menu) == "at least moderator"
         can_see_action_menu = logged_in? && @at_least_a_moderator
     else
         can_see_action_menu = true
@@ -465,7 +465,7 @@ module ApplicationHelper
   end
 
   def current_user_can_see_discussion?
-    if @current_basket.settings[:show_discussion] == "at least moderator"
+    if @current_basket.setting(:show_discussion) == "at least moderator"
         can_see_discussion = logged_in? && @at_least_a_moderator
     else
         can_see_discussion = true
@@ -941,16 +941,16 @@ module ApplicationHelper
   def current_sort_type
     if params[:sort_type].present?
       params[:sort_type]
-    elsif @current_basket.settings[:sort_order_default].present?
-      @current_basket.settings[:sort_order_default]
+    elsif @current_basket.setting(:sort_order_default).present?
+      @current_basket.setting(:sort_order_default)
     end
   end
 
   def current_sort_direction
     if params[:sort_direction].present?
       params[:sort_direction]
-    elsif @current_basket.settings[:sort_direction_reversed_default].present?
-      @current_basket.settings[:sort_direction_reversed_default]
+    elsif @current_basket.setting(:sort_direction_reversed_default).present?
+      @current_basket.setting(:sort_direction_reversed_default)
     end
   end
 

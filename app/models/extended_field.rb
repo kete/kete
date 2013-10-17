@@ -26,7 +26,7 @@ class ExtendedField < ActiveRecord::Base
   after_save :store_topic_type
 
   def topic_type
-    @topic_type ||= self.settings[:topic_type]
+    @topic_type ||= self.setting(:topic_type)
   end
 
   def topic_type=(value)
@@ -34,13 +34,13 @@ class ExtendedField < ActiveRecord::Base
   end
 
   def store_topic_type
-    self.settings[:topic_type] = @topic_type unless @topic_type.blank?
+    self.set_setting(:topic_type, @topic_type) unless @topic_type.blank?
   end
 
   after_save :store_circa
 
   def circa
-    @circa ||= self.settings[:circa]
+    @circa ||= self.setting(:circa)
   end
 
   def circa?
@@ -52,13 +52,13 @@ class ExtendedField < ActiveRecord::Base
   end
 
   def store_circa
-    self.settings[:circa] = @circa unless @circa.blank?
+    self.set_setting(:circa, @circa) unless @circa.blank?
   end
 
   after_save :set_base_url
 
   def base_url
-    @base_url ||= self.settings[:base_url]
+    @base_url ||= self.setting(:base_url)
   end
 
   def base_url=(value)
@@ -66,7 +66,7 @@ class ExtendedField < ActiveRecord::Base
   end
 
   def set_base_url
-    self.settings[:base_url] = @base_url unless @base_url.blank?
+    self.set_setting(:base_url, @base_url) unless @base_url.blank?
   end
 
   def pseudo_choices

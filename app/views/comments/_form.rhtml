@@ -74,7 +74,7 @@
                     <div class="form-element">
                       <label for="comment_skip_email_notification">
                         <%=t 'comments.form.skip_email_notification',
-                            :role_type => Basket.level_value_from(@basket.settings[:private_item_notification]).downcase.pluralize %>
+                            :role_type => Basket.level_value_from(@basket.setting(:private_item_notification)).downcase.pluralize %>
                       </label>
                       <% if params[:comment] && params[:comment][:skip_email_notification]; skip = (params[:comment][:skip_email_notification] == '1' ? true : false)
                          elsif @editing && skip = @item.skip_email_notification

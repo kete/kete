@@ -16,7 +16,7 @@ module FlaggingTestUnitHelper
 
   def test_fully_moderated_add_flags_version_as_pending_and_creates_blank_current_version
     # make the basket require moderation
-    Basket.find(:first).settings[:fully_moderated] = true
+    Basket.find(:first).set_setting :fully_moderated, true
 
     model = Module.class_eval(@base_class).new @new_model
     model.save
@@ -35,10 +35,10 @@ module FlaggingTestUnitHelper
   def test_fully_moderated_basket_but_excepted_class_add_succeeds
     # make the basket require moderation
     @basket = Basket.find(:first)
-    @basket.settings[:fully_moderated] = true
+    @basket.set_setting :fully_moderated, true
 
     # but make this class be listed as free of moderation
-    @basket.settings[:moderated_except] = [@base_class]
+    @basket.set_setting :moderated_except, [@base_class]
 
     model = Module.class_eval(@base_class).new @new_model
     model.save

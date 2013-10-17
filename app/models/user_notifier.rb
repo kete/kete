@@ -193,7 +193,7 @@ class UserNotifier < ActionMailer::Base
       item.private_version!
       basket = item.is_a?(Comment) ? item.commentable.basket : item.basket
 
-      if basket.settings[:private_item_notification_show_title] == true
+      if basket.setting(:private_item_notification_show_title) == true
         @subject += I18n.t("user_notifier_model.private_#{type}_with_title", :basket_name => basket.name, :item_title => item.title)
         @title = item.title
       else
@@ -201,7 +201,7 @@ class UserNotifier < ActionMailer::Base
         @title = nil
       end
 
-      if item.respond_to?(:short_summary) && basket.settings[:private_item_notification_show_short_summary] == true
+      if item.respond_to?(:short_summary) && basket.setting(:private_item_notification_show_short_summary) == true
         @summary = item.short_summary
       else
         @summary = nil

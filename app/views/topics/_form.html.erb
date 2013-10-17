@@ -194,7 +194,7 @@ end
            else; skip = false; end -%>
         <%= form.check_box :skip_email_notification, { :tabindex => '1',
                                                        :label => t('topics.form.skip_email_notification',
-                                                                   :role_type => Basket.level_value_from(@basket.settings[:private_item_notification]).downcase.pluralize),
+                                                                   :role_type => Basket.level_value_from(@basket.setting(:private_item_notification)).downcase.pluralize),
                                                        :checked => skip } %>
       </div>
       <% if show_privacy_controls_for?(@item, @basket) %>

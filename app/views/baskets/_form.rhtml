@@ -220,7 +220,7 @@
 
         <div class="form-element">
           <label for="settings_sort_order_default" style="width: 100%"><%=t 'baskets.form.browse_order_sort_by' %></label>
-          <div style="clear: left;"><%= select_tag 'settings[sort_order_default]', "<option value='none'>#{t('baskets.form.browse_order_default')}</option>#{Search.all_sort_types((current_value_of('sort_order_default') || @basket.settings[:sort_order_default] || 'default'), 'all')}", {"id" => "settings_sort_order_default", :tabindex => '1'} %></div>
+          <div style="clear: left;"><%= select_tag 'settings[sort_order_default]', "<option value='none'>#{t('baskets.form.browse_order_default')}</option>#{Search.all_sort_types((current_value_of('sort_order_default') || @basket.setting(:sort_order_default) || 'default'), 'all')}", {"id" => "settings_sort_order_default", :tabindex => '1'} %></div>
         </div>
 
         <div class="form-element">
@@ -279,7 +279,7 @@
           <div class="form_example">
             <%=t 'baskets.form.inherit_example' %><br />
             <%=t 'baskets.form.join_policy_current_inheritance',
-                 :current_inheritance => @site_basket.settings[:basket_join_policy] %>
+                 :current_inheritance => @site_basket.setting(:basket_join_policy) %>
           </div>
         </div>
         <% end -%>
@@ -340,7 +340,7 @@
           <div class="form_example">
             <%=t 'baskets.form.inherit_example' %><br />
             <%=t 'baskets.form.admin_contain_current_inheritance',
-                 :current_inheritance => (!@site_basket.settings[:allow_basket_admin_contact].blank? && @site_basket.settings[:allow_basket_admin_contact] == true) ? t('baskets.form.enabled') : t('baskets.form.disabled') %>
+                 :current_inheritance => (!@site_basket.setting(:allow_basket_admin_contact).blank? && @site_basket.setting(:allow_basket_admin_contact) == true) ? t('baskets.form.enabled') : t('baskets.form.disabled') %>
           </div>
         </div>
         <% end %>

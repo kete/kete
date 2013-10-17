@@ -235,7 +235,7 @@ module Flagging
     end
 
     def fully_moderated?
-      basket.fully_moderated? && (basket.settings[:moderated_except].blank? || !basket.settings[:moderated_except].include?(self.class.name))
+      basket.fully_moderated? && (basket.setting(:moderated_except).blank? || !basket.setting(:moderated_except).include?(self.class.name))
     end
 
     def disputed?

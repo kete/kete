@@ -209,12 +209,12 @@ namespace :kete do
     task :set_default_join_and_memberlist_policies => :environment do
       # set some defaults in the site basket
       site_basket = Basket.first # site
-      site_basket.settings[:basket_join_policy] = 'closed' if site_basket.settings[:basket_join_policy].class == NilClass
-      site_basket.settings[:memberlist_policy] = 'at least admin' if site_basket.settings[:memberlist_policy].class == NilClass
+      site_basket.set_setting(:basket_join_policy, 'closed') if site_basket.setting(:basket_join_policy).class == NilClass
+      site_basket.setting(:memberlist_policy, 'at least admin') if site_basket.setting(:memberlist_policy).class == NilClass
       # if the about, help, or documentation baskets are nil, fill in the same value as the site basket
-      Basket.about_basket.settings[:basket_join_policy] = site_basket.settings[:basket_join_policy] if Basket.about_basket.settings[:basket_join_policy].class == NilClass
-      Basket.help_basket.settings[:basket_join_policy] = site_basket.settings[:basket_join_policy] if Basket.help_basket.settings[:basket_join_policy].class == NilClass
-      Basket.documentation_basket.settings[:basket_join_policy] = site_basket.settings[:basket_join_policy] if Basket.documentation_basket.settings[:basket_join_policy].class == NilClass
+      Basket.about_basket.set_setting(:basket_join_policy, site_basket.setting(:basket_join_policy)) if Basket.about_basket.setting(:basket_join_policy).class == NilClass
+      Basket.help_basket.set_setting(:basket_join_policy, site_basket.setting(:basket_join_policy)) if Basket.help_basket.setting(:basket_join_policy).class == NilClass
+      Basket.documentation_basket.set_setting(:basket_join_policy, site_basket.setting(:basket_join_policy)) if Basket.documentation_basket.setting(:basket_join_policy).class == NilClass
     end
 
     desc 'Make all baskets with the status of NULL set to approved'
@@ -228,8 +228,8 @@ namespace :kete do
     desc 'Make about, documentation, and help baskets ignore on the site basket recent topics if not done yet.'
     task :ignore_default_baskets_if_setting_not_set => :environment do
       Basket.find_all_by_urlified_name(['about', 'documentation', 'help']).each do |basket|
-        if basket.settings[:disable_site_recent_topics_display].class == NilClass
-          basket.settings[:disable_site_recent_topics_display] = true
+        if basket.setting(:disable_site_recent_topics_display).class == NilClass
+          basket.set_setting(:disable_site_recent_topics_display, true)
         end
       end
     end
@@ -326,10 +326,10 @@ namespace :kete do
     task :set_default_browse_type => :environment do
       # set some defaults in the site basket
       site_basket = Basket.first # site
-      site_basket.settings[:browse_view_as] = '' if site_basket.settings[:browse_view_as].class == NilClass
+      site_basket.set_setting(:browse_view_as, '') if site_basket.setting(:browse_view_as).class == NilClass
       # All other baskets inherit from site
       Basket.all.each do |basket|
-        basket.settings[:browse_view_as] = 'inherit' if basket.settings[:browse_view_as].class == NilClass
+        basket.set_setting(:browse_view_as, 'inherit') if basket.setting(:browse_view_as).class == NilClass
       end
     end
 
@@ -347,7 +347,7 @@ namespace :kete do
     desc "Make all baskets have private item notification 'do not email' if setting doesn't exist"
     task :make_baskets_private_notification_do_not_email => :environment do
       Basket.all.each do |basket|
-        basket.settings[:private_item_notification] = 'do_not_email' if basket.settings[:private_item_notification].blank?
+        basket.set_setting(:private_item_notification, 'do_not_email') if basket.setting(:private_item_notification).blank?
       end
     end
 
@@ -412,7 +412,7 @@ namespace :kete do
     desc 'Make all baskets import archive set functionality at least member.'
     task :set_default_import_archive_set_policy => :environment do
       Basket.all.each do |basket|
-        basket.settings[:import_archive_set_policy] = 'at least admin' if basket.settings[:import_archive_set_policy].class == NilClass
+        basket.setting(:import_archive_set_policy, 'at least admin') if basket.setting(:import_archive_set_policy).class == NilClass
       end
     end
 

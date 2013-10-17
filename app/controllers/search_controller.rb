@@ -372,8 +372,8 @@ class SearchController < ApplicationController
       end
     end
 
-    sort_type = @current_basket.settings[:sort_order_default]
-    sort_direction = @current_basket.settings[:sort_direction_reversed_default]
+    sort_type = @current_basket.setting(:sort_order_default)
+    sort_direction = @current_basket.setting(:sort_direction_reversed_default)
     search_sort_type = (params[:sort_type].blank? and !sort_type.blank?) ? sort_type : params[:sort_type]
     search_sort_direction = (params[:sort_type].blank? and !sort_direction.blank?) ? sort_direction : params[:sort_direction]
     @search.add_sort_to_query_if_needed(:user_specified => search_sort_type,

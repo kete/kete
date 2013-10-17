@@ -219,18 +219,10 @@ class ApplicationController < ActionController::Base
   # and load up an array of the web paths
   # to the css files
   def load_theme_related
-    # For some reason, (a || b || c)  syntax is not working properly when using settings
-    # (it doesn't interpret NilClass as nil - hopefully a future version of acts_as_configurable
-    # will fix this issue so we don't have to keep doing this here, in basket edits, and in rake tasks)
-    @theme = if @current_basket.settings[:theme].class != NilClass
-      @current_basket.settings[:theme]
-    elsif @site_basket.settings[:theme].class != NilClass
-      @site_basket.settings[:theme]
-    else
-      'default'
-    end
-    @theme_font_family = @current_basket.settings[:theme_font_family] || @site_basket.settings[:theme_font_family] || 'sans-serif'
-    @header_image = @current_basket.settings[:header_image] || @site_basket.settings[:header_image] || nil
+    settings = SettingsCruft::Application.new(@current_basket, @site_basket)
+    @theme = settings.theme
+    @theme_font_family = settings.theme_font_family
+    @header_image = settings.header_image
   end
 
   def security_check_of_do_not_moderate
@@ -242,11 +234,11 @@ class ApplicationController < ActionController::Base
   end
 
   def current_user_can_see_flagging?
-    current_user_is?(@current_basket.settings[:show_flagging])
+    current_user_is?(@current_basket.setting(:show_flagging))
   end
 
   def current_user_can_see_add_links?
-    current_user_is?(@current_basket.settings[:show_add_links])
+    current_user_is?(@current_basket.setting(:show_add_links))
   end
 
   def current_user_can_add_or_request_basket?
@@ -265,11 +257,11 @@ class ApplicationController < ActionController::Base
   end
 
   def current_user_can_see_action_menu?
-    current_user_is?(@current_basket.settings[:show_action_menu])
+    current_user_is?(@current_basket.setting(:show_action_menu))
   end
 
   def current_user_can_see_discussion?
-    current_user_is?(@current_basket.settings[:show_discussion])
+    current_user_is?(@current_basket.setting(:show_discussion))
   end
 
   # Specific test for private file visibility.
@@ -1074,8 +1066,8 @@ class ApplicationController < ActionController::Base
   end
 
   def show_notification_controls?(basket = @current_basket)
-    return false if basket.settings[:private_item_notification].blank?
-    return false if basket.settings[:private_item_notification] == 'do_not_email'
+    return false if basket.setting(:private_item_notification).blank?
+    return false if basket.setting(:private_item_notification) == 'do_not_email'
     return false unless basket.show_privacy_controls_with_inheritance?
     true
   end

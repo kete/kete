@@ -25,7 +25,7 @@
 
       <% if allowed_field?('header_image') %>
         <div class="form-element">
-          <%= image_tag(@basket.settings[:header_image], :alt => t('baskets.appearance.current_header')) + "<br />" if !@basket.settings[:header_image].blank? -%>
+          <%= image_tag(@basket.setting(:header_image), :alt => t('baskets.appearance.current_header')) + "<br />" if !@basket.setting(:header_image).blank? -%>
           <label for="settings_header_image"><%=t 'baskets.appearance.header_example' %></label>
           <%= text_field 'settings', 'header_image', { "id" => "settings_header_image", :tabindex => '1', :value => current_value_of('header_image') } %>
         </div>
@@ -57,7 +57,7 @@
                 </div>
                 <div class="theme-choice-text">
                   <%=t 'baskets.appearance.inherit_example' %><br />
-                  <%= t('baskets.appearance.current_inheritance', :theme_name => (@site_basket.settings[:theme] || 'default')) %>
+                  <%= t('baskets.appearance.current_inheritance', :theme_name => (@site_basket.setting(:theme) || 'default')) %>
                 </div>
               </div>
             <% end %>
