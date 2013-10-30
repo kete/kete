@@ -94,7 +94,7 @@ GEM
     multipart-post (1.2.0)
     mysql (2.9.1)
     nokogiri (1.3.3)
-    nove-system-settings (0.1.0)
+    nove-system-settings (0.2.0)
     oai (0.3.0)
       builder (>= 2.0.0)
       faraday
@@ -170,7 +170,7 @@ DEPENDENCIES
   mini_exiftool (< 2.0.0)
   mysql
   nokogiri (= 1.3.3)
-  nove-system-settings (= 0.1.0)
+  nove-system-settings (= 0.2.0)
   oai (= 0.3.0)
   packet
   rails (= 3.0.20)

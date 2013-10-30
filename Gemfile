@@ -126,7 +126,7 @@ gem 'authorization',                '1.0.11' # >> 2008-10-01
 #gem 'redhillonrails_core',          '1.0.4' # >> 2008-06-30
 gem 'routing-filter',               '0.1.6' # ~= 2009-04-06
 #gem 'ssl_requirement',              '0.0.1' # >> 2008-05-29
-gem 'nove-system-settings',         '0.1.0' # >> 2008-01-14, replaces 'system_settings'
+gem 'nove-system-settings',         '0.2.0' # >> 2008-01-14, replaces 'system_settings'
 #gem 'validates_xml',                '1.0.3' # >> 2007-06-06
 gem 'will_paginate',                '2.3.11' # ~= '2009-03-09', should be '2.3.8'
 
