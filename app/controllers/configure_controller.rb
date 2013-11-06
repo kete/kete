@@ -284,7 +284,7 @@ class ConfigureController < ApplicationController
   def finish
     set_not_completed
     raise "Not all settings have been filled out." if @not_completed
-    @is_configured_setting = SystemSetting.find(1)
+    @is_configured_setting = SystemSetting.find_by_name("Is Configured")
     @is_configured_setting.value = 'true'
     @success = @is_configured_setting.save
     if @success and !request.xhr?

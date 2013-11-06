@@ -1,4 +1,4 @@
-if IS_CONFIGURED
+if SystemSetting.is_configured
   ExternalSearchSources[:authorized_role] = "site_admin"
   ExternalSearchSources[:unauthorized_path] = "/#{Basket.site_basket.urlified_name}"
   ExternalSearchSources[:default_url_options] = { :urlified_name => Basket.site_basket.urlified_name }

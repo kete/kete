@@ -365,7 +365,7 @@ class ApplicationController < ActionController::Base
   end
 
   def show_basket_list_naviation_menu?
-    return false unless IS_CONFIGURED
+    return false unless SystemSettings.is_configured
     return false if params[:controller] == 'baskets' && ['edit', 'appearance', 'homepage_options'].include?(params[:action])
     return false if params[:controller] == 'search'
     USES_BASKET_LIST_NAVIGATION_MENU_ON_EVERY_PAGE
@@ -1099,7 +1099,7 @@ class ApplicationController < ActionController::Base
 
   # check to see if url is something that can be done anonymously
   def anonymous_ok_for?(url)
-    return false unless url.present? && Kete.is_configured? &&
+    return false unless url.present? && SystemSettings.is_configured? &&
       Kete.allowed_anonymous_actions.present? &&
       Kete.allowed_anonymous_actions.size > 0
 
