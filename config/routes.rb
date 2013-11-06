@@ -4,6 +4,8 @@
 
   match '/oai_pmh_repository' => 'oai_pmh_repository#index', :as => :oai
 
+  get '/ping' => 'ping#index'
+
 
   ### monitoring tools
   # to make sure the rails process is answering
