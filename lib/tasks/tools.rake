@@ -258,7 +258,7 @@ namespace :kete do
         return unless Kete.is_configured?
 
         this_site_config = {
-          :title => Kete.pretty_site_name,
+          :title => SystemSetting.pretty_site_name,
           :domain => Kete.site_name,
           :oembed_endpoint => Kete.site_url + 'oembed',
           :upload_startpoint => { :label => 'Upload New Image',

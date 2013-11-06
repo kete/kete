@@ -21,9 +21,9 @@ module ApplicationHelper
 
   def title_with_context
     if @current_basket == @site_basket
-      "#{stripped_title} - #{Kete.pretty_site_name}"
+      "#{stripped_title} - #{SystemSetting.pretty_site_name}"
     else
-      "#{stripped_title} - #{@current_basket.name} - #{Kete.pretty_site_name}"
+      "#{stripped_title} - #{@current_basket.name} - #{SystemSetting.pretty_site_name}"
     end
   end
 
@@ -83,7 +83,7 @@ module ApplicationHelper
   end
 
   def page_keywords
-    return Kete.default_page_keywords if current_item.nil? || current_item.tags.blank?
+    return SystemSetting.default_page_keywords if current_item.nil? || current_item.tags.blank?
     current_item.tags.join(",").gsub(" ", "_").gsub("\"", "")
   end
 
@@ -121,7 +121,7 @@ module ApplicationHelper
 
     metadata += meta_tag(:name => 'DC.creator', :content => h(item.creator.user_name))
     metadata += meta_tag(:name => 'DC.contributor', :content => h(item.contributors.last.user_name) + ", et al") if item.contributors.size > 1
-    metadata += meta_tag(:name => 'DC.publisher', :content => h(Kete.pretty_site_name))
+    metadata += meta_tag(:name => 'DC.publisher', :content => h(SystemSetting.pretty_site_name))
     metadata += meta_tag(:name => 'DC.type', :content => 'Text')
     metadata += meta_tag(:name => 'DC.rights', :content => h(item.license.name + " (" + item.license.url + ")")) if item.license
 
@@ -141,7 +141,7 @@ module ApplicationHelper
     tag(:link, :rel => "search",
                :type => "application/opensearchdescription+xml",
                :href => "#{SITE_URL}opensearchdescription.xml",
-               :title => "#{Kete.pretty_site_name} Web Search")
+               :title => "#{SystemSetting.pretty_site_name} Web Search")
   end
 
   def open_search_metadata
@@ -205,7 +205,7 @@ module ApplicationHelper
   end
 
   def default_search_terms
-    search_location_name = Kete.pretty_site_name
+    search_location_name = SystemSetting.pretty_site_name
     search_text_key = 'search_value'
 
     if SEARCH_SELECT_CURRENT_BASKET && @current_basket != @site_basket
@@ -560,7 +560,7 @@ module ApplicationHelper
   def link_to_basket_contact_for(basket, include_name = true)
     link_text = t('application_helper.link_to_basket_contact_for.contact')
     if include_name
-      name = (basket == @site_basket || basket == @about_basket) ? Kete.pretty_site_name : basket.name
+      name = (basket == @site_basket || basket == @about_basket) ? SystemSetting.pretty_site_name : basket.name
       link_text += ' ' + name
     end
     link_to link_text, basket_contact_path(:urlified_name => basket.urlified_name)

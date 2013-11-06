@@ -365,7 +365,7 @@ class ApplicationController < ActionController::Base
   end
 
   def show_basket_list_naviation_menu?
-    return false unless SystemSettings.is_configured
+    return false unless SystemSetting.is_configured
     return false if params[:controller] == 'baskets' && ['edit', 'appearance', 'homepage_options'].include?(params[:action])
     return false if params[:controller] == 'search'
     USES_BASKET_LIST_NAVIGATION_MENU_ON_EVERY_PAGE
@@ -1100,8 +1100,8 @@ class ApplicationController < ActionController::Base
   # check to see if url is something that can be done anonymously
   def anonymous_ok_for?(url)
     return false unless url.present? && SystemSetting.is_configured? &&
-      Kete.allowed_anonymous_actions.present? &&
-      Kete.allowed_anonymous_actions.size > 0
+      SystemSetting.allowed_anonymous_actions.present? &&
+      SystemSetting.allowed_anonymous_actions.size > 0
 
     # get controller and action from url
     # strip off query string before submitting to routing
@@ -1115,7 +1115,7 @@ class ApplicationController < ActionController::Base
     value = from_url[:controller] + '/' + from_url[:action]
 
     # check if it is an allowed for or finished after controller/action combo
-    Kete.allowed_anonymous_actions.collect { |h| h.values }.flatten.include?(value)
+    SystemSetting.allowed_anonymous_actions.collect { |h| h.values }.flatten.include?(value)
   end
 
   def logout_anonymous
