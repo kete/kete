@@ -689,7 +689,7 @@ module ApplicationHelper
     class_names, styles = Array.new, Array.new
 
     class_names << position if position
-    styles << "width: #{(image_size_of(IMAGE_SLIDESHOW_SIZE) + 30)}px;" if position && position == 'inset'
+    styles << "width: #{(image_size_of(SystemSetting.image_slideshow_size) + 30)}px;" if position && position == 'inset'
 
     # Used to hide the empty, thin related items box on inset or sidebar display when no related items
     # are present. Only apply this if no items are present and only if we are on non-topic controller

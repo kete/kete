@@ -28,7 +28,7 @@ horizontal = display_refine
     </tr>
     <% end %>
 
-    <% if display_search_field_for?(type, DISPLAY_DATE_RANGE_FIELDS) %>
+    <% if display_search_field_for?(type, SystemSetting.display_date_range_fields) %>
     <tr>
       <td colspan="3" class="header">
         <label for="date_since"><%= t('search.mini_controls.date') %></label>

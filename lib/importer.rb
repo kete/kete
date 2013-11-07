@@ -792,7 +792,7 @@ module Importer
           params[zoom_class_for_params][:title] = record_value
         end
 
-        if !DESCRIPTION_SYNONYMS.blank? && DESCRIPTION_SYNONYMS.include?(record_field)
+        if !SystemSetting.description_synonyms.blank? && SystemSetting.description_synonyms.include?(record_field)
           if params[zoom_class_for_params][:description].nil?
             params[zoom_class_for_params][:description] = record_value
           else
@@ -808,7 +808,7 @@ module Importer
           end
         end
 
-        if !TAGS_SYNONYMS.blank? && TAGS_SYNONYMS.include?(record_field)
+        if !SystemSetting.tags_synonyms.blank? && SystemSetting.tags_synonyms.include?(record_field)
           @tag_list_array += record_value.split(',').collect { |tag| tag.strip }
         end
 
