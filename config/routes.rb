@@ -30,6 +30,10 @@
   match ':urlified_name/moderate/rss.:format' => 'moderate#rss', :as => :basket_moderate_rss
   match ':urlified_name/members/rss.:format' => 'members#rss', :as => :basket_moderate_rss
 
+  # RABID: This probably breaks search but I can't figure out where this route
+  #        comes from (either in this file or the routes file in the master branch).
+  #        Adding this route so we can get the basic app working
+  match 'search/terms_to_page_url_redirect' => "search#terms_to_page_url_redirect"
 
   # All search related routes (all, rss, for)
   match ':urlified_name/all/:controller_name_for_zoom_class/' => 'search#all', :as => :basket_all
