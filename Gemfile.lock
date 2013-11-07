@@ -54,6 +54,8 @@ GEM
     arel (2.0.10)
     authorization (1.0.11)
     avatar (0.2.0)
+    awesome_nested_set (2.1.6)
+      activerecord (>= 3.0.0)
     background (0.0.1)
     builder (2.1.2)
     chronic (0.10.2)
@@ -155,6 +157,7 @@ DEPENDENCIES
   acts_as_versioned (= 0.6.0)
   authorization (= 1.0.11)
   avatar
+  awesome_nested_set (~> 2.1.6)
   background
   chronic
   gmaps4rails (= 1.4.2)

@@ -5,6 +5,7 @@ gem "rails", "3.0.20"
 
 gem "mysql"
 
+gem "awesome_nested_set", "~> 2.1.6"
 # Added to get rake working. I suspect these should be removed.
 gem 'rake', '0.9.2.2' # version needed to use: require 'rake/rdoctask'
 gem "rdoc"
