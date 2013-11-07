@@ -438,6 +438,9 @@ class SystemSetting < ActiveRecord::Base
     self.method_name_to_setting_value(:administrator_activates)
   end
 
+  def self.uses_basket_list_navigation_menu_on_every_page?
+    self.method_name_to_setting_value(:uses_basket_list_navigation_menu_on_every_page)
+  end
 
 private
 

@@ -1215,7 +1215,7 @@ div.wrap {
 
 /* optional basket list in a column
    has to be turned on in system settings to show up
-   Server > USES_BASKET_LIST_NAVIGATION_MENU_ON_EVERY_PAGE
+   Server > SystemSetting.uses_basket_list_navigation_menu_on_every_page?
    you also must have at least one basket besides site defined
    or your layout will do bad things
 

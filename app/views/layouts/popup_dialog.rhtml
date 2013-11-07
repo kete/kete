@@ -16,9 +16,7 @@
 
   <%= stylesheet_link_tag('serif') if @theme_font_family == 'serif' %>
 
-  <%  bundle :name => "rails_defaults" do -%>
-    <%= javascript_include_tag :defaults %>
-  <% end -%>
+  <%= javascript_include_tag :defaults %>
   
   <!--[if IE]><%= stylesheet_link_tag 'kete-ie', :media => 'screen' %><![endif]-->
 

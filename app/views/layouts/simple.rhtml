@@ -17,14 +17,12 @@
     :extended_valid_elements => (@site_admin ? EXTENDED_VALID_ELEMENTS : '')
   }) %>
 
-  <% bundle :name => "#{@theme}_theme_simple" do -%>
-   <%= stylesheet_link_tag 'base', :media => 'screen' %>
-    <%= stylesheet_link_tag 'comment', :media => 'screen' %>
-     <%= stylesheet_link_tag 'redbox' %>
-      <% load_styles(@theme).each do |stylesheet| -%>
-        <%= stylesheet_link_tag stylesheet, :media => 'screen' if stylesheet == 'simple' %>
-         <% end -%>
-  <% end -%>
+  <%= stylesheet_link_tag 'base', :media => 'screen' %>
+  <%= stylesheet_link_tag 'comment', :media => 'screen' %>
+    <%= stylesheet_link_tag 'redbox' %>
+    <% load_styles(@theme).each do |stylesheet| -%>
+      <%= stylesheet_link_tag stylesheet, :media => 'screen' if stylesheet == 'simple' %>
+        <% end -%>
 
   <%= stylesheet_link_tag 'kete-print', :media => 'print' %>
 
@@ -33,10 +31,8 @@
   <% end -%>
   <!--[if IE]><%= stylesheet_link_tag 'kete-ie', :media => 'screen' %><![endif]-->
 
-  <%  bundle :name => "rails_defaults" do -%>
-      <%= javascript_include_tag :defaults %>
-        <%= javascript_include_tag 'redbox' %>
-   <% end -%>
+    <%= javascript_include_tag :defaults %>
+      <%= javascript_include_tag 'redbox' %>
 
   <% if SystemSetting.enable_maps? && initialize_gmap_headers? -%>
     <%= yield :gmap4rails_head %>

@@ -368,7 +368,7 @@ class ApplicationController < ActionController::Base
     return false unless SystemSetting.is_configured
     return false if params[:controller] == 'baskets' && ['edit', 'appearance', 'homepage_options'].include?(params[:action])
     return false if params[:controller] == 'search'
-    USES_BASKET_LIST_NAVIGATION_MENU_ON_EVERY_PAGE
+    SystemSetting.uses_basket_list_navigation_menu_on_every_page?
   end
 
   include CacheControllerHelpers

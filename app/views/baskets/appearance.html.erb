@@ -110,7 +110,7 @@
         </div>
       <% end %>
       
-      <% if allowed_field?('basket_list_menu') && USES_BASKET_LIST_NAVIGATION_MENU_ON_EVERY_PAGE -%>
+      <% if allowed_field?('basket_list_menu') && SystemSetting.uses_basket_list_navigation_menu_on_every_page? -%>
         <div class="form-element">
           <label><%=t 'baskets.appearance.basket_list_options' %></label>
           <fieldset>

@@ -64,19 +64,18 @@
 
   <%= stylesheet_link_tag 'kete-print', :media => 'print' %>
 
-  <% bundle :name => "#{@theme}_theme" do -%>
-    <%= stylesheet_link_tag 'base', :media => 'screen' %>
-    <%= stylesheet_link_tag 'comment', :media => 'screen' %>
-    <%= stylesheet_link_tag 'redbox' %>
-    <%= stylesheet_link_tag 'dan_webb_code_highlighter/styles' if !AVAILABLE_SYNTAX_HIGHLIGHTERS.empty? %>
+  <%= stylesheet_link_tag 'base', :media => 'screen' %>
+  <%= stylesheet_link_tag 'comment', :media => 'screen' %>
+  <%= stylesheet_link_tag 'redbox' %>
+  <%# TODO: Reenable AVAILABLE_SYNTAX_HIGHLIGHTERS in the future %>
+  <%# stylesheet_link_tag 'dan_webb_code_highlighter/styles' if !AVAILABLE_SYNTAX_HIGHLIGHTERS.empty? %>
 
-    <%# James - 2008-11-19 %>
-    <%# Include a custom stylesheet if a third column is enabled. %>
-    <%= stylesheet_link_tag('left-hand-column') if show_basket_list_naviation_menu? %>
+  <%# James - 2008-11-19 %>
+  <%# Include a custom stylesheet if a third column is enabled. %>
+  <%= stylesheet_link_tag('left-hand-column') if show_basket_list_naviation_menu? %>
 
-    <% load_styles(@theme).each do |stylesheet| -%>
-      <%= stylesheet_link_tag stylesheet, :media => 'screen' %>
-    <% end -%>
+  <% load_styles(@theme).each do |stylesheet| -%>
+    <%= stylesheet_link_tag stylesheet, :media => 'screen' %>
   <% end -%>
 
   <% if !ENABLE_USER_PORTRAITS && !ENABLE_GRAVATAR_SUPPORT %>
@@ -105,17 +104,15 @@
     </style>
   <% end %>
 
-  <% bundle :name => "rails_defaults" do -%>
-    <%= javascript_include_tag :defaults %>
-    <%= javascript_include_tag 'redbox' %>
-    <% if !AVAILABLE_SYNTAX_HIGHLIGHTERS.blank? %>
-      <%= javascript_include_tag 'dan_webb_code_highlighter/code_highlighter' %>
-      <% AVAILABLE_SYNTAX_HIGHLIGHTERS.each do |syntax| %>
-        <%= javascript_include_tag "dan_webb_code_highlighter/#{syntax}" %>
-      <% end %>
+  <%= javascript_include_tag :defaults %>
+  <%= javascript_include_tag 'redbox' %>
+  <% if !AVAILABLE_SYNTAX_HIGHLIGHTERS.blank? %>
+    <%= javascript_include_tag 'dan_webb_code_highlighter/code_highlighter' %>
+    <% AVAILABLE_SYNTAX_HIGHLIGHTERS.each do |syntax| %>
+      <%= javascript_include_tag "dan_webb_code_highlighter/#{syntax}" %>
     <% end %>
-    <%= javascript_include_tag 'kete' -%>
-  <% end -%>
+  <% end %>
+  <%= javascript_include_tag 'kete' -%>
 
   <% if SystemSetting.enable_maps? && initialize_gmap_headers? -%>
     <% if CACHES_CONTROLLERS.include?(params[:controller]) || params[:controller] == 'index_page' -%>
@@ -141,18 +138,12 @@
   <% end -%>
 
   <% if ACTIVE_SCAFFOLD_CONTROLLERS.include?(params[:controller]) -%>
-    <% bundle :name => "active_scaffold" do -%>
-      <%= active_scaffold_includes %>
-    <% end -%>
+    <%= active_scaffold_includes %>
   <% end -%>
 
   <% if ['extended_fields', 'choices'].include?(params[:controller]) -%>
-    <% bundle :name => "yui_js" do -%>
-      <%= javascript_include_tag "yui/yahoo/yahoo", "yui/event/event-min", "yui/animation/animation-min", "yui/dom/dom-min", "yui/treeview/treeview-min" %>
-    <% end %>
-    <% bundle :name => "yui_css" do -%>
-      <%= stylesheet_link_tag 'yui/treeview'%>
-    <% end -%>
+    <%= javascript_include_tag "yui/yahoo/yahoo", "yui/event/event-min", "yui/animation/animation-min", "yui/dom/dom-min", "yui/treeview/treeview-min" %>
+    <%= stylesheet_link_tag 'yui/treeview'%>
   <% end -%>
 
   <% rss_tag_links = @rss_tag_link.blank? ? Array.new : @rss_tag_link.to_a

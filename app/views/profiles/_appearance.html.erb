@@ -54,7 +54,7 @@
     </fieldset>
   </div>
 
-  <%# if USES_BASKET_LIST_NAVIGATION_MENU_ON_EVERY_PAGE -%>
+  <%# if SystemSetting.uses_basket_list_navigation_menu_on_every_page? -%>
   <div class="form-element">
     <%= rules_allowed_check_box('basket_list_menu') %>
     <label><%=t 'profiles.appearance.basket_list_menu_options' %></label>
