@@ -24,7 +24,7 @@ module SearchHelper
     if !@contributor.nil?
       contributor = add_links ? link_to_profile_for(@contributor, nil, contributor_show_link_options(@contributor)) : @contributor.user_name
       contributor_string = t('search_helper.last_part_of_title_if_refinement_of.contributed_by', :contributor => contributor)
-      contributor_string += ' ' + avatar_for(@contributor) if ENABLE_USER_PORTRAITS || ENABLE_GRAVATAR_SUPPORT
+      contributor_string += ' ' + avatar_for(@contributor) if SystemSetting.enable_user_portraits? || SystemSetting.enable_gravatar_support?
       end_of_title_parts << contributor_string
     end
 

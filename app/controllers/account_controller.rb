@@ -523,7 +523,7 @@ class AccountController < ApplicationController
 
 
   def redirect_if_user_portraits_arnt_enabled
-    unless ENABLE_USER_PORTRAITS
+    unless SystemSetting.enable_user_portraits?
       flash[:notice] = t('account_controller.redirect_if_user_portraits_arnt_enabled.not_enabled')
       @still_image = StillImage.find(params[:id])
       redirect_to_show_for(@still_image)

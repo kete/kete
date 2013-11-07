@@ -36,7 +36,7 @@ something like the following:
 
           # set_constant allows you to overwrite a constant with another value without receiving
           # any warnings, etc.
-          set_constant :ENABLE_USER_PORTRAITS, true
+          set_constant :SystemSetting.enable_user_portraits?, true
         end
       end
 

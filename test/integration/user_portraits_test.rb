@@ -6,7 +6,7 @@ class AccountTest < ActionController::IntegrationTest
 
     setup do
       configure_environment do
-        set_constant :ENABLE_USER_PORTRAITS, false
+        set_constant :SystemSetting.enable_user_portraits?, false
       end
 
       add_lily_as_regular_user
@@ -35,7 +35,7 @@ class AccountTest < ActionController::IntegrationTest
 
     setup do
       configure_environment do
-        set_constant :ENABLE_USER_PORTRAITS, true
+        set_constant :SystemSetting.enable_user_portraits?, true
       end
 
       add_joe_as_regular_user

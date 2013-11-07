@@ -19,11 +19,11 @@
   <% end -%>
 </div>
 
-<% if @viewer_is_user && (ENABLE_USER_PORTRAITS || (ENABLE_GRAVATAR_SUPPORT && @viewer_portraits.nil?)) -%>
+<% if @viewer_is_user && (SystemSetting.enable_user_portraits? || (SystemSetting.enable_gravatar_support? && @viewer_portraits.nil?)) -%>
   <div id="portrait_help_div">
     <p><%=t '.portrait_description' -%></p>
     <ul>
-      <% if ENABLE_USER_PORTRAITS -%>
+      <% if SystemSetting.enable_user_portraits? -%>
         <li>
           <%=t '.portrait_new',
                :new_portrait_link => link_to(t('.new_portrait_link'),
@@ -41,11 +41,11 @@
           </li>
         <% end -%>
       <% end -%>
-      <% if ENABLE_GRAVATAR_SUPPORT && @viewer_portraits.nil? -%>
+      <% if SystemSetting.enable_gravatar_support? && @viewer_portraits.nil? -%>
         <li>
           <%=t '.gravatar',
                :gravatar_link => link_to(t('.gravatar_link'), 'http://gravatar.com/') -%>
-          <%= t('.portrait_or_gravatar') if ENABLE_USER_PORTRAITS -%>
+          <%= t('.portrait_or_gravatar') if SystemSetting.enable_user_portraits? -%>
         </li>
       <% end -%>
     </ul>
@@ -58,7 +58,7 @@
 <% end -%>
 
 <div class="profile_content_right">
-  <% if ENABLE_USER_PORTRAITS && !@viewer_portraits.blank? -%>
+  <% if SystemSetting.enable_user_portraits? && !@viewer_portraits.blank? -%>
   <div id="portraits">
     <div>
       <h4><%=t '.other_portraits' %></h4>
@@ -95,7 +95,7 @@
 </div>
 
 <div class="avatar" style="padding:0px;">
-  <% if ENABLE_USER_PORTRAITS || ENABLE_GRAVATAR_SUPPORT -%>
+  <% if SystemSetting.enable_user_portraits? || SystemSetting.enable_gravatar_support? -%>
     <% selected_portrait = avatar_for(@user, :return_portrait => true) -%>
     <div id="profile_avatar" class="avatar">
       <% unless selected_portrait.nil? -%>
@@ -104,7 +104,7 @@
         <%= avatar_for @user -%>
       <% end -%>
     </div>
-    <% if @viewer_is_user && ENABLE_USER_PORTRAITS -%>
+    <% if @viewer_is_user && SystemSetting.enable_user_portraits? -%>
       <% unless selected_portrait.nil? %>
         <div id="selected_portrait"><%=t '.selected_portrait' %></div>
       <% end -%>

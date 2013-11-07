@@ -1,4 +1,4 @@
-<% if ENABLE_USER_PORTRAITS || ENABLE_GRAVATAR_SUPPORT -%>
+<% if SystemSetting.enable_user_portraits? || SystemSetting.enable_gravatar_support? -%>
   <img src="/images/indicator.gif" width="16" height="16" alt="<%=t 'account.avatar_updater.fetching_avatar' %>" id="user_avatar_spinner" style="display:none;" />
   <table id="user_avatar_updater_table">
   <tr>
@@ -11,7 +11,7 @@
       <% end -%>
     </td>
     <td>
-      <% if ENABLE_USER_PORTRAITS -%>
+      <% if SystemSetting.enable_user_portraits? -%>
         <% if !current_user.nil? && current_user != :false -%>
           <%=t 'account.avatar_updater.add_avatar',
                :profile_link => link_to(t('account.avatar_updater.profile_link'), :action => 'show') %>
@@ -19,11 +19,11 @@
           <%=t 'account.avatar_updater.add_avatar_after_signup' %>
         <% end -%>
       <% end -%>
-      <% if ENABLE_GRAVATAR_SUPPORT -%>
+      <% if SystemSetting.enable_gravatar_support? -%>
         <%=t 'account.avatar_updater.gravatar_link', :gravatar_link => '<a href="http://gravatar.com/">Gravatar</a>' %>
       <% end -%>
     </td>
   </tr>
   </table>
-  <%= avatar_updater_js if ENABLE_GRAVATAR_SUPPORT -%>
+  <%= avatar_updater_js if SystemSetting.enable_gravatar_support? -%>
 <% end -%>

@@ -3,7 +3,7 @@ require File.dirname(__FILE__) + '/../test_helper'
 # Require stubs
 require File.dirname(__FILE__) + '/../stubs/captcha'
 
-set_constant('ENABLE_USER_PORTRAITS', true)
+set_constant('SystemSetting.enable_user_portraits?', true)
 
 class AccountControllerTest < ActionController::TestCase
 

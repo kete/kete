@@ -410,7 +410,7 @@ class SystemSetting < ActiveRecord::Base
     self.method_name_to_setting_value(:allowed_anonymous_actions)
   end
 
-  def self.enable_maps
+  def self.enable_maps?
     self.method_name_to_setting_value(:enable_maps)
   end
 
@@ -440,6 +440,23 @@ class SystemSetting < ActiveRecord::Base
 
   def self.uses_basket_list_navigation_menu_on_every_page?
     self.method_name_to_setting_value(:uses_basket_list_navigation_menu_on_every_page)
+  end
+
+  def self.enable_user_portraits?
+    self.method_name_to_setting_value(:enable_user_portraits)
+  end
+
+  def self.enable_gravatar_support?
+    self.method_name_to_setting_value(:enable_gravatar_support)
+  end
+
+  def self.language_choices_position
+    self.method_name_to_setting_value(:language_choices_position)
+  end
+
+  def self.available_syntax_highlighters
+    # self.method_name_to_setting_value(:available_syntax_highlighters)
+    []
   end
 
 private

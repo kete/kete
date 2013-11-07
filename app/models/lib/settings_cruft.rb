@@ -15,7 +15,6 @@ module SettingsCruft
 
     def theme
       @current_basket.setting(:theme) || @site_basket.setting(:theme) || 'default'
-      nil
     end
 
     def theme_font_family

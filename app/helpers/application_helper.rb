@@ -48,19 +48,19 @@ module ApplicationHelper
                                   :user_name => user.user_name) }
     options = default_options.merge(options)
 
-    return nil if options[:return_portrait] && (!ENABLE_USER_PORTRAITS || user.avatar.nil?)
+    return nil if options[:return_portrait] && (!SystemSetting.enable_user_portraits? || user.avatar.nil?)
 
-    if ENABLE_USER_PORTRAITS && user.avatar
+    if SystemSetting.enable_user_portraits? && user.avatar
       if options[:return_portrait]
         return user.avatar
       else
         return image_tag(user.avatar.thumbnail_file.public_filename, options)
       end
-    elsif ENABLE_USER_PORTRAITS && !ENABLE_GRAVATAR_SUPPORT
+    elsif SystemSetting.enable_user_portraits? && !SystemSetting.enable_gravatar_support?
       return image_tag('no-avatar.png', options)
     end
 
-    if ENABLE_GRAVATAR_SUPPORT
+    if SystemSetting.enable_gravatar_support?
       return avatar_tag(user, { :size => 50, :rating => 'G', :gravatar_default_url => "#{SystemSetting.full_site_url}images/no-avatar.png" }, options)
     end
 
@@ -1590,16 +1590,17 @@ module ApplicationHelper
 
   def load_styles(theme)
     theme_styles = Array.new
-    theme_styles_path = theme + '/stylesheets/'
-    theme_styles_full_path = THEMES_ROOT + '/' + theme_styles_path
-    theme_styles_dir = Dir.new(theme_styles_full_path)
-    theme_styles_dir.each do |file|
-      file_full_path = theme_styles_full_path + file.to_s
-      if !File.directory?(file_full_path) and File.extname(file_full_path) == '.css'
-        web_root_to_file = '/' + THEMES_DIR_NAME + '/' + theme_styles_path + file
-        theme_styles << web_root_to_file unless stylesheet_for_ie?(web_root_to_file)
-      end
-    end
+    # RABID: disable this until we get around to integrating it with the Asset Pipeline
+    # theme_styles_path = theme + '/stylesheets/'
+    # theme_styles_full_path = THEMES_ROOT + '/' + theme_styles_path
+    # theme_styles_dir = Dir.new(theme_styles_full_path)
+    # theme_styles_dir.each do |file|
+    #   file_full_path = theme_styles_full_path + file.to_s
+    #   if !File.directory?(file_full_path) and File.extname(file_full_path) == '.css'
+    #     web_root_to_file = '/' + THEMES_DIR_NAME + '/' + theme_styles_path + file
+    #     theme_styles << web_root_to_file unless stylesheet_for_ie?(web_root_to_file)
+    #   end
+    # end
     theme_styles
   end
 
