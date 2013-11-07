@@ -6,6 +6,6 @@
 
 <%=t 'user_notifier.join_policy.accepted.participate_by' %>
 
-<%= SITE_URL %><%= @basket.urlified_name %>
+<%= SystemSetting.full_site_url %><%= @basket.urlified_name %>
 
 <%= render 'user_notifier/email_footer' %>

@@ -1,5 +1,5 @@
 <h3><%=t 'configure.settings_complete.title' %></h3>
-<% if IS_CONFIGURED -%>
+<% if SystemSetting.is_configured? -%>
   <p><%=t 'configure.settings_complete.restart' %></p>
 <% else -%>
   <p><%=t 'configure.settings_complete.next' %></p>

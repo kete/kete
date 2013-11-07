@@ -4,10 +4,10 @@
 
 <%=t 'user_notifier.basket_create_policy.approved.edit_it_by' %>
 
-<%= SITE_URL %><%= @basket.urlified_name %>/baskets/edit/<%= @basket.id %>
+<%= SystemSetting.full_site_url %><%= @basket.urlified_name %>/baskets/edit/<%= @basket.id %>
 
 <%=t 'user_notifier.basket_create_policy.approved.view_contents_at' %>
 
-<%= SITE_URL %><%= @basket.urlified_name %>
+<%= SystemSetting.full_site_url %><%= @basket.urlified_name %>
 
 <%= render 'user_notifier/email_footer' %>

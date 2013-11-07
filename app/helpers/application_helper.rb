@@ -61,7 +61,7 @@ module ApplicationHelper
     end
 
     if ENABLE_GRAVATAR_SUPPORT
-      return avatar_tag(user, { :size => 50, :rating => 'G', :gravatar_default_url => "#{SITE_URL}images/no-avatar.png" }, options)
+      return avatar_tag(user, { :size => 50, :rating => 'G', :gravatar_default_url => "#{SystemSetting.full_site_url}images/no-avatar.png" }, options)
     end
 
     return ''
@@ -140,7 +140,7 @@ module ApplicationHelper
   def opensearch_descriptions
     tag(:link, :rel => "search",
                :type => "application/opensearchdescription+xml",
-               :href => "#{SITE_URL}opensearchdescription.xml",
+               :href => "#{SystemSetting.full_site_url}opensearchdescription.xml",
                :title => "#{SystemSetting.pretty_site_name} Web Search")
   end
 

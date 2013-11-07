@@ -58,6 +58,10 @@ class SystemSetting < ActiveRecord::Base
     self.method_name_to_setting_value(:site_name)
   end
 
+  def self.full_site_url
+    "http:/#{self.method_name_to_setting_value(:site_url)}/"
+  end
+
   def self.site_url
     self.method_name_to_setting_value(:site_url)
   end

@@ -12,7 +12,7 @@ class SearchTest < ActionController::IntegrationTest
       add_sally_as_regular_user
       login_as('sally')
       @topic = new_topic(:title => 'abcdef')
-      @image_file_base_url = SITE_URL + '/image_files/'
+      @image_file_base_url = SystemSetting.full_site_url + '/image_files/'
       @first_image = new_still_image{ attach_file "image_file_uploaded_data", "white.jpg"}
     end
 
@@ -30,13 +30,13 @@ class SearchTest < ActionController::IntegrationTest
       should_eventually "show thumbnail for related image"
       # should "show thumbnail for related image" do
       #         browse_for(@topic)
-      #         body_should_contain Regexp.new("<img (.+)src=\"#{SITE_URL}#{@first_image.thumbnail_file.public_filename}\">")
+      #         body_should_contain Regexp.new("<img (.+)src=\"#{SystemSetting.full_site_url}#{@first_image.thumbnail_file.public_filename}\">")
       #       end
 
       should "after the relationship with an image was unlinked should not have a thumbnail for image" do
         unlink_relation_between(@topic, 'StillImage', [@first_image.id])
         browse_for(@topic)
-        body_should_not_contain Regexp.new("<img (.+)src=\"#{SITE_URL}#{@first_image.thumbnail_file.public_filename}\">")
+        body_should_not_contain Regexp.new("<img (.+)src=\"#{SystemSetting.full_site_url}#{@first_image.thumbnail_file.public_filename}\">")
       end
     end
 
@@ -54,9 +54,9 @@ class SearchTest < ActionController::IntegrationTest
     #         # index 5 is actually the six item, because we are dealing with array indexes, blah blah blah
     #         # so we don't want to see a match for the sixth image
     #         unless images.index(image) < 5
-    #           body_should_not_contain Regexp.new("<img (.+)src=\"#{SITE_URL}#{image.thumbnail_file.public_filename}\">")
+    #           body_should_not_contain Regexp.new("<img (.+)src=\"#{SystemSetting.full_site_url}#{image.thumbnail_file.public_filename}\">")
     #         else
-    #           body_should_contain Regexp.new("<img (.+)src=\"#{SITE_URL}#{image.thumbnail_file.public_filename}\">")
+    #           body_should_contain Regexp.new("<img (.+)src=\"#{SystemSetting.full_site_url}#{image.thumbnail_file.public_filename}\">")
     #         end
     #       end
     # end

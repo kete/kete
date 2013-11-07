@@ -3,7 +3,7 @@ include KeteUrlFor
 include ActionView::Helpers::SanitizeHelper
 
 # oai dublin core xml helpers
-# TODO: evaluate whether we can simply go with SITE_URL
+# TODO: evaluate whether we can simply go with SystemSetting.full_site_url
 # rather than request hacking
 module OaiDcHelpers
   unless included_modules.include? OaiDcHelpers

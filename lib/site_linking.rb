@@ -7,16 +7,16 @@ module SiteLinking
     end
 
     def check_nessesary_constants_set
-      raise "Pretty Site Name and Site URL constants are not set, are you sure you restarted your server after you configured your Kete site?" if SITE_URL.blank? || SystemSetting.pretty_site_name.blank?
+      raise "Pretty Site Name and Site URL constants are not set, are you sure you restarted your server after you configured your Kete site?" if SystemSetting.full_site_url.blank? || SystemSetting.pretty_site_name.blank?
     end
 
     def site_listing
       check_nessesary_constants_set
       set_kete_net_urls
       @site_listing = nil
-      SiteLinkingResource.find(:all, :params => { :url => SITE_URL }).each do |link|
+      SiteLinkingResource.find(:all, :params => { :url => SystemSetting.full_site_url }).each do |link|
         link = link.attributes
-        if link['url'].chomp('/') == SITE_URL.chomp('/') # take off the / on the end so it won't fail in some cases
+        if link['url'].chomp('/') == SystemSetting.full_site_url.chomp('/') # take off the / on the end so it won't fail in some cases
           @site_listing = link
           break
         end

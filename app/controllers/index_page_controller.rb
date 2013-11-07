@@ -209,7 +209,7 @@ class IndexPageController < ApplicationController
   end
 
   def validate_kete_net_link
-    render(:xml => { :url => SITE_URL, :datetime => "#{Time.new.utc.xmlschema}" })
+    render(:xml => { :url => SystemSetting.full_site_url, :datetime => "#{Time.new.utc.xmlschema}" })
   end
 
   # page that tells search engines where not to go

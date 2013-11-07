@@ -8,6 +8,6 @@
 
 <%=t 'user_notifier.join_policy.request.approve_or_reject' %> 
 
-<%= SITE_URL %><%= @basket.urlified_name %>/members/list
+<%= SystemSetting.full_site_url %><%= @basket.urlified_name %>/members/list
 
 <%= render 'user_notifier/email_footer' %>

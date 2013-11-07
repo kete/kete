@@ -3,7 +3,7 @@
 <h2><%= h(@title) -%></h2>
 
 <div id="message">
-  <% if IS_CONFIGURED -%>
+  <% if SystemSetting.is_configured? -%>
     <p><%=t 'configure.index.change_settings' %></p>
   <% else -%>
     <p><%=t 'configure.index.setup_site' %></p>
@@ -165,7 +165,7 @@
       </div>
 <% end  -%>
 
-<% if IS_CONFIGURED -%>
+<% if SystemSetting.is_configured? -%>
   <div class="configured_site_controls">
     <% if APPLICATION_SERVER == 'passenger' %>
       <%= button_to t('configure.index.restart_server'), {:action => 'restart_server'} %>
