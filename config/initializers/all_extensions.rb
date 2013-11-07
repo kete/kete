@@ -113,11 +113,11 @@ module I18n
         # Adding very simple translation fallback support to I18n module
         # Calls the original lookup method. If the value is empty, call it again with default locale
         alias :lookup_orig :lookup
-        def lookup(locale, key, scope = [])
+        def lookup(locale, key, scope = [], options = {})
           return unless key
-          entry = lookup_orig(locale, key, scope)
+          entry = lookup_orig(locale, key, scope, options)
           if (entry.nil? || (entry.is_a?(String) && entry.empty?)) && I18n.default_locale
-            entry = lookup_orig(I18n.default_locale, key, scope)
+            entry = lookup_orig(I18n.default_locale, key, scope, options)
           end
           entry
         end
@@ -128,9 +128,10 @@ module I18n
         # to the original interpolate method
         alias :interpolate_orig :interpolate
         def interpolate(locale, string, values = {})
+          match = /(\\\\)?\{\{([^\}]+)\}\}/
           return string unless string.is_a?(String)
 
-          string = string.gsub(MATCH) do
+          string = string.gsub(match) do
             escaped, pattern, key = $1, $2, $2.to_sym
 
             if !escaped && pattern.match(/^t\./)
