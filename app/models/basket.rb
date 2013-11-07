@@ -435,7 +435,7 @@ class Basket < ActiveRecord::Base
     moderators = self.has_moderators
     moderators = self.has_admins if moderators.size == 0
     moderators = Basket.site_basket.has_admins if moderators.size == 0
-    moderators << Basket.site_basket.has_site_admins if moderators.size == 0 || SystemSettings.notify_site_admins_of_flaggings
+    moderators << Basket.site_basket.has_site_admins if moderators.size == 0 || SystemSetting.notify_site_admins_of_flaggings
 
     moderators.flatten.uniq
   end

@@ -106,7 +106,7 @@ class BasketsController < ApplicationController
       end
 
       # if basket creator is admin or creation not moderated, make creator basket admin
-      @basket.accepts_role('admin', current_user) if BASKET_CREATION_POLICY == 'open' || @site_admin
+      @basket.accepts_role('admin', current_user) if SystemSetting.basket_creation_policy == 'open' || @site_admin
 
       # if an site admin makes a basket, make sure emailing notifications are skipped
       if basket_policy_request_with_permissions?

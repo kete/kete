@@ -122,7 +122,7 @@ class SearchController < ApplicationController
     # the search is done with the limitations of the contributor_id or source_item
     # i.e. search for 'bob smith' within topics related to source_item 'daddy smith'
 
-    @controller_name_for_zoom_class = params[:controller_name_for_zoom_class] || zoom_class_controller(DEFAULT_SEARCH_CLASS)
+    @controller_name_for_zoom_class = params[:controller_name_for_zoom_class] || zoom_class_controller(SystemSetting.default_search_class)
 
     @current_class = zoom_class_from_controller(@controller_name_for_zoom_class)
 
@@ -162,7 +162,7 @@ class SearchController < ApplicationController
       # otherwise we fallback to default constant
       # unless user has specifically chosen a different number
       if params[:number_of_results_per_page].blank?
-        @number_per_page = session[:number_of_results_per_page] ? session[:number_of_results_per_page].to_i : DEFAULT_RECORDS_PER_PAGE
+        @number_per_page = session[:number_of_results_per_page] ? session[:number_of_results_per_page].to_i : SystemSetting.default_records_per_page
       else
         @number_per_page = params[:number_of_results_per_page].to_i
       end
@@ -400,7 +400,7 @@ class SearchController < ApplicationController
   end
 
   def redirect_to_default_all
-    redirect_to basket_all_url(:controller_name_for_zoom_class => zoom_class_controller(DEFAULT_SEARCH_CLASS))
+    redirect_to basket_all_url(:controller_name_for_zoom_class => zoom_class_controller(SystemSetting.default_search_class))
   end
 
   # takes search_terms from form
@@ -410,7 +410,7 @@ class SearchController < ApplicationController
       params[:urlified_name] : params[:target_basket]
 
     controller_name = params[:controller_name_for_zoom_class].nil? ? \
-      zoom_class_controller(DEFAULT_SEARCH_CLASS) : params[:controller_name_for_zoom_class]
+      zoom_class_controller(SystemSetting.default_search_class) : params[:controller_name_for_zoom_class]
 
     location_hash = { :urlified_name => basket_name,
                       :controller_name_for_zoom_class => controller_name,

@@ -591,7 +591,7 @@ module Importer
       # that is a title synonym, we go with last match just in case
       title = nil
       record_hash.keys.each do |field_name|
-        title = record_hash[field_name].strip if field_name.downcase == 'title' || (TITLE_SYNONYMS && TITLE_SYNONYMS.include?(field_name))
+        title = record_hash[field_name].strip if field_name.downcase == 'title' || (SystemSetting.SystemSetting.title_synonyms && SystemSetting.SystemSetting.title_synonyms.include?(field_name))
       end
 
       logger.info("after record field_name loop")
@@ -771,7 +771,7 @@ module Importer
     end
 
     def assign_value_to_appropriate_fields(record_field, record_value, params, zoom_class)
-      return if IMPORT_FIELDS_TO_IGNORE.include?(record_field)
+      return if SystemSetting.import_fields_to_ignore.include?(record_field)
       logger.debug("record_field " + record_field.inspect)
 
       zoom_class_for_params = zoom_class.tableize.singularize
@@ -788,7 +788,7 @@ module Importer
         # the field may also be mapped to non-extended fields
         # such as tags, description, title
         # the value maybe used multiple times, so case isn't appropriate
-        if record_field.upcase == 'TITLE' || (!TITLE_SYNONYMS.blank? && TITLE_SYNONYMS.include?(record_field))
+        if record_field.upcase == 'TITLE' || (!SystemSetting.title_synonyms.blank? && SystemSetting.title_synonyms.include?(record_field))
           params[zoom_class_for_params][:title] = record_value
         end
 
@@ -800,7 +800,7 @@ module Importer
           end
         end
 
-        if !SHORT_SUMMARY_SYNONYMS.blank? && SHORT_SUMMARY_SYNONYMS.include?(record_field)
+        if !SystemSetting.short_summary_synonyms.blank? && SystemSetting.short_summary_synonyms.include?(record_field)
           if params[zoom_class_for_params][:short_summary].nil?
             params[zoom_class_for_params][:short_summary] = record_value
           else
@@ -918,11 +918,11 @@ module Importer
         else
           params[zoom_class_for_params][:description] = @import.description_beginning_template
         end
-      elsif !DESCRIPTION_TEMPLATE.blank?
+      elsif !SystemSetting.description_template.blank?
         if !params[zoom_class_for_params][:description].nil?
-          params[zoom_class_for_params][:description] = DESCRIPTION_TEMPLATE + "\n\n" + params[zoom_class_for_params][:description]
+          params[zoom_class_for_params][:description] = SystemSetting.description_template + "\n\n" + params[zoom_class_for_params][:description]
         else
-          params[zoom_class_for_params][:description] = DESCRIPTION_TEMPLATE
+          params[zoom_class_for_params][:description] = SystemSetting.description_template
         end
       end
 
@@ -1004,13 +1004,13 @@ module Importer
       # only necessary for still images, because attachment is in a child model
       # if we are allowing harvesting of embedded metadata from the image_file
       # we need to grab it from the image_file's file path
-      if ENABLE_EMBEDDED_SUPPORT && !new_image_file.nil? && zoom_class == 'StillImage'
+      if SystemSetting.enable_embedded_support && !new_image_file.nil? && zoom_class == 'StillImage'
         new_record.populate_attributes_from_embedded_in(new_image_file.full_filename)
       end
 
       # handle special case where title is derived from filename
       if new_record.title.blank?
-        if ENABLE_EMBEDDED_SUPPORT && zoom_class != 'StillImage' && ATTACHABLE_CLASSES.include?(zoom_class)
+        if SystemSetting.enable_embedded_support && zoom_class != 'StillImage' && ATTACHABLE_CLASSES.include?(zoom_class)
           new_record.title = '-replace-' + record_hash['placeholder_title']
         else
           new_record.title = record_hash['placeholder_title']
@@ -1019,7 +1019,7 @@ module Importer
 
       # respect the Related Items Inset configurations
       if new_record.respond_to?(:related_items_position)
-        new_record.related_items_position = (defined?(RELATED_ITEMS_POSITION_DEFAULT) ? RELATED_ITEMS_POSITION_DEFAULT : 'inset')
+        new_record.related_items_position = (SystemSetting.related_items_position_default ? SystemSetting.related_items_position_default : 'inset')
       end
 
       # if still image and new_image failed, fail
@@ -1167,7 +1167,7 @@ module Importer
                                     :license_id => topic_params[:topic][:license_id],
                                     :topic_type_id => topic_params[:topic][:topic_type_id],
                                     :do_not_moderate => true,
-                                    :related_items_position => (defined?(RELATED_ITEMS_POSITION_DEFAULT) ? RELATED_ITEMS_POSITION_DEFAULT : 'inset')
+                                    :related_items_position => (SystemSetting.related_items_position_default ? SystemSetting.related_items_position_default : 'inset')
                                     )
 
       related_topic.creator =  @contributing_user

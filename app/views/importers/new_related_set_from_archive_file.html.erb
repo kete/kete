@@ -8,13 +8,13 @@
 
 <ul>
   <li><p><%=t 'importers.new_related_set_from_archive_file.folder_containing_items' %></p></li>
-  <li><p><%=t 'importers.new_related_set_from_archive_file.archive_limit', :size => number_to_human_size(MAXIMUM_UPLOADED_FILE_SIZE) %></p></li>
+  <li><p><%=t 'importers.new_related_set_from_archive_file.archive_limit', :size => number_to_human_size(SystemSetting.maximum_uploaded_file_size) %></p></li>
   <%= embedded_enabled_message('<li><p>', '</p></li>') %>
   <li>
-    <% if ENABLE_EMBEDDED_SUPPORT -%>
+    <% if SystemSetting.enable_embedded_support -%>
     <p>
       <%=t 'importers.new_related_set_from_archive_file.title_from_metadata' %>
-      <blockquote><%= TITLE_SYNONYMS.to_a.to_sentence -%></blockquote>
+      <blockquote><%= SystemSetting.title_synonyms.to_a.to_sentence -%></blockquote>
       <strong><%=t 'importers.new_related_set_from_archive_file.title_from_metadata_or' %></strong>
     </p>
     <% end -%>

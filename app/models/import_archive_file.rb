@@ -5,7 +5,7 @@ class ImportArchiveFile < ActiveRecord::Base
   # import archive happen to be the same content types as theme archives.
   has_attachment :storage => :file_system,
   :content_type => ACCEPTABLE_THEME_CONTENT_TYPES, :processor => :none,
-  :max_size => MAXIMUM_UPLOADED_FILE_SIZE,
+  :max_size => SystemSetting.maximum_uploaded_file_size,
   :file_system_path => "#{BASE_PRIVATE_PATH}/#{self.table_name}"
 
   validates_as_attachment

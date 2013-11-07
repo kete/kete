@@ -272,10 +272,10 @@
                                          basket_index_url(:urlified_name => @help_basket.urlified_name),
                                          :tabindex => '2' %>
             </li>
-	    <% if CONTACT_URL.present? -%>
- 	      <%= content_tag('li', link_to(t('layouts.application.contact'), CONTACT_URL, :accesskey => '9', :tabindex => '2'), :id => 'header_contact' ) %>
+	    <% if SystemSetting.contact_url.present? -%>
+ 	      <%= content_tag('li', link_to(t('layouts.application.contact'), SystemSetting.contact_url, :accesskey => '9', :tabindex => '2'), :id => 'header_contact' ) %>
 	    <% else -%>
-              <%= content_tag('li', mail_to(CONTACT_EMAIL, t('layouts.application.contact'), :encode => "hex", :accesskey => '9', :tabindex => '2'), :id => 'header_contact') %>
+              <%= content_tag('li', mail_to(SystemSetting.contact_email, t('layouts.application.contact'), :encode => "hex", :accesskey => '9', :tabindex => '2'), :id => 'header_contact') %>
 	    <% end -%>
 	    <%= header_add_links %>
             <% add_basket_link = header_add_basket_link -%>

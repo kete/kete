@@ -133,7 +133,7 @@
   <div id="showlinks">
     <%=t 'search.results.show' %>
     <% # TODO: a helper? %>
-    <% RECORDS_PER_PAGE_CHOICES.each do |choice| %>
+    <% SystemSetting.records_per_page_choices.each do |choice| %>
       <% if @number_per_page != choice %>
         <%= link_to(choice, { :overwrite_params => { :number_of_results_per_page => choice, :page => 1 } }, { :tabindex => '1', :rel => 'nofollow' }) %>
       <% else %>

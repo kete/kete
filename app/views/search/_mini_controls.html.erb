@@ -82,7 +82,7 @@ horizontal = display_refine
       <td class="label"><%=t 'search.mini_controls.about_a' %></td>
       <td colspan="2" class="fields">
         <%= topic_type_select_with_indent('topic_type', nil, TopicType.find(1).full_set,
-                                          :name, :name, (clear_values ? SEARCH_SELECTED_TOPIC_TYPE : params[:topic_type]), {},
+                                          :name, :name, (clear_values ? SystemSetting.search_selected_topic_type : params[:topic_type]), {},
                                           [[t('search.mini_controls.any_topic_type'), '']]) %>
         <%= toggle_topic_types_field_js_helper_for(id) -%>
       </td>
@@ -95,7 +95,7 @@ horizontal = display_refine
       <td colspan="2" class="fields">
         <%
         selected = params[:urlified_name]
-        selected = (SEARCH_SELECT_CURRENT_BASKET ? @current_basket.urlified_name : @site_basket.urlified_name) if clear_values
+        selected = (SystemSetting.search_select_current_basket ? @current_basket.urlified_name : @site_basket.urlified_name) if clear_values
         options = basket_option_for(@site_basket, :label => t('search.mini_controls.all_of', :site_basket_name => @site_basket.name))
         baskets = Basket.all(:conditions => ["id NOT IN (?)", @standard_baskets]) +
                   [@help_basket, @about_basket, @documentation_basket]

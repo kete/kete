@@ -30,7 +30,7 @@
   <% else -%>
     <li>
       <%=t 'baskets.permission_denied.part5',
-           :email_link => mail_to(CONTACT_EMAIL, t('baskets.permission_denied.email_link'), :encode => "javascript") %>
+           :email_link => mail_to(SystemSetting.contact_email, t('baskets.permission_denied.email_link'), :encode => "javascript") %>
     </li>
   <% end -%>
   <li><%=t 'baskets.permission_denied.part6' %></li>

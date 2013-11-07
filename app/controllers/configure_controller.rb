@@ -16,7 +16,7 @@ class ConfigureController < ApplicationController
 
   def index
     @advanced = params[:advanced] || false
-    @sections = SETUP_SECTIONS.collect { |s| s }
+    @sections = SystemSetting.setup_sections.collect { |s| s }
     if @advanced
       SystemSetting.select(:section).distinct.where("technically_advanced = ? and section not in (?)", true, @sections).each { |advanced_section| @sections << advanced_section.section }
     end

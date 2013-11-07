@@ -50,7 +50,7 @@ class StillImage < ActiveRecord::Base
   end
 
 # !! Re-enable on switch to rails 3.2:
-#  include Embedded if ENABLE_EMBEDDED_SUPPORT
+#  include Embedded if SystemSetting.enable_embedded_support
 #
 #  # Walter McGinnis, 2011-02-15
 #  # oEmbed Functionality

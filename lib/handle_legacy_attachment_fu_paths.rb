@@ -6,13 +6,13 @@ module HandleLegacyAttachmentFuPaths
       legacy_count = nil
       case self.class.name
       when 'ImageFile'
-        legacy_count = LEGACY_IMAGEFILE_PATHS_UP_TO
+        legacy_count = SystemSetting.legacy_imagefile_paths_up_to
       when 'Document'
-        legacy_count = LEGACY_DOCUMENT_PATHS_UP_TO
+        legacy_count = SystemSetting.legacy_document_paths_up_to
       when 'AudioRecording'
-        legacy_count = LEGACY_AUDIORECORDING_PATHS_UP_TO
+        legacy_count = SystemSetting.legacy_audiorecording_paths_up_to
       when 'Video'
-        legacy_count = LEGACY_VIDEO_PATHS_UP_TO
+        legacy_count = SystemSetting.legacy_video_paths_up_to
       end
 
       if legacy_count.nil? or attachment_path_id.to_i > legacy_count

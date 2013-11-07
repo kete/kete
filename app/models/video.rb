@@ -13,8 +13,8 @@ class Video < ActiveRecord::Base
   # :file_system_path => "#{BASE_PRIVATE_PATH}/#{self.table_name}",
   # will rework with when we get to public/private split
   has_attachment :storage => :file_system, :file_system_path => "video",
-  :content_type => VIDEO_CONTENT_TYPES, :processor => :none,
-  :max_size => MAXIMUM_UPLOADED_FILE_SIZE
+  :content_type => SystemSetting.video_content_types, :processor => :none,
+  :max_size => SystemSetting.maximum_uploaded_file_size
 
   validates_as_attachment
 
@@ -48,10 +48,10 @@ class Video < ActiveRecord::Base
       enum = attachment_options[attr_name]
       unless enum.nil? || enum.include?(send(attr_name))
         errors.add attr_name, I18n.t("video_model.not_acceptable_#{attr_name}",
-                                     :max_size => (MAXIMUM_UPLOADED_FILE_SIZE / 1.megabyte))
+                                     :max_size => (SystemSetting.maximum_uploaded_file_size / 1.megabyte))
       end
     end
   end
 
-  include Embedded if ENABLE_EMBEDDED_SUPPORT
+  include Embedded if SystemSetting.enable_embedded_support
 end

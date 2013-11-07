@@ -14,7 +14,7 @@ class Document < ActiveRecord::Base
   has_attachment    :storage => :file_system,
                     :content_type => SystemSetting.document_content_types,
                     :processor => :none,
-                    :max_size => MAXIMUM_UPLOADED_FILE_SIZE
+                    :max_size => SystemSetting.maximum_uploaded_file_size
 
   # Private Item mixin
   include ItemPrivacy::All
@@ -51,7 +51,7 @@ class Document < ActiveRecord::Base
       end
       unless enum.nil? || enum.include?(send(attr_name))
         errors.add attr_name, I18n.t("document_model.not_acceptable_#{attr_name}",
-                                     :max_size => (MAXIMUM_UPLOADED_FILE_SIZE / 1.megabyte))
+                                     :max_size => (SystemSetting.maximum_uploaded_file_size / 1.megabyte))
       end
     end
   end
@@ -71,5 +71,5 @@ class Document < ActiveRecord::Base
     true
   end
 
-  include Embedded if ENABLE_EMBEDDED_SUPPORT
+  include Embedded if SystemSetting.enable_embedded_support
 end

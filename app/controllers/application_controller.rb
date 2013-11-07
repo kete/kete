@@ -244,7 +244,7 @@ class ApplicationController < ActionController::Base
   def current_user_can_add_or_request_basket?
     return false unless logged_in?
     return true if @site_admin
-    case BASKET_CREATION_POLICY
+    case SystemSetting.basket_creation_policy
     when 'open', 'request'
       true
     else
@@ -253,7 +253,7 @@ class ApplicationController < ActionController::Base
   end
 
   def basket_policy_request_with_permissions?
-    BASKET_CREATION_POLICY == 'request' && !@site_admin
+    SystemSetting.basket_creation_policy == 'request' && !@site_admin
   end
 
   def current_user_can_see_action_menu?
@@ -567,7 +567,7 @@ class ApplicationController < ActionController::Base
   end
 
   def redirect_to_default_all
-    redirect_to(basket_all_url(:controller_name_for_zoom_class => zoom_class_controller(DEFAULT_SEARCH_CLASS)))
+    redirect_to(basket_all_url(:controller_name_for_zoom_class => zoom_class_controller(SystemSetting.default_search_class)))
   end
 
   def redirect_to_all_for(controller)

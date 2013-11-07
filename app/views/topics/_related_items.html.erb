@@ -5,7 +5,7 @@ position ||= ''
 @total_item_counts = related_items_count_for_current_item
 if @total_item_counts > 0
   options = { :item_classes => (topics_only ? ['Topic'] : nil), :with_counts => true, :start_record => 0,
-              :end_record => [NUMBER_OF_RELATED_IMAGES_TO_DISPLAY, NUMBER_OF_RELATED_THINGS_TO_DISPLAY_PER_TYPE].sort.last }
+              :end_record => [SystemSetting.number_of_related_images_to_display, SystemSetting.number_of_related_things_to_display_per_type].sort.last }
   @public_items, @public_item_counts = public_related_items_for(item, options)
   @private_items, @private_item_counts = private_related_items_for(item, options)
 end

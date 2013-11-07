@@ -3,8 +3,8 @@ classes ||= Array.new
 classes << 'language_choices_display'
 %>
 <% if I18n.available_locales_with_labels.keys.size > 1 %>
-  <div id="language_choices_<%= LANGUAGE_CHOICES_DISPLAY_TYPE %>" class="<%= classes.join(' ') %>">
-    <% if LANGUAGE_CHOICES_DISPLAY_TYPE == 'links' %>
+  <div id="language_choices_<%= SystemSetting.language_choices_display_type %>" class="<%= classes.join(' ') %>">
+    <% if SystemSetting.language_choices_display_type == 'links' %>
       <div><%= locale_links :default => I18n.locale %></div>
     <% else %>
       <%= form_tag({:controller => 'account', :action => 'change_locale'}, {:method => :get}) do %>

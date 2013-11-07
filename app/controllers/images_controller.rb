@@ -50,7 +50,7 @@ class ImagesController < ApplicationController
 
       # if we are allowing harvesting of embedded metadata from the image_file
       # we need to grab it from the image_file's file path
-      @still_image.populate_attributes_from_embedded_in(@image_file.full_filename) if ENABLE_EMBEDDED_SUPPORT
+      @still_image.populate_attributes_from_embedded_in(@image_file.full_filename) if SystemSetting.enable_embedded_support
 
       @successful = @still_image.save
 

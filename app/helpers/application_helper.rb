@@ -164,7 +164,7 @@ module ApplicationHelper
   end
 
   def header_links_to_baskets
-    baskets_limit = LIST_BASKETS_NUMBER
+    baskets_limit = SystemSetting.list_baskets_number
     return unless baskets_limit > 0
 
     html = '<ul id="basket-list" class="nav-list">'
@@ -208,7 +208,7 @@ module ApplicationHelper
     search_location_name = SystemSetting.pretty_site_name
     search_text_key = 'search_value'
 
-    if SEARCH_SELECT_CURRENT_BASKET && @current_basket != @site_basket
+    if SystemSetting.search_select_current_basket && @current_basket != @site_basket
       search_location_name = @current_basket.name
       search_text_key = 'search_value_within'
     end
@@ -280,7 +280,7 @@ module ApplicationHelper
     pre_text = String.new
     site_link_text = String.new
     current_basket_html = String.new
-    default_controller = zoom_class_controller(DEFAULT_SEARCH_CLASS)
+    default_controller = zoom_class_controller(SystemSetting.default_search_class)
     if @current_basket != @site_basket
       pre_text = "#{t('application_helper.header_browse_links.browse')}: "
       site_link_text = @site_basket.name
@@ -1747,7 +1747,7 @@ module ApplicationHelper
   # oriented towards imports at this point, but maybe refined to be generally useful
   def embedded_enabled_message(start_html, end_html)
     html = String.new
-    if ENABLE_EMBEDDED_SUPPORT
+    if SystemSetting.enable_embedded_support
       html += start_html
       html += t('application_helper.embedded_enabled_message.harvesting')
       html += end_html

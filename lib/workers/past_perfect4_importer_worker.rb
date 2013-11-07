@@ -407,11 +407,11 @@ class PastPerfect4ImporterWorker < BackgrounDRb::MetaWorker
       else
         params[zoom_class_for_params][:description] = @import.description_beginning_template
       end
-    elsif !DESCRIPTION_TEMPLATE.blank?
+    elsif !SystemSetting.description_template.blank?
       if !params[zoom_class_for_params][:description].nil?
-        params[zoom_class_for_params][:description] = DESCRIPTION_TEMPLATE + "\n\n" + params[zoom_class_for_params][:description]
+        params[zoom_class_for_params][:description] = SystemSetting.description_template + "\n\n" + params[zoom_class_for_params][:description]
       else
-        params[zoom_class_for_params][:description] = DESCRIPTION_TEMPLATE
+        params[zoom_class_for_params][:description] = SystemSetting.description_template
       end
     end
 
@@ -495,7 +495,7 @@ class PastPerfect4ImporterWorker < BackgrounDRb::MetaWorker
     # only necessary for still images, because attachment is in a child model
     # if we are allowing harvesting of embedded metadata from the image_file
     # we need to grab it from the image_file's file path
-    if ENABLE_EMBEDDED_SUPPORT && !new_image_file.nil? && zoom_class == 'StillImage'
+    if SystemSetting.enable_embedded_support && !new_image_file.nil? && zoom_class == 'StillImage'
       new_record.populate_attributes_from_embedded_in(new_image_file.full_filename)
     end
 

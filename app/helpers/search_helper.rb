@@ -127,7 +127,7 @@ module SearchHelper
     image_tag_string += "<ul class=\"images-list\">" if options[:as_image_list]
 
     number_of_all_images = still_images_hash.size
-    number_to_display = options[:number_to_display] ? options[:number_to_display] : NUMBER_OF_RELATED_IMAGES_TO_DISPLAY
+    number_to_display = options[:number_to_display] ? options[:number_to_display] : SystemSetting.number_of_related_images_to_display
     number_to_display = number_of_all_images > number_to_display ? number_to_display : number_of_all_images
 
     # even if we know that locally_hosted is almost always true
