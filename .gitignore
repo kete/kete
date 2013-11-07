@@ -1,4 +1,6 @@
 .DS_Store
+*.swo
+*.swp
 *.sqlite3*
 mkmf.log
 *.tmproj
