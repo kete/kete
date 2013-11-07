@@ -345,13 +345,13 @@ class PastPerfect4ImporterWorker < BackgrounDRb::MetaWorker
         case record_field
         when "TITLE"
           params[zoom_class_for_params][:title] = value
-        when *DESCRIPTION_SYNONYMS
+        when *(SystemSetting.description_synonyms)
           if params[zoom_class_for_params][:description].nil?
             params[zoom_class_for_params][:description] = value
           else
             params[zoom_class_for_params][:description] += "\n\n" + value
           end
-        when *TAGS_SYNONYMS
+        when *(SystemSetting.tags_synonyms)
           if record_field == "PEOPLE"
             # each person is in the form: last name, first names
             # one name per line

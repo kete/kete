@@ -124,7 +124,7 @@ module ImageSlideshow
         # Get the current still image
         @selected_still_image = still_image_collection.find_by_id(@current_id)
         # At this point, we have a valid still image we should be displaying. Get the ImageFile for it
-        @selected_image_file = @selected_still_image.send("#{IMAGE_SLIDESHOW_SIZE.to_s}_file") if !@selected_still_image.nil?
+        @selected_image_file = @selected_still_image.send("#{SystemSetting.image_slideshow_size.to_s}_file") if !@selected_still_image.nil?
         # Setup the previous and next url links the user can use
         @previous_url = image_slideshow.previous(@current_url)
         @next_url = image_slideshow.next(@current_url)

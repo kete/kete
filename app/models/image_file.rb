@@ -13,12 +13,12 @@ class ImageFile < ActiveRecord::Base
   # we also make non-web friendly image files end up with jpegs for resized versions
   # see lib/resize_as_jpeg_when_necessary
   attachment_options = { :storage => :file_system,
-    :content_type => IMAGE_CONTENT_TYPES,
+    :content_type => SystemSettings.image_content_types,
     :thumbnails => SystemSetting.image_sizes,
     :max_size => MAXIMUM_UPLOADED_FILE_SIZE }
 
   # allow sites to opt-in for keeping embedded metadata from original with resized versions
-  if Object.const_defined?('KEEP_EMBEDDED_METADATA_FOR_ALL_SIZES') && KEEP_EMBEDDED_METADATA_FOR_ALL_SIZES
+  if SystemSetting.keep_embedded_metadata_for_all_sizes
     attachment_options[:keep_profile] = true
   end
 
