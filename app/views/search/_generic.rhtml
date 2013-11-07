@@ -1,5 +1,5 @@
 <div class="generic-result-wrapper<%= ' first' if first_result %>" id="item_<%= result %>_wrapper">
-  <% if topic_types && !topic_types.last.blank? && DISPLAY_TOPIC_TYPE_ON_SEARCH_RESULT %>
+  <% if topic_types && !topic_types.last.blank? && SystemSetting.display_topic_type_on_search_result %>
     <div class="generic-result-topic-type">
       <%= topic_types.last %>
     </div>

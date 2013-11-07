@@ -48,10 +48,10 @@ horizontal = display_refine
     </tr>
 
     <% controls_permitted = display_menu || @current_basket.show_privacy_controls_with_inheritance? %>
-    <% if display_search_field_for?(type, DISPLAY_PRIVACY_FIELDS) && logged_in? && controls_permitted && Basket.privacy_exists %>
+    <% if display_search_field_for?(type, SystemSetting.display_privacy_fields) && logged_in? && controls_permitted && Basket.privacy_exists %>
     <tr>
       <% default = @current_basket.private_default_with_inheritance? ? 'private' : 'public' %>
-      <% @current_privacy = ((params[:privacy_type] unless clear_values) || (DEFAULT_SEARCH_PRIVACY if display_menu) || default) %>
+      <% @current_privacy = ((params[:privacy_type] unless clear_values) || (SystemSetting.default_search_privacy if display_menu) || default) %>
       <td class="label"><%= t('search.mini_controls.that_are') %></td>
       <% %w{ public private }.each do |privacy_type| %>
         <td class="fields">
@@ -62,7 +62,7 @@ horizontal = display_refine
     </tr>
     <% end %>
 
-    <% if display_search_field_for?(type, DISPLAY_ITEM_TYPE_FIELD) %>
+    <% if display_search_field_for?(type, SystemSetting.display_item_type_field) %>
     <tr>
       <td class="label"><%= t('search.mini_controls.show') %></td>
       <td colspan="2" class="fields">
@@ -89,7 +89,7 @@ horizontal = display_refine
     </tr>
     <% end %>
 
-    <% if display_search_field_for?(type, DISPLAY_BASKET_FIELD) %>
+    <% if display_search_field_for?(type, SystemSetting.display_basket_field) %>
     <tr>
       <td class="label"><%= t('search.mini_controls.within') %></td>
       <td colspan="2" class="fields">
@@ -107,7 +107,7 @@ horizontal = display_refine
     </tr>
     <% end %>
 
-    <% if display_search_field_for?(type, DISPLAY_SORTING_FIELDS) %>
+    <% if display_search_field_for?(type, SystemSetting.display_sorting_fields) %>
     <tr>
       <td class="label"><%= t('search.mini_controls.sorted_by') %></td>
       <td colspan="2" class="fields">
@@ -125,7 +125,7 @@ horizontal = display_refine
     </tr>
     <% end %>
 
-    <% if display_search_field_for?(type, DISPLAY_CHOICES_FIELD) && (@extended_field || categories_field) %>
+    <% if display_search_field_for?(type, SystemSetting.display_choices_field) && (@extended_field || categories_field) %>
     <tr>
       <td class="label"><%= t('search.mini_controls.categorised') %></td>
       <td colspan="2" class="fields">
