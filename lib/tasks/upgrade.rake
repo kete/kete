@@ -251,7 +251,7 @@ namespace :kete do
       user_count = 0
       User.find(:all, :conditions => { :resolved_name => '' }).each do |user|
         if user.display_name.blank?
-          user_name_field = EXTENDED_FIELD_FOR_USER_NAME
+          user_name_field = SystemSetting.extended_field_for_user_name
           extended_content_hash = user.xml_attributes_without_position
           if !extended_content_hash.blank? && !extended_content_hash[user_name_field].blank? && !extended_content_hash[user_name_field]['value'].blank?
             user.display_name = extended_content_hash[user_name_field]['value'].strip

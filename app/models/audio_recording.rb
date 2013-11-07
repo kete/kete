@@ -13,7 +13,7 @@ class AudioRecording < ActiveRecord::Base
   # :file_system_path => "#{BASE_PRIVATE_PATH}/#{self.table_name}",
   # will rework with when we get to public/private split
   has_attachment :storage => :file_system, :file_system_path => "audio",
-  :content_type => AUDIO_CONTENT_TYPES, :processor => :none,
+  :content_type => SystemSetting.audio_content_types, :processor => :none,
   :max_size => MAXIMUM_UPLOADED_FILE_SIZE
 
   validates_as_attachment

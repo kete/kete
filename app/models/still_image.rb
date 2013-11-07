@@ -7,7 +7,7 @@ class StillImage < ActiveRecord::Base
   has_one :thumbnail_file, :conditions => "parent_id is not null and thumbnail = 'small_sq'", :class_name => 'ImageFile'
 
   # these correspond to sizes in image_file.rb
-  IMAGE_SIZES.keys.each do |size|
+  SystemSetting.image_sizes.keys.each do |size|
     has_one "#{size.to_s}_file".to_sym, :conditions => ["parent_id is not null and thumbnail = ?", size.to_s], :class_name => 'ImageFile'
   end
 

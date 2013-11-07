@@ -97,11 +97,11 @@ namespace :kete do
       end
     end
 
-    desc 'Resize original images based on current IMAGE_SIZES and add new ones if needed. Does not remove no longer needed ones (to prevent links breaking). By default image files that match new sizes will be skipped. If you need new versions recreated even if there is an existing file that matches the size, use FORCE_RESIZE=true.'
+    desc 'Resize original images based on current SystemSetting.image_sizes and add new ones if needed. Does not remove no longer needed ones (to prevent links breaking). By default image files that match new sizes will be skipped. If you need new versions recreated even if there is an existing file that matches the size, use FORCE_RESIZE=true.'
     task :resize_images => :environment do
       @logger = Logger.new(RAILS_ROOT + "/log/resize_images_#{Time.now.strftime('%Y-%m-%d_%H:%M:%S')}.log")
 
-      puts "Resizing/created images based on IMAGE_SIZES..."
+      puts "Resizing/created images based on SystemSetting.image_sizes..."
       @logger.info "Starting image file resizing."
 
       force_resize = (ENV['FORCE_RESIZE'] && ENV['FORCE_RESIZE'] == "true") ? true : false
@@ -111,7 +111,7 @@ namespace :kete do
       end
 
       # get a list of thumbnail keys
-      image_size_keys = IMAGE_SIZES.keys
+      image_size_keys = SystemSetting.image_sizes.keys
 
       # setup some variables for reporting once the task is done
       resized_images_count = 0
@@ -524,12 +524,12 @@ namespace :kete do
       end
     end
 
-    # Checks whether an image file thumbnail size matches any of the IMAGE_SIZES values
+    # Checks whether an image file thumbnail size matches any of the SystemSetting.image_sizes values
     def image_file_match_image_size?(image_file)
       # get what the imags sizes should be
-      size_string = IMAGE_SIZES[image_file.thumbnail.to_sym]
+      size_string = SystemSetting.image_sizes[image_file.thumbnail.to_sym]
 
-      # in the case that IMAGE_SIZES no longer has the sizes for existing image, skip it
+      # in the case that SystemSetting.image_sizes no longer has the sizes for existing image, skip it
       # TODO: in the future, we want to allow users to specify if image files and db
       # record should be deleted
       return true if size_string.blank?
@@ -563,7 +563,7 @@ namespace :kete do
     def resize_image_from_original(image_file, original_file)
       @logger.info "      Resizing child image #{image_file.id} based on #{original_file}"
       ImageFile.with_image original_file do |img|
-        image_file.resize_image(img, IMAGE_SIZES[image_file.thumbnail.to_sym])
+        image_file.resize_image(img, SystemSetting.image_sizes[image_file.thumbnail.to_sym])
         image_file.send :destroy_file, image_file.full_filename
         image_file.send :save_to_storage, image_file.full_filename
         # make sure we update the image file size, width, and height based on the new resized image

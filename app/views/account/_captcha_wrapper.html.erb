@@ -10,7 +10,7 @@
   <img src="<%= captcha_url(id) %>" alt="Security image. " />
   <div class="form_example">
     <%=t 'account.captcha_wrapper.case_sensitive' %>
-    <% if CAPTCHA_TYPE == 'all' -%>
+    <% if SystemSetting.captcha_type == 'all' -%>
       <p><%=t 'account.captcha_wrapper.text_captcha',
               :text_captcha_link => link_to(t('account.captcha_wrapper.text_captcha_link'),
                                             {:captcha_type => 'question'},

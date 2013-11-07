@@ -14,7 +14,7 @@ class ImageFile < ActiveRecord::Base
   # see lib/resize_as_jpeg_when_necessary
   attachment_options = { :storage => :file_system,
     :content_type => IMAGE_CONTENT_TYPES,
-    :thumbnails => IMAGE_SIZES,
+    :thumbnails => SystemSetting.image_sizes,
     :max_size => MAXIMUM_UPLOADED_FILE_SIZE }
 
   # allow sites to opt-in for keeping embedded metadata from original with resized versions

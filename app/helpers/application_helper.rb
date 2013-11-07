@@ -29,9 +29,9 @@ module ApplicationHelper
 
   # Get the integer of any given image size
   def image_size_of(string)
-    size = IMAGE_SIZES[string.to_sym].is_a?(String) ? \
-             IMAGE_SIZES[string.to_sym].split('x').first : \
-             IMAGE_SIZES[string.to_sym].first
+    size = SystemSetting.image_sizes[string.to_sym].is_a?(String) ? \
+             SystemSetting.image_sizes[string.to_sym].split('x').first : \
+             SystemSetting.image_sizes[string.to_sym].first
     size.gsub(/(!|>|<)/, '').to_i
   end
 
@@ -39,9 +39,9 @@ module ApplicationHelper
   include Avatar::View::ActionViewSupport
   def avatar_for(user, options = {})
     # New installs use strings for the small_sq value, but we have to handle legacy settings containing arrays
-    image_dimension = IMAGE_SIZES[:small_sq].is_a?(String) ? \
-                        IMAGE_SIZES[:small_sq].gsub(/(!|>|<)/, '').split('x').first.to_i : \
-                        IMAGE_SIZES[:small_sq].first
+    image_dimension = SystemSetting.image_sizes[:small_sq].is_a?(String) ? \
+                        SystemSetting.image_sizes[:small_sq].gsub(/(!|>|<)/, '').split('x').first.to_i : \
+                        SystemSetting.image_sizes[:small_sq].first
     default_options = { :width => image_dimension,
                         :height => image_dimension,
                         :alt => t('application_helper.avatar_for.users_avatar',

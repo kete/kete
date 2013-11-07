@@ -424,7 +424,7 @@ class Basket < ActiveRecord::Base
   end
 
   def fully_moderated?
-    setting(:fully_moderated).blank? ? DEFAULT_POLICY_IS_FULL_MODERATION : setting(:fully_moderated)
+    setting(:fully_moderated).blank? ? SystemSetting.default_policy_is_full_moderation : setting(:fully_moderated)
   end
 
   # if we don't have any moderators specified
@@ -435,7 +435,7 @@ class Basket < ActiveRecord::Base
     moderators = self.has_moderators
     moderators = self.has_admins if moderators.size == 0
     moderators = Basket.site_basket.has_admins if moderators.size == 0
-    moderators << Basket.site_basket.has_site_admins if moderators.size == 0 || NOTIFY_SITE_ADMINS_OF_FLAGGINGS
+    moderators << Basket.site_basket.has_site_admins if moderators.size == 0 || SystemSettings.notify_site_admins_of_flaggings
 
     moderators.flatten.uniq
   end

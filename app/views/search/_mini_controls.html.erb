@@ -15,7 +15,7 @@ horizontal = display_refine
 
     <%= "<tr><td valign='top'><table>" if horizontal %>
 
-    <% if display_search_field_for?(type, DISPLAY_SEARCH_TERMS_FIELD) %>
+    <% if display_search_field_for?(type, SystemSettings.display_search_terms_field) %>
     <tr>
       <td colspan="3" class="header">
         <label for="search_terms"><%= t('search.mini_controls.search_terms') %></label>

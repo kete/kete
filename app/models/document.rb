@@ -12,7 +12,7 @@ class Document < ActiveRecord::Base
   # dependencies that we don't need
   # TODO: needs some of the new filetypes like openoffice, pages, plenty of old ones, too
   has_attachment    :storage => :file_system,
-                    :content_type => DOCUMENT_CONTENT_TYPES,
+                    :content_type => SystemSetting.document_content_types,
                     :processor => :none,
                     :max_size => MAXIMUM_UPLOADED_FILE_SIZE
 
@@ -36,7 +36,7 @@ class Document < ActiveRecord::Base
   # to support it, so wrapping it in a system setting
   # also, we manage when the conversion happens
   # rather than having it use a callback
-  if ENABLE_CONVERTING_DOCUMENTS
+  if SystemSetting.enable_converting_documents
     convert_attachment_to :output_type => :html, :target_attribute => :description, :run_after_save => false
   end
 
