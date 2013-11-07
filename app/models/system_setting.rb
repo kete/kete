@@ -82,9 +82,9 @@ class SystemSetting < ActiveRecord::Base
   #  self.method_name_to_setting_value(:default_records_per_page)
   #end
 
-  #def self.default_search_class
-  #  self.method_name_to_setting_value(:default_search_class)
-  #end
+  def self.default_search_class
+   self.method_name_to_setting_value(:default_search_class)
+  end
 
   #def self.number_of_related_things_to_display_per_type
   #  self.method_name_to_setting_value(:number_of_related_things_to_display_per_type)
@@ -358,17 +358,17 @@ class SystemSetting < ActiveRecord::Base
    self.method_name_to_setting_value(:display_topic_type_field)
   end
 
-  #def self.display_basket_field
-  #  self.method_name_to_setting_value(:display_basket_field)
-  #end
+  def self.display_basket_field
+   self.method_name_to_setting_value(:display_basket_field)
+  end
 
-  #def self.display_sorting_fields
-  #  self.method_name_to_setting_value(:display_sorting_fields)
-  #end
+  def self.display_sorting_fields
+   self.method_name_to_setting_value(:display_sorting_fields)
+  end
 
-  #def self.display_choices_field
-  #  self.method_name_to_setting_value(:display_choices_field)
-  #end
+  def self.display_choices_field
+   self.method_name_to_setting_value(:display_choices_field)
+  end
 
   #def self.language_choices_position
   #  self.method_name_to_setting_value(:language_choices_position)
@@ -378,13 +378,13 @@ class SystemSetting < ActiveRecord::Base
   #  self.method_name_to_setting_value(:language_choices_display_type)
   #end
 
-  #def self.search_selected_topic_type
-  #  self.method_name_to_setting_value(:search_selected_topic_type)
-  #end
+  def self.search_selected_topic_type
+   self.method_name_to_setting_value(:search_selected_topic_type)
+  end
 
-  #def self.search_select_current_basket
-  #  self.method_name_to_setting_value(:search_select_current_basket)
-  #end
+  def self.search_select_current_basket
+   self.method_name_to_setting_value(:search_select_current_basket)
+  end
 
   def self.dc_date_display_on_search_results
     self.method_name_to_setting_value(:dc_date_display_on_search_results)
@@ -398,13 +398,13 @@ class SystemSetting < ActiveRecord::Base
     self.method_name_to_setting_value(:dc_date_display_formulator)
   end
 
-  #def self.list_baskets_number
-  #  self.method_name_to_setting_value(:list_baskets_number)
-  #end
+  def self.list_baskets_number
+   self.method_name_to_setting_value(:list_baskets_number)
+  end
 
-  #def self.contact_url
-  #  self.method_name_to_setting_value(:contact_url)
-  #end
+  def self.contact_url
+   self.method_name_to_setting_value(:contact_url)
+  end
 
   def self.allowed_anonymous_actions
     self.method_name_to_setting_value(:allowed_anonymous_actions)

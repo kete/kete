@@ -30,7 +30,13 @@ module SettingsCruft
   class Basket
     def self.setting(object,name)
       setting = ConfigurableSetting.object_setting(object, name)
-      setting.nil?  ? nil  : setting.value 
+      if setting.nil?
+        nil
+      elsif setting.respond_to?(:value)
+        setting.value
+      else
+        setting
+      end
     end
 
     def self.set_setting(object, name, value)

@@ -70,4 +70,9 @@ class TopicType < ActiveRecord::Base
   def urlified_name
     name.downcase.gsub(/\s/, '_')
   end
+
+  def full_set
+    # RABID: TODO: implement this as it not in the awesome_nested_set gem
+    []
+  end
 end
