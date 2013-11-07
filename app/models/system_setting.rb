@@ -334,29 +334,29 @@ class SystemSetting < ActiveRecord::Base
     self.method_name_to_setting_value(:add_date_created_to_item_search_record)
   end
 
-  #def self.display_search_terms_field
-  #  self.method_name_to_setting_value(:display_search_terms_field)
-  #end
+  def self.display_search_terms_field
+   self.method_name_to_setting_value(:display_search_terms_field)
+  end
 
-  #def self.display_date_range_fields
-  #  self.method_name_to_setting_value(:display_date_range_fields)
-  #end
+  def self.display_date_range_fields
+   self.method_name_to_setting_value(:display_date_range_fields)
+  end
 
-  #def self.display_privacy_fields
-  #  self.method_name_to_setting_value(:display_privacy_fields)
-  #end
+  def self.display_privacy_fields
+   self.method_name_to_setting_value(:display_privacy_fields)
+  end
 
   #def self.default_search_privacy
   #  self.method_name_to_setting_value(:default_search_privacy)
   #end
 
-  #def self.display_item_type_field
-  #  self.method_name_to_setting_value(:display_item_type_field)
-  #end
+  def self.display_item_type_field
+   self.method_name_to_setting_value(:display_item_type_field)
+  end
 
-  #def self.display_topic_type_field
-  #  self.method_name_to_setting_value(:display_topic_type_field)
-  #end
+  def self.display_topic_type_field
+   self.method_name_to_setting_value(:display_topic_type_field)
+  end
 
   #def self.display_basket_field
   #  self.method_name_to_setting_value(:display_basket_field)
