@@ -2,7 +2,7 @@
 <OpenSearchDescription xmlns="http://a9.com/-/spec/opensearch/1.1/">
   <ShortName><%= SystemSetting.pretty_site_name %> Web Search</ShortName>
   <Description>Search combined results of <%= SystemSetting.pretty_site_name %></Description>
-  <Contact><%= Kete.contact_email %></Contact>
+  <Contact><%= SystemSetting.contact_email %></Contact>
   <Url type="text/html" template="<%= SITE_URL %>site/search/topics/for/open_search?search_terms={searchTerms}&amp;count={count?}&amp;page={startPage?}" method="GET"/>
   <Url type="application/rss+xml" template="<%= SITE_URL %>site/all/combined/rss.xml?search_terms={searchTerms}&amp;count={count?}&amp;page={startPage?}" method="GET"/>
   <OutputEncoding>UTF-8</OutputEncoding>

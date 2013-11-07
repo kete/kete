@@ -44,7 +44,7 @@
 
   <% @results.each_with_index do |result,index|  %>
 
-    <% if Kete.enable_maps? && params[:view_as] == 'map' -%>
+    <% if SystemSetting.enable_maps? && params[:view_as] == 'map' -%>
       <% marker_options = { 'title' => result[:title] }
       summary_for_info_window = result[:short_summary].present? ? result[:short_summary] : String.new
       marker_options['description'] = link_to(h(result[:title]), result[:url], :tabindex => '1') + '<br />' + summary_for_info_window

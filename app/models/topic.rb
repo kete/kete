@@ -104,7 +104,7 @@ class Topic < ActiveRecord::Base
       latest_version.first_related_image
     end
     def disputed_or_not_available?
-      (title == Kete.no_public_version_title) || (title == Kete.blank_title)
+      (title == SystemSetting.no_public_version_title) || (title == SystemSetting.blank_title)
     end
     include FriendlyUrls
     def to_param; format_for_friendly_urls(true); end
@@ -144,7 +144,7 @@ class Topic < ActiveRecord::Base
   # Kieran Pilkington - 2008/10/21
   # Named scopes used in the index page controller for recent topics
   scope :recent, lambda { where(:order => 'created_at desc').limit(5) }
-  scope :public, lambda { where('title != ?', Kete.no_public_version_title) }
+  scope :public, lambda { where('title != ?', SystemSetting.no_public_version_title) }
   scope :exclude_baskets_and_id, lambda {|basket_ids, id| where("basket_id NOT IN (?) AND id != ?", basket_ids, id) }
 
   after_save :update_taggings_basket_id

@@ -178,12 +178,12 @@ class AccountController < ApplicationController
 
     @user.add_as_member_to_default_baskets
 
-    if !Kete.require_activation?
+    if !SystemSetting.activation?
       self.current_user = @user
       move_session_searches_to_current_user
       flash[:notice] = t('account_controller.signup.signed_up')
     else
-      if Kete.administrator_activates?
+      if SystemSetting.administrator_activates?
         flash[:notice] = t('account_controller.signup.signed_up_admin_will_review')
       else
         flash[:notice] = t('account_controller.signup.signed_up_with_email')
@@ -202,7 +202,7 @@ class AccountController < ApplicationController
   # making it so that system setting
   # determines which type of captcha method we use
   def set_captcha_type
-    @captcha_type = params[:captcha_type] || Kete.captcha_type
+    @captcha_type = params[:captcha_type] || SystemSetting.captcha_type
     @captcha_type = 'image' if @captcha_type == 'all'
   end
 
@@ -338,7 +338,7 @@ class AccountController < ApplicationController
     activator = params[:id] || params[:activation_code]
     @user = User.find_by_activation_code(activator)
     if @user and @user.activate
-      if Kete.administrator_activates?
+      if SystemSetting.administrator_activates?
         flash[:notice] = t('account_controller.activate.admin_activated', :new_user => @user.resolved_name)
         redirect_back_or_default(:controller => '/account',
                                  :action => 'show',

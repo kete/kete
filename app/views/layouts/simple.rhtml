@@ -38,7 +38,7 @@
         <%= javascript_include_tag 'redbox' %>
    <% end -%>
 
-  <% if Kete.enable_maps? && initialize_gmap_headers? -%>
+  <% if SystemSetting.enable_maps? && initialize_gmap_headers? -%>
     <%= yield :gmap4rails_head %>
     <% if params[:action] == 'choose_type' -%>
       <%= load_maps_javascript_files -%>

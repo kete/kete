@@ -80,7 +80,7 @@ class ApplicationController < ActionController::Base
 
   # doesn't work for redirects, those are handled by
   # after filters on registered on specific controllers
-  # based on Kete.allowed_anonymous_actions specs
+  # based on SystemSetting.allowed_anonymous_actions specs
   # this should prevent url surgery to subvert logging out of anonymous user though
   before_filter :logout_anonymous_user_unless_allowed, :except => [:logout,
                                                                    :login,
@@ -664,7 +664,7 @@ class ApplicationController < ActionController::Base
 
     ZOOM_CLASSES.each do |zoom_class|
       # pending items aren't counted
-      private_conditions = "title != '#{Kete.blank_title}' "
+      private_conditions = "title != '#{SystemSetting.blank_title}' "
       local_public_conditions = PUBLIC_CONDITIONS
 
       # comments are a special case

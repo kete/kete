@@ -72,7 +72,7 @@ module ConfigureAsKeteContentItem
           latest_version.first_related_image
         end
         def disputed_or_not_available?
-          (title == Kete.no_public_version_title) || (title == Kete.blank_title)
+          (title == SystemSetting.no_public_version_title) || (title == SystemSetting.blank_title)
         end
         include FriendlyUrls
         def to_param; format_for_friendly_urls(true); end

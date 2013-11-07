@@ -266,7 +266,7 @@ end
       <% end %>
     <% end -%>
 
-    <% if Kete.enable_maps? && @maps_callbacks.present? -%>
+    <% if SystemSetting.enable_maps? && @maps_callbacks.present? -%>
       <%# javascript_tag("debugger;") if params[:action] == 'render_item_form' -%>
       <%#  javascript_tag("debugger;") if params[:action] == 'render_item_form' -%>
       <% @maps_callbacks.each do |map_callback| -%>
@@ -297,12 +297,12 @@ end
     <%= render :partial => 'topics/license_chooser_or_agreement',
                :locals => { :item => @item } -%>
 
-    <% if Kete.hide_related_items_position_field %>
-      <%= form.hidden_field :related_items_position, :value => Kete.related_items_position_default -%>
+    <% if SystemSetting.hide_related_items_position_field %>
+      <%= form.hidden_field :related_items_position, :value => SystemSetting.related_items_position_default -%>
     <% else %>
       <% if params[@item_type] && params[@item_type][:related_items_position]; position = params[@item_type][:related_items_position]
          elsif @editing && !@item.related_items_position.nil?; position = @item.related_items_position
-         else; position = Kete.related_items_position_default; end -%>
+         else; position = SystemSetting.related_items_position_default; end -%>
       <%= form.select :related_items_position, related_items_positions,
                                                { :selected => position },
                                                { :tabindex => '1', :label => t('topics.form.related_items_position') } %>

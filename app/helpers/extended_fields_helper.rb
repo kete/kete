@@ -107,7 +107,7 @@ module ExtendedFieldsHelper
       [t('extended_fields_helper.ftype_form_column.choices_topic_type'), 'topic_type']
     ]
 
-    if Kete.enable_maps?
+    if SystemSetting.enable_maps?
       options_for_select << [t('extended_fields_helper.ftype_form_column.location_map'), 'map']
       options_for_select << [t('extended_fields_helper.ftype_form_column.location_map_address'), 'map_address']
     end

@@ -1,5 +1,5 @@
 class UserNotifier < ActionMailer::Base
-  default :from => "#{Kete.notifier_email}"
+  default :from => "#{SystemSetting.notifier_email}"
 
   # kludge for A_S and rails 2.0
   def generic_view_paths
@@ -9,7 +9,7 @@ class UserNotifier < ActionMailer::Base
   def forgot_password(user)
     setup_email(user)
     @subject    += I18n.t('user_notifier_model.password_change')
-    @url  = "#{Kete.site_url}site/account/reset_password/#{ user.password_reset_code}"
+    @url  = "#{SystemSetting.site_url}site/account/reset_password/#{ user.password_reset_code}"
 
     mail(:to => @recipients, :subject => @subject)
   end
@@ -24,7 +24,7 @@ class UserNotifier < ActionMailer::Base
   def signup_notification(user)
     setup_email(user)
     @subject    += I18n.t('user_notifier_model.activate_account')
-    @url  = "#{Kete.site_url}site/account/activate/#{user.activation_code}"
+    @url  = "#{SystemSetting.site_url}site/account/activate/#{user.activation_code}"
 
     mail(:to => @recipients, :subject => @subject)
   end
@@ -33,7 +33,7 @@ class UserNotifier < ActionMailer::Base
     setup_email(admin)
     @subject    += I18n.t('user_notifier_model.review_new_account', :new_user => user.resolved_name)
     @new_user = user
-    @url  = "#{Kete.site_url}site/account/show/#{user.id}"
+    @url  = "#{SystemSetting.site_url}site/account/show/#{user.id}"
 
     mail(:to => @recipients, :subject => @subject)
   end
@@ -41,7 +41,7 @@ class UserNotifier < ActionMailer::Base
   def activation(user)
     setup_email(user)
     @subject    += I18n.t('user_notifier_model.account_activated')
-    @url  = "#{Kete.site_url}"
+    @url  = "#{SystemSetting.site_url}"
 
     mail(:to => @recipients, :subject => @subject)
   end
@@ -49,7 +49,7 @@ class UserNotifier < ActionMailer::Base
   def banned(user)
     setup_email(user)
     @subject    += I18n.t('user_notifier_model.account_banned')
-    @url  = "#{Kete.site_url}"
+    @url  = "#{SystemSetting.site_url}"
 
     mail(:to => @recipients, :subject => @subject)
   end
@@ -108,7 +108,7 @@ class UserNotifier < ActionMailer::Base
 
   def pending_review_for(revision, submitter)
     setup_email(submitter)
-    @subject += I18n.t('user_notifier_model.pending_moderation', :flag => Kete.pending_flag)
+    @subject += I18n.t('user_notifier_model.pending_moderation', :flag => SystemSetting.pending_flag)
     @revision = revision
 
     mail(:to => @recipients, :subject => @subject)
@@ -125,7 +125,7 @@ class UserNotifier < ActionMailer::Base
 
   def rejection_of(revision, url, submitter, rejection_message)
     setup_email(submitter)
-    @subject += I18n.t('user_notifier_model.rejected_submission', :flag => Kete.rejected_flag)
+    @subject += I18n.t('user_notifier_model.rejected_submission', :flag => SystemSetting.rejected_flag)
     setup_body_with(revision, url, rejection_message)
 
     mail(:to => @recipients, :subject => @subject)
@@ -141,7 +141,7 @@ class UserNotifier < ActionMailer::Base
 
   def reviewing_of(revision, url, submitter, rejection_message)
     setup_email(submitter)
-    @subject += I18n.t('user_notifier_model.reviewed_submission', :flag => Kete.reviewed_flag)
+    @subject += I18n.t('user_notifier_model.reviewed_submission', :flag => SystemSetting.reviewed_flag)
     setup_body_with(revision, url, rejection_message)
 
     mail(:to => @recipients, :subject => @subject)
@@ -220,7 +220,7 @@ class UserNotifier < ActionMailer::Base
 
   def setup_email(user)     
     @recipients  = "#{user.email}"
-    @subject     = "#{Kete.site_name} "
+    @subject     = "#{SystemSetting.site_name} "
 
     @user = user
     @recipient = user # less confusing than user

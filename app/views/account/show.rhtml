@@ -8,7 +8,7 @@
     | <%= link_to t('.change_password'), :action => 'change_password' %>
     ]
   <% end -%>
-  <% if !@view_is_user && Kete.administrator_activates? && @site_admin -%>
+  <% if !@view_is_user && SystemSetting.administrator_activates? && @site_admin -%>
      [
      <% if @user.has_been_activated? -%>
       <%= t '.activated' -%>

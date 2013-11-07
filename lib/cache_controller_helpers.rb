@@ -197,7 +197,7 @@ module CacheControllerHelpers
 
     def expire_related_caches_for_batch_of(items, controller, options = { })
       # we want to flush related items caches incase they updated something we display
-      if !Kete.use_backgroundrb_for_cache_expirations? ||
+      if !SystemSetting.use_backgroundrb_for_cache_expirations? ||
           !call_generic_muted_worker_with(options.merge({ :method_name => "worker_expire_related_caches_for_batch_of",
                                                           :items => items,
                                                           :controller => controller}))
@@ -270,7 +270,7 @@ module CacheControllerHelpers
       if item_or_user.kind_of?(User)
         # we want to flush contribution caches incase they updated something we display
         # we also want to update zoom for all items they have contributed to
-        if !Kete.use_backgroundrb_for_cache_expirations? ||
+        if !SystemSetting.use_backgroundrb_for_cache_expirations? ||
             !call_generic_muted_worker_with(options.merge({ :method_name => "clear_caches_and_search_records_for",
                                                             :class_key => :user,
                                                             :object => item_or_user }))

@@ -71,7 +71,7 @@ module ItemPrivacy
         # skip versions that are simply placeholders,
         # i.e. the only public version is "no public version"
         last_version = versions.find(:first,
-                                     :conditions => "title != \'#{Kete.no_public_version_title}\'",
+                                     :conditions => "title != \'#{SystemSetting.no_public_version_title}\'",
                                      :order => 'id DESC')
         last_version.respond_to?(:private?) && last_version.private?
       end
@@ -181,8 +181,8 @@ module ItemPrivacy
           else
 
             update_hash = {
-              :title => Kete.no_public_version_title,
-              :description => Kete.no_public_version_description,
+              :title => SystemSetting.no_public_version_title,
+              :description => SystemSetting.no_public_version_description,
               :extended_content => nil,
               :tag_list => nil,
               :private => false,

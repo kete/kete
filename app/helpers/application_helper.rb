@@ -93,9 +93,9 @@ module ApplicationHelper
   end
 
   def page_description
-    return Kete.default_page_description if current_item.nil?
+    return SystemSetting.default_page_description if current_item.nil?
     description_text = short_summary_or_description_of(current_item)
-    return Kete.default_page_description if description_text.blank?
+    return SystemSetting.default_page_description if description_text.blank?
     description_text
   end
 
@@ -1427,7 +1427,7 @@ module ApplicationHelper
 
   def flagging_links_for(item, first = false, controller = nil)
     html_string = String.new
-    if Kete.flagging_tags.size > 0 and !item.already_at_blank_version?
+    if SystemSetting.flagging_tags.size > 0 and !item.already_at_blank_version?
       if first
         html_string = "<ul><li class=\"first flag\">#{t('application_helper.flagging_links_for.flag_as')}</li>\n"
       else
@@ -1435,7 +1435,7 @@ module ApplicationHelper
       end
       html_string += "<li class=\"first\"><ul>\n"
       flag_count = 1
-      Kete.flagging_tags.each do |flag|
+      SystemSetting.flagging_tags.each do |flag|
         if flag_count == 1
           html_string += "<li class=\"first\">"
         else
@@ -1521,10 +1521,10 @@ module ApplicationHelper
 
   def link_to_original_of(item, phrase=t('application_helper.link_to_original_of.phrase'), skip_warning=false)
     item_file_url = item.is_a?(StillImage) ? item.original_file.public_filename : item.public_filename
-    if Kete.download_warning.blank? || skip_warning
+    if SystemSetting.download_warning.blank? || skip_warning
       link_to phrase, item_file_url
     else
-      link_to phrase, item_file_url, :confirm => Kete.download_warning
+      link_to phrase, item_file_url, :confirm => SystemSetting.download_warning
     end
   end
 

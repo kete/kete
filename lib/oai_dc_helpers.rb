@@ -164,7 +164,7 @@ module OaiDcHelpers
       # will find that the date created is not useful in their search record
       # and will want to handle date data explicitly in their extended fields
       # only turn it on if specified in the system setting
-      if Kete.add_date_created_to_item_search_record?
+      if SystemSetting.add_date_created_to_item_search_record?
         item_created = created_at.utc.xmlschema
         xml.send("dc:date", item_created)
       end
@@ -204,7 +204,7 @@ module OaiDcHelpers
         commented_on_item = self.commentable
         xml.send("dc:subject") {
           xml.cdata commented_on_item.title
-        } unless [Kete.blank_title, Kete.no_public_version_title].include?(commented_on_item.title)
+        } unless [SystemSetting.blank_title, SystemSetting.no_public_version_title].include?(commented_on_item.title)
         xml.send("dc:relation", url_for_dc_identifier(commented_on_item, { :force_http => true, :minimal => true }.merge(passed_request)))
       else
         related_count = related_items.count
@@ -214,7 +214,7 @@ module OaiDcHelpers
           if related_count < 500
             xml.send("dc:subject") {
               xml.cdata related.title
-            } unless [Kete.blank_title, Kete.no_public_version_title].include?(related.title)
+            } unless [SystemSetting.blank_title, SystemSetting.no_public_version_title].include?(related.title)
           end
           xml.send("dc:relation", url_for_dc_identifier(related, { :force_http => true, :minimal => true }.merge(passed_request)))
         end

@@ -115,7 +115,7 @@ class StillImage < ActiveRecord::Base
 #        code = Proc.new {
 #          return nil unless send(file_method_name)
 #
-#          site_url = Kete.site_url
+#          site_url = SystemSetting.site_url
 #          site_url = site_url.chomp('/') if site_url.last == '/'
 #          site_url + send(file_method_name).public_filename
 #        }

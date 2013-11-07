@@ -75,7 +75,7 @@ module SearchHelper
       statement << t('search.results.x-y_have_z_locations',
                      :start => @start, :finish => @end_record,
                      :n_locations => @number_of_locations_count)
-      if params[:view_as] != 'map' && Kete.enable_maps?
+      if params[:view_as] != 'map' && SystemSetting.enable_maps?
         links << link_to(t('search.results.view_map'), { :overwrite_params => { :view_as => 'map' } }, { :tabindex => '1' } )
       elsif params[:view_as] == 'map'
         links << link_to(t('search.results.view_list'), { :overwrite_params => { :view_as => nil } }, { :tabindex => '1' } )
@@ -140,7 +140,7 @@ module SearchHelper
       image_hash = still_images_hash[key][:thumbnail]
       image_hash[:alt] = altify(still_images_hash[key][:title])
       src = image_hash[:src]
-      src = src.sub(Kete.site_url, '/') if locally_hosted
+      src = src.sub(SystemSetting.site_url, '/') if locally_hosted
       image_hash.delete(:size)
       image_hash.delete(:src)
 

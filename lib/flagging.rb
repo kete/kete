@@ -19,11 +19,11 @@ module Flagging
         end
 
         def reviewed?
-          tags.size > 0 && tags.join(',') =~ /(\#{Kete.reviewed_flag})/
+          tags.size > 0 && tags.join(',') =~ /(\#{SystemSetting.reviewed_flag})/
         end
 
         def rejected?
-          tags.size > 0 && tags.join(',') =~ /(\#{Kete.rejected_flag})/
+          tags.size > 0 && tags.join(',') =~ /(\#{SystemSetting.rejected_flag})/
         end
 
         def already_moderated_flags
@@ -86,7 +86,7 @@ module Flagging
 
     def remove_pending_flag(version_number)
       version = self.versions.find_by_version(version_number)
-      version.tag_list.remove(Kete.pending_flag)
+      version.tag_list.remove(SystemSetting.pending_flag)
       version.save_tags
     end
 
@@ -94,29 +94,29 @@ module Flagging
     # not user action (incorrect, duplicate etc)
     def remove_all_flags(version_number)
       version = self.versions.find_by_version(version_number)
-      version.tag_list.remove(Kete.blank_flag)
-      version.tag_list.remove(Kete.pending_flag)
-      version.tag_list.remove(Kete.reviewed_flag)
-      version.tag_list.remove(Kete.rejected_flag)
-      version.tag_list.remove(Kete.restricted_flag)
+      version.tag_list.remove(SystemSetting.blank_flag)
+      version.tag_list.remove(SystemSetting.pending_flag)
+      version.tag_list.remove(SystemSetting.reviewed_flag)
+      version.tag_list.remove(SystemSetting.rejected_flag)
+      version.tag_list.remove(SystemSetting.restricted_flag)
       version.save_tags
     end
 
     def strip_flags_and_mark_reviewed(version_number)
       remove_all_flags(version_number)
-      flag_at_with(version_number, Kete.reviewed_flag)
+      flag_at_with(version_number, SystemSetting.reviewed_flag)
     end
 
     def review_this(version_number, options = {})
       remove_all_flags(version_number)
-      flag_at_with(version_number, Kete.reviewed_flag, options[:message])
-      flag_at_with(version_number, Kete.restricted_flag, options[:message]) if options[:restricted]
+      flag_at_with(version_number, SystemSetting.reviewed_flag, options[:message])
+      flag_at_with(version_number, SystemSetting.restricted_flag, options[:message]) if options[:restricted]
     end
 
     def reject_this(version_number, options = {})
       remove_all_flags(version_number)
-      flag_at_with(version_number, Kete.rejected_flag, options[:message])
-      flag_at_with(version_number, Kete.restricted_flag, options[:message]) if options[:restricted]
+      flag_at_with(version_number, SystemSetting.rejected_flag, options[:message])
+      flag_at_with(version_number, SystemSetting.restricted_flag, options[:message]) if options[:restricted]
     end
 
     def max_version
@@ -193,13 +193,13 @@ module Flagging
       else
         # we leave required fields alone
         # and let the view handle whether they should be shown
-        update_hash = { :title => Kete.blank_title,
+        update_hash = { :title => SystemSetting.blank_title,
           :description => nil,
           :extended_content => nil,
           :tag_list => nil }
 
         update_hash[:private] = self.private? if self.respond_to?(:private)
-        update_hash[:description] = Kete.pending_flag if self.class.name == 'Comment'
+        update_hash[:description] = SystemSetting.pending_flag if self.class.name == 'Comment'
 
         update_hash[:short_summary] = nil if self.can_have_short_summary?
 
@@ -231,7 +231,7 @@ module Flagging
     end
 
     def already_at_blank_version?
-      title == Kete.blank_title and (description.nil? or (self.class.name == 'Comment' and description == Kete.pending_flag)) and extended_content.nil? and (!self.can_have_short_summary? or short_summary.nil?)
+      title == SystemSetting.blank_title and (description.nil? or (self.class.name == 'Comment' and description == SystemSetting.pending_flag)) and extended_content.nil? and (!self.can_have_short_summary? or short_summary.nil?)
     end
 
     def fully_moderated?
@@ -261,16 +261,16 @@ module Flagging
     end
 
     def at_placeholder_public_version?
-      title == Kete.no_public_version_title
+      title == SystemSetting.no_public_version_title
     end
 
     def notify_moderators_immediatelly_if_necessary(options = { })
-      if Kete.frequency_of_moderation_email.is_a?(String) and Kete.frequency_of_moderation_email == 'instant'
+      if SystemSetting.frequency_of_moderation_email.is_a?(String) and SystemSetting.frequency_of_moderation_email == 'instant'
         # if histor_url is blank it will be figured out in view
         history_url = if !options[:history_url].blank?
           options[:history_url]
         else
-          url_for(:host => Kete.site_name,
+          url_for(:host => SystemSetting.site_name,
                   :urlified_name => basket.urlified_name,
                   :controller => zoom_class_controller(self.class.name),
                   :action => 'history', :id => self, :locale => false)
@@ -298,12 +298,12 @@ module Flagging
       # make sure the version is flagged as pending
       version = self.versions.find_by_version(version)
 
-      if version.tags.include?(Tag.find_by_name(Kete.pending_flag))
+      if version.tags.include?(Tag.find_by_name(SystemSetting.pending_flag))
         # notify user and moderators that a revision is pending review
         UserNotifier.deliver_pending_review_for(version.version, submitter)
 
         # if instant moderator notifcation
-        notify_moderators_immediatelly_if_necessary(:flag => Kete.pending_flag,
+        notify_moderators_immediatelly_if_necessary(:flag => SystemSetting.pending_flag,
                                                     :version => version.version,
                                                     :submitter => submitter)
       end
@@ -323,7 +323,7 @@ module Flagging
 
         self.reload # make sure we have the latest attribute values (specifically version)
         if should_moderate?
-          flag_live_version_with(Kete.pending_flag)
+          flag_live_version_with(SystemSetting.pending_flag)
         end
 
       end
@@ -340,7 +340,7 @@ module Flagging
   module ClassMethods
 
     def already_moderated_flags
-      [Kete.reviewed_flag, Kete.rejected_flag, Kete.restricted_flag, Kete.blank_flag]
+      [SystemSetting.reviewed_flag, SystemSetting.rejected_flag, SystemSetting.restricted_flag, SystemSetting.blank_flag]
     end
 
     # Returns a collection of item versions that have been flagged one way or another
@@ -399,7 +399,7 @@ module Flagging
         conditions_string = "title != :pending_title"
         conditions_string += " or description is not null" if name != 'Comment'
       end
-      find(type, :conditions => [conditions_string, { :pending_title => Kete.blank_title }])
+      find(type, :conditions => [conditions_string, { :pending_title => SystemSetting.blank_title }])
     end
 
     def find_all_public_non_pending

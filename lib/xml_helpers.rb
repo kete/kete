@@ -3,7 +3,7 @@ module XmlHelpers
 
     def appropriate_protocol_for(item)
       protocol = "http"
-      if Kete.force_https_on_restricted_pages &&
+      if SystemSetting.force_https_on_restricted_pages &&
           ( ( item.respond_to?(:private) && item.private? ) ||
             ( item.respond_to?(:commentable_private?) && item.commentable_private? ) )
 

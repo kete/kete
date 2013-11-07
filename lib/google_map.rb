@@ -181,7 +181,7 @@ module GoogleMap
                                   </em>",
                             latlng_data) if display_coords
 
-        if generate_text_fields && Kete.enable_maps?
+        if generate_text_fields && SystemSetting.enable_maps?
           # If we're on the add/edit form
           # append a text input that we can use with Google Maps Places aspect of the API
           # see places library addition below
@@ -197,7 +197,7 @@ module GoogleMap
                            })
         end
 
-        if Kete.enable_maps?
+        if SystemSetting.enable_maps?
           # create the google map div
           # change class value accordingly
           # default is wider, editor specifies narrow for add/edit use
@@ -619,15 +619,15 @@ module GoogleMap
     def set_gm_defaults
       return if @default_latitude && @default_longitude && @default_zoom_lvl
 
-      if Kete.default_latitude.present? ||
-          Kete.default_longitude.present?
+      if SystemSetting.default_latitude.present? ||
+          SystemSetting.default_longitude.present?
 
-        @default_latitude = Kete.default_latitude
-        @default_longitude = Kete.default_longitude
+        @default_latitude = SystemSetting.default_latitude
+        @default_longitude = SystemSetting.default_longitude
       end
 
-      if Kete.default_zoom_level.present?
-        @default_zoom_lvl = Kete.default_zoom_level
+      if SystemSetting.default_zoom_level.present?
+        @default_zoom_lvl = SystemSetting.default_zoom_level
       end
     end
 

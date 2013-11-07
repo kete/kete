@@ -259,16 +259,16 @@ namespace :kete do
 
         this_site_config = {
           :title => SystemSetting.pretty_site_name,
-          :domain => Kete.site_name,
-          :oembed_endpoint => Kete.site_url + 'oembed',
+          :domain => SystemSetting.site_name,
+          :oembed_endpoint => SystemSetting.site_url + 'oembed',
           :upload_startpoint => { :label => 'Upload New Image',
-            :url => Kete.site_url + 'site/images/new?as_service=true&append_show_url=true' },
+            :url => SystemSetting.site_url + 'site/images/new?as_service=true&append_show_url=true' },
           :insertIntoEditor => { :editor => 'TinyMCE' },
           :sources => [
                        { :name => 'Latest',
                          :media_type => 'image',
                          :media_type_plural => 'images',
-                         :url => Kete.site_url + 'site/all/images/rss.xml',
+                         :url => SystemSetting.site_url + 'site/all/images/rss.xml',
                          :searchable_stub => false,
                          :limit_parameter => '?count=',
                          :display_limit => 4,
@@ -277,7 +277,7 @@ namespace :kete do
                        { :name =>'Search',
                          :media_type => 'image',
                          :media_type_plural => 'images',
-                         :url => Kete.site_url + 'site/search/images/for/terms/rss.xml?search_terms=',
+                         :url => SystemSetting.site_url + 'site/search/images/for/terms/rss.xml?search_terms=',
                          :searchable_stub => true,
                          :limit_parameter => '&count=',
                          :display_limit => 4,
@@ -300,7 +300,7 @@ namespace :kete do
 
         this_site_sizes_config = Array.new
         
-        Kete.image_sizes.each do |size_array|
+        SystemSetting.image_sizes.each do |size_array|
           # decypher imagemagick rules
           width = nil
           height = nil
