@@ -22,7 +22,7 @@ class Topic < ActiveRecord::Base
   include HasContributors
 
   # all our ZOOM_CLASSES need this to be searchable by zebra
-  include ConfigureActsAsZoomForKete
+  # include ConfigureActsAsZoomForKete
 
   # we can't use object.comments, because that is used by related content stuff
   # has_many :comments, :as => :commentable, :dependent => :destroy, :order => 'position'
