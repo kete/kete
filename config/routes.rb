@@ -35,10 +35,11 @@
   #        Adding this route so we can get the basic app working
   match 'search/terms_to_page_url_redirect' => "search#terms_to_page_url_redirect"
 
-  # RABID terrible hacks
+  # RABID terrible hacks to enable us to get one controller working
   match 'account/sign_up' => 'account#signup'
   match 'account/login' => 'account#login'
   match 'site/baskets/choose_type' => 'baskets#choose_type'
+  match 'site/baskets/list' => 'baskets#list'
 
   # All search related routes (all, rss, for)
   match ':urlified_name/all/:controller_name_for_zoom_class/' => 'search#all', :as => :basket_all

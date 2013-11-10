@@ -302,7 +302,7 @@ class SystemSetting < ActiveRecord::Base
     self.method_name_to_setting_value(:hide_related_items_position_field)
   end
 
-  def self.show_powered_by_kete
+  def self.show_powered_by_kete?
     self.method_name_to_setting_value(:show_powered_by_kete)
   end
 

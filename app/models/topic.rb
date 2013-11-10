@@ -70,8 +70,8 @@ class Topic < ActiveRecord::Base
   # so we can revert later if necessary
 
   # Tags are tracked on a per-privacy basis.
-  acts_as_taggable_on :public_tags
-  acts_as_taggable_on :private_tags
+  # acts_as_taggable_on :public_tags
+  # acts_as_taggable_on :private_tags
 
   # we override acts_as_versioned dependent => delete_all
   # because of the complexity our relationships of our models

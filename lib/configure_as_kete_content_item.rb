@@ -41,13 +41,13 @@ module ConfigureAsKeteContentItem
       # so we can revert later if necessary
 
       # Tags are tracked on a per-privacy basis.
-      klass.send :acts_as_taggable_on, :public_tags
-      klass.send :acts_as_taggable_on, :private_tags
+      # klass.send :acts_as_taggable_on, :public_tags
+      # klass.send :acts_as_taggable_on, :private_tags
 
-      # we override acts_as_versioned dependent => delete_all
-      # because of the complexity our relationships of our models
-      # delete_all won't do the right thing (at least not in migrations)
-      klass.send :acts_as_versioned, :association_options => { :dependent => :destroy }
+      # # we override acts_as_versioned dependent => delete_all
+      # # because of the complexity our relationships of our models
+      # # delete_all won't do the right thing (at least not in migrations)
+      # klass.send :acts_as_versioned, :association_options => { :dependent => :destroy }
 
       # this is a little tricky
       # the acts_as_taggable declaration for the original
@@ -55,28 +55,28 @@ module ConfigureAsKeteContentItem
       # where we use it for flagging moderator options, like 'flag as inappropriate'
       # where 'inappropriate' is actually a tag on that particular version
 
-      # Moderation flags are tracked in a separate context.
-      Module.class_eval("#{klass.name}::Version").class_eval <<-RUBY
-        acts_as_taggable_on :flags
-        alias_method :tags, :flags
-        alias_method :tag_list, :flag_list
-        alias_method :tag_list=, :flag_list=
-        alias_method :tag_counts, :flag_counts
-        def latest_version
-          @latest_version ||= #{klass.name}.find_by_id(self.#{klass.name.tableize.singularize}_id)
-        end
-        def basket
-          latest_version.basket
-        end
-        def first_related_image
-          latest_version.first_related_image
-        end
-        def disputed_or_not_available?
-          (title == SystemSetting.no_public_version_title) || (title == SystemSetting.blank_title)
-        end
-        include FriendlyUrls
-        def to_param; format_for_friendly_urls(true); end
-      RUBY
+      # # Moderation flags are tracked in a separate context.
+      # Module.class_eval("#{klass.name}::Version").class_eval <<-RUBY
+      #   acts_as_taggable_on :flags
+      #   alias_method :tags, :flags
+      #   alias_method :tag_list, :flag_list
+      #   alias_method :tag_list=, :flag_list=
+      #   alias_method :tag_counts, :flag_counts
+      #   def latest_version
+      #     @latest_version ||= #{klass.name}.find_by_id(self.#{klass.name.tableize.singularize}_id)
+      #   end
+      #   def basket
+      #     latest_version.basket
+      #   end
+      #   def first_related_image
+      #     latest_version.first_related_image
+      #   end
+      #   def disputed_or_not_available?
+      #     (title == SystemSetting.no_public_version_title) || (title == SystemSetting.blank_title)
+      #   end
+      #   include FriendlyUrls
+      #   def to_param; format_for_friendly_urls(true); end
+      # RUBY
 
       # methods and declarations related to moderation and flagging
       klass.send :include, Flagging
