@@ -179,7 +179,7 @@
     root :to => 'configure#index', :urlified_name => 'site'
   end
 
-  match '*path' => 'application#rescue_404' unless ActionController::Base.consider_all_requests_local
+  match '*path' => 'application#rescue_404' unless Rails.application.config.consider_all_requests_local
 end
 
 

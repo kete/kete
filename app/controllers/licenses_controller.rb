@@ -1,6 +1,6 @@
 require 'rake'
-require 'rake/rdoctask'
-require 'rake/testtask'
+# require 'rake/rdoctask'
+# require 'rake/testtask'
 require 'tasks/rails'
 
 class LicensesController < ApplicationController

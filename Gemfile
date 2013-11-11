@@ -8,7 +8,8 @@ gem "mysql"
 gem 'railroady'
 gem "awesome_nested_set", "~> 2.1.6"
 # Added to get rake working. I suspect these should be removed.
-gem 'rake', '0.9.2.2' # version needed to use: require 'rake/rdoctask'
+# gem 'rake', '0.9.2.2' # version needed to use: require 'rake/rdoctask'
+gem "rake", "~> 10.1.0"
 gem "rdoc"
 gem 'nokogiri', '1.3.3'
 
@@ -28,6 +29,14 @@ gem 'rmagick', "2.12.2"
 
 group :development, :test do
   gem "sqlite3", "~> 1.3.7"
+  gem "rspec-rails", "~> 2.14.0"
+  gem "factory_girl_rails", "~> 4.3.0"
+  gem "pry-rails"
+  gem "debugger", :platforms => [:mingw_19, :ruby_19]
+  gem 'byebug', :platforms => [:mingw_20, :ruby_20]
+  gem 'pry-byebug', :platforms => [:mingw_20, :ruby_20]
+  gem 'awesome_print'
+
 
 #  gem 'webrat'
 #  gem 'shoulda', "2.0.0" # !! ruby 1.8.7 requirement

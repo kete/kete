@@ -1,6 +1,6 @@
 class BasketsController < ApplicationController
   ### TinyMCE WYSIWYG editor stuff
-  uses_tiny_mce :only => VALID_TINYMCE_ACTIONS
+  # uses_tiny_mce :only => VALID_TINYMCE_ACTIONS
   ### end TinyMCE WYSIWYG editor stuff
 
   permit "site_admin or admin of :current_basket", :only => [:edit, :update, :homepage_options, :destroy,
@@ -22,7 +22,7 @@ class BasketsController < ApplicationController
   # Instantiation of Google Map code for location settings
   include GoogleMap::Mapper
 
-  include TaggingController
+  # include TaggingController
 
   include AnonymousFinishedAfterFilter
 

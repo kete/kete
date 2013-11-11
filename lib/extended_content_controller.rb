@@ -38,7 +38,7 @@ module ExtendedContentController
       end
 
       ### TinyMCE WYSIWYG editor stuff
-      klass.send :uses_tiny_mce, :only => VALID_TINYMCE_ACTIONS
+      # klass.send :uses_tiny_mce, :only => VALID_TINYMCE_ACTIONS
       ### end TinyMCE WYSIWYG editor stuff
 
       klass.send :helper, :privacy_controls

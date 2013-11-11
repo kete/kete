@@ -1144,6 +1144,9 @@ class ApplicationController < ActionController::Base
                 :show_basket_list_naviation_menu?, :url_for_dc_identifier, :derive_url_for_rss, :show_notification_controls?, :path_to_show_for,
                 :permitted_to_edit_basket_homepage_topic?, :current_user_can_import_archive_sets?, :current_user_can_import_archive_sets_for?, :anonymous_ok_for?
 
+  # stub out methods to allow specs to run
+  def auto_complete_for(*args); end
+
   protected
 
   def local_request?

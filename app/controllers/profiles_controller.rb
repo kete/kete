@@ -13,7 +13,7 @@ class ProfilesController < ApplicationController
   helper :baskets
 
   ### TinyMCE WYSIWYG editor stuff
-  uses_tiny_mce :only => VALID_TINYMCE_ACTIONS
+  # uses_tiny_mce :only => VALID_TINYMCE_ACTIONS
   ### end TinyMCE WYSIWYG editor stuff
 
   active_scaffold :profiles do |config|

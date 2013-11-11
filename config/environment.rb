@@ -18,7 +18,7 @@ CACHES_CONTROLLERS = ['audio', 'baskets', 'comments', 'documents', 'images', 'to
 
 # Walter McGinnis, 2007-01-07
 # You can override default authorization system constants here.
-AUTHORIZATION_MIXIN = "object roles"
+# AUTHORIZATION_MIXIN = "object roles"
 #DEFAULT_REDIRECTION_HASH = { :controller => 'account', :action => 'login' }
 #STORE_LOCATION_METHOD = :store_return_location
 
@@ -31,17 +31,17 @@ AUTHORIZATION_MIXIN = "object roles"
 #require File.join(File.dirname(__FILE__), 'boot')
 
 # !! Fixing rubygems vs rake error: undefined local variable or method `version_requirements'
-if Gem::VERSION >= "1.3.6"
-  module Rails
-    class GemDependency
-
-      def requirement
-        r = super
-        (r == Gem::Requirement.default) ? nil : r
-      end
-    end
-  end
-end
+# if Gem::VERSION >= "1.3.6"
+#   module Rails
+#     class GemDependency
+# 
+#       def requirement
+#         r = super
+#         (r == Gem::Requirement.default) ? nil : r
+#       end
+#     end
+#   end
+# end
 
 
 

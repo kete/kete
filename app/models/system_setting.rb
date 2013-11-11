@@ -473,7 +473,7 @@ private
     if setting = SystemSetting.find_by_name(setting_name)
       return setting.constant_value
     else
-      raise NoMethodError.new("unknown method: SystemSetting.#{underscore_name}")
+      # raise NoMethodError.new("unknown method: SystemSetting.#{underscore_name}")
     end
   end
 end
