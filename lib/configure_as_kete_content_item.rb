@@ -4,13 +4,14 @@ module ConfigureAsKeteContentItem
       # each topic or content item lives in exactly one basket
       klass.send :belongs_to, :basket
 
-      klass.send :named_scope, :in_basket, lambda { |basket| { :conditions => { :basket_id => basket } } }
+      klass.send :scope, :in_basket, lambda { |basket| { :conditions => { :basket_id => basket } } }
       
       # where we handle creator and contributor tracking
       klass.send :include, HasContributors
 
       # all our ZOOM_CLASSES need this to be searchable by zebra
-      klass.send :include, ConfigureActsAsZoomForKete
+      # RABID: disable to get stuff working
+      # klass.send :include, ConfigureActsAsZoomForKete
 
       # methods related to handling the xml kept in extended_content column
       klass.send :include, ExtendedContent
@@ -41,13 +42,13 @@ module ConfigureAsKeteContentItem
       # so we can revert later if necessary
 
       # Tags are tracked on a per-privacy basis.
-      # klass.send :acts_as_taggable_on, :public_tags
-      # klass.send :acts_as_taggable_on, :private_tags
+      klass.send :acts_as_taggable_on, :public_tags
+      klass.send :acts_as_taggable_on, :private_tags
 
       # # we override acts_as_versioned dependent => delete_all
       # # because of the complexity our relationships of our models
       # # delete_all won't do the right thing (at least not in migrations)
-      # klass.send :acts_as_versioned, :association_options => { :dependent => :destroy }
+      klass.send :acts_as_versioned, :association_options => { :dependent => :destroy }
 
       # this is a little tricky
       # the acts_as_taggable declaration for the original
@@ -56,29 +57,30 @@ module ConfigureAsKeteContentItem
       # where 'inappropriate' is actually a tag on that particular version
 
       # # Moderation flags are tracked in a separate context.
-      # Module.class_eval("#{klass.name}::Version").class_eval <<-RUBY
-      #   acts_as_taggable_on :flags
-      #   alias_method :tags, :flags
-      #   alias_method :tag_list, :flag_list
-      #   alias_method :tag_list=, :flag_list=
-      #   alias_method :tag_counts, :flag_counts
-      #   def latest_version
-      #     @latest_version ||= #{klass.name}.find_by_id(self.#{klass.name.tableize.singularize}_id)
-      #   end
-      #   def basket
-      #     latest_version.basket
-      #   end
-      #   def first_related_image
-      #     latest_version.first_related_image
-      #   end
-      #   def disputed_or_not_available?
-      #     (title == SystemSetting.no_public_version_title) || (title == SystemSetting.blank_title)
-      #   end
-      #   include FriendlyUrls
-      #   def to_param; format_for_friendly_urls(true); end
-      # RUBY
+      Module.class_eval("#{klass.name}::Version").class_eval <<-RUBY
+        acts_as_taggable_on :flags
+        alias_method :tags, :flags
+        alias_method :tag_list, :flag_list
+        alias_method :tag_list=, :flag_list=
+        alias_method :tag_counts, :flag_counts
+        def latest_version
+          @latest_version ||= #{klass.name}.find_by_id(self.#{klass.name.tableize.singularize}_id)
+        end
+        def basket
+          latest_version.basket
+        end
+        def first_related_image
+          latest_version.first_related_image
+        end
+        def disputed_or_not_available?
+          (title == SystemSetting.no_public_version_title) || (title == SystemSetting.blank_title)
+        end
+        include FriendlyUrls
+        def to_param; format_for_friendly_urls(true); end
+      RUBY
 
       # methods and declarations related to moderation and flagging
+      # RABID: disable to get working
       klass.send :include, Flagging
 
       klass.send :validates_presence_of, :title

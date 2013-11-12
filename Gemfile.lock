@@ -5,6 +5,13 @@ GIT
     acts_as_authenticated (2.0)
 
 GIT
+  remote: git://github.com/jwhitehorn/acts_as_versioned.git
+  revision: 44dfe632ba8c97c786cbc172a2da18a41b17f668
+  specs:
+    acts_as_versioned (3.2.1)
+      activerecord
+
+GIT
   remote: git://github.com/kete/acts_as_licensed.git
   revision: 51404e95591af17236bb96f072cb2d7b5582af5f
   branch: rails3-gem
@@ -55,9 +62,8 @@ GEM
       activemodel (= 3.0.20)
       activesupport (= 3.0.20)
     activesupport (3.0.20)
-    acts-as-taggable-on (1.0.6)
-    acts_as_versioned (0.6.0)
-      activerecord (~> 3.0.0.beta4)
+    acts-as-taggable-on (2.4.1)
+      rails (>= 3, < 5)
     addressable (2.3.5)
     arel (2.0.10)
     authorization (1.0.11)
@@ -181,6 +187,7 @@ GEM
       nokogiri (> 0.0.0)
     slop (3.4.6)
     sqlite3 (1.3.8)
+    tdd-attachment_fu (0.9.9.b)
     thor (0.14.6)
     treetop (1.4.15)
       polyglot
@@ -200,11 +207,11 @@ PLATFORMS
 DEPENDENCIES
   RedCloth
   active_scaffold (= 3.0.5)
-  acts-as-taggable-on (= 1.0.6)
+  acts-as-taggable-on (~> 2.4.1)
   acts_as_authenticated (= 2.0)!
   acts_as_licensed!
   acts_as_soft_deletable!
-  acts_as_versioned (= 0.6.0)
+  acts_as_versioned!
   authorization (= 1.0.11)
   avatar
   awesome_nested_set (~> 2.1.6)
@@ -238,6 +245,7 @@ DEPENDENCIES
   routing-filter (= 0.1.6)
   rspec-rails (~> 2.14.0)
   sqlite3 (~> 1.3.7)
+  tdd-attachment_fu (= 0.9.9.b)
   unicode
   will_paginate (= 2.3.11)
   xml-simple

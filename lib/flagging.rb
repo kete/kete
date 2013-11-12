@@ -1,5 +1,6 @@
 include ActionController::UrlWriter
-include ZoomControllerHelpers
+# RABID disable to get working
+# include ZoomControllerHelpers
 
 module Flagging
   unless included_modules.include? Flagging

@@ -29,7 +29,13 @@ describe WebLink do
 
   it "behaves like a private item"
 
-  it "acts as a licenced item"
+  it "behaves liks a licenced resource" do
+    # this should not test the licenced item code, just that it has been included
+    # a "licensed item" belongs to the Licenc model so should ahve a licence_id
+    # wl = WebLink.new
+    # expect(weblink).to respond_to(:license_id)
+  end
+  
 
   it "behaves like a versioned resource"
 

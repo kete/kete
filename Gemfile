@@ -4,6 +4,18 @@ gem "rails", "3.0.20"
 
 gem 'acts_as_licensed', github: 'kete/acts_as_licensed', branch: 'rails3-gem'
 
+
+# RABID: the official version of acts_as_versioned seems to be abandoned but
+# 		 this fork claims to have rails 3 support
+gem 'acts_as_versioned', github: "jwhitehorn/acts_as_versioned"
+
+# RABID: the old plugin version of acts-as-taggable-on was 1.0.0
+gem "acts-as-taggable-on", "~> 2.4.1"
+
+gem 'tdd-attachment_fu', '0.9.9.b'
+
+
+
 gem "mysql"
 
 gem 'railroady'
@@ -113,15 +125,12 @@ gem 'http_url_validation_improved'
 
 
 gem 'active_scaffold',              '3.0.5' # >> 2009-06-29
-gem 'acts-as-taggable-on',          '1.0.6' # ideally should be 1.0.0
 gem "acts_as_authenticated", "2.0", :git => "git://github.com/gundestrup/acts_as_authenticated.git" # 2007-06-06
 ##gem 'acts_as_configurable',         '0.0.3' # >> 2007-12-17
 #gem "acts_as_licensed", "#.#.#", :git => "git://github.com/shuber/sortable.git" # 2008-07-10
 #gem 'acts_as_list',                 '0.1.2' # >> 2007-11-18
 gem "acts_as_soft_deletable", :git => "git://github.com/says/acts_as_soft_deletable.git" # 2009-02-16
-gem 'acts_as_versioned',            '0.6.0' # ideally should be 0.5.2
 ## gem 'acts_as_zoom'
-#gem 'tdd-attachment_fu',            '0.9.9.b' # >> 2008-04-02, replaces 'attachment_fu'
 gem 'authorization',                '1.0.11' # >> 2008-10-01
 #gem 'auto_complete',                '0.0.1' # >> 2008-10-23
 #gem 'backgroundrb-rails3',          '1.1.0' # >> 2008-10-15, replaces 'backgroundrb'
