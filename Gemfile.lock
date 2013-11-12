@@ -5,6 +5,14 @@ GIT
     acts_as_authenticated (2.0)
 
 GIT
+  remote: git://github.com/kete/acts_as_licensed.git
+  revision: 51404e95591af17236bb96f072cb2d7b5582af5f
+  branch: rails3-gem
+  specs:
+    acts_as_licensed (0.0.1)
+      railties (>= 3.0.0)
+
+GIT
   remote: git://github.com/says/acts_as_soft_deletable.git
   revision: 17b5ca72307be459c70cad6e7f9990be055e8d3a
   specs:
@@ -194,6 +202,7 @@ DEPENDENCIES
   active_scaffold (= 3.0.5)
   acts-as-taggable-on (= 1.0.6)
   acts_as_authenticated (= 2.0)!
+  acts_as_licensed!
   acts_as_soft_deletable!
   acts_as_versioned (= 0.6.0)
   authorization (= 1.0.11)

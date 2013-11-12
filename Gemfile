@@ -2,6 +2,7 @@ source "https://rubygems.org"
 
 gem "rails", "3.0.20"
 
+gem 'acts_as_licensed', github: 'kete/acts_as_licensed', branch: 'rails3-gem'
 
 gem "mysql"
 
