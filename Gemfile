@@ -41,7 +41,7 @@ gem 'mini_exiftool', '< 2.0.0'
 ##gem 'acts_as_zoom' # included in gem/plugins 
 
 
-gem 'rmagick', "2.12.2"
+gem 'rmagick', "2.12.2", :require => 'RMagick'
 
 group :development, :test do
   gem "sqlite3", "~> 1.3.7"
