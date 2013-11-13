@@ -12,7 +12,10 @@ gem 'acts_as_versioned', github: "jwhitehorn/acts_as_versioned"
 # RABID: the old plugin version of acts-as-taggable-on was 1.0.0
 gem "acts-as-taggable-on", "~> 2.4.1"
 
-gem 'tdd-attachment_fu', '0.9.9.b'
+# gem 'attachment_fu', github: 'debprado/attachment_fu'
+# gem 'attachment_fu', path: '../kete-gems/attachment_fu'
+gem 'pothoven-attachment_fu'
+
 
 
 

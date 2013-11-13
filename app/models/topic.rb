@@ -41,25 +41,25 @@ class Topic < ActiveRecord::Base
   # with our polymorphic join model
   # basicaly specifically name the classes on the other side of the relationship here
   # see http://blog.hasmanythrough.com/articles/2006/04/03/polymorphic-through
-  ZOOM_CLASSES.each do |zoom_class|
-    if zoom_class == 'Topic'
-      # special case
-      # topics related to a topic
-      has_many :child_related_topics, :through => :content_item_relations,
-      :source => :child_related_topic,
-      :conditions => "content_item_relations.related_item_type = 'Topic'",
-      :include => :basket,
-      :order => 'position'
-    else
-      unless zoom_class == 'Comment'
-        has_many zoom_class.tableize.to_sym, :through => :content_item_relations,
-        :source => zoom_class.tableize.singularize.to_sym,
-        :conditions => ["content_item_relations.related_item_type = ?", zoom_class],
-        :include => :basket,
-        :order => 'position'
-      end
-    end
-  end
+  # ZOOM_CLASSES.each do |zoom_class|
+  #   if zoom_class == 'Topic'
+  #     # special case
+  #     # topics related to a topic
+  #     has_many :child_related_topics, :through => :content_item_relations,
+  #     :source => :child_related_topic,
+  #     :conditions => "content_item_relations.related_item_type = 'Topic'",
+  #     :include => :basket,
+  #     :order => 'position'
+  #   else
+  #     unless zoom_class == 'Comment'
+  #       has_many zoom_class.tableize.to_sym, :through => :content_item_relations,
+  #       :source => zoom_class.tableize.singularize.to_sym,
+  #       :conditions => ["content_item_relations.related_item_type = ?", zoom_class],
+  #       :include => :basket,
+  #       :order => 'position'
+  #     end
+  #   end
+  # end
 
   # this allows us to turn on/off email notification per item
   attr_accessor :skip_email_notification

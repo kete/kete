@@ -3,7 +3,11 @@
 
 # Item Privacy Modification
 
-# include ItemPrivacy::All
+# RABID:
+# to implement privacy, we need to tweak the versioning, tagging, attachment subsystems
+# all those tweaks happen in this file
+# The methods defined in this file are added to ActiveModel models
+# - it is not clean which of those methods shadow methods in the gems that provide versioning, tagging, attachments
 
 module ItemPrivacy
 

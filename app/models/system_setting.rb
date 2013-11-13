@@ -158,9 +158,9 @@ class SystemSetting < ActiveRecord::Base
   #  self.method_name_to_setting_value(:image_content_types)
   #end
   #
-  #def self.maximum_uploaded_file_size
-  #  self.method_name_to_setting_value(:maximum_uploaded_file_size)
-  #end
+  def self.maximum_uploaded_file_size
+   self.method_name_to_setting_value(:maximum_uploaded_file_size)
+  end
   #
   #def self.document_content_types
   #  self.method_name_to_setting_value(:document_content_types)
@@ -169,10 +169,10 @@ class SystemSetting < ActiveRecord::Base
   #def self.audio_content_types
   #  self.method_name_to_setting_value(:audio_content_types)
   #end
-  #
-  #def self.video_content_types
-  #  self.method_name_to_setting_value(:video_content_types)
-  #end
+  
+  def self.video_content_types
+   self.method_name_to_setting_value(:video_content_types)
+  end
   #
   #def self.setup_sections
   #  self.method_name_to_setting_value(:setup_sections)
