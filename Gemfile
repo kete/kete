@@ -16,6 +16,7 @@ gem "acts-as-taggable-on", "~> 2.4.1"
 # gem 'attachment_fu', path: '../kete-gems/attachment_fu'
 gem 'pothoven-attachment_fu'
 
+gem 'kete-feedzirra', github: 'kete/feedzirra'
 
 
 
@@ -89,7 +90,6 @@ gem 'xml-simple'
 gem 'memcache-client'
 gem 'mime-types'
 #gem 'tiny_mce_plugin_imageselector', '>= 0.0.7'
-gem 'kete-feedzirra'
 gem 'htmlentities'
 
 gem 'http_url_validation_improved'

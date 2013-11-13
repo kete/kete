@@ -20,6 +20,18 @@ GIT
       railties (>= 3.0.0)
 
 GIT
+  remote: git://github.com/kete/feedzirra.git
+  revision: c38c7ab43d75de4f073f6f8f34531a785054f363
+  specs:
+    kete-feedzirra (0.0.20.1)
+      activesupport (>= 2.0.0)
+      builder (>= 2.1.2)
+      curb (>= 0.2.3)
+      loofah (>= 0.3.1)
+      nokogiri (> 0.0.0)
+      sax-machine (>= 0.0.12)
+
+GIT
   remote: git://github.com/says/acts_as_soft_deletable.git
   revision: 17b5ca72307be459c70cad6e7f9990be055e8d3a
   specs:
@@ -79,7 +91,7 @@ GEM
     chronic (0.10.2)
     coderay (1.1.0)
     columnize (0.3.6)
-    curb (0.8.4)
+    curb (0.8.5)
     debugger (1.6.2)
       columnize (>= 0.3.1)
       debugger-linecache (~> 1.2.0)
@@ -106,13 +118,6 @@ GEM
       addressable
     i18n (0.5.0)
     json (1.8.0)
-    kete-feedzirra (0.0.20.1)
-      activesupport (>= 2.0.0)
-      builder (>= 2.1.2)
-      curb (>= 0.2.3)
-      loofah (>= 0.3.1)
-      nokogiri (> 0.0.0)
-      sax-machine (>= 0.0.12)
     libxml-ruby (2.7.0)
     loofah (1.0.0)
       nokogiri (>= 1.3.3)
@@ -225,7 +230,7 @@ DEPENDENCIES
   hpricot
   htmlentities
   http_url_validation_improved
-  kete-feedzirra
+  kete-feedzirra!
   libxml-ruby
   memcache-client
   memcached

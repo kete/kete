@@ -286,9 +286,9 @@ class SystemSetting < ActiveRecord::Base
   #  self.method_name_to_setting_value(:basket_creation_policy)
   #end
 
-  #def self.enable_embedded_support
-  #  self.method_name_to_setting_value(:enable_embedded_support)
-  #end
+  def self.enable_embedded_support
+   self.method_name_to_setting_value(:enable_embedded_support)
+  end
 
   #def self.image_slideshow_size
   #  self.method_name_to_setting_value(:image_slideshow_size)

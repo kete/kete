@@ -1,9 +1,11 @@
 require 'spec_helper'
 
+describe Feed do
+end 
+
 describe WebLink do
-  it "smokes" do
-    wl = WebLink.new
-    # binding.pry
+  it "does not blow up when you initialize it" do
+    foo = WebLink.new
   end
 
   it "behaves like a Kete content item"
@@ -29,14 +31,7 @@ describe WebLink do
 
   it "behaves like a private item"
 
-  it "behaves liks a licenced resource" do
-    # this should not test the licenced item code, just that it has been included
-    # a "licensed item" belongs to the Licenc model so should ahve a licence_id
-    # wl = WebLink.new
-    # expect(weblink).to respond_to(:license_id)
-  end
+  it "behaves liks a licenced resource"
   
-
   it "behaves like a versioned resource"
-
 end
