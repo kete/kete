@@ -18,8 +18,22 @@ module FieldMappings
       klass.send :belongs_to, :form_field, :class_name => "ExtendedField", :foreign_key => "extended_field_id"
       klass.send :belongs_to, :required_form_field, :class_name => "ExtendedField", :foreign_key => "extended_field_id"
 
-      klass.send :piggy_back, :extended_field_label_xml_element_name_xsi_type_multiple_description_user_choice_addition_and_ftype,
-          :from => :extended_field, :attributes => [:label, :xml_element_name, :xsi_type, :multiple, :description, :user_choice_addition, :ftype]
+      # RABID: piggy_back is a way of avoiding doing multiple queries to get attributes from associated models
+      # * see http://37signals.com/rails/wiki/PiggyBackQuery.html for the basics
+      # * This reads as:
+      # * the horrible long attribute is just a unique name for the piggy back
+
+      # * it reads as "When you search for klass in the database, manipulate
+      # * the SQL so that it also selects the attributes named below from the
+      # * 'extended_fields' table."
+      # e.g. a find query that results in
+      #   SELECT id,name FROM users;
+      # would become something like
+      #   SELECT users.id, users.name, extended_fields,label, extended_fields.xml_element_name ... FROM users, extended_fields; 
+      klass.send :piggy_back, 
+                 :extended_field_label_xml_element_name_xsi_type_multiple_description_user_choice_addition_and_ftype,
+                 :from => :extended_field, 
+                 :attributes => [:label, :xml_element_name, :xsi_type, :multiple, :description, :user_choice_addition, :ftype]
 
       klass.extend(ClassMethods)
     end

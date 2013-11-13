@@ -151,7 +151,9 @@ class SystemSetting < ActiveRecord::Base
   #end
 
   def self.image_sizes
-    self.method_name_to_setting_value(:image_sizes)
+    defaults = SystemSetting::Defaults.new.image_sizes
+    sizes_from_db = self.method_name_to_setting_value(:image_sizes)
+    sizes_from_db ? sizes_from_db : defaults
   end
 
   #def self.image_content_types

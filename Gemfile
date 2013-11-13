@@ -12,11 +12,14 @@ gem 'acts_as_versioned', github: "jwhitehorn/acts_as_versioned"
 # RABID: the old plugin version of acts-as-taggable-on was 1.0.0
 gem "acts-as-taggable-on", "~> 2.4.1"
 
-# gem 'attachment_fu', github: 'debprado/attachment_fu'
-# gem 'attachment_fu', path: '../kete-gems/attachment_fu'
+# # Somebody else upgraded attachment_fu for rails 3 so we didn't have to :-)
 gem 'pothoven-attachment_fu'
 
 gem 'kete-feedzirra', github: 'kete/feedzirra'
+gem 'acts_as_list', '~> 0.3.0'
+
+gem 'acts_as_configurable', '0.0.8'
+#gem "piggy_back", "#.#.#", :git => "git://github.com/shuber/sortable.git" # 2009-03-17
 
 
 
@@ -129,9 +132,7 @@ gem 'http_url_validation_improved'
 
 gem 'active_scaffold',              '3.0.5' # >> 2009-06-29
 gem "acts_as_authenticated", "2.0", :git => "git://github.com/gundestrup/acts_as_authenticated.git" # 2007-06-06
-##gem 'acts_as_configurable',         '0.0.3' # >> 2007-12-17
 #gem "acts_as_licensed", "#.#.#", :git => "git://github.com/shuber/sortable.git" # 2008-07-10
-#gem 'acts_as_list',                 '0.1.2' # >> 2007-11-18
 gem "acts_as_soft_deletable", :git => "git://github.com/says/acts_as_soft_deletable.git" # 2009-02-16
 ## gem 'acts_as_zoom'
 gem 'authorization',                '1.0.11' # >> 2008-10-01
@@ -144,7 +145,6 @@ gem 'authorization',                '1.0.11' # >> 2008-10-01
 #gem "external_search_sources", "#.#.#", :git => "git://github.com/shuber/sortable.git" # 2010-01-06
 #gem 'foreign_key_migrations',       '0.3.0' # ~= 2008-06-30
 #gem 'mimetype-fu',                  '0.1.1' # >> 2008-07-17
-#gem "piggy_back", "#.#.#", :git => "git://github.com/shuber/sortable.git" # 2009-03-17
 #gem "random_finders", "#.#.#", :git => "git://github.com/shuber/sortable.git" # 2007-12-07
 #gem 'redbox',                       '1.0.3' # >> 2007-12-21
 #gem 'redhillonrails_core',          '1.0.4' # >> 2008-06-30
