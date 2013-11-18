@@ -1,4 +1,6 @@
 require 'oai'
+
+# EOIN: why is the if wrapping the class declaration? Is there a reason that it shouldn't be inside?
 if SystemSetting.is_configured? && defined?(SystemSetting.provide_oai_pmh_repository?) && SystemSetting.provide_oai_pmh_repository?
   class OaiPmhRepositoryProvider < OAI::Provider::Base
     repository_name SystemSetting.pretty_site_name

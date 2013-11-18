@@ -1,7 +1,7 @@
 require 'spec_helper'
 
-describe Profile do
+describe SystemSetting do
   it "does not blow up when you initialize it" do
-    foo = Profile.new
+    foo = SystemSetting.new
   end
 end 

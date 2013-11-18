@@ -1,7 +1,8 @@
 require 'spec_helper'
 
-describe Profile do
+describe Role do
   it "does not blow up when you initialize it" do
-    foo = Profile.new
+    foo = Role.new
   end
-end 
+end
+

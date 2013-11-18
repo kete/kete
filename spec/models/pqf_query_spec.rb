@@ -1,7 +1,8 @@
 require 'spec_helper'
 
-describe Profile do
+describe PqfQuery do
   it "does not blow up when you initialize it" do
-    foo = Profile.new
+    foo = PqfQuery.new
   end
-end 
+end
+

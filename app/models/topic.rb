@@ -161,9 +161,11 @@ class Topic < ActiveRecord::Base
 
   # Walter McGinnis, 2011-02-15
   # oEmbed Functionality
-  include OembedProvidable
-  oembed_providable_as :link
-  include KeteCommonOembedSupport
+
+  # EOIN: disable Oembed for the moment. Is there a use case for it?
+  # include OembedProvidable
+  # oembed_providable_as :link
+  # include KeteCommonOembedSupport
 
   # perhaps in the future we will store thumbnails for links (i.e. webpage previews)
   # for topics, but not at the moment

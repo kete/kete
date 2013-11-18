@@ -2,6 +2,9 @@ module FieldMappings
   unless included_modules.include? FieldMappings
 
     def self.included(klass)
+
+
+      # RABID: it seems this module can only be included in 2 classes
       case klass.name
       when 'ContentTypeToFieldMapping'
         klass.send :belongs_to, :content_type
@@ -30,10 +33,11 @@ module FieldMappings
       #   SELECT id,name FROM users;
       # would become something like
       #   SELECT users.id, users.name, extended_fields,label, extended_fields.xml_element_name ... FROM users, extended_fields; 
-      klass.send :piggy_back, 
-                 :extended_field_label_xml_element_name_xsi_type_multiple_description_user_choice_addition_and_ftype,
-                 :from => :extended_field, 
-                 :attributes => [:label, :xml_element_name, :xsi_type, :multiple, :description, :user_choice_addition, :ftype]
+      # EOIN: I'm not sure what to replace this with yet as it will depend on how we represent extended fields
+      # klass.send :piggy_back, 
+      #            :extended_field_label_xml_element_name_xsi_type_multiple_description_user_choice_addition_and_ftype,
+      #            :from => :extended_field, 
+      #            :attributes => [:label, :xml_element_name, :xsi_type, :multiple, :description, :user_choice_addition, :ftype]
 
       klass.extend(ClassMethods)
     end

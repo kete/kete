@@ -1,482 +1,439 @@
-class SystemSetting < ActiveRecord::Base
-  validates_presence_of :name
-  validates_uniqueness_of :name
-  validates_length_of :name, :maximum => 255
+class SystemSetting
 
-  def self.find_by_name(name)
-    first(:conditions => ["name = ?", name.to_s]) unless name.nil?
-  end
-
-  def self.[](name)
-    return unless name
-    setting = find_by_name(name)
-    setting.value if setting
-  end
-
-  def to_f
-    value.to_f
-  end
-
-  def to_i
-    value.to_i
-  end
-
-  def to_s
-    value
-  end
-
-  def constant_name
-    name.upcase.gsub(/[^A-Z0-9\s_-]+/,'').gsub(/[\s-]+/,'_')
-  end
-
-  def constant_value
-    return value.to_i if Integer(value) rescue false
-    return value.to_f if Float(value) rescue false
-    return true if value == "true"
-    return false if value == "false"
-    return value
-  end
-
-
+  # EOIN:
+  # This class manages system settings in Kete. Currently it is a bit of a mess
+  # internally but we don't care as long as it provides a nice clean external
+  # interface for the rest of the app to use. 
+  
   def self.is_configured?
-    self.method_name_to_setting_value(:is_configured)
+    self.setting(:is_configured)
   end
 
   def self.pretty_site_name
-    self.method_name_to_setting_value(:pretty_site_name)
+    self.setting(:pretty_site_name)
   end
 
   def self.is_configured
-   self.method_name_to_setting_value(:is_configured)
+   self.setting(:is_configured)
   end
 
   def self.pretty_site_name
-    self.method_name_to_setting_value(:pretty_site_name)
+    self.setting(:pretty_site_name)
   end
 
   def self.site_name
-    self.method_name_to_setting_value(:site_name)
+    self.setting(:site_name)
   end
 
   def self.full_site_url
-    "http:/#{self.method_name_to_setting_value(:site_url)}/"
+    "http:/#{self.setting(:site_url)}/"
   end
 
   def self.site_url
-    self.method_name_to_setting_value(:site_url)
+    self.setting(:site_url)
   end
 
   def self.notifier_email
-    self.method_name_to_setting_value(:notifier_email)
+    self.setting(:notifier_email)
   end
 
   def self.contact_email
-    self.method_name_to_setting_value(:contact_email)
+    self.setting(:contact_email)
   end
 
   def self.records_per_page_choices
-    self.method_name_to_setting_value(:records_per_page_choices)
+    self.setting(:records_per_page_choices)
   end
 
   #def self.default_records_per_page
-  #  self.method_name_to_setting_value(:default_records_per_page)
+  #  self.setting(:default_records_per_page)
   #end
 
   def self.default_search_class
-   self.method_name_to_setting_value(:default_search_class)
+   self.setting(:default_search_class)
   end
 
   #def self.number_of_related_things_to_display_per_type
-  #  self.method_name_to_setting_value(:number_of_related_things_to_display_per_type)
+  #  self.setting(:number_of_related_things_to_display_per_type)
   #end
 
   #def self.number_of_related_images_to_display
-  #  self.method_name_to_setting_value(:number_of_related_images_to_display)
+  #  self.setting(:number_of_related_images_to_display)
   #end
 
   #def self.default_number_of_multiples
-  #  self.method_name_to_setting_value(:default_number_of_multiples)
+  #  self.setting(:default_number_of_multiples)
   #end
 
   #def self.flagging_tags
-  #  self.method_name_to_setting_value(:flagging_tags)
+  #  self.setting(:flagging_tags)
   #end
   #
   #def self.legacy_imagefile_paths_up_to
-  #  self.method_name_to_setting_value(:legacy_imagefile_paths_up_to)
+  #  self.setting(:legacy_imagefile_paths_up_to)
   #end
   #
   #def self.legacy_audiorecording_paths_up_to
-  #  self.method_name_to_setting_value(:legacy_audiorecording_paths_up_to)
+  #  self.setting(:legacy_audiorecording_paths_up_to)
   #end
   #
   #def self.legacy_document_paths_up_to
-  #  self.method_name_to_setting_value(:legacy_document_paths_up_to)
+  #  self.setting(:legacy_document_paths_up_to)
   #end
   #
   #def self.legacy_video_paths_up_to
-  #  self.method_name_to_setting_value(:legacy_video_paths_up_to)
+  #  self.setting(:legacy_video_paths_up_to)
   #end
 
   def self.require_activation?
-    self.method_name_to_setting_value(:require_activation)
+    self.setting(:require_activation)
   end
 
   def self.about_basket
-    self.method_name_to_setting_value(:about_basket)
+    self.setting(:about_basket)
   end
 
   #def self.help_basket
-  #  self.method_name_to_setting_value(:help_basket)
+  #  self.setting(:help_basket)
   #end
   #
   #def self.extended_field_for_user_name
-  #  self.method_name_to_setting_value(:extended_field_for_user_name)
+  #  self.setting(:extended_field_for_user_name)
   #end
 
   def self.download_warning
-    self.method_name_to_setting_value(:download_warning)
+    self.setting(:download_warning)
   end
 
   #def self.tags_synonyms
-  #  self.method_name_to_setting_value(:tags_synonyms)
+  #  self.setting(:tags_synonyms)
   #end
 
   #def self.description_synonyms
-  #  self.method_name_to_setting_value(:description_synonyms)
+  #  self.setting(:description_synonyms)
   #end
   #
   #def self.description_template
-  #  self.method_name_to_setting_value(:description_template)
+  #  self.setting(:description_template)
   #end
 
   def self.image_sizes
-    defaults = SystemSetting::Defaults.new.image_sizes
-    sizes_from_db = self.method_name_to_setting_value(:image_sizes)
-    sizes_from_db ? sizes_from_db : defaults
+    self.setting(:image_sizes)
   end
 
   #def self.image_content_types
-  #  self.method_name_to_setting_value(:image_content_types)
+  #  self.setting(:image_content_types)
   #end
   #
   def self.maximum_uploaded_file_size
-   self.method_name_to_setting_value(:maximum_uploaded_file_size)
+    self.setting(:maximum_uploaded_file_size)
   end
   #
   #def self.document_content_types
-  #  self.method_name_to_setting_value(:document_content_types)
+  #  self.setting(:document_content_types)
   #end
   #
   #def self.audio_content_types
-  #  self.method_name_to_setting_value(:audio_content_types)
+  #  self.setting(:audio_content_types)
   #end
   
   def self.video_content_types
-   self.method_name_to_setting_value(:video_content_types)
+   self.setting(:video_content_types)
   end
   #
   #def self.setup_sections
-  #  self.method_name_to_setting_value(:setup_sections)
+  #  self.setting(:setup_sections)
   #end
   #
   #def self.documentation_basket
-  #  self.method_name_to_setting_value(:documentation_basket)
+  #  self.setting(:documentation_basket)
   #end
   #
   #def self.enable_converting_documents
-  #  self.method_name_to_setting_value(:enable_converting_documents)
+  #  self.setting(:enable_converting_documents)
   #end
   #
   #def self.default_policy_is_full_moderation
-  #  self.method_name_to_setting_value(:default_policy_is_full_moderation)
+  #  self.setting(:default_policy_is_full_moderation)
   #end
 
   def self.blank_title
-    self.method_name_to_setting_value(:blank_title)
+    self.setting(:blank_title)
   end
 
   def self.pending_flag
-    self.method_name_to_setting_value(:pending_flag)
+    self.setting(:pending_flag)
   end
 
   def self.rejected_flag
-    self.method_name_to_setting_value(:rejected_flag)
+    self.setting(:rejected_flag)
   end
 
   def self.blank_flag
-    self.method_name_to_setting_value(:blank_flag)
+    self.setting(:blank_flag)
   end
 
   def self.reviewed_flag
-    self.method_name_to_setting_value(:reviewed_flag)
+    self.setting(:reviewed_flag)
   end
 
   def self.frequency_of_moderation_email
-    self.method_name_to_setting_value(:frequency_of_moderation_email)
+    self.setting(:frequency_of_moderation_email)
   end
 
   #def self.title_synonyms
-  #  self.method_name_to_setting_value(:title_synonyms)
+  #  self.setting(:title_synonyms)
   #end
 
   #def self.short_summary_synonyms
-  #  self.method_name_to_setting_value(:short_summary_synonyms)
+  #  self.setting(:short_summary_synonyms)
   #end
 
   #def self.import_fields_to_ignore
-  #  self.method_name_to_setting_value(:import_fields_to_ignore)
+  #  self.setting(:import_fields_to_ignore)
   #end
 
   #def self.default_baskets_ids
-  #  self.method_name_to_setting_value(:default_baskets_ids)
+  #  self.setting(:default_baskets_ids)
   #end
 
   def self.captcha_type
-    self.method_name_to_setting_value(:captcha_type)
+    self.setting(:captcha_type)
   end
 
   #def self.default_content_license
-  #  self.method_name_to_setting_value(:default_content_license)
+  #  self.setting(:default_content_license)
   #end
 
   def self.force_https_on_restricted_pages
-    self.method_name_to_setting_value(:force_https_on_restricted_pages)
+    self.setting(:force_https_on_restricted_pages)
   end
 
   def self.no_public_version_title
-    self.method_name_to_setting_value(:no_public_version_title)
+    self.setting(:no_public_version_title)
   end
 
   def self.no_public_version_description
-    self.method_name_to_setting_value(:no_public_version_description)
+    self.setting(:no_public_version_description)
   end
 
   def self.provide_oai_pmh_repository
-    self.method_name_to_setting_value(:provide_oai_pmh_repository)
+    self.setting(:provide_oai_pmh_repository)
   end
 
   #def self.uses_basket_list_navigation_menu_on_every_page
-  #  self.method_name_to_setting_value(:uses_basket_list_navigation_menu_on_every_page)
+  #  self.setting(:uses_basket_list_navigation_menu_on_every_page)
   #end
 
   #def self.available_syntax_highlighters
-  #  self.method_name_to_setting_value(:available_syntax_highlighters)
+  #  self.setting(:available_syntax_highlighters)
   #end
 
   def self.government_website
-    self.method_name_to_setting_value(:government_website)
+    self.setting(:government_website)
   end
 
   #def self.default_page_keywords
-  #  self.method_name_to_setting_value(:default_page_keywords)
+  #  self.setting(:default_page_keywords)
   #end
 
   def self.default_page_description
-    self.method_name_to_setting_value(:default_page_description)
+    self.setting(:default_page_description)
   end
 
   #def self.enable_user_portraits
-  #  self.method_name_to_setting_value(:enable_user_portraits)
+  #  self.setting(:enable_user_portraits)
   #end
 
   #def self.enable_gravatar_support
-  #  self.method_name_to_setting_value(:enable_gravatar_support)
+  #  self.setting(:enable_gravatar_support)
   #end
 
   #def self.basket_creation_policy
-  #  self.method_name_to_setting_value(:basket_creation_policy)
+  #  self.setting(:basket_creation_policy)
   #end
 
   def self.enable_embedded_support
-   self.method_name_to_setting_value(:enable_embedded_support)
+   self.setting(:enable_embedded_support)
   end
 
   #def self.image_slideshow_size
-  #  self.method_name_to_setting_value(:image_slideshow_size)
+  #  self.setting(:image_slideshow_size)
   #end
 
   def self.related_items_position_default
-    self.method_name_to_setting_value(:related_items_position_default)
+    self.setting(:related_items_position_default)
   end
 
   def self.hide_related_items_position_field
-    self.method_name_to_setting_value(:hide_related_items_position_field)
+    self.setting(:hide_related_items_position_field)
   end
 
   def self.show_powered_by_kete?
-    self.method_name_to_setting_value(:show_powered_by_kete)
+    self.setting(:show_powered_by_kete)
   end
 
   def self.additional_credits_html
-    self.method_name_to_setting_value(:additional_credits_html)
+    self.setting(:additional_credits_html)
   end
 
   #def self.notify_site_admins_of_flaggings
-  #  self.method_name_to_setting_value(:notify_site_admins_of_flaggings)
+  #  self.setting(:notify_site_admins_of_flaggings)
   #end
 
   #def self.keep_embedded_metadata_for_all_sizes
-  #  self.method_name_to_setting_value(:keep_embedded_metadata_for_all_sizes)
+  #  self.setting(:keep_embedded_metadata_for_all_sizes)
   #end
 
   #def self.display_topic_type_on_search_result
-  #  self.method_name_to_setting_value(:display_topic_type_on_search_result)
+  #  self.setting(:display_topic_type_on_search_result)
   #end
 
   #def self.display_related_topics_as_topic_type_counts
-  #  self.method_name_to_setting_value(:display_related_topics_as_topic_type_counts)
+  #  self.setting(:display_related_topics_as_topic_type_counts)
   #end
 
   def self.restricted_flag
-    self.method_name_to_setting_value(:restricted_flag)
+    self.setting(:restricted_flag)
   end
 
   def self.add_date_created_to_item_search_record
-    self.method_name_to_setting_value(:add_date_created_to_item_search_record)
+    self.setting(:add_date_created_to_item_search_record)
   end
 
   def self.display_search_terms_field
-   self.method_name_to_setting_value(:display_search_terms_field)
+   self.setting(:display_search_terms_field)
   end
 
   def self.display_date_range_fields
-   self.method_name_to_setting_value(:display_date_range_fields)
+   self.setting(:display_date_range_fields)
   end
 
   def self.display_privacy_fields
-   self.method_name_to_setting_value(:display_privacy_fields)
+   self.setting(:display_privacy_fields)
   end
 
   #def self.default_search_privacy
-  #  self.method_name_to_setting_value(:default_search_privacy)
+  #  self.setting(:default_search_privacy)
   #end
 
   def self.display_item_type_field
-   self.method_name_to_setting_value(:display_item_type_field)
+   self.setting(:display_item_type_field)
   end
 
   def self.display_topic_type_field
-   self.method_name_to_setting_value(:display_topic_type_field)
+   self.setting(:display_topic_type_field)
   end
 
   def self.display_basket_field
-   self.method_name_to_setting_value(:display_basket_field)
+   self.setting(:display_basket_field)
   end
 
   def self.display_sorting_fields
-   self.method_name_to_setting_value(:display_sorting_fields)
+   self.setting(:display_sorting_fields)
   end
 
   def self.display_choices_field
-   self.method_name_to_setting_value(:display_choices_field)
+   self.setting(:display_choices_field)
   end
 
   #def self.language_choices_position
-  #  self.method_name_to_setting_value(:language_choices_position)
+  #  self.setting(:language_choices_position)
   #end
 
   #def self.language_choices_display_type
-  #  self.method_name_to_setting_value(:language_choices_display_type)
+  #  self.setting(:language_choices_display_type)
   #end
 
   def self.search_selected_topic_type
-   self.method_name_to_setting_value(:search_selected_topic_type)
+   self.setting(:search_selected_topic_type)
   end
 
   def self.search_select_current_basket
-   self.method_name_to_setting_value(:search_select_current_basket)
+   self.setting(:search_select_current_basket)
   end
 
   def self.dc_date_display_on_search_results
-    self.method_name_to_setting_value(:dc_date_display_on_search_results)
+    self.setting(:dc_date_display_on_search_results)
   end
 
   def self.dc_date_display_detail_level
-    self.method_name_to_setting_value(:dc_date_display_detail_level)
+    self.setting(:dc_date_display_detail_level)
   end
 
   def self.dc_date_display_formulator
-    self.method_name_to_setting_value(:dc_date_display_formulator)
+    self.setting(:dc_date_display_formulator)
   end
 
   def self.list_baskets_number
-   self.method_name_to_setting_value(:list_baskets_number)
+   self.setting(:list_baskets_number)
   end
 
   def self.contact_url
-   self.method_name_to_setting_value(:contact_url)
+   self.setting(:contact_url)
   end
 
   def self.allowed_anonymous_actions
-    self.method_name_to_setting_value(:allowed_anonymous_actions)
+    self.setting(:allowed_anonymous_actions)
   end
 
   def self.enable_maps?
-    self.method_name_to_setting_value(:enable_maps)
+    self.setting(:enable_maps)
   end
 
   def self.default_latitude
-    self.method_name_to_setting_value(:default_latitude)
+    self.setting(:default_latitude)
   end
 
   def self.default_longitude
-    self.method_name_to_setting_value(:default_longitude)
+    self.setting(:default_longitude)
   end
 
   def self.default_zoom_level
-    self.method_name_to_setting_value(:default_zoom_level)
+    self.setting(:default_zoom_level)
   end
 
   def self.use_backgroundrb_for_cache_expirations
-    self.method_name_to_setting_value(:use_backgroundrb_for_cache_expirations)
+    self.setting(:use_backgroundrb_for_cache_expirations)
   end
 
   def self.use_backgroundrb_for_search_record_updates
-    self.method_name_to_setting_value(:use_backgroundrb_for_search_record_updates)
+    self.setting(:use_backgroundrb_for_search_record_updates)
   end
 
   def self.administrator_activates
-    self.method_name_to_setting_value(:administrator_activates)
+    self.setting(:administrator_activates)
   end
 
   def self.uses_basket_list_navigation_menu_on_every_page?
-    self.method_name_to_setting_value(:uses_basket_list_navigation_menu_on_every_page)
+    self.setting(:uses_basket_list_navigation_menu_on_every_page)
   end
 
   def self.enable_user_portraits?
-    self.method_name_to_setting_value(:enable_user_portraits)
+    self.setting(:enable_user_portraits)
   end
 
   def self.enable_gravatar_support?
-    self.method_name_to_setting_value(:enable_gravatar_support)
+    self.setting(:enable_gravatar_support)
   end
 
   def self.language_choices_position
-    self.method_name_to_setting_value(:language_choices_position)
+    self.setting(:language_choices_position)
   end
 
   def self.available_syntax_highlighters
-    # self.method_name_to_setting_value(:available_syntax_highlighters)
-    []
+    self.setting(:available_syntax_highlighters)
   end
 
 private
 
-  def self.method_name_to_setting_value(underscore_name)
-    # SystemSetting.pretty_print -> SystemSetting.find_by_name("Pretty Print").value
-    # SystemSetting.is_configured? -> SystemSetting.find_by_name("Is Configured").value
-
-    underscore_name = underscore_name.to_s
-
-    underscore_name =~ /^(.*?)\??$/
-    setting_name = $1.titleize
-
-    if setting = SystemSetting.find_by_name(setting_name)
-      return setting.constant_value
-    else
-      # raise NoMethodError.new("unknown method: SystemSetting.#{underscore_name}")
-    end
+  def self.setting(setting)
+    # EOIN: 
+    # we are unsure what the final use-case of these system settings will be so
+    # we feel it is too early to do persistance for them. When it becomes
+    # clearer, we can (if required) add the ability to load settings from
+    # YAML/DB/whatever. 
+    SystemSetting::Defaults.new.send setting.to_sym
   end
 end
 
@@ -540,6 +497,8 @@ class SystemSetting::Defaults
   def blank_title
     ""
   end
-end
 
-
+  def available_syntax_highlighters
+    []
+  end
+end 

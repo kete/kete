@@ -2,6 +2,7 @@
 *.swo
 *.swp
 *.sqlite3*
+/tags
 mkmf.log
 *.tmproj
 *~

@@ -14,14 +14,20 @@ gem "acts-as-taggable-on", "~> 2.4.1"
 
 # # Somebody else upgraded attachment_fu for rails 3 so we didn't have to :-)
 gem 'pothoven-attachment_fu'
+# gem 'pothoven-attachment_fu', path: '/Users/eoinkelly/Code/kete-gems/po_attachment_fu'
 
 gem 'kete-feedzirra', github: 'kete/feedzirra'
+
+# https://github.com/swanandp/acts_as_list
 gem 'acts_as_list', '~> 0.3.0'
 
 gem 'acts_as_configurable', '0.0.8'
+
+# EOIN: piggy_back is an old implementation of AR #include e.g User.include(:roles).find.where(...) etc.
 #gem "piggy_back", "#.#.#", :git => "git://github.com/shuber/sortable.git" # 2009-03-17
 
 
+#gem 'oembed_provider_engine' # !! re-enable on Rails 3.2
 
 gem "mysql"
 
@@ -84,7 +90,6 @@ gem 'avatar'
 gem 'chronic'
 gem 'ya2yaml'
 gem 'libxml-ruby'
-#gem 'oembed_provider_engine' # !! re-enable on Rails 3.2
 gem 'gmaps4rails', '1.4.2'
 
 gem 'unicode'
@@ -155,7 +160,4 @@ gem 'will_paginate',                '2.3.11' # ~= '2009-03-09', should be '2.3.8
 
 
 # RABID: should be removed:
-gem 'validates_xml',                '1.0.3' # >> 2007-06-06
-
-  
-
+gem 'validates_xml',                '1.0.3' # >> 2007-06-06 
