@@ -8,7 +8,7 @@ module ResizeAsJpegWhenNecessary
   unless included_modules.include? ResizeAsJpegWhenNecessary
     # declarations
     def self.included(klass)
-      klass.send :before_thumbnail_saved do |record|
+      klass.send :set_callback, :before_thumbnail_saved, :before do |record|
         record.content_type = 'image/jpeg' if record.class.should_be_converted?(record.parent.filename)
       end
 
@@ -24,10 +24,12 @@ module ResizeAsJpegWhenNecessary
 
       def rmagick_can_read_extension?(extension)
         # Convert extensions to ones that RMagick recognises.
-        ext = case extension
-              when 'tif': 'tiff'
-              else extension
-              end
+        if extension == 'tif'
+          ext = 'tiff' 
+        else
+          ext = extension
+        end
+        
         rmagick_can_read_format? ext.upcase
       end
 

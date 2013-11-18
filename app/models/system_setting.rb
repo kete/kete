@@ -121,18 +121,18 @@ class SystemSetting
     self.setting(:image_sizes)
   end
 
-  #def self.image_content_types
-  #  self.setting(:image_content_types)
-  #end
+  def self.image_content_types
+   self.setting(:image_content_types)
+  end
   #
   def self.maximum_uploaded_file_size
     self.setting(:maximum_uploaded_file_size)
   end
-  #
-  #def self.document_content_types
-  #  self.setting(:document_content_types)
-  #end
-  #
+  
+  def self.document_content_types
+   self.setting(:document_content_types)
+  end
+  
   #def self.audio_content_types
   #  self.setting(:audio_content_types)
   #end
@@ -144,15 +144,15 @@ class SystemSetting
   #def self.setup_sections
   #  self.setting(:setup_sections)
   #end
-  #
+  
   #def self.documentation_basket
   #  self.setting(:documentation_basket)
   #end
-  #
-  #def self.enable_converting_documents
-  #  self.setting(:enable_converting_documents)
-  #end
-  #
+  
+  def self.enable_converting_documents
+   self.setting(:enable_converting_documents)
+  end
+  
   #def self.default_policy_is_full_moderation
   #  self.setting(:default_policy_is_full_moderation)
   #end
@@ -281,9 +281,9 @@ class SystemSetting
   #  self.setting(:notify_site_admins_of_flaggings)
   #end
 
-  #def self.keep_embedded_metadata_for_all_sizes
-  #  self.setting(:keep_embedded_metadata_for_all_sizes)
-  #end
+  def self.keep_embedded_metadata_for_all_sizes
+   self.setting(:keep_embedded_metadata_for_all_sizes)
+  end
 
   #def self.display_topic_type_on_search_result
   #  self.setting(:display_topic_type_on_search_result)
@@ -500,5 +500,9 @@ class SystemSetting::Defaults
 
   def available_syntax_highlighters
     []
+  end
+
+  def keep_embedded_metadata_for_all_sizes
+    true
   end
 end 
