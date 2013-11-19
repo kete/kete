@@ -107,6 +107,11 @@ module ItemPrivacy
           end
         end
 
+        # ROB:  From what I can see this function:
+        #       * if is private?:  stashes the model's values, loads the last public version, 
+        #         then re-applies the old private-version's id (strangely).
+        #       * if is public but has private-version:  gets the private version and then 
+        #         updates it's id to the public-version's id
         def store_correct_versions_after_save
           if private?
             store_private!
@@ -139,6 +144,10 @@ module ItemPrivacy
         # Using Marshall as..
         # YAML is 34.65 times slower in serialization and 5.66 times slower in unserialization.
         # http://significantbits.wordpress.com/2008/01/29/yaml-vs-marshal-performance/
+        #
+        # ROB:  store_private! loops through the columns set to be versioned and creates a array 
+        #       of name-value tuples. These are converted to YAML and stashed in the a variable 
+        #       which is STORED ON THE IN-MEMORY MODEL (ie not in the database).
         def store_private!(save_after_serialization = false)
 
           prepared_array = self.class.versioned_columns.inject(Array.new) do |memo, k|
@@ -159,6 +168,9 @@ module ItemPrivacy
         end
 
         # Load the saved private attributes into the current instance.
+        #
+        # ROB:  load_private: loads the information stashed on the IN-MEMORY MODEL by 
+        #       store_private! and applies these to the model's active-record variables.
         def load_private!
           reload
           private_attrs = YAML.load(private_version_serialized)
