@@ -28,7 +28,7 @@
 <% end -%>
 
 <%= form_tag({}, {:id => 'login'}) do -%>
-<% if SysteSetting.is_configured? && anonymous_ok_for?(session[:return_to]) -%>
+<% if SystemSetting.is_configured? && anonymous_ok_for?(session[:return_to]) -%>
   <h2><%= h(@title) -%></h2>
 <% end -%>
 

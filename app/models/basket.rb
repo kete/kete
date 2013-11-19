@@ -4,6 +4,18 @@
 class Basket < ActiveRecord::Base
   scope :except_certain_baskets, lambda {|baskets| where("id not in (?) AND status = 'approved'", baskets)}
 
+  def self.settings
+    raise "died in Basket.settings"
+  end
+
+  def setting(name, *args)
+    # EOIN: just while we are figuring out how this works
+    raise "Woah, we expected just a name but we got the name #{name} and these extras: #{args}" unless args.empty?
+    p "called basket instance #setting. You passed #{name}"
+
+    BasketSettings.get(name)
+  end
+
   # we use these for who can see what
   def self.member_level_options
     [[I18n.t('basket_model.basket_member'), 'at least member'],
@@ -531,11 +543,6 @@ class Basket < ActiveRecord::Base
   def related_images(type = :last)
     still_images.find_non_pending(type, PUBLIC_CONDITIONS) || {}
   end
-
-  def setting(name)
-    SettingsCruft::Basket.setting(self, name)
-  end
-
 
   protected
 

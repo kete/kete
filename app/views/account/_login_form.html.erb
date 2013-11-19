@@ -1,6 +1,6 @@
 <fieldset>
   <!--[form:login]-->
-  <% if Kete.is_configured? -%>
+  <% if SystemSetting.is_configured? -%>
   <p><%=t '.register',
           :register_link => link_to(t('.register_link'),
                                     { :controller => 'account',
@@ -21,7 +21,7 @@
     <%= password_field_tag 'password', nil, :tabindex => '1' %>
   </div>
 
-  <% if Kete.is_configured? -%>
+  <% if SystemSetting.is_configured? -%>
   <div class="form-element">
     <label for="remember_me"><%=t '.remember_me' -%></label>
     <%= check_box_tag 'remember_me', "1", false, :tabindex => '1' %>

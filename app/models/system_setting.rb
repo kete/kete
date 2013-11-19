@@ -237,9 +237,9 @@ class SystemSetting
     self.setting(:government_website)
   end
 
-  #def self.default_page_keywords
-  #  self.setting(:default_page_keywords)
-  #end
+  def self.default_page_keywords
+   self.setting(:default_page_keywords)
+  end
 
   def self.default_page_description
     self.setting(:default_page_description)
@@ -442,12 +442,97 @@ private
 
   class Defaults
 
-    def admin_email
-      "foo@example.com"
+    def default_page_keywords
+      ""
+    end
+
+    def default_page_description
+      ""
+    end
+
+    def uses_basket_list_navigation_menu_on_every_page
+     false 
+    end
+
+    def enable_user_portraits
+      false
+    end
+
+    def language_choices_position
+      'header'
+    end
+
+    def enable_maps
+      false
+    end
+
+    def display_search_terms_field
+      false
+    end
+
+    def display_date_range_fields
+      false
+    end
+
+    def display_privacy_fields
+      false
+    end
+
+    def display_item_type_field
+      false
+    end
+
+    def display_topic_type_field
+      false
+    end
+
+    def display_basket_field
+      false
+    end
+
+    def display_sorting_fields
+      false
+    end
+
+    def display_choices_field
+      false
+    end
+      
+    def search_select_current_basket
+      false
+    end
+
+    def list_baskets_number
+      5 # EOIN: picked at random
+    end
+
+    def enable_gravatar_support
+      false
+    end
+
+    def contact_url
+      "http://some.contact.url.com"
+    end
+
+    def default_search_class
+      "" 
+    end
+
+    def site_name
+      "localhost:3000"
     end
 
     def method_missing(meth, *args, &block)
-      raise "You probably asked for a default setting that does not exist. You asked for #{meth}"
+      # catch any forgotten defaults with a better error message
+      raise "You probably asked for a default setting that does not exist. You need to add the #{meth} to Defaults"
+    end
+
+    def allowed_anonymous_actions
+      ""
+    end
+
+    def admin_email
+      "foo@example.com"
     end
 
     def pretty_site_name
@@ -520,6 +605,18 @@ private
 
     def provide_oai_pmh_repository
       true
+    end
+
+    def government_website
+      "http://the.gov.is.watching"
+    end
+
+    def show_powered_by_kete
+      false
+    end
+
+    def additional_credits_html
+      ""
     end
   end 
 end

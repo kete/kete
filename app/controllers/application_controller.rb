@@ -219,10 +219,10 @@ class ApplicationController < ActionController::Base
   # and load up an array of the web paths
   # to the css files
   def load_theme_related
-    settings = SettingsCruft::Application.new(@current_basket, @site_basket)
-    @theme = settings.theme
-    @theme_font_family = settings.theme_font_family
-    @header_image = settings.header_image
+    # EOIN: these settings should probably be somewhere else but it's not clear where yet.
+    @theme = @current_basket.setting(:theme) || @site_basket.setting(:theme) || 'default'
+    @theme_font_family =  @current_basket.setting(:theme_font_family) || @site_basket.setting(:theme_font_family) || 'sans-serif'
+    @header_image = @current_basket.setting(:header_image) || @site_basket.setting(:header_image) || nil
   end
 
   def security_check_of_do_not_moderate
