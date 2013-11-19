@@ -5,6 +5,10 @@ class SystemSetting
   # internally but we don't care as long as it provides a nice clean external
   # interface for the rest of the app to use. 
   
+  def self.admin_email
+    self.setting(:admin_email)
+  end
+
   def self.is_configured?
     self.setting(:is_configured)
   end
@@ -133,9 +137,9 @@ class SystemSetting
    self.setting(:document_content_types)
   end
   
-  #def self.audio_content_types
-  #  self.setting(:audio_content_types)
-  #end
+  def self.audio_content_types
+   self.setting(:audio_content_types)
+  end
   
   def self.video_content_types
    self.setting(:video_content_types)
@@ -433,76 +437,91 @@ private
     # we feel it is too early to do persistance for them. When it becomes
     # clearer, we can (if required) add the ability to load settings from
     # YAML/DB/whatever. 
-    SystemSetting::Defaults.new.send setting.to_sym
+    Defaults.new.send setting
   end
+
+  class Defaults
+
+    def admin_email
+      "foo@example.com"
+    end
+
+    def method_missing(meth, *args, &block)
+      raise "You probably asked for a default setting that does not exist. You asked for #{meth}"
+    end
+
+    def pretty_site_name
+      "A working Kete"
+    end
+
+    def is_configured
+      true 
+    end
+
+    def maximum_uploaded_file_size
+      50.megabyte 
+    end
+
+    def image_sizes 
+      {:small_sq => '50x50!', :small => '50', :medium => '200>', :large => '400>'} 
+    end
+
+    def audio_content_types
+      ['audio/mpeg']
+    end
+
+    def document_content_types
+      ['text/html']
+    end
+
+    def enable_converting_documents
+      false
+    end
+
+    def enable_embedded_support
+      false
+    end
+
+    def image_content_types
+      [:image]
+    end
+
+    def video_content_types
+      ['video/mpeg']
+    end
+
+    def site_url
+      "kete.net.nz"
+    end
+
+    def notifier_email
+      "kete@library.org.nz"
+    end
+
+    def default_baskets_ids
+      [1]
+    end
+
+    def no_public_version_title
+      ""
+    end
+
+    def blank_title
+      ""
+    end
+
+    def available_syntax_highlighters
+      []
+    end
+
+    def keep_embedded_metadata_for_all_sizes
+      true
+    end
+
+    def provide_oai_pmh_repository
+      true
+    end
+  end 
 end
 
 
-class SystemSetting::Defaults
-  def is_configured
-    false
-  end
-
-  # we have to load meaningless default values for any constant used in our models
-  # since otherwise things like migrations will fail, before we bootstrap the db
-  # these will be set up with system settings after rake db:bootstrap
-  def maximum_uploaded_file_size
-    50.megabyte 
-  end
-
-  def image_sizes 
-    {:small_sq => '50x50!', :small => '50', :medium => '200>', :large => '400>'} 
-  end
-
-  def audio_content_types
-    ['audio/mpeg']
-  end
-
-  def document_content_types
-    ['text/html']
-  end
-
-  def enable_converting_documents
-    false
-  end
-
-  def enable_embedded_support
-    false
-  end
-
-  def image_content_types
-    [:image]
-  end
-
-  def video_content_types
-    ['video/mpeg']
-  end
-
-  def site_url
-    "kete.net.nz"
-  end
-
-  def notifier_email
-    "kete@library.org.nz"
-  end
-
-  def default_baskets_ids
-    [1]
-  end
-
-  def no_public_version_title
-    ""
-  end
-
-  def blank_title
-    ""
-  end
-
-  def available_syntax_highlighters
-    []
-  end
-
-  def keep_embedded_metadata_for_all_sizes
-    true
-  end
-end 
