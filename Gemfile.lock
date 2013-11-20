@@ -91,6 +91,7 @@ GEM
     byebug (2.3.1)
       columnize (~> 0.3.6)
       debugger-linecache (~> 1.2.0)
+    choice (0.1.6)
     chronic (0.10.2)
     coderay (1.1.0)
     columnize (0.3.6)
@@ -167,6 +168,11 @@ GEM
       activesupport (= 3.0.20)
       bundler (~> 1.0)
       railties (= 3.0.20)
+    rails-erd (1.1.0)
+      activerecord (>= 3.0)
+      activesupport (>= 3.0)
+      choice (~> 0.1.6)
+      ruby-graphviz (~> 1.0.4)
     railties (3.0.20)
       actionpack (= 3.0.20)
       activesupport (= 3.0.20)
@@ -192,6 +198,7 @@ GEM
       rspec-core (~> 2.14.0)
       rspec-expectations (~> 2.14.0)
       rspec-mocks (~> 2.14.0)
+    ruby-graphviz (1.0.9)
     sax-machine (0.1.0)
       nokogiri (> 0.0.0)
     slop (3.4.6)
@@ -252,6 +259,7 @@ DEPENDENCIES
   pry-rails
   railroady
   rails (= 3.0.20)
+  rails-erd
   rake (~> 10.1.0)
   rdoc
   rmagick (= 2.12.2)

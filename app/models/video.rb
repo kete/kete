@@ -30,6 +30,7 @@ class Video < ActiveRecord::Base
   # acts as licensed but this is not versionable (cant change a license once it is applied)
   acts_as_licensed
 
+  # this callback is implemented in ItemPrivacy::All
   after_save :store_correct_versions_after_save
 
   # overriding full_filename to handle our customizations
