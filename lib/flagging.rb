@@ -124,7 +124,7 @@ module Flagging
 
     def max_version
       return 1 if new_record?
-      (versions.calculate(:max, :version) || 0)
+      (versions.calculate(:maximum, :version) || 0)
     end
 
     def latest_unflagged_version_with_condition(&block)

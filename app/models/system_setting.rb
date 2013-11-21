@@ -588,11 +588,11 @@ private
     end
 
     def no_public_version_title
-      ""
+      "no public version"
     end
 
     def blank_title
-      ""
+      "blank title"
     end
 
     def available_syntax_highlighters

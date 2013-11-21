@@ -1,7 +1,8 @@
 require 'spec_helper'
 
 describe Video do
-  let(:video) { Video.new }
+  let(:video) { }
+  # let(:video) { Video.new }
 
   it "does not blow up when you initialize it" do
     video
@@ -28,7 +29,7 @@ describe Video do
       end
 
 
-      it "works!" do
+      it "explore: save a video" do
         video_content_type = ContentType.create!(class_name: "Video",
                                  description: "foo",
                                  controller: "video",
@@ -73,6 +74,7 @@ describe Video do
 
         expect(basket).to be_valid
 
+
         video_attrs = {
           title:         "foo",
           content_type:  "video/mpeg",
@@ -82,8 +84,30 @@ describe Video do
         vid2 = Video.new(video_attrs)
         expect(vid2).to be_valid
 
+        # video needs to have a basket before it will save
+        # TODO: this implies that basket should be checked by a validation ???
         vid2.basket = basket
+
         vid2.save!
+
+        vid3 = Video.new(video_attrs)
+        vid3.title = "I am vid 3"
+        vid3.basket = basket
+        vid3.save!
+
+        binding.pry
+        # expect(Video.all.count).to eq 1
+
+        # vid2.update_attribute(:title, "bar")
+        # vid2.versions.count == 2
+
+        # expect(vid2.title).eq "bar"
+        # vid2.revert 
+        # expect(vid2.title).eq "foo"
+        
+      end
+
+      it "explore: video versions" do
       end
     end
   end
