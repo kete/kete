@@ -11,6 +11,8 @@ class BasketSettings
   def self.settings
     {
       theme: "",
+      fully_moderated: true,
+      moderated_except: "",
       theme_font_family: "",
       header_image: "",
       browse_view_as: "",

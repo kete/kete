@@ -618,6 +618,10 @@ private
     def additional_credits_html
       ""
     end
+
+    def pending_flag
+      "pending"
+    end
   end 
 end
 

@@ -27,7 +27,8 @@ describe Video do
         end
       end
 
-      it "works" do
+
+      it "works!" do
         video_content_type = ContentType.create!(class_name: "Video",
                                  description: "foo",
                                  controller: "video",
@@ -35,6 +36,7 @@ describe Video do
                                  humanized: "Video")
         expect(video_content_type).to be_valid
 
+        # this must exist in the DB before you can create a user
         user_content_type = ContentType.create!(class_name: "User",
                                  description: "foo",
                                  controller: "user",
@@ -42,14 +44,19 @@ describe Video do
                                  humanized: "User")
         expect(user_content_type).to be_valid
 
-        user = User.create!(login: 'admin',
-                            email: 'admin@changeme.com',
-                            salt: '7e3041ebc2fc05a40c60028e2c4901a81035d3cd',
-                            crypted_password: '00742970dc9e6319f8019fd54864d3ea740f04b1', # test
-                            activation_code: 'admincode',
-                            activated_at: Time.now.utc.to_s,
-                            resolved_name: 'admin',
-                            locale: 'en')
+
+        valid_user_attributes = { 
+          :login => 'quire',
+          :email => 'quire@example.com',
+          :password => 'quire',
+          :password_confirmation => 'quire',
+          :agree_to_terms => '1',
+          :security_code => 'test',
+          :security_code_confirmation => 'test',
+          :locale => 'en' 
+        }
+
+        user = User.create!(valid_user_attributes)
         expect(user).to be_valid
 
 
@@ -66,13 +73,17 @@ describe Video do
 
         expect(basket).to be_valid
 
-        video.title = "foo"
-        video.content_type = "video/mpeg"
-        video.size = 123
-        video.filename = "foo.mpg"
-        expect(video).to be_valid
+        video_attrs = {
+          title:         "foo",
+          content_type:  "video/mpeg",
+          size:          123,
+          filename:      "foo.mpg"
+        }
+        vid2 = Video.new(video_attrs)
+        expect(vid2).to be_valid
 
-        video.save!
+        vid2.basket = basket
+        vid2.save!
       end
     end
   end

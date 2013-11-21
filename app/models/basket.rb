@@ -611,7 +611,8 @@ class Basket < ActiveRecord::Base
       @@documentation_basket = Basket.find(DOCUMENTATION_BASKET_ID)
     end
     # after we change these, we need to reload routes for index_page path
-    ActionController::Routing::Routes.reload!
+    # ActionController::Routing::Routes.reload!
+    Rails.application.reload_routes!
   end
 
   # when we create, update, or destroy, we recalcutate the amount of

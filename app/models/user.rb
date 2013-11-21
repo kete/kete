@@ -96,9 +96,7 @@ class User < ActiveRecord::Base
   validates_length_of       :email,    :within => 3..100
   validates_format_of       :login, :with => /^[^\s]+$/
   validates_uniqueness_of   :login, :case_sensitive => false
-
-  validates_inclusion_of :locale, :in => I18n.available_locales_with_labels.keys #, :message => lambda { I18n.t('user_model.locale_incorrect', :locales => I18n.available_locales_with_labels.keys.join(', ')) }
-                                                                                 # EOIN: this kept blowing up so i disabled it for the moment. TODO: re-enable
+  validates_inclusion_of :locale, :in => I18n.available_locales_with_labels.keys, :message => lambda { I18n.t('user_model.locale_incorrect', :locales => I18n.available_locales_with_labels.keys.join(', ')) }
 
   before_save :encrypt_password
 
