@@ -208,7 +208,6 @@ module ItemPrivacy
           # EOIN: private_version_serialized contains an Array of 2-tuples (Array with two values) 
           private_attrs.each do |key, value|
             # EOIN: create a attribute writer for each element of the private_version_serialized array
-            # EOIN: why writers & not readers?
             send("#{key}=".to_sym, value)
           end
 

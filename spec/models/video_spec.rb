@@ -81,6 +81,7 @@ describe Video do
           size:          123,
           filename:      "foo.mpg"
         }
+
         vid2 = Video.new(video_attrs)
         expect(vid2).to be_valid
 
@@ -88,23 +89,17 @@ describe Video do
         # TODO: this implies that basket should be checked by a validation ???
         vid2.basket = basket
 
-        vid2.save!
-
-        vid3 = Video.new(video_attrs)
-        vid3.title = "I am vid 3"
-        vid3.basket = basket
-        vid3.save!
-
-        binding.pry
-        # expect(Video.all.count).to eq 1
-
-        # vid2.update_attribute(:title, "bar")
-        # vid2.versions.count == 2
-
-        # expect(vid2.title).eq "bar"
-        # vid2.revert 
-        # expect(vid2.title).eq "foo"
+        expect { vid2.save! }.to_not raise_error
         
+        binding.pry
+
+        # ROB: ERROR
+        # There is a quirk in the code in lib/flagging.rb
+        # (#revert_to_latest_unflagged_version_or_create_blank_version method)
+        # where if there is not already a version in the DB, it runs an
+        # update_attributes!. The result of this that there is an extra row
+        # created in the video_versions table that has null values.
+        expect(vid2.versions.size).to eq(2)
       end
 
       it "explore: video versions" do

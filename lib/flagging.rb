@@ -51,6 +51,7 @@ module Flagging
       revert_to_latest_unflagged_version_or_create_blank_version
 
       # Return the private version if we were working with it before..
+      # EOIN & ROB: this return value is broken logic but it seems like it is ignored by the caller anyway
       show_serialized && !self.private? ? self.private_version! : self
     end
 
