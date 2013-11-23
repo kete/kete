@@ -1,4 +1,6 @@
-source :gemcutter
+# @todo change rubygems to https when cert fixed on appserver
+source 'http://rubygems.org'
+
 gem "rails", "2.3.5"
 gem 'rake', '0.8.7'
 
