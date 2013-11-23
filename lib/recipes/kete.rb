@@ -25,7 +25,7 @@ namespace :deploy do
   desc "Run the steps necessary to update Kete. Overrides the default Capistrano task."
   task :update do
     deploy.backgroundrb.stop
-    run "cd #{current_path} && rake tmp:cache:clear"
+    run "cd #{current_path} && #{rake} tmp:cache:clear"
     deploy.update_code
     deploy.symlink
     deploy.kete.symlink.all
@@ -38,16 +38,14 @@ namespace :deploy do
   end
 
   namespace :kete do
-
     desc 'Upgrade Kete Installation'
     task :upgrade, :role => :app do
       set_app_environment
-      run "cd #{current_path} && RAILS_ENV=#{app_environment} rake kete:upgrade"
+      run "cd #{current_path} && RAILS_ENV=#{app_environment} #{rake} kete:upgrade"
     end
 
     desc "What to we need to happen after code checkout, but before the app is ready to be started."
     namespace :prepare do
-
       desc "The directory that holds everything related to zebra needs to live under share/system/zebradb"
       task :setup_zebra, :roles => :app do
         run "cp -r #{latest_release}/zebradb #{shared_path}/system/"
@@ -72,12 +70,10 @@ namespace :deploy do
       task :setup_locales, :roles => :app do
         run "cp -r #{latest_release}/config/locales #{shared_path}/system/"
       end
-
     end
 
     desc "Symlink folders for existing Kete installations"
     namespace :symlink do
-
       public_dirs = %w{ audio documents image_files video themes }
       root_dirs = %w{ zebradb imports private }
       config_dirs = %w{ locales }
@@ -122,7 +118,6 @@ namespace :deploy do
         run "rm -rf #{current_path}/#{prefix}#{dir}"
         run "ln -nfs #{shared_path}/system/#{dir} #{current_path}/#{prefix}#{dir}"
       end
-
     end
 
     def set_app_environment
@@ -132,8 +127,7 @@ namespace :deploy do
     desc 'Update Kete TinyMCE imageselector plugin configuration to reflect Kete system settings'
     task :configure_imageselector, :role => :app do
       set_app_environment
-      run "cd #{current_path} && RAILS_ENV=#{app_environment} rake kete:tools:tiny_mce:configure_imageselector"
+      run "cd #{current_path} && RAILS_ENV=#{app_environment} #{rake} kete:tools:tiny_mce:configure_imageselector"
     end
-
   end
 end
