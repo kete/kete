@@ -6,13 +6,13 @@ namespace :deploy do
 
     desc "Start backgroundrb server"
     task :start, :roles => :app do
-      run "cd #{current_path} && script/backgroundrb start"
+      run "cd #{current_path} && bundle exec script/backgroundrb start"
     end
 
     desc "Stop backgroundrb server"
     task :stop, :roles => :app do
       begin
-        run "if [ -f #{current_path}/config/backgroundrb.yml ]; then cd #{current_path} && script/backgroundrb stop; fi"
+        run "if [ -f #{current_path}/config/backgroundrb.yml ]; then cd #{current_path} && bundle exec script/backgroundrb stop; fi"
       rescue
         puts "WARNING: Failed to stop Backgroundrb, but not fatal. Continuing with deployment."
       end
@@ -23,7 +23,5 @@ namespace :deploy do
       deploy.backgroundrb.stop
       deploy.backgroundrb.start
     end
-
   end
-
 end
