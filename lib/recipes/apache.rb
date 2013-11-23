@@ -1,26 +1,23 @@
 # capistrano recipes specific to apache server
 # Adapted from Capistrano Bells plugin (http://github.com/nakajima/capistrano-bells)
-
 namespace :deploy do
-
   namespace :apache do
-
     desc "Start Apache webserver"
     task :start, :roles => :app do
       set_apache_clt
-      sudo "#{apache_ctl} start"
+      run "#{sudo} #{apache_ctl} start"
     end
 
     desc "Stop Apache webserver"
     task :stop, :roles => :app do
       set_apache_clt
-      sudo "#{apache_ctl} stop"
+      run "#{sudo} #{apache_ctl} stop"
     end
 
     desc "Restart Apache webserver"
     task :restart, :roles => :app do
       set_apache_clt
-      sudo "#{apache_ctl} restart"
+      run "#{sudo} #{apache_ctl} restart"
     end
 
     desc "Restart Rails Application"
@@ -31,7 +28,5 @@ namespace :deploy do
     def set_apache_clt
       begin; apache_ctl; rescue; set(:apache_ctl, "/etc/init.d/apache2"); end
     end
-
   end
-
 end

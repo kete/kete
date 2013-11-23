@@ -6,17 +6,17 @@ namespace :deploy do
     desc "Sets up mysql databse"
     task :setup do
       read_config
-      sudo "mysqladmin create #{db_name}"
+      run "#{sudo} mysqladmin create #{db_name}"
     end
 
     desc "Kills then starts mysqld process."
     task :kill do
-      sudo "kill `cat /var/run/mysqld/mysqld.pid`"
+      run "#{sudo} kill `cat /var/run/mysqld/mysqld.pid`"
     end
 
     desc "Starts mysqld process"
     task :start do
-      sudo "mysqld --skip-grant-tables"
+      run "#{sudo} mysqld --skip-grant-tables"
     end
 
     desc "Checks to make sure mysqld is active"
