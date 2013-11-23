@@ -1,12 +1,12 @@
-require 'bundler/capistrano'
+require "bundler/capistrano"
 
 # support multi-stage deployment
 # (requires capistrano-ext gem)
-# require 'capistrano/ext/multistage'
+# require "capistrano/ext/multistage"
 
 # support for ruby defined application configurations
 # (requires capistrano-configuration)
-# require 'capistrano-configuration'
+# require "capistrano-configuration"
 
 # What is your application called and where are you getting it from?
 set :application, "set your application name here"
