@@ -1,13 +1,21 @@
   KeteApp::Application.routes.draw do
 
+  # EOIN: 
+  # * locale is a built-in filter of the routing-filter gem
+  # * it prepends the :locale to all routes e.g. /de/ping
+  # * it is not clear if this gem is still required in rails 3. We are
+  #   keeping it around until we figure out whether the same stuff can be
+  #   achieved with standard rails 3 routing stuff
   filter :locale
 
   match '/oai_pmh_repository' => 'oai_pmh_repository#index', :as => :oai
 
+  # EOIN: rabid temp test route
   get '/ping' => 'ping#index'
 
+  ####################################################
+  ### monitoring tools ###############################
 
-  ### monitoring tools
   # to make sure the rails process is answering
   match 'uptime.txt' => 'index_page#uptime'
   # to make sure that the db is answering
@@ -23,18 +31,28 @@
   # for opensearch compatible clients
   match 'opensearchdescription.xml' => 'index_page#opensearchdescription'
 
+  ####################################################
+  ####################################################
 
-  # Various RSS feeds not associated with search
+
+  ####################################################
+  # Various RSS feeds not associated with search #####
+  
   match ':urlified_name/baskets/rss.:format' => 'baskets#rss', :as => :basket_list_rss
   match ':urlified_name/tags/rss.:format' => 'tags#rss', :as => :tags_list_rss
   match ':urlified_name/moderate/rss.:format' => 'moderate#rss', :as => :basket_moderate_rss
   match ':urlified_name/members/rss.:format' => 'members#rss', :as => :basket_moderate_rss
+
+  ####################################################
+  ####################################################
+
 
   # RABID: This probably breaks search but I can't figure out where this route
   #        comes from (either in this file or the routes file in the master branch).
   #        Adding this route so we can get the basic app working
   match 'search/terms_to_page_url_redirect' => "search#terms_to_page_url_redirect"
 
+  # BEGIN terrible hacks ############################
   # EOIN: terrible hacks to enable us to get one controller working
   match 'account/sign_up' => 'account#signup'
   match 'account/login' => 'account#login'
@@ -43,7 +61,12 @@
   match 'site/account/forgot_password' => 'account#forgot_password'
   match 'site/search/all' => 'search#all'
 
-  # All search related routes (all, rss, for)
+  match 'site/index_page/selected_image' => 'index_page#selected_image'
+  # END terrible hacks ############################
+
+  ####################################################
+  # All search related routes (all, rss, for) ########
+
   match ':urlified_name/all/:controller_name_for_zoom_class/' => 'search#all', :as => :basket_all
   match ':urlified_name/all/:privacy_type/:controller_name_for_zoom_class/' => 'search#all', :as => :basket_all_private
   match ':urlified_name/all/:controller_name_for_zoom_class/of/:topic_type' => 'search#all', :as => :basket_all_topic_type
@@ -62,7 +85,6 @@
   match ':urlified_name/all/:privacy_type/:controller_name_for_zoom_class/since/:date_since' => 'search#all', :as => :basket_all_private_date_since
   match ':urlified_name/all/:controller_name_for_zoom_class/since/:date_since/until/:date_until' => 'search#all', :as => :basket_all_date_since_and_until
   match ':urlified_name/all/:privacy_type/:controller_name_for_zoom_class/since/:date_since/until/:date_until' => 'search#all', :as => :basket_all_private_date_since_and_until
-
 
   match ':urlified_name/all/:controller_name_for_zoom_class/rss.xml' => 'search#rss', :as => :basket_all_rss
   match ':urlified_name/all/:privacy_type/:controller_name_for_zoom_class/rss.xml' => 'search#rss', :as => :basket_all_private_rss
@@ -101,7 +123,6 @@
   match ':urlified_name/search/:controller_name_for_zoom_class/since/:date_since/until/:date_until/for/:search_terms_slug/rss.xml' => 'search#rss', :as => :basket_search_date_since_and_until_rss
   match ':urlified_name/search/:privacy_type/:controller_name_for_zoom_class/since/:date_since/until/:date_until/for/:search_terms_slug/rss.xml' => 'search#rss', :as => :basket_search_private_date_since_and_until_rss
 
-
   match ':urlified_name/search/:controller_name_for_zoom_class/contributed_by/user/:contributor/for/:search_terms_slug' => 'search#for', :as => :basket_search_contributed_by
   match ':urlified_name/search/:privacy_type/:controller_name_for_zoom_class/contributed_by/user/:contributor/for/:search_terms_slug' => 'search#for', :as => :basket_search_private_contributed_by
   match ':urlified_name/search/:controller_name_for_zoom_class/related_to/:source_controller_singular/:source_item/for/:search_terms_slug' => 'search#for', :as => :basket_search_related_to
@@ -120,7 +141,6 @@
   match ':urlified_name/search/:privacy_type/:controller_name_for_zoom_class/since/:date_since/for/:search_terms_slug' => 'search#for', :as => :basket_search_private_date_since
   match ':urlified_name/search/:controller_name_for_zoom_class/since/:date_since/until/:date_until/for/:search_terms_slug' => 'search#for', :as => :basket_search_date_since_and_until
   match ':urlified_name/search/:privacy_type/:controller_name_for_zoom_class/since/:date_since/until/:date_until/for/:search_terms_slug' => 'search#for', :as => :basket_search_private_date_since_and_until
-
 
   # There were duplicate routes (i.e. redundant) with a ":search_terms => nil" option,
   match ':urlified_name/search/:controller_name_for_zoom_class/contributed_by/user/:contributor/for/:search_terms_slug' => 'search#for', :as => :basket_search_contributed_by_empty, :search_terms => nil
@@ -141,6 +161,9 @@
   match ':urlified_name/search/:privacy_type/:controller_name_for_zoom_class/since/:date_since/for' => 'search#for', :as => :basket_search_private_date_since, :search_terms => nil
   match ':urlified_name/search/:controller_name_for_zoom_class/since/:date_since/until/:date_until/for' => 'search#for', :as => :basket_search_date_since_and_until, :search_terms => nil
   match ':urlified_name/search/:privacy_type/:controller_name_for_zoom_class/since/:date_since/until/:date_until/for' => 'search#for', :as => :basket_search_private_date_since_and_until, :search_terms => nil
+
+  ####################################################
+  ####################################################
 
 
   # active_scaffold routes
@@ -163,24 +186,30 @@
 
   # Walter McGinnis, 2007-07-13
   # if the site isn't configured, we don't setup our full routes
-  skip_configuration = Object.const_defined?(:SKIP_SYSTEM_CONFIGURATION)
-  is_configured = false
-  if !skip_configuration &&
-        Object.const_defined?('SystemSetting') &&
-        ActiveRecord::Base.connection.table_exists?('system_settings') &&
-        SystemSetting.find(:all).size > 0
-    is_configured = eval(SystemSetting.find_by_name('Is Configured').value)
-  end
-  if skip_configuration || is_configured
-    # comment this line and uncomment the next after initial migration
-    site_basket = Basket.find(1) unless skip_configuration # we skip a query here if running integration tests
-    site_urlified_name = !site_basket.nil? ? site_basket.urlified_name : 'site'
-    root :to => 'index_page#index', :urlified_name => site_urlified_name
-  else
-    # not configured, redirect to homepage which is configuration page
-    root :to => 'configure#index', :urlified_name => 'site'
-  end
+  # skip_configuration = Object.const_defined?(:SKIP_SYSTEM_CONFIGURATION)
+  # is_configured = false
 
+  # if !skip_configuration &&
+  #       Object.const_defined?('SystemSetting') &&
+  #       ActiveRecord::Base.connection.table_exists?('system_settings') &&
+  #       SystemSetting.find(:all).size > 0
+  #   is_configured = eval(SystemSetting.find_by_name('Is Configured').value)
+  # end
+  # if skip_configuration || is_configured
+  #   # comment this line and uncomment the next after initial migration
+  #   site_basket = Basket.find(1) unless skip_configuration # we skip a query here if running integration tests
+  #   site_urlified_name = !site_basket.nil? ? site_basket.urlified_name : 'site'
+  #   root :to => 'index_page#index', :urlified_name => site_urlified_name
+  # else
+  #   # not configured, redirect to homepage which is configuration page
+  #   root :to => 'configure#index', :urlified_name => 'site'
+  # end
+
+  # EOIN: hard-code the site basket's urlified name to 'site'
+  site_urlified_name = 'site'
+  root :to => 'index_page#index', :urlified_name => site_urlified_name
+
+  # EOIN: this route matches everything and sends the browser to the #rescue_404 action in ApplicationController 
   match '*path' => 'application#rescue_404' unless Rails.application.config.consider_all_requests_local
 end
 

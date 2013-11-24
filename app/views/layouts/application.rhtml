@@ -17,7 +17,10 @@
 
   <% unless current_item.nil? -%>
     <% cache_with_privacy(current_item, {:part => 'page_keywords'}) do -%>
-      <meta name="keywords" content="<%= page_keywords -%>" />
+      <meta name="keywords" content="<%= 
+      # EOIN: comment out to get controllers working
+      # page_keywords 
+      -%>" />
     <% end -%>
     <% cache_with_privacy(current_item, {:part => 'page_description'}) do -%>
       <meta name="description" content="<%= page_description -%>" />

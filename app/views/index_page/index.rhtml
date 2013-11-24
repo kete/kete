@@ -160,7 +160,10 @@
   <%= render(:partial => "topics/secondary_wrapper_start",
              :locals => { :div_id => "contents-by-type", :class_suffix => nil }) -%>
     <h3><%=t '.contents_by_type' %></h3>
-    <%= render :partial => 'archive_by_type' -%>
+    
+    <%= # EOIN: comment out because it just contains zoom stuff 
+        # render :partial => 'archive_by_type' 
+    -%>
   <%= render(:partial => "topics/secondary_wrapper_end") -%>
 <% end -%>
 

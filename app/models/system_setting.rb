@@ -261,9 +261,9 @@ class SystemSetting
    self.setting(:enable_embedded_support)
   end
 
-  #def self.image_slideshow_size
-  #  self.setting(:image_slideshow_size)
-  #end
+  def self.image_slideshow_size
+   self.setting(:image_slideshow_size)
+  end
 
   def self.related_items_position_default
     self.setting(:related_items_position_default)
@@ -621,6 +621,14 @@ private
 
     def pending_flag
       "pending"
+    end
+
+    def image_slideshow_size
+      400 # seems to be a width in pixels
+    end
+
+    def captcha_type
+      "all"
     end
   end 
 end

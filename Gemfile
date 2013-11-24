@@ -28,6 +28,7 @@ gem 'acts_as_configurable', '0.0.8'
 # EOIN: piggy_back is an old implementation of AR #include e.g User.include(:roles).find.where(...) etc.
 #gem "piggy_back", "#.#.#", :git => "git://github.com/shuber/sortable.git" # 2009-03-17
 
+gem 'routing-filter', '~> 0.3.1'
 
 #gem 'oembed_provider_engine' # !! re-enable on Rails 3.2
 
@@ -155,7 +156,6 @@ gem 'authorization',                '1.0.11' # >> 2008-10-01
 #gem "random_finders", "#.#.#", :git => "git://github.com/shuber/sortable.git" # 2007-12-07
 #gem 'redbox',                       '1.0.3' # >> 2007-12-21
 #gem 'redhillonrails_core',          '1.0.4' # >> 2008-06-30
-gem 'routing-filter',               '0.1.6' # ~= 2009-04-06
 #gem 'ssl_requirement',              '0.0.1' # >> 2008-05-29
 #gem 'nove-system-settings',         '0.2.0' # >> 2008-01-14, replaces 'system_settings'
 gem 'will_paginate',                '2.3.11' # ~= '2009-03-09', should be '2.3.8'
