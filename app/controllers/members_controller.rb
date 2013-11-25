@@ -312,9 +312,8 @@ class MembersController < ApplicationController
 
   def rss
     @cache_key_hash = { :rss => "#{@current_basket.urlified_name}_members_list" }
-    unless has_all_rss_fragments?(@cache_key_hash)
-      list_members_in('member')
-    end
+    list_members_in('member')
+    
     respond_to do |format|
       format.xml
     end

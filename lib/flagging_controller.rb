@@ -39,8 +39,6 @@ module FlaggingController
 
       flagging_clear_caches_and_update_zoom(@item)
 
-      clear_caches_and_update_zoom_for_commented_item(@item)
-
       @item.notify_moderators_immediatelly_if_necessary(:flag => @flag,
                                                         :history_url => history_url(@item),
                                                         :flagging_user => @current_user,
@@ -53,10 +51,6 @@ module FlaggingController
     end
 
     def flagging_clear_caches_and_update_zoom(item)
-      # clear caches for the item and rss
-      expire_show_caches
-      expire_rss_caches
-
       # add contributor and update zoom if needed
       after_successful_zoom_item_update(item, @version_after_update)
     end
@@ -136,8 +130,6 @@ module FlaggingController
         @item.send :store_correct_versions_after_save if @item.respond_to?(:store_correct_versions_after_save)
 
         flagging_clear_caches_and_update_zoom(@item)
-
-        clear_caches_and_update_zoom_for_commented_item(@item)
 
         approval_message = I18n.t('flagging_controller_lib.restore.made_live',
                                   :site_name => SystemSetting.pretty_site_name,

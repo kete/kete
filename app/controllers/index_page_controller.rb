@@ -14,10 +14,6 @@ class IndexPageController < ApplicationController
       @privacy_type = @current_basket.show_privacy_controls_with_inheritance? && permitted_to_view_private_items? ? 'private' : 'public'
       @allow_private = (@privacy_type == 'private')
 
-      # Kieran Pilkington, 2008/08/06
-      # Load the index page everytime (for now atleast, until a better title caching system is in place)
-      @is_fully_cached = has_all_fragments?
-      #if !@is_fully_cached or params[:format] == 'xml'
       @topic = @current_basket.index_topic(true) # must load this each time or the topic gets cached a private permanently next
       if @topic && (params[:private] == "true" || (params[:private].blank? && @current_basket.private_default_with_inheritance?)) &&
           @topic.has_private_version? && permitted_to_view_private_items?
@@ -28,46 +24,38 @@ class IndexPageController < ApplicationController
         @title = @topic.title
       end
 
-      if @current_basket != @site_basket or ( @topic.nil? and !@is_fully_cached )
+      if @current_basket != @site_basket or @topic.nil?
         @title = @current_basket.name
       end
 
       if !@current_basket.index_topic.nil? && @current_basket.index_page_topic_is_entire_page
         render :action => :topic_as_full_page
       else
-        if !@is_fully_cached
-
-          if !has_fragment?({:part => 'details'}) and !@topic.nil?
-            @comments = @topic.non_pending_comments
-          end
-
-          # TODO: DRY up
-          @url_to_full_topic = nil
-          @url_to_comments = nil
-          if !@topic.nil?
-            case @current_basket.index_page_link_to_index_topic_as
-            when 'full topic and comments'
-              @url_to_full_topic = url_for( :urlified_name => @topic.basket.urlified_name,
-                                            :action => :show,
-                                            :controller => 'topics',
-                                            :id => @topic )
-              @url_to_comments = url_for(:action => 'show',
-                                         :urlified_name => @topic.basket.urlified_name,
-                                         :controller => 'topics',
-                                         :id => @topic,
-                                         :anchor => 'comments')
-            when 'full topic'
-              @url_to_full_topic = url_for( :urlified_name => @topic.basket.urlified_name,
-                                            :action => :show,
-                                            :controller => 'topics',
-                                            :id => @topic )
-            when 'comments'
-              @url_to_comments = url_for(:action => 'show',
-                                         :urlified_name => @topic.basket.urlified_name,
-                                         :controller => 'topics',
-                                         :id => @topic,
-                                         :anchor => 'comments')
-            end
+        @url_to_full_topic = nil
+        @url_to_comments = nil
+        if !@topic.nil?
+          case @current_basket.index_page_link_to_index_topic_as
+          when 'full topic and comments'
+            @url_to_full_topic = url_for( :urlified_name => @topic.basket.urlified_name,
+                                          :action => :show,
+                                          :controller => 'topics',
+                                          :id => @topic )
+            @url_to_comments = url_for(:action => 'show',
+                                       :urlified_name => @topic.basket.urlified_name,
+                                       :controller => 'topics',
+                                       :id => @topic,
+                                       :anchor => 'comments')
+          when 'full topic'
+            @url_to_full_topic = url_for( :urlified_name => @topic.basket.urlified_name,
+                                          :action => :show,
+                                          :controller => 'topics',
+                                          :id => @topic )
+          when 'comments'
+            @url_to_comments = url_for(:action => 'show',
+                                       :urlified_name => @topic.basket.urlified_name,
+                                       :controller => 'topics',
+                                       :id => @topic,
+                                       :anchor => 'comments')
           end
 
           # prepare blog list of most recent topics

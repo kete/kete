@@ -47,9 +47,8 @@ class BasketsController < ApplicationController
   def rss
     @number_per_page = 100
     @cache_key_hash = { :rss => "basket_list" }
-    unless has_all_rss_fragments?(@cache_key_hash)
-      @baskets = Basket.all(:limit => @number_per_page, :order => 'id DESC')
-    end
+    @baskets = Basket.all(:limit => @number_per_page, :order => 'id DESC')
+    
     respond_to do |format|
       format.xml
     end
@@ -170,7 +169,6 @@ class BasketsController < ApplicationController
       ZOOM_CLASSES.each do |zoom_class|
         basket_items = @basket.send(zoom_class.tableize)
         basket_items.each do |item|
-          expire_show_caches_for(item)
           zoom_destroy_for(item)
         end
       end

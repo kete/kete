@@ -109,7 +109,6 @@ module ExtendedContentController
               # use async backgroundrb worker rather than slowing down response to request to wait for related topic rebuild
               # topic.prepare_and_save_to_zoom
               update_search_record_for(topic)
-              expire_related_caches_for(topic, 'topics')
             end
           end
         end

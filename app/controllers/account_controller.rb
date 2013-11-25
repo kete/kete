@@ -275,7 +275,6 @@ class AccountController < ApplicationController
     original_user_name = @user.user_name
     if @user.update_attributes(params[:user])
       # @user.user_name has changed
-      expire_contributions_caches_for(@user) if original_user_name != @user.user_name
 
       flash[:notice] = t('account_controller.update.user_updated')
       redirect_to({ :locale => params[:user][:locale],
@@ -400,7 +399,6 @@ class AccountController < ApplicationController
     else
       flash[:error] = t('account_controller.add_portrait.failed_portrait', :portrait_title => @still_image.title)
     end
-    expire_contributions_caches_for(current_user, :dont_rebuild_zoom => true)
     redirect_to_image_or_profile
   end
 
@@ -413,7 +411,6 @@ class AccountController < ApplicationController
       @successful = false
       flash[:error] = t('account_controller.remove_portrait.failed_portrait', :portrait_title => @still_image.title)
     end
-    expire_contributions_caches_for(current_user, :dont_rebuild_zoom => true)
     respond_to do |format|
       format.html { redirect_to_image_or_profile }
       format.js { render :file => File.join(Rails.root, 'app/views/account/portrait_controls.js.rjs') }
@@ -427,7 +424,6 @@ class AccountController < ApplicationController
     else
       flash[:error] = t('account_controller.make_selected_portrait.failed_portrait', :portrait_title => @still_image.title)
     end
-    expire_contributions_caches_for(current_user, :dont_rebuild_zoom => true)
     redirect_to_image_or_profile
   end
 
@@ -440,7 +436,6 @@ class AccountController < ApplicationController
       @successful = false
       flash[:error] = t('account_controller.move_portrait_higher.failed_portrait', :portrait_title => @still_image.title)
     end
-    expire_contributions_caches_for(current_user, :dont_rebuild_zoom => true)
     respond_to do |format|
       format.html { redirect_to_image_or_profile }
       format.js { render :file => File.join(Rails.root, 'app/views/account/portrait_controls.js.rjs') }
@@ -456,7 +451,6 @@ class AccountController < ApplicationController
       @successful = false
       flash[:error] = t('account_controller.move_portrait_lower.failed_portrait', :portrait_title => @still_image.title)
     end
-    expire_contributions_caches_for(current_user, :dont_rebuild_zoom => true)
     respond_to do |format|
       format.html { redirect_to_image_or_profile }
       format.js { render :file => File.join(Rails.root, 'app/views/account/portrait_controls.js.rjs') }
@@ -483,7 +477,6 @@ class AccountController < ApplicationController
         # once we have the portrait, update the position to index
         portrait_placement.update_attribute(:position, index)
       end
-      expire_contributions_caches_for(current_user, :dont_rebuild_zoom => true)
       @successful = true
       flash[:notice] = t('account_controller.update_portraits.reordered')
     rescue

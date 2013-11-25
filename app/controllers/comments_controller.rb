@@ -10,12 +10,12 @@ class CommentsController < ApplicationController
   end
 
   def show
-    if params[:format] == 'xml' or !has_all_fragments?
+    if params[:format] == 'xml'
       @comment = @current_basket.comments.find(params[:id])
       @title = @comment.title
     end
 
-    if params[:format] == 'xml' or !has_fragment?({:part => 'contributions' })
+    if params[:format] == 'xml'
       @creator = @comment.creator
       @last_contributor = @comment.contributors.last || @creator
     end
@@ -72,7 +72,6 @@ class CommentsController < ApplicationController
       # make sure that we wipe comments cache for thing we are commenting on
       commented_item = zoom_class.find(params[:comment][:commentable_id])
       commented_privacy = @comment.commentable_private
-      expire_caches_after_comments(commented_item, commented_privacy)
 
       # although we shouldn't be using the related_topic aspect here
       # i.e. there is never going to be params[:related_topic_id]
@@ -109,7 +108,6 @@ class CommentsController < ApplicationController
       # make sure that we wipe comments cache for thing we are commenting on
       commented_item = @comment.commentable
       commented_privacy = @comment.commentable_private
-      expire_caches_after_comments(commented_item, commented_privacy)
 
       # @comment.prepare_and_save_to_zoom
       # switched to async backgroundrb worker for search record set up
@@ -140,7 +138,6 @@ class CommentsController < ApplicationController
     @successful = @comment.destroy
 
     if @successful
-      expire_caches_after_comments(commented_item, commented_privacy)
       commented_item.prepare_and_save_to_zoom
 
       flash[:notice] = t('comments_controller.destroy.destroyed')

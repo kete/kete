@@ -126,13 +126,6 @@ class ApplicationController < ActionController::Base
   # creates a @cache_id variable based on params[:id]
   before_filter :set_cache_id, :only => [:show]
 
-  # if anything is updated or deleted
-  # we need toss our show action fragments
-  # destroy has to happen before the item is deleted
-  before_filter :expire_show_caches_on_destroy, :only => [ :destroy ]
-  # everything else we do after the action is completed
-  after_filter :expire_show_caches, :only => [ :update, :convert, :add_tags ]
-
   # TODO: NOT USED, delete code here and in lib/zoom_controller_helpers.rb
   # related items only track title and url, therefore only update will change those attributes
   after_filter :update_zoom_record_for_related_items, :only => [ :update ]
@@ -141,21 +134,6 @@ class ApplicationController < ActionController::Base
   # TODO: this needs to be updated to store location for newer actions
   # might be better to do an except?
   after_filter :store_location, :only => [ :for, :all, :search, :index, :new, :show, :edit, :new_related_set_from_archive_file]
-
-  # if anything is added, edited, or deleted
-  # we need to rebuild our rss caches
-  after_filter :expire_rss_caches, :only => [ :create, :update, :destroy ]
-
-  # if anything is added, edited, or deleted in a basket
-  # we need toss our basket index page fragments
-  after_filter :expire_basket_index_caches, :only => [ :create,
-                                                       :update,
-                                                       :destroy,
-                                                       :add_index_topic, :find_index,
-                                                       :add_tags ]
-
-  # clear any outstanding search source caches
-  before_filter :expire_search_source_caches, :only => [ :show ]
 
   # RSS feed related operations
   # no layout on rss pages
@@ -371,8 +349,6 @@ class ApplicationController < ActionController::Base
     SystemSetting.uses_basket_list_navigation_menu_on_every_page?
   end
 
-  include CacheControllerHelpers
-
   def redirect_to_related_item(item, options={})
     redirect_to_show_for(item, options)
   end
@@ -384,12 +360,6 @@ class ApplicationController < ActionController::Base
     # item.prepare_and_save_to_zoom
     # use async backgroundrb process instead
     update_search_record_for(item)
-
-    if controller.nil?
-      expire_related_caches_for(item)
-    else
-      expire_related_caches_for(item, controller)
-    end
   end
 
   def add_relation_and_update_zoom_and_related_caches_for(item1, item2)
@@ -999,25 +969,25 @@ class ApplicationController < ActionController::Base
 
     @show_privacy_chooser = true if permitted_to_view_private_items?
 
-    if params[:format] == 'xml' || !has_all_fragments? || allowed_to_access_private_version_of?(@current_item)
+    if params[:format] == 'xml' || allowed_to_access_private_version_of?(@current_item)
       public_or_private_version_of(@current_item)
       privacy = get_acceptable_privacy_type_for(@current_item)
 
-      if params[:format] == 'xml' || !has_fragment?({ :part => "page_title_#{privacy}" })
+      if params[:format] == 'xml'
         @title = @current_item.title
       end
 
-      if params[:format] == 'xml' || !has_fragment?({ :part => "contributor_#{privacy}" })
+      if params[:format] == 'xml'
         @creator = @current_item.creator
         @last_contributor = @current_item.contributors.last || @creator
       end
 
       if logged_in? && @at_least_a_moderator
-        if params[:format] == 'xml' || !has_fragment?({ :part => "comments-moderators_#{privacy}" })
+        if params[:format] == 'xml'
           @comments = @current_item.non_pending_comments
         end
       else
-        if params[:format] == 'xml' || !has_fragment?({ :part => "comments_#{privacy}" })
+        if params[:format] == 'xml'
           @comments = @current_item.non_pending_comments
         end
       end

@@ -157,7 +157,6 @@ class ImportersController < ApplicationController
               end
             end
           end
-          expire_related_caches_for(related_topic) if !params[:related_topic].blank? && (status[:done_with_do_work] == true or !status[:error].blank?)
         else
           message = t('importers_controller.get_progress.import_failed')
           flash[:notice] = message

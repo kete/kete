@@ -223,12 +223,8 @@ class SearchController < ApplicationController
       @cache_key_hash[key] = params[key] unless params[key].blank?
     end
 
-    # no need to hit zebra and parse records
-    # if we already have the cached rss
-    unless has_all_rss_fragments?(@cache_key_hash)
-      @search = Search.new
-      search
-    end
+    @search = Search.new
+    search
 
     respond_to do |format|
       format.xml
