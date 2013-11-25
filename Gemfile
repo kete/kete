@@ -44,9 +44,7 @@ gem 'nokogiri', '1.3.3'
 
 # Background tasks
 # ################
-# gem 'memcached'
-# gem 'memcache-client'
-gem "backgroundrb-rails3", "~> 1.1.6"# , :require => 'backgroundrb'
+gem "backgroundrb-rails3", "~> 1.1.6", :require => 'backgroundrb'
 
 gem 'mini_exiftool', '< 2.0.0'
 
