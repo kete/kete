@@ -1,0 +1,20 @@
+- @title = t('account.login.title', :site_name => SystemSetting.pretty_site_name)
+- @button_text = t('account.login.button')
+- @button_classes = ['login-button']
+
+#login-your-info-wrapper
+  #login-wrapper
+    - if !anonymous_ok_for?(session[:return_to])
+      %h2= h(@title)
+    = form_tag({}, {:id => 'login'}) do
+      - if anonymous_ok_for?(session[:return_to])
+        %h2= h(@title)
+      = render :partial => "login_form"
+  - if anonymous_ok_for?(session[:return_to])
+    - @title = @title + ' ' +t('account.login.or_enter_your_info')
+    - @button_text = t('account.login.continue')
+    - @button_classes << 'center'
+    = render :partial => "your_info"
+%div{:style => "clear:both;"}
+= render :partial => "login_button"
+= render(:partial => "topics/content_wrapper_end" )

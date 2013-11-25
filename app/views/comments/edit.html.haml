@@ -1,0 +1,10 @@
+- @title = t('comments.edit.title')
+%h2= h(@title)
+- form_for :comment,
+- :url => { :action => 'update',
+- :id => @comment },
+- :html => { :multipart => true } do |form|
+  = render :partial => 'form', :object => form
+  .wrap= submit_tag t('comments.edit.button'), {:class => "save-button", :tabindex => '1'}
+= link_to_cancel
+= render(:partial => "topics/content_wrapper_end" )

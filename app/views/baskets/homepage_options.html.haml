@@ -1,0 +1,25 @@
+- @title = t('baskets.homepage_options.title', :basket_name => @current_basket.name)
+= render(:partial => "actions_menu", |
+  :locals => { :item => @basket })   |
+= render :partial => "topics/content_wrapper_start"
+%h2
+  = h(@title)
+  = show_all_fields_link
+- if any_fields_editable?
+  %ul
+    - if !@index_topic.blank?
+      %li
+        = t 'baskets.homepage_options.current_homepage'
+        %span.current_homepage_link= link_to h(@index_topic.title), {:controller => 'topics', :action => 'show', :id => @index_topic, :urlified_name => @index_topic.basket.urlified_name}, :tabindex => '1'
+    %li.command= link_to_add_index_topic(:index_for_basket => @basket, :phrase => t('baskets.homepage_options.new_homepage'))
+    - if @topics.size > 0 && !(@topics.size == 1 && @index_topic == @topics.first)
+      %li.command= link_to_link_index_topic(:current_basket_id => @basket.id, |
+          :phrase => t('baskets.homepage_options.link_homepage'))    |
+  = form_for :basket, :url => {:action => 'update', :id => @basket, :show_all_fields => params[:show_all_fields] } do |form|
+    = render :partial => 'homepage_form', :object => form
+    %div{:style => "margin:0;padding:0"}
+      = submit_tag t('baskets.homepage_options.button'), {:class => "save-button", :tabindex => '1'}
+  = link_to_cancel
+- else
+  %h4 Homepage options are only set by site administrators at this time.
+= render(:partial => "topics/content_wrapper_end" )

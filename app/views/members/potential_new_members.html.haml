@@ -1,0 +1,15 @@
+- @title = t('members.potential_new_members.title')
+= render(:partial => "baskets/actions_menu", |
+  :locals => { :item => @current_basket })   |
+= render :partial => "topics/content_wrapper_start"
+%h2= @title
+- if @potential_new_members.size > 0
+  = form_tag :action => :add_members do
+    - @potential_new_members.each do |@user|
+    %p
+      = check_box('user[]', 'add_checkbox')
+      = h(@user.user_name)
+  .wrap= submit_tag t('members.potential_new_members.add_members')
+- else
+  %p= t 'members.potential_new_members.no_members'
+= render(:partial => "topics/content_wrapper_end" )

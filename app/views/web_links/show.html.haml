@@ -1,0 +1,25 @@
+= render(:partial => "topics/actions_menu", :locals => { :item => @web_link }) if current_user_can_see_action_menu?
+= render(:partial => "topics/content_wrapper_start")
+- cache_with_privacy(@web_link, {:part => 'details_first'}) do
+  %h2= link_to h(@web_link.title), url_for(@web_link.url)
+  = extras_after_title_headline
+= render(:partial => "topics/related_items", :locals => { :item => @web_link, :topics_only => true, :position => 'inset' }) if @web_link.related_items_position == 'inset'
+- cache_with_privacy(@web_link, {:part => 'details_second'}) do
+  = render(:partial => "details", :locals => { :item => @web_link })
+  %p= @web_link.description
+  = pending_review(@web_link)
+= render(:partial => "topics/extended_fields", :locals => { :item => @web_link, :embedded => true })
+%div{:style => "clear:both;"}
+= render(:partial => "topics/flagging_contributor" , :locals => { :item => @web_link }) if current_user_can_see_flagging?
+= render(:partial => "topics/related_items", :locals => { :item => @web_link, :topics_only => true, :position => 'below' }) if @web_link.related_items_position == 'below'
+= render(:partial => "topics/discussion" , :locals => { :item => @web_link }) if current_user_can_see_discussion?
+/ /main-content-container
+/ /main-content-wrapper
+#secondary-content-wrapper
+  = render(:partial => "topics/tags_div" , :locals => { :item => @web_link })
+  = render(:partial => "topics/related_items", :locals => { :item => @web_link, :topics_only => true, :position => 'sidebar' }) if @web_link.related_items_position == 'sidebar'
+  = render(:partial => "topics/extended_fields" , :locals => { :item => @web_link, :embedded => false })
+  = display_search_sources_for(@web_link)
+  = render(:partial => "topics/license" , :locals => { :item => @web_link })
+/ /secondary-content-warpper
+/ /content-wrapper

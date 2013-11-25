@@ -1,0 +1,6 @@
+= @recipient.user_name
+,
+
+\#{t 'user_notifier.join_policy.rejected.membership_denied', :user_name => @sender.user_name, :basket_name => @basket.name}
+
+\#{render 'user_notifier/email_footer'}

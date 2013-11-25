@@ -1,0 +1,12 @@
+- @title = t('topic_types.edit.title')
+%h2= h(@title)
+= form_tag :action => 'update', :id => @topic_type do
+  = render :partial => 'form'
+  .wrap= submit_tag t('topic_types.edit.edit_button')
+%table
+  = render(:partial => 'generic_topic_fields', :locals => { :local_id => @topic_type.id })
+  = render(:partial => 'inherited_fields', :locals => { :local_id => @topic_type.id, :parent_id => @topic_type.parent_id })
+  = render(:partial => 'current_fields', :locals => { :local_id => @topic_type.id })
+  = render(:partial => 'available_fields_form', :locals => { :local_id => @topic_type })
+= link_to t('topic_types.edit.return_to_topic_types'), :action => 'list'
+= render(:partial => "topics/content_wrapper_end" )

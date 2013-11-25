@@ -1,0 +1,45 @@
+!!! Strict
+%html{:lang => "en", :xmlns => "http://www.w3.org/1999/xhtml"}
+  %head
+    / TODO: helper for content type?
+    %meta{:content => "text/html; charset=utf-8", "http-equiv" => "Content-Type"}/
+    %title= h(@title)
+      %script{:src => "http://ajax.googleapis.com/ajax/libs/jquery/1.6.2/jquery.min.js"}
+      = javascript_tag('jQuery.noConflict();')
+      = include_tiny_mce_if_needed({                                               |
+          :content_css => "/stylesheets/cache/#{@theme}_theme.css",                |
+          :extended_valid_elements => (@site_admin ? EXTENDED_VALID_ELEMENTS : '') |
+        })                                                                         |
+      = stylesheet_link_tag 'base', :media => 'screen'
+      = stylesheet_link_tag 'comment', :media => 'screen'
+      = stylesheet_link_tag 'redbox'
+      - load_styles(@theme).each do |stylesheet|
+        = stylesheet_link_tag stylesheet, :media => 'screen' if stylesheet == 'simple'
+      = stylesheet_link_tag 'kete-print', :media => 'print'
+      - if !@rss_tag_auto.nil?
+        = @rss_tag_auto
+      /[if IE] <haml:loud> stylesheet_link_tag 'kete-ie', :media =&amp;gt; 'screen' </haml:loud>
+      = javascript_include_tag :defaults
+      = javascript_include_tag 'redbox'
+      - if SystemSetting.enable_maps? && initialize_gmap_headers?
+        = yield :gmap4rails_head
+        - if params[:action] == 'choose_type'
+          = load_maps_javascript_files
+        - else
+          = yield :gmap4rails_scripts
+          = javascript_tag("window.onload = Gmaps.loadMaps;")
+        = javascript_tag("keteMaps = new Object();")
+  %body
+    #body-outer-wrapper
+      #body-inner-wrapper
+        #wrapper.simple{:style => "margin-top: 1em"}
+          .cleaner &nbsp;
+          - if flash[:notice]
+            / TODO: look up if there is a style sheet class for flash, add here
+            #notice
+              %div= flash[:notice]
+          #container
+            = @content_for_layout
+          / /container
+          .cleaner &nbsp;
+        / /wrapper

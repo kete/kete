@@ -1,0 +1,21 @@
+- @title = t('baskets.edit.title', :basket_name => @current_basket.name)
+= render(:partial => "actions_menu", |
+  :locals => { :item => @basket })   |
+= render :partial => "topics/content_wrapper_start"
+%h2
+  = h(@title)
+  = show_all_fields_link
+= form_for :basket, :url => {:action => 'update', :id => @basket, :show_all_fields => params[:show_all_fields] } do |form|
+  = render :partial => 'form', :object => form
+  - if @basket.status == 'requested'
+    .wrap
+      = submit_tag t('baskets.edit.accept'), {:id => "accept_basket", :name => "accept_basket", :class => "save-button", :tabindex => '1'}
+      = submit_tag t('baskets.edit.reject'), {:id => "reject_basket", :name => "reject_basket", :class => "save-button", :tabindex => '1'}
+  - elsif @basket.status == 'rejected'
+    .wrap
+      = submit_tag t('baskets.edit.accept'), {:id => "accept_basket", :name => "accept_basket", :class => "save-button", :tabindex => '1'}
+      = t 'baskets.edit.currently_rejected'
+  - else
+    .wrap= submit_tag t('baskets.edit.update'), {:class => "save-button", :tabindex => '1'}
+= link_to_cancel
+= render(:partial => "topics/content_wrapper_end" )

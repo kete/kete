@@ -1,0 +1,16 @@
+= render :partial => "topics/content_wrapper_start", :locals => { :style_classes => 'full-width notabs' }
+- @title = t('search.rebuild_zoom_index.title', :start => @start_id, :end => @end_id)
+%h2= @title
+#time_started
+#processing_zoom_class
+#report_records_processed= t 'search.rebuild_zoom_index.starting'
+#report_records_failed
+#report_records_skipped
+#spinner
+  %img{:alt => t 'search.rebuild_zoom_index.completed', :height => "16", :src => "/images/indicator.gif", :width => "16"}/
+#done= t 'search.rebuild_zoom_index.in_progress'
+= periodically_call_remote :url => { :action => 'check_rebuild_status', |
+            :worker_key => @worker_key },                               |
+  :frequency => 30                                                      |
+#exit
+= render(:partial => "topics/content_wrapper_end" )

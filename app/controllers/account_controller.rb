@@ -1,24 +1,24 @@
 class AccountController < ApplicationController
-  # see user model for info about activation code
-  # for email password reminders and activation
-  # depreciated in rails 2.0
-  # now in config/environment.rb (later to go into config/initializers/)
-  # observer :user_observer
 
-  include ExtendedContent
-  include ExtendedContentController
-  include EmailController
-
+  #####################################################################
+  #####################################################################
+  ### CONFIGURATION
+  #####################################################################
+  #####################################################################
   # Be sure to include AuthenticationSystem in Application Controller instead
   # include AuthenticatedSystem
   # If you want "remember me" functionality, add this before_filter to Application Controller
+
   before_filter :login_from_cookie
-
   before_filter :redirect_if_user_portraits_arnt_enabled, :only => [:add_portrait, :remove_portrait, :make_selected_portrait]
-
   layout :simple_or_application
 
-  # say something nice, you goof!  something sweet.
+  #####################################################################
+  #####################################################################
+  ### PUBLIC METHODS/ACTIONS
+  #####################################################################
+  #####################################################################
+
   def index
     if logged_in? || User.count > 0
       redirect_to_default_all
@@ -115,27 +115,10 @@ class AccountController < ApplicationController
         end
       end
     else
-
       set_captcha_type if anonymous_ok_for?(session[:return_to])
       create_brain_buster if @captcha_type == 'question'
     end
   end
-
-  def simple_return_tos
-      ['find_related']
-  end
-
-  # override brain_buster method to suit our UI
-  # and working in conjunction with simple_captcha
-  def captcha_failure
-    if @user
-      @user.security_code = 'failed'
-      @user.security_code_confirmation = false
-    else
-      # TODO: do something here for login case
-    end
-  end
-
 
   def signup
     # this loads @content_type
@@ -198,13 +181,68 @@ class AccountController < ApplicationController
     render :action => 'signup'
   end
 
-  # Walter McGinnis, 2008-03-16
-  # making it so that system setting
-  # determines which type of captcha method we use
-  def set_captcha_type
-    @captcha_type = params[:captcha_type] || SystemSetting.captcha_type
-    @captcha_type = 'image' if @captcha_type == 'all'
+  def show_captcha
+    return unless !params[:id].nil?
+    captcha = Captcha.find(params[:id])
+    imgdata = captcha.imageblob
+    send_data(imgdata,
+              :filename => 'captcha.jpg',
+              :type => 'image/jpeg',
+              :disposition => 'inline')
   end
+
+  def disclaimer
+    @topic = Topic.find(params[:id])
+    respond_to do |format|
+      format.html { render :partial => 'account/disclaimer', :layout => 'simple' }
+      format.js
+    end
+  end
+
+  def forgot_password
+    return unless request.post?
+    @users = !params[:user][:login].blank? ? User.find_all_by_email_and_login(params[:user][:email], params[:user][:login]) :
+                                             User.find_all_by_email(params[:user][:email])
+    if @users.size == 1
+      user = @users.first
+      user.forgot_password
+      user.save
+      redirect_back_or_default(:controller => '/account', :action => 'index')
+      flash[:notice] = t('account_controller.forgot_password.email_sent')
+    elsif @users.size > 1
+      flash[:notice] = t('account_controller.forgot_password.more_than_one_account')
+    elsif !params[:user][:login].blank?
+      flash[:error] = t('account_controller.forgot_password.no_such_login')
+    else
+      flash[:error] = t('account_controller.forgot_password.no_such_email')
+    end
+  end
+  #####################################################################
+  #####################################################################
+  ### not sure of visiblity yet
+  #####################################################################
+
+  include ExtendedContent
+  include ExtendedContentController
+  include EmailController
+
+ 
+
+  def simple_return_tos
+      ['find_related']
+  end
+
+  # override brain_buster method to suit our UI
+  # and working in conjunction with simple_captcha
+  def captcha_failure
+    if @user
+      @user.security_code = 'failed'
+      @user.security_code_confirmation = false
+    else
+      # TODO: do something here for login case
+    end
+  end
+
 
   def fetch_gravatar
     respond_to do |format|
@@ -311,23 +349,7 @@ class AccountController < ApplicationController
     end
   end
 
-  def show_captcha
-    return unless !params[:id].nil?
-    captcha = Captcha.find(params[:id])
-    imgdata = captcha.imageblob
-    send_data(imgdata,
-              :filename => 'captcha.jpg',
-              :type => 'image/jpeg',
-              :disposition => 'inline')
-  end
 
-  def disclaimer
-    @topic = Topic.find(params[:id])
-    respond_to do |format|
-      format.html { render :partial => 'account/disclaimer', :layout => 'simple' }
-      format.js
-    end
-  end
 
   # activation code, note, not always used
   # if REQUIRE_ACTIVATION is false, this isn't used
@@ -351,25 +373,7 @@ class AccountController < ApplicationController
     end
   end
 
-  # supporting password reset
-  def forgot_password
-    return unless request.post?
-    @users = !params[:user][:login].blank? ? User.find_all_by_email_and_login(params[:user][:email], params[:user][:login]) :
-                                             User.find_all_by_email(params[:user][:email])
-    if @users.size == 1
-      user = @users.first
-      user.forgot_password
-      user.save
-      redirect_back_or_default(:controller => '/account', :action => 'index')
-      flash[:notice] = t('account_controller.forgot_password.email_sent')
-    elsif @users.size > 1
-      flash[:notice] = t('account_controller.forgot_password.more_than_one_account')
-    elsif !params[:user][:login].blank?
-      flash[:error] = t('account_controller.forgot_password.no_such_login')
-    else
-      flash[:error] = t('account_controller.forgot_password.no_such_email')
-    end
-  end
+
 
   def reset_password
     @user = User.find_by_password_reset_code(params[:id]) if params[:id]
@@ -499,6 +503,12 @@ class AccountController < ApplicationController
     redirect_back_or_default({:controller => 'account', :action => 'index'}, params[:override_locale])
   end
 
+  #####################################################################
+  #####################################################################
+  ### PRIVATE METHODS
+  #####################################################################
+  #####################################################################
+
   private
 
   def simple_or_application
@@ -533,6 +543,12 @@ class AccountController < ApplicationController
 
   def load_content_type
     @content_type = ContentType.find_by_class_name('User')
+  end
+
+
+  def set_captcha_type
+    @captcha_type = params[:captcha_type] || SystemSetting.captcha_type
+    @captcha_type = 'image' if @captcha_type == 'all'
   end
 
   include SslControllerHelpers

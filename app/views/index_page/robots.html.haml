@@ -1,0 +1,39 @@
+\# See http://www.robotstxt.org/wc/norobots.html for documentation on how to use the robots.txt file
+User-agent: *
+\# can have blank lines or it's interpreted as new rule set (i.e. new User-agent rule must be declared)
+- set_robots_txt_base_variables
+\#
+\# per basket
+- @baskets.each do |basket|
+  - name = basket.urlified_name
+  \#
+  \##  per locale
+  - @rule_specs.each do |spec|
+    - spec_root = spec + name + '/'
+    \#
+    \### per controller
+    - @controller_names.each do |controller|
+      \#
+      \#### per action
+      - @actions.each do |action|
+        = spec_root + controller + '/' + action
+      \#
+      \#### per all action
+      - @all_actions.each do |action|
+        = spec_root + 'all/' + controller + '/' + action
+      \#
+    \### end controllers
+    \#
+    \### Disallow specific controllers themselves
+    - @skip_controllers.each do |controller|
+      = spec_root + controller +'/'
+    \### end disallow specific controllers
+    \#
+    \# Other
+    \#{spec_root}index_page/help_file
+\## end per locale
+\# end per basket
+\#
+\# Global
+\#
+Disallow: /*number_of_results_per_page*

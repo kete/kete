@@ -1,0 +1,60 @@
+- @title = t('account.signup.title')
+%h2= h(@title)
+= form_for :user do |f|
+  %fieldset
+    = error_messages_for :user
+    .form-element
+      %label{:for => "user_login"}= t 'account.signup.login'
+      = f.text_field :login, :tabindex => '1'
+      .form_example= t 'account.signup.login_example'
+    .form-element
+      %label{:for => "user_email"}= t 'account.signup.email'
+      = f.text_field :email, :tabindex => '1', :style => 'float:left;'
+      = render :partial => 'avatar_updater'
+    .form-element
+      %label{:for => "user_password"}= t 'account.signup.password'
+      = f.password_field :password, :tabindex => '1'
+    .form-element
+      %label{:for => "user_password_confirmation"}= t 'account.signup.confirm_password'
+      = f.password_field :password_confirmation, :tabindex => '1'
+    .form-element
+      %label{:for => "user_display_name"}= t 'account.signup.user_name'
+      = f.text_field :display_name, :tabindex => '1'
+      .form_example= t 'account.signup.user_name_example'
+    = form_fields = @content_type.content_type_to_field_mappings
+    - if form_fields.size > 0
+      = render(:partial => 'extended_fields/extended_field_mapping', |
+        :collection => form_fields,                                  |
+        :locals => { :form_fields => form_fields,                    |
+        :edit => false,                                              |
+        :extended_item => @user,                                     |
+        :item_key => 'user'})                                        |
+    - if I18n.available_locales_with_labels.keys.size > 1
+      .form-element
+        %label= t 'account.signup.language'
+        = locale_dropdown(f)
+        .form_example= t 'account.signup.language_example'
+    - else
+      = f.hidden_field :locale, :value => I18n.default_locale
+    .form-element
+      %label= t 'account.signup.preferred_license'
+      = render :partial => 'topics/license_chooser_or_agreement',:locals => {:item => @user}
+    = render :partial => "captcha_wrapper", :locals => { :f => f }
+    .form-element
+      = f.check_box :agree_to_terms, :tabindex => '1'
+      - terms_and_conditions_link = link_to(t('account.signup.terms_and_conditions_link'),
+      - { :action => 'disclaimer', :id => 4},
+      - :remote => true, :tabindex => '1' )
+      - privacy_policy_link = link_to(t('account.signup.privacy_policy_link'),
+      - { :action => 'disclaimer', :id => 5 },
+      - :remote => true, :tabindex => '1' )
+      - house_rules_link = link_to(t('account.signup.house_rules_link'),
+      - { :action => 'disclaimer', :id => 2 },
+      - :remote => true, :tabindex => '1' )
+      = t 'account.signup.agree_to',                             |
+        :terms_and_conditions_link => terms_and_conditions_link, |
+        :privacy_policy_link => privacy_policy_link,             |
+        :house_rules_link => house_rules_link                    |
+    #disclaimer
+  %div{:style => "margin:0;style:0"}= submit_tag t('account.signup.button'), {:class => "save-button", :tabindex => '1'}
+= render(:partial => "topics/content_wrapper_end" )

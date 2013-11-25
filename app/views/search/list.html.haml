@@ -1,0 +1,12 @@
+= render "topics/content_wrapper_start", :style_classes => "full-width notabs"
+- @title = t('search.list.title')
+%p
+  %h2{:style => "display:inline;"}= @title
+  [ #{link_to t('search.list.clear_all_searches'), :controller => 'search', :action => 'clear'} ]
+%ul#recent_searches_list
+  - users_previous_searches.each_with_index do |search, index|
+    %li
+      %span{:style => "float:right; margin-right: 10px;"}
+        [ #{link_to t('search.list.remove'), :action => 'clear', :search_id => (search[:id] || index)} ]
+      = link_to search[:title], search[:url]
+= render(:partial => "topics/content_wrapper_end" )

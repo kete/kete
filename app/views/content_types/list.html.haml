@@ -1,0 +1,22 @@
+- @title = t('content_types.list.title')
+%h2= h(@title)
+%table
+  %tr
+    %th{:abbr => "Controller"}= t 'content_types.list.controller'
+    %th{:abbr => "Type"}= t 'content_types.list.type'
+    / <th abbr="Type 2>Humanized Type</th>
+    / <th abbr="Type 2 Plural">Humanized Type Plural</th>
+    %th{:abbr => "Desc"}= t 'content_types.list.description'
+    %th{:abbr => "Options"}= t 'content_types.list.options'
+  - for content_type in @content_types
+    %tr
+      %td= h content_type.controller
+      %td= h content_type.class_name
+      / <td><haml:loud>h content_type.humanized </haml:loud></td>
+      / <td><haml:loud>h content_type.humanized_plural </haml:loud></td>
+      %td= h content_type.description
+      %td= link_to t('content_types.list.edit'), :action => 'edit', :id => content_type
+- # <ul><li><%= link_to 'Add content type', :action => 'new' </li></ul>
+  #prev-next= will_paginate @content_types
+  %br/
+  = render(:partial => "topics/content_wrapper_end" )

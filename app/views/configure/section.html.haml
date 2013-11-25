@@ -1,0 +1,22 @@
+%div{:id => h(@section)}
+  %fieldset
+    = form_tag({ :action => 'update', :section => @section }, :remote => true) do
+      - for @setting in @settings
+        - if @setting.name != 'Is Configured' and (@advanced or !@setting.technically_advanced)
+          = error_messages_for :setting
+          .form-element
+            <label
+            - if @setting.required_to_be_configured
+              class="required"
+            for="@setting">#{h(@setting.name)}:
+            %br/
+            = fields_for "setting[]" do |f|
+              = f.text_field :value
+              .form_example
+                = RedCloth.new(@setting.explanation).to_html.gsub("&#8220;", "\"").gsub("&#8221;", "\"").gsub("&#8217;", "'").gsub("&#8216;", "'").gsub("‘", "'").gsub("’", "'")
+        - else
+          = fields_for "setting[]" do |f|
+            = f.hidden_field :value
+      %p
+        = submit_tag t('configure.section.save')
+        = link_to_close_redbox t('configure.section.cancel') if SystemSetting.is_configured?

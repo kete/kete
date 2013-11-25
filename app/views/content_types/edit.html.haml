@@ -1,0 +1,8 @@
+- @title = t('content_types.edit.title', :controller => @content_type.controller)
+%h2= h(@title)
+%table
+  = render(:partial => 'generic_fields', :locals => { :local_id => @content_type.id })
+  = render(:partial => 'current_fields', :locals => { :local_id => @content_type.id })
+  = render(:partial => 'available_fields_form', :locals => { :local_id => @content_type })
+= link_to t('content_types.edit.return_to_content_types'), :action => 'list'
+= render(:partial => "topics/content_wrapper_end" )

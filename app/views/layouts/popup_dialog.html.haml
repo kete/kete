@@ -1,0 +1,19 @@
+!!! Strict
+%html{:lang => "en", :xmlns => "http://www.w3.org/1999/xhtml"}
+  %head
+    / TODO: helper for content type?
+    %meta{:content => "text/html; charset=utf-8", "http-equiv" => "Content-Type"}/
+    %title= h(@title)
+    = stylesheet_link_tag 'kete-print', :media => 'print'
+    = stylesheet_link_tag 'popup_dialog', :media => 'screen'
+    - load_styles(@theme).each do |stylesheet|
+      = stylesheet_link_tag stylesheet, :media => 'screen' if stylesheet == 'popup_dialog'
+    = stylesheet_link_tag('serif') if @theme_font_family == 'serif'
+    = javascript_include_tag :defaults
+    /[if IE] <haml:loud> stylesheet_link_tag 'kete-ie', :media =&amp;gt; 'screen' </haml:loud>
+  %body{:id => @current_basket.urlified_name}
+    - if flash[:notice]
+      #notice= flash[:notice]
+    - if flash[:error]
+      #error= flash[:error]
+    = yield

@@ -1,0 +1,304 @@
+!!!
+%html{:lang => "en", :xmlns => "http://www.w3.org/1999/xhtml"}
+  %head
+    %meta{:content => "text/html; charset=utf-8", "http-equiv" => "Content-Type"}/
+    = csrf_meta_tag
+    - cached_controllers = ['audio', 'documents', 'images', 'topics', 'video', 'web_links']
+    - if params[:controller] == 'index_page' || (cached_controllers.include?(params[:controller]) && params[:action] == "show")
+      - cache_with_privacy(current_item, {:part => 'page_title'}) do
+        %title= title_with_context
+    - else
+      %title= title_with_context
+    - unless current_item.nil?
+      - cache_with_privacy(current_item, {:part => 'page_keywords'}) do
+        %meta{:content => "<haml:loud> \n      # EOIN: comment out to get controllers working\n      # page_keywords \n      </haml:loud>", :name => "keywords"}/
+      - cache_with_privacy(current_item, {:part => 'page_description'}) do
+        %meta{:content => page_description, :name => "description"}/
+    - else
+      - cache({:part => 'page_keywords'}) do
+        %meta{:content => page_keywords, :name => "keywords"}/
+      - cache({:part => 'page_description'}) do
+        %meta{:content => page_description, :name => "description"}/
+    - if cached_controllers.include?(params[:controller]) && params[:action] == "show"
+      - cache_with_privacy(current_item, { :part => 'dc_metadata' }) do
+        = dc_metadata_for(current_item) if current_item && !current_item.private?
+    = opensearch_descriptions
+    = open_search_metadata if params[:controller] == 'search' && %w{ all for }.include?(params[:action])
+    - if %w(images topics).include?(params[:controller]) && params[:action] == "show"
+      = oembed_provider_links
+
+    %script{:src => "http://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"}
+    = javascript_tag('jQuery.noConflict();')
+    = yield :add_on_scripts_and_links
+    = include_tiny_mce_if_needed({ :content_css => "/stylesheets/cache/#{@theme}_theme.css", :extended_valid_elements => (@site_admin ? EXTENDED_VALID_ELEMENTS : '') })
+    = stylesheet_link_tag 'kete-print', :media => 'print'
+    = stylesheet_link_tag 'base', :media => 'screen'
+    = stylesheet_link_tag 'comment', :media => 'screen'
+    = stylesheet_link_tag 'redbox'
+    = stylesheet_link_tag('left-hand-column') if show_basket_list_naviation_menu?
+    - load_styles(@theme).each do |stylesheet|
+      = stylesheet_link_tag stylesheet, :media => 'screen'
+    - if !SystemSetting.enable_user_portraits? && !SystemSetting.enable_gravatar_support?
+      :css
+        .comment-outer-wrapper .stylish_user_contribution_link_extra,
+        .comment-outer-wrapper .stylish_user_contribution_link_extra h3 {
+          display: inline;
+        }
+        .comment-wrapper {
+          margin-top: 0px;
+        }
+    = stylesheet_link_tag('serif') if @theme_font_family == 'serif'
+    - if !@header_image.blank?
+    - # allows for banner style background image
+      :css
+        #header { background: url('#{@header_image}') no-repeat top left !important; }
+    - if SystemSetting.language_choices_position == 'header'
+      :css
+        #header { padding-top: 3em; padding-bottom: 1em; }
+    = javascript_include_tag :defaults
+    = javascript_include_tag 'redbox'
+    - if !SystemSetting.available_syntax_highlighters.blank?
+      = javascript_include_tag 'dan_webb_code_highlighter/code_highlighter'
+      - SystemSetting.available_syntax_highlighters.each do |syntax|
+        = javascript_include_tag "dan_webb_code_highlighter/#{syntax}"
+    = javascript_include_tag 'kete'
+    - if SystemSetting.enable_maps? && initialize_gmap_headers?
+      - if CACHES_CONTROLLERS.include?(params[:controller]) || params[:controller] == 'index_page'
+        = stylesheet_link_tag 'gmaps4rails'
+      - else
+        = yield :gmap4rails_head
+      - if params[:action] == 'choose_type'
+        = load_maps_javascript_files
+      - else
+        - if CACHES_CONTROLLERS.include?(params[:controller]) || params[:controller] == 'index_page'
+          = load_maps_javascript_files
+        - else
+          = yield :gmap4rails_scripts
+        = javascript_tag("window.onload = Gmaps.loadMaps;")
+      = javascript_tag("keteMaps = new Object();")
+    - if ACTIVE_SCAFFOLD_CONTROLLERS.include?(params[:controller])
+      = active_scaffold_includes
+    - if ['extended_fields', 'choices'].include?(params[:controller])
+      = javascript_include_tag "yui/yahoo/yahoo", "yui/event/event-min", "yui/animation/animation-min", "yui/dom/dom-min", "yui/treeview/treeview-min"
+      = stylesheet_link_tag 'yui/treeview'
+    - rss_tag_links = @rss_tag_link.blank? ? Array.new : @rss_tag_link.to_a
+    - rss_tag_autos = @rss_tag_auto.blank? ? Array.new : @rss_tag_auto.to_a
+    - combined_rss_url = basket_all_rss_url( :urlified_name => @site_basket.urlified_name, :controller_name_for_zoom_class => 'combined' )
+    - rss_tag_autos.each do |rss_tag_auto|
+      = rss_tag_auto.sub("title=\"RSS\"", "title=\"RSS #{stripped_title}\"")
+
+    %link{:href => combined_rss_url, :rel => "alternate", :title => t('layouts.application.combined_rss'), :type => "application/rss+xml"}
+
+    /[if IE] 
+      = stylesheet_link_tag 'kete-ie', media: 'screen'
+
+    - unless @ie_stylesheet_paths.blank?
+      - if @ie_stylesheet_paths[:all].present?
+        /[if IE]
+          = stylesheet_link_tag @ie_stylesheet_paths[:all].first, media: 'screen'
+      - @ie_stylesheet_paths.each do |ie_version, css_paths|
+        - unless ie_version == :all
+          = "<!--[if IE #{ie_version}]>"
+          - css_paths.each do |stylesheet|
+            = stylesheet_link_tag stylesheet, media: 'screen'
+          = "<![endif]-->"
+
+    - if ['audio', 'video'].include?(params[:controller]) && params[:action] == 'show'
+      = javascript_include_tag "anarchy_media/anarchy.js"
+      
+  %body{:id => @current_basket.urlified_name}
+    #body-outer-wrapper
+      #body-inner-wrapper
+        #header-wrapper
+          #header
+            %h1
+              = link_to SystemSetting.pretty_site_name,                             |
+                basket_index_url({ :urlified_name => @site_basket.urlified_name }), |
+                :tabindex => '2'                                                    |
+              = header_link_to_current_basket
+            = render 'account/locale_selection', :classes => ['header'] if SystemSetting.language_choices_position == 'header'
+            #head-search-wrapper
+              = form_tag ({ :urlified_name => @site_basket.urlified_name, |
+                :controller => 'search',                                  |
+                :action => 'terms_to_page_url_redirect' }) do             |
+                .search_fields
+                  #advanced_search_dropdown_trigger
+                    %noscript= image_tag 'magnifier.png', :width => 16, :height => 16
+                  = text_field_tag 'search_terms', nil, { :accesskey => '3', :tabindex => '2' }
+                  = submit_tag t('layouts.application.search_button'), { :class => 'submit', :tabindex => '2' }
+                = render 'search/mini_controls', :id => 'advanced_search_dropdown', :type => 'menu'
+                = add_search_icon_and_default_text_to_search_box('advanced_search_dropdown', 'advanced_search_dropdown_trigger')
+                = javascript_tag("$('search_terms').observe('change', function(event) {                 |
+                    if (this.value == '') {                                                             |
+                      advanced_search_dropdown_reset_relevance(true);                                   |
+                    } else {                                                                            |
+                      advanced_search_dropdown_show_relevance(true);                                    |
+                      $$('#advanced_search_dropdown #sort_type').first().down('.none').selected = true; |
+                      $$('#advanced_search_dropdown #sort_direction_field').first().hide();             |
+                    }                                                                                   |
+                  });")                                                                                 |
+            = header_links_to_baskets.html_safe
+        #top-menu
+          %ul.user-nav.nav-list
+            = ("<li class='locale_selection first'>" + render('account/locale_selection', :classes => ['menu_center']) + "</li>") if SystemSetting.language_choices_position == 'top_menu_center'
+            - account_hash = { :controller => 'account' }
+            - if !logged_in?
+              %li.first= link_to_register(t('layouts.application.register'), account_hash.merge({ :action => 'signup' }), { :tabindex => '2' })
+              %li= link_to_login(t('layouts.application.login'), account_hash.merge({ :action => 'login' }), { :tabindex => '2' })
+            - else
+              %li#user_baskets_list.first
+                = link_to_unless_current "#{current_user.user_name}",                                       |
+                  account_hash.merge({ :action => 'show', :urlified_name => @site_basket.urlified_name, }), |
+                  :tabindex => '2'                                                                          |
+                -#
+                = link_to "<em>V</em>",                         |
+                  account_hash.merge({ :action => 'baskets' }), |
+                  :tabindex => '2',                             |
+                  :title => t('layouts.application.my_baskets') |
+                %ul.submenu{:style => "display:none;"}
+                  = users_baskets_list
+                  %li{:style => "padding-top:15px;"}
+                    = link_to t('layouts.application.all_baskets'),   |
+                      { :urlified_name => @site_basket.urlified_name, |
+                      :controller => 'baskets',                       |
+                      :action => 'list' }                             |
+              = add_ons_logged_in_user_list if respond_to?(:add_ons_logged_in_user_list)
+              %li= link_to_unless_current t('layouts.application.logout'), account_hash.merge({ :action => 'logout' }), :tabindex => '2'
+            = ("<li class='locale_selection'>" + render('account/locale_selection', :classes => ['menu_right']) + "</li>") if SystemSetting.language_choices_position == 'top_menu_farthest_right'
+          %ul#main-nav.nav-list
+            %li#header_home.first
+              = link_to t('layouts.application.home'),                              |
+                basket_index_url({ :urlified_name => @site_basket.urlified_name }), |
+                :tabindex => '2', :accesskey => '1'                                 |
+            = header_browse_links.html_safe
+            %li#header_about
+              = link_to_unless_current h(@about_basket.name),                    |
+                basket_index_url(:urlified_name => @about_basket.urlified_name), |
+                :tabindex => '2'                                                 |
+            %li#header_help
+              = link_to_unless_current h(@help_basket.name),                    |
+                basket_index_url(:urlified_name => @help_basket.urlified_name), |
+                :tabindex => '2'                                                |
+            - if SystemSetting.contact_url.present?
+              = content_tag('li', link_to(t('layouts.application.contact'), SystemSetting.contact_url, :accesskey => '9', :tabindex => '2'), :id => 'header_contact' )
+            - else
+              = content_tag('li', mail_to(SystemSetting.contact_email, t('layouts.application.contact'), :encode => "hex", :accesskey => '9', :tabindex => '2'), :id => 'header_contact')
+            = header_add_links.html_safe
+            - add_basket_link = header_add_basket_link
+            = content_tag('li', add_basket_link, :id => 'header_add_basket') unless add_basket_link.blank?
+        .clear{:style => "height:1px;"}
+          %a{:name => "content"} &nbsp;
+        <div id="notice" #{flash[:notice].blank? ? "style='display:none;'" : ''}>
+        %div= h flash[:notice]
+      <div id="error" #{flash[:error].blank? ? "style='display:none;'" : ''}>
+      %div= h flash[:error]
+    #container
+      = render(:partial => "topics/slideshow_controls") if show_slideshow_controls?
+      = render(:partial => "topics/content_wrapper_start",                                         |
+        :locals => { :style_classes =>"full-width notabs" }) if render_full_width_content_wrapper? |
+      = render(:partial => "licenses/install") if params[:controller] == 'licenses' && %w{ index list }.include?(params[:action])
+      = @content_for_layout
+      = render(:partial => "topics/content_wrapper_end") if render_content_wrapper_end?
+      %div{:style => "clear:both;"}
+      #linkToRSS.footer_div
+        %ul
+          - rss_tag_links.each do |rss_tag_link|
+            %li= link_for_rss(:link_html => rss_tag_link, :preface => t('layouts.application.rss'), :title => stripped_title)                 |
+
+          %li= link_to(t('layouts.application.combined_rss'), combined_rss_url, :tabindex => '1')                              |
+      #footer.footer_div
+        - if logged_in? && @basket_admin && !@displaying_error
+          #basket-toolbox
+            %h4= t 'layouts.application.basket_label', :basket => h(@current_basket.name)
+            %p
+              = link_to_unless_current t('layouts.application.preferences'), |
+                { :controller => 'baskets',                                  |
+                :action => 'edit',                                           |
+                :id => @current_basket },                                    |
+                :tabindex => '2'                                             |
+              -#
+              |
+              \#{link_to_unless_current t('layouts.application.moderate'), { :controller => 'moderate', :action => 'list' }, :tabindex => '2'}
+              |
+              \#{link_to_unless_current t('layouts.application.members'), { :controller => 'members', :action => 'list' }, :tabindex => '2'}
+              \#{add_ons_basket_admin_list if respond_to?(:add_ons_basket_admin_list)}
+        - else
+          - if @tech_admin
+            |
+            \#{link_to_unless_current t('layouts.application.import'), { :controller => 'importers', :action => 'list' }, :tabindex => '2'}
+          - if @current_basket != @site_basket
+            |
+            \#{link_to_unless_current t('layouts.application.delete'), { :controller => 'baskets', :action => 'destroy', :id => @current_basket, }, :confirm => t('layouts.application.delete_confirmation'), :method => 'post', :tabindex => '2'}
+    - if logged_in? && @site_admin && !@displaying_error
+      #adminToolbox
+        %h4= t 'layouts.application.toolbox_label'
+        %p
+          = t 'layouts.application.toolbox_controls'
+          = link_to_unless_current t('layouts.application.basket_profiles'), |
+            { :urlified_name => @site_basket.urlified_name,                  |
+              :controller => 'profiles',                                     |
+              :action => 'list' },                                           |
+            :tabindex => '2'                                                 |
+          -#
+          |
+          \#{link_to_unless_current t('layouts.application.topic_types'), { :urlified_name => @site_basket.urlified_name, :controller => 'topic_types', :action => 'list' }, :tabindex => '2'}
+          |
+          \#{link_to_unless_current t('layouts.application.content_types'), { :urlified_name => @site_basket.urlified_name, :controller => 'content_types', :action => 'list' }, :tabindex => '2'}
+          |
+          \#{link_to_unless_current t('layouts.application.extended_fields'), { :urlified_name => @site_basket.urlified_name, :controller => 'extended_fields', :action => 'list' }, :tabindex => '2'}
+          |
+          \#{link_to_unless_current t('layouts.application.choices'), { :urlified_name => @site_basket.urlified_name, :controller => 'choices', :action => 'list'}, :tabindex => '2'}
+          |
+          \#{link_to_unless_current t('layouts.application.search_sources'), { :urlified_name => @site_basket.urlified_name, :controller => 'search_sources', :action => 'list'}, :tabindex => '2'}
+          |
+          \#{link_to_unless_current t('layouts.application.site_members'), { :urlified_name => @site_basket.urlified_name, :controller => 'members', :action => 'list' }, :tabindex => '2'}
+          |
+          \#{link_to_unless_current t('layouts.application.licenses'), { :urlified_name => @site_basket.urlified_name, :controller => 'licenses', :action => 'index' }, :tabindex => '2'}
+          |
+          \#{link_to_unless_current t('layouts.application.add_link'), { :urlified_name => @site_basket.urlified_name, :controller => 'configure', :action => 'add_link_to_kete_net' }, :tabindex => '2'}
+          \#{add_ons_site_admin_list if respond_to?(:add_ons_site_admin_list)}
+          - if @tech_admin
+            |
+            \#{link_to_unless_current t('layouts.application.configure'), { :urlified_name => @site_basket.urlified_name, :controller => 'configure', :action => 'index' }, :tabindex => '2'}
+            |
+            \#{link_to_unless_current t('layouts.application.oai_pmh'), { :urlified_name => @site_basket.urlified_name, :controller => 'oai_pmh_repository_sets', :action => 'index' }, :tabindex => '2'}
+            |
+            \#{link_to_unless_current t('layouts.application.zoom_dbs'), { :urlified_name => @site_basket.urlified_name, :controller => 'zoom_dbs', :action => 'list' }, :tabindex => '2'}
+            |
+            \#{link_to_unless_current t('layouts.application.rebuild'), { :urlified_name => @site_basket.urlified_name, :controller => 'search', :action => 'setup_rebuild' }, :tabindex => '2'}
+        %p
+          = t 'layouts.application.support'
+          = link_to_unless_current t('layouts.application.documentation'),           |
+            basket_index_url(:urlified_name => @documentation_basket.urlified_name), |
+            :tabindex => '2'                                                         |
+    %div{:style => "clear:both;"}
+    #footer_custom.footer_div
+      - unless @current_basket.additional_footer_content_with_inheritance.nil? ||
+      - @current_basket.additional_footer_content_with_inheritance.squish.blank?
+        = @current_basket.additional_footer_content_with_inheritance
+      %div{:style => "clear:both;"}
+    #footer_links.footer_div
+      - unless @current_basket.replace_existing_footer_with_inheritance?
+        %ul
+          - unless SystemSetting.government_website.blank?
+            %li= link_to SystemSetting.government_website.first, SystemSetting.government_website.last, :accesskey => '/', :tabindex => '2'
+          - cache({:part => 'accessibility'}) do
+            - accessibility_topic = @help_basket.topics.find_by_title('Accessibility')
+            = content_tag('li', link_to(t('layouts.application.accessibility'), |
+              { :urlified_name => @help_basket.urlified_name,                   |
+              :controller => 'topics',                                          |
+              :action => 'show',                                                |
+              :id => accessibility_topic },                                     |
+              { :accesskey => '0',                                              |
+              :tabindex => '2' })) if accessibility_topic                       |
+          %li
+            = link_to t('layouts.application.sitemap'),       |
+              { :urlified_name => @site_basket.urlified_name, |
+              :controller => 'baskets',                       |
+              :action => 'list' },                            |
+              { :accesskey => '2',                            |
+              :tabindex => '2' }                              |
+          %li.last= link_to t('layouts.application.to_content'), '#content', :accesskey => '[', :tabindex => '2'
+        = render 'index_page/credits'
+      %div{:style => "clear:both;"}
+    = render 'account/locale_selection', :classes => ['footer'] if SystemSetting.language_choices_position == 'footer' 

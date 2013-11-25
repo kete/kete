@@ -1,6 +1,0 @@
-        <div class="form-element">
-                <label for="topic_topic_type_id"><%=t 'topics.topic_types.about_a' %></label>
-                <%= topic_type_select_with_indent('topic', 'topic_type_id', topic_types, :id, :name, nil,
-                                                  {:class=>"select", :tabindex => '1'},
-                                                  (!defined?(pre_options).nil? ? pre_options : Array.new)) %>
-        </div>

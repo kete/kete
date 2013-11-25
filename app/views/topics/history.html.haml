@@ -1,0 +1,69 @@
+- @title = "#{t('topics.history.revision_history')} #{h(@item.title)}"
+#detail-wrapper
+  #detail-header
+    %h2= h(@title)
+    = pending_review(@item)
+    %p
+      %b= @item.short_summary if @item.can_have_short_summary?
+.detail-tools
+  %table.history-table
+    %tr
+      %th{:abbr => "Number"}= t 'topics.history.number'
+      %th
+      %th{:abbr => "Flags"}= t 'topics.history.flags'
+      %th{:abbr => "Privacy"}= t 'topics.history.privacy'
+      %th{:abbr => "Contributor"}= t 'topics.history.contributor'
+      %th{:abbr => "Updated"}= t 'topics.history.updated'
+      %th{:abbr => "Comments"}= t 'topics.history.comments'
+    - @versions.each do |version|
+      - tag_names = Array.new
+      - tag_names = @item_taggings[version.id].collect { |tag| tag.name } if @item_taggings[version.id]
+      %tr{:class => cycle('table-row-odd', 'table-row-even'), :valign => "top"}
+        %td= "\# #{version.version}"
+        %td
+          [
+          - if version.version != @current_public_version && version.version != @current_private_version
+            - if tag_names.include?(SystemSetting.restricted_flag) && !@at_least_moderator
+              %b restricted
+            - else
+              = link_to_preview_of(@item, version, true, :submitter => @item_contributors[@contributor_index])
+          - else
+            %b current
+          ]
+        %td
+          = tag_names.join(', ')
+        %td
+          - private_condition = case params[:controller]
+          - when "comments"
+          - @item.private?
+          - else
+          - (version.respond_to?(:private?) && version.private?)
+          - end
+          = private_condition ? "<strong>#{t('topics.history.private')}</strong>" : t('topics.history.public')
+        %td
+          - begin
+            - if version.version.nil? || version.version == 1
+              - @item.creators.each do |creator|
+                = link_to_contributions_of(creator, @item.class.name, :with_avatar => true)
+            - else
+              - # reuse the same user objects so that avatars are cached
+              - contributor = (@users[@item_contributors[@contributor_index].id] ||= @item_contributors[@contributor_index])
+              = link_to_contributions_of(contributor, @item.class.name, :with_avatar => true) if @item_contributors.size > 0
+              - @contributor_index += 1
+          - rescue => exception
+            - Rails.logger.info("history error: " + exception.message)
+            - # catch the ugly error message and display something nicer
+            - message = "It looks like there is no contributor associated with version #{version.version.to_s} of #{@item.class.name} #{@item.id}.\n"
+            - message += "Possible data corruption. You should consider running 'rake kete:repair:all'."
+            - raise message
+        %td= kete_time_ago_in_words(version.updated_at)
+        %td
+          - if !version.version_comment.blank?
+            = h(version.version_comment)
+  - if @show_private_versions_notice
+    %p
+      %strong= t 'topics.history.has_private_version', :login => link_to( t('topics.history.login_link'), :controller => "account", :action => "login")
+  %h3
+    = t 'topics.history.back_to_live'
+    = link_to_item(@item)
+= render(:partial => "topics/content_wrapper_end" )

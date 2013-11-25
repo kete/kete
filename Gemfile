@@ -3,8 +3,9 @@ source "https://rubygems.org"
 gem "rails", "3.0.20"
 
 gem 'rails-erd'
+gem 'haml'
 gem 'acts_as_licensed', github: 'kete/acts_as_licensed', branch: 'rails3-gem'
-gem "sql-logging"
+# gem "sql-logging"
 
 
 # RABID: the official version of acts_as_versioned seems to be abandoned but

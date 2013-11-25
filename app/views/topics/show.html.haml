@@ -1,0 +1,31 @@
+= render(:partial => "actions_menu", :locals => { :item => @topic }) if current_user_can_see_action_menu?
+= render(:partial => "content_wrapper_start")
+- cache_with_privacy(@topic, {:part => 'details_first'}) do
+  %h2
+    %span.prefix= t 'topics.show.topic'
+    = h(@topic.title)
+  = extras_after_title_headline
+  %h4
+    %span.topic-type-prefix= t 'topics.show.topic_type'
+    = topic_type_breadcrumb_for(@topic)
+  %p
+    %b= @topic.short_summary
+= render(:partial => "related_items", :locals => { :item => @topic, :position => 'inset' }) if @topic.related_items_position == 'inset'
+- cache_with_privacy(@topic, {:part => 'details_second'}) do
+  = @topic.description
+  = pending_review(@topic)
+= render(:partial => "extended_fields", :locals => { :item => @topic, :embedded => true })
+%div{:style => "clear:both;"}
+= render(:partial => "flagging_contributor", :locals => { :item => @topic }) if current_user_can_see_flagging?
+= render(:partial => "related_items", :locals => { :item => @topic, :position => 'below' }) if @topic.related_items_position == 'below'
+= render(:partial => "discussion" , :locals => { :item => @topic }) if current_user_can_see_discussion?
+/ /main-content-container
+/ /main-content-wrapper
+#secondary-content-wrapper
+  = render(:partial => "tags_div", :locals => { :item => @topic })
+  = render(:partial => "related_items", :locals => { :item => @topic, :position => 'sidebar' }) if @topic.related_items_position == 'sidebar'
+  = render(:partial => "extended_fields", :locals => { :item => @topic, :embedded => false })
+  = display_search_sources_for(@topic)
+  = render(:partial => "license", :locals => { :item => @topic })
+/ /secondary-content-wrapper
+/ /content-wrapper

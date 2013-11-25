@@ -1,0 +1,39 @@
+- @title = t('importers.new_related_set_from_archive_file.title', :related_topic_title => @related_topic.title)
+= render 'topics/content_wrapper_start', :style_classes => "notabs"
+%h2= h(@title)
+%h3= t 'importers.new_related_set_from_archive_file.uploading_note'
+%ul
+  %li
+    %p= t 'importers.new_related_set_from_archive_file.folder_containing_items'
+  %li
+    %p= t 'importers.new_related_set_from_archive_file.archive_limit', :size => number_to_human_size(SystemSetting.maximum_uploaded_file_size)
+  = embedded_enabled_message('<li><p>', '</p></li>')
+  %li
+    - if SystemSetting.enable_embedded_support
+      %p
+        = t 'importers.new_related_set_from_archive_file.title_from_metadata'
+      %blockquote= SystemSetting.title_synonyms.to_a.to_sentence
+      %strong= t 'importers.new_related_set_from_archive_file.title_from_metadata_or'
+    %p= t 'importers.new_related_set_from_archive_file.title_from_filename'
+    %p= t 'importers.new_related_set_from_archive_file.edit_after_import'
+= render 'contributing_user_form' if @site_admin
+= form_for :import, :url => { :action => 'create' }, :html => { :multipart => true } do |form|
+  %fieldset
+    = error_messages_for 'import'
+    = error_messages_for 'import_archive_file'
+    = hidden_field_tag 'contributing_user', params[:contributing_user]
+    = hidden_field_tag 'related_topic', @related_topic.id
+    .form-element
+      %label{:for => "zoom_class"}= t 'importers.new_related_set_from_archive_file.whats_the_upload'
+      = select_tag 'zoom_class', attachable_classes_as_options, { :id => 'zoom_class', :tabindex => '1' }
+    = render 'common_import_fields', :form => form
+    = fields_for @import.import_archive_file do |archive_file|
+      .form-element
+        %label{:for => "import_archive_file_uploaded_data"}= t 'importers.new_related_set_from_archive_file.upload'
+        %br/
+        = archive_file.file_field :uploaded_data
+    .form_example
+      = t 'importers.new_related_set_from_archive_file.upload_description'
+    .form-element
+      = submit_tag t('importers.new_related_set_from_archive_file.add_related')
+= render 'topics/content_wrapper_end'
