@@ -180,7 +180,7 @@ module ImageSlideshow
       find_args_hash = { :select => 'id, title, created_at, basket_id, file_private', :limit => limit }
       find_args_hash.merge!(public_conditions) unless display_private_items?
       # Order results acording to the basket setting
-      find_args_hash[:order] = @current_basket.index_page_image_as == 'random' ? :random : 'created_at desc'
+      find_args_hash[:order] = @current_basket.index_page_image_as == 'random' ? 'RAND()' : 'created_at desc'
       # Execute the find in a collection of still images depending on current basket
       still_image_collection.find(:all, find_args_hash)
     end

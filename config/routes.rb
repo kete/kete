@@ -62,6 +62,11 @@
   match 'site/search/all' => 'search#all'
 
   match 'site/index_page/selected_image' => 'index_page#selected_image'
+  match 'site/account/show_captcha' => 'account#show_captcha'
+  match 'site/account/disclaimer/:id' => 'account#disclaimer'
+  match 'topics/new' => 'topics#new'
+  match 'search/find_related' => 'search#find_related'
+  match 'tags/list' => 'tags#list'
   # END terrible hacks ############################
 
   ####################################################

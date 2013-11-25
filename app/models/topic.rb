@@ -143,7 +143,7 @@ class Topic < ActiveRecord::Base
 
   # Kieran Pilkington - 2008/10/21
   # Named scopes used in the index page controller for recent topics
-  scope :recent, lambda { where(:order => 'created_at desc').limit(5) }
+  scope :recent, lambda { where('1 = 1').order('created_at DESC').limit(5) }
   scope :public, lambda { where('title != ?', SystemSetting.no_public_version_title) }
   scope :exclude_baskets_and_id, lambda {|basket_ids, id| where("basket_id NOT IN (?) AND id != ?", basket_ids, id) }
 

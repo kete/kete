@@ -42,10 +42,11 @@ gem "rake", "~> 10.1.0"
 gem "rdoc"
 gem 'nokogiri', '1.3.3'
 
-gem 'memcached'
-gem 'memcache-client'
-
-gem 'background'  # or backgroundrb ?
+# Background tasks
+# ################
+# gem 'memcached'
+# gem 'memcache-client'
+gem "backgroundrb-rails3", "~> 1.1.6"# , :require => 'backgroundrb'
 
 gem 'mini_exiftool', '< 2.0.0'
 
@@ -98,7 +99,6 @@ gem 'gmaps4rails', '1.4.2'
 gem 'unicode'
 gem 'xml-simple'
 #gem 'system_timer'
-gem 'memcache-client'
 gem 'mime-types'
 #gem 'tiny_mce_plugin_imageselector', '>= 0.0.7'
 gem 'htmlentities'
@@ -123,7 +123,6 @@ gem 'http_url_validation_improved'
 # "gem install --no-rdoc --no-ri unicode"
 # "gem install --no-rdoc --no-ri xml-simple"
 # "gem install --no-rdoc --no-ri system_timer"
-# "gem install --no-rdoc --no-ri memcache-client"
 # "gem install --no-rdoc --no-ri mime-types"
 # "gem install --no-rdoc --no-ri tiny_mce_plugin_imageselector --version='>= 0.0.7'"
 # "gem install --no-rdoc --no-ri kete-feedzirra"

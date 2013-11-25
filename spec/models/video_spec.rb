@@ -101,9 +101,6 @@ describe Video do
         # created in the video_versions table that has null values.
         expect(vid2.versions.size).to eq(2)
       end
-
-      it "explore: video versions" do
-      end
     end
   end
 end 

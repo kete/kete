@@ -79,7 +79,12 @@ class IndexPageController < ApplicationController
             # get an array of baskets that we need to exclude from the site recent topics list
             disabled_recent_topics_baskets = Array.new
             if @current_basket == @site_basket
-              disabled_recent_topics_baskets = ConfigurableSetting.where(:name => 'disable_site_recent_topics_display', :value => true.to_yaml).select(:configurable_id).where("configurable_id != ?", @site_basket)
+
+              # EOIN: not sure how to handle this yet ConfigurableSetting.where(:name => 'disable_site_recent_topics_display', :value => true.to_yaml).select(:configurable_id).where("configurable_id != ?", @site_basket)
+              # disabled_recent_topics_baskets = ConfigurableSetting.where(:name => 'disable_site_recent_topics_display', :value => true.to_yaml).select(:configurable_id).where("configurable_id != ?", @site_basket)
+              disabled_recent_topics_baskets =  Basket.where("1 = 0") # EOIN: this is a terrible hack to get an empty instance of ActiveRecord::Relation
+
+
               disabled_recent_topics_baskets.collect! { |setting| setting.configurable_id }
             end
             # If we have a blank array, reset it to nil so later on, it'll default to 0 (instead of causing the SQL to return nothing)
@@ -99,11 +104,11 @@ class IndexPageController < ApplicationController
             while @recent_topics_items.size < @recent_topics_limit && items_offset <= @total_items
               # Make the find query based on current basket and privacy level
               if @current_basket == @site_basket
-                recent_topics_items = Topic.recent.include(:versions).
+                recent_topics_items = Topic.recent.includes(:versions).
                                       offset(items_offset).limit(@recent_topics_limit).
                                       exclude_baskets_and_id(disabled_recent_topics_baskets, @topic)
               else
-                recent_topics_items = @current_basket.topics.recent.include(:versions).
+                recent_topics_items = @current_basket.topics.recent.includes(:versions).
                                       offset(items_offset).limit(@recent_topics_limit).
                                       exclude_baskets_and_id(disabled_recent_topics_baskets, @topic)
               end

@@ -192,20 +192,25 @@ class Basket < ActiveRecord::Base
     when 'number'
       find_tag_order = "taggings_count #{tag_direction}"
     else
-      find_tag_order = :random
+      find_tag_order = 'RAND()' 
+      # EOIN: this used to be :random but rails doesn't support that now (if it ever did)
+      # RAND() is mysql specific, on postgres it would be RANDOM()
     end
 
+    tag_options = {
+      :select => 'tags.id, tags.name, count(taggings.id) AS taggings_count',
+      :joins => 'INNER JOIN taggings ON (tags.id = taggings.tag_id)',
+      :group => 'taggings.tag_id',
+      :order => find_tag_order,
+      :limit => tag_limit,
+      :offset => (((options[:page] || 1) - 1) * tag_limit),
+      :conditions => "taggings.context = 'public_tags'"
+    }
+    tag_options[:conditions] = "taggings.context IN ('public_tags', 'private_tags')" if private_tags
+    tag_options[:conditions] += " AND taggings.basket_id = #{self.id}" unless self == @@site_basket
 
-    tags = Tag.select('tags.id, tags.name, count(taggings.id) AS taggings_count').
-      joins( 'INNER JOIN taggings ON (tags.id = taggings.tag_id)').
-      group( 'taggings.tag_id').
-      order( find_tag_order).
-      limit( tag_limit).
-      offset( (((options[:page] || 1) - 1) * tag_limit) ).
-      where( tag_publicity_conditions(private_tags) ).all
-    
     @tag_counts_array = Array.new
-    tags.each do |tag|
+    ActsAsTaggableOn::Tag.all(tag_options).each do |tag|
       @tag_counts_array << {
         :id => tag.id,
         :name => tag.name,
@@ -227,10 +232,15 @@ class Basket < ActiveRecord::Base
   def tag_counts_total(options)
     private_tags = options[:allow_private] || false
 
-    Tag.select( 'distinct taggings.tag_id').
-      joins('INNER JOIN taggings ON (tags.id = taggings.tag_id)').
-      where(tag_publicity_conditions(private_tags)).
-      count(tag_options)
+    tag_options = {
+      :select => 'distinct taggings.tag_id',
+      :joins => 'INNER JOIN taggings ON (tags.id = taggings.tag_id)',
+      :conditions => "taggings.context = 'public_tags'"
+    }
+    tag_options[:conditions] = "taggings.context IN ('public_tags', 'private_tags')" if private_tags
+    tag_options[:conditions] += " AND taggings.basket_id = #{self.id}" unless self == @@site_basket
+
+    ActsAsTaggableOn::Tag.count(tag_options)
   end
 
   # attribute options methods

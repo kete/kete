@@ -220,7 +220,7 @@
                 });") %>
               <% end %>
             </div><!-- /head-search-wrapper -->
-            <%= header_links_to_baskets %>
+            <%= header_links_to_baskets.html_safe %>
           </div><!-- /header -->
         </div><!-- /header-wrapper -->
 
@@ -262,7 +262,7 @@
                           basket_index_url({ :urlified_name => @site_basket.urlified_name }),
                           :tabindex => '2', :accesskey => '1' %>
             </li>
-            <%= header_browse_links %>
+            <%= header_browse_links.html_safe %>
             <li id="header_about">
               <%= link_to_unless_current h(@about_basket.name),
                                          basket_index_url(:urlified_name => @about_basket.urlified_name),
@@ -278,7 +278,7 @@
 	    <% else -%>
               <%= content_tag('li', mail_to(SystemSetting.contact_email, t('layouts.application.contact'), :encode => "hex", :accesskey => '9', :tabindex => '2'), :id => 'header_contact') %>
 	    <% end -%>
-	    <%= header_add_links %>
+	    <%= header_add_links.html_safe %>
             <% add_basket_link = header_add_basket_link -%>
             <%= content_tag('li', add_basket_link, :id => 'header_add_basket') unless add_basket_link.blank? %>
           </ul>

@@ -10,7 +10,7 @@ module ApplicationHelper
 
   include OaiDcHelpers
 
-  include ZoomHelpers
+  # include ZoomHelpers
 
 # !! Re-enable on switch to rails 3.2:
 #  include OembedProviderHelper
@@ -738,12 +738,14 @@ module ApplicationHelper
 
   # Gets the total amount of related items for a specific zoom class
   def related_items_count_of(zoom_class)
-    (@public_item_counts[zoom_class] + @private_item_counts[zoom_class])
+    # EOIN: (@public_item_counts[zoom_class] + @private_item_counts[zoom_class])
+    0
   end
 
   # Returns true if only public items exist, else false of private ones are present
   def only_public_related_items_of?(zoom_class)
-    (@public_item_counts[zoom_class] > 0 && @private_item_counts[zoom_class] < 1)
+    # EOIN: (@public_item_counts[zoom_class] > 0 && @private_item_counts[zoom_class] < 1)
+    0
   end
 
   # Link to the related items of a certain item

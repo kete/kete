@@ -57,13 +57,13 @@ class SystemSetting
    self.setting(:default_search_class)
   end
 
-  #def self.number_of_related_things_to_display_per_type
-  #  self.setting(:number_of_related_things_to_display_per_type)
-  #end
+  def self.number_of_related_things_to_display_per_type
+   self.setting(:number_of_related_things_to_display_per_type)
+  end
 
-  #def self.number_of_related_images_to_display
-  #  self.setting(:number_of_related_images_to_display)
-  #end
+  def self.number_of_related_images_to_display
+   self.setting(:number_of_related_images_to_display)
+  end
 
   #def self.default_number_of_multiples
   #  self.setting(:default_number_of_multiples)
@@ -629,6 +629,14 @@ private
 
     def captcha_type
       "all"
+    end
+
+    def number_of_related_images_to_display
+      0
+    end
+
+    def number_of_related_things_to_display_per_type
+      0
     end
   end 
 end

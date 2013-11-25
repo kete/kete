@@ -86,7 +86,10 @@ GEM
     awesome_nested_set (2.1.6)
       activerecord (>= 3.0.0)
     awesome_print (1.2.0)
-    background (0.0.1)
+    backgroundrb-rails3 (1.1.6)
+      chronic (>= 0.2.3)
+      packet (>= 0.1.15)
+      rails (>= 3.0.0)
     builder (2.1.2)
     byebug (2.3.1)
       columnize (~> 0.3.6)
@@ -130,8 +133,6 @@ GEM
       i18n (>= 0.4.0)
       mime-types (~> 1.16)
       treetop (~> 1.4.8)
-    memcache-client (1.8.5)
-    memcached (1.7.0)
     method_source (0.8.2)
     mime-types (1.25)
     mini_exiftool (1.7.0)
@@ -237,7 +238,7 @@ DEPENDENCIES
   avatar
   awesome_nested_set (~> 2.1.6)
   awesome_print
-  background
+  backgroundrb-rails3 (~> 1.1.6)
   byebug
   chronic
   debugger
@@ -248,8 +249,6 @@ DEPENDENCIES
   http_url_validation_improved
   kete-feedzirra!
   libxml-ruby
-  memcache-client
-  memcached
   mime-types
   mini_exiftool (< 2.0.0)
   mysql
