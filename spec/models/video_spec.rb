@@ -94,11 +94,10 @@ describe Video do
         binding.pry
 
         # ROB: ERROR
-        # There is a quirk in the code in lib/flagging.rb
-        # (#revert_to_latest_unflagged_version_or_create_blank_version method)
-        # where if there is not already a version in the DB, it runs an
-        # update_attributes!. The result of this that there is an extra row
-        # created in the video_versions table that has null values.
+        # The #revert_to_latest_unflagged_version_or_create_blank_version()
+        # method in lib/flagging.rb causes a quirk in the code.
+        # If there aren't any video_versions rows in the DB, an update_attributes!
+        # is run creating an new row in the video_versions table with null values.
         expect(vid2.versions.size).to eq(2)
       end
     end
