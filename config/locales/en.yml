@@ -124,7 +124,7 @@ en:
     name: name
     new: new
     not_acceptable: "not acceptable"
-    not_acceptable_size: "is not acceptable. It should be less than {{max_size}} megabytes."
+    not_acceptable_size: "is not acceptable. It should be less than %{max_size} megabytes."
     not_available: "not available"
     only: only
     open: open
@@ -231,10 +231,10 @@ en:
       label: "Activation Code"
       title: "Enter your activation code"
     avatar_updater:
-      add_avatar: "You may designate a picture you have uploaded to the site as your portrait from {{profile_link}}."
+      add_avatar: "You may designate a picture you have uploaded to the site as your portrait from %{profile_link}."
       add_avatar_after_signup: "You may designate a picture you have uploaded to the site as your portrait after you signup."
       fetching_avatar: "Fetching avatar. "
-      gravatar_link: "This site supports {{gravatar_link}}"
+      gravatar_link: "This site supports %{gravatar_link}"
       profile_link: "your profile page"
       your_avatar: "Your Gravatar. "
     baskets:
@@ -242,7 +242,7 @@ en:
     captcha_wrapper:
       case_sensitive: "Text is case sensitive"
       security_code: "Security Code: Please enter the text from the image to the right"
-      text_captcha: "or use a {{text_captcha_link}}"
+      text_captcha: "or use a %{text_captcha_link}"
       text_captcha_link: "non-image security question"
     change_password:
       button: "Change password"
@@ -276,24 +276,24 @@ en:
       admin_details: "Please enter the default administrator account login and password to continue to configuration of the site."
       button: "Login"
       continue: "Continue"
-      forgot_password: "Forgot your password? {{forgot_password_link}}"
+      forgot_password: "Forgot your password? %{forgot_password_link}"
       forgot_password_link: "Click here"
       login: "Login:"
       missing_explaination: "Kete requires you to install the following software and restart your server."
       missing_software: "Missing Software!"
       or_enter_your_info: "or enter your information"
       password: "Password:"
-      register: "Are you registered? You will need to {{register_link}} first before you can login."
+      register: "Are you registered? You will need to %{register_link} first before you can login."
       register_link: "register"
       remember_me: "Remember me:"
-      title: "Login to {{site_name}}"
+      title: "Login to %{site_name}"
     login_form:
       admin_details: "Please enter the default administrator account login and password to continue to configuration of the site."
-      forgot_password: "Forgot your password? {{forgot_password_link}}"
+      forgot_password: "Forgot your password? %{forgot_password_link}"
       forgot_password_link: "Click here"
       login: "Login:"
       password: "Password:"
-      register: "Are you registered? You will need to {{register_link}} first before you can login."
+      register: "Are you registered? You will need to %{register_link} first before you can login."
       register_link: "register"
       remember_me: "Remember me:"
     portrait:
@@ -317,14 +317,14 @@ en:
       close_portrait_help: "Close X"
       contact_user: "Contact this user"
       contributions: "Contributions"
-      contributions_link: "Items created by or contributed to by {{user_link}}"
+      contributions_link: "Items created by or contributed to by %{user_link}"
       created: "Created:"
       current_license: "Current default license"
       drag_portraits: "Drag a new one from \"Other Portraits\" and drop it on top of the current one (requires Javascript)."
       edit: "edit"
       editing_portraits: "Editing portraits. "
       email: "Email:"
-      gravatar: "Add an avatar to your account by registering a global portrait with {{gravatar_link}}."
+      gravatar: "Add an avatar to your account by registering a global portrait with %{gravatar_link}."
       gravatar_link: gravatar.com
       license_thumbnail: "License thumbnail. "
       new_portrait: "new portrait"
@@ -333,20 +333,20 @@ en:
       other_portraits: "Other Portraits"
       pending: Pending
       portrait_description: "Portraits are a set of images you display on your profile page to users who view it. It can be your own artwork uploaded to the site, or your favorite images. The first portrait added (which can be reordered later) becomes your 'selected' portrait, that is, the one you wish to use as an avatar around the site. It will be displayed on your profile page and next to any comments you post."
-      portrait_new: "You can create a {{new_portrait_link}} by uploading a new image. Alternatively, you can go to an image you've {{uploaded_link}}, and select 'Add image to portraits' in the right sidebar."
+      portrait_new: "You can create a %{new_portrait_link} by uploading a new image. Alternatively, you can go to an image you've %{uploaded_link}, and select 'Add image to portraits' in the right sidebar."
       portrait_or_gravatar: "Alternatively, you can add a user portrait using the instructions above."
       rejected: "Rejected"
       request: "Request"
       selected_portrait: "Selected<br />Portrait"
       set_license: "Click the edit link above to set your default license."
       shift_portraits: "Use the arrow buttons to shift them around (when Javascript is off)."
-      title: "Profile of {{user_name}}"
+      title: "Profile of %{user_name}"
       uploaded_link: "uploaded before"
       user_name: "User name:"
       view_license: "(View license)"
       whats_portraits: "what's this?"
     signup:
-      agree_to: "I agree that I have read and accept the {{terms_and_conditions_link}}, {{privacy_policy_link}}, and {{house_rules_link}}."
+      agree_to: "I agree that I have read and accept the %{terms_and_conditions_link}, %{privacy_policy_link}, and %{house_rules_link}."
       button: "Sign up"
       confirm_password: "Confirm password:"
       email: "Email:"
@@ -377,8 +377,8 @@ en:
       admin_activated: "Account has been activated."
       not_activated: "Unable to activate the account.  Please check or enter manually."
     add_portrait:
-      added_portrait: "'{{portrait_title}}' has been added to your portraits."
-      failed_portrait: "'{{portrait_title}}' failed to add to your portraits."
+      added_portrait: "'%{portrait_title}' has been added to your portraits."
+      failed_portrait: "'%{portrait_title}' failed to add to your portraits."
     change_locale:
       change_permanently: " If you prefer this language permanently, please set it via your account preference."
       locale_changed: "The locale has been changed."
@@ -403,19 +403,19 @@ en:
     logout:
       logged_out: "You have been logged out."
     make_selected_portrait:
-      failed_portrait: "'{{portrait_title}}' failed to become your selected portrait."
-      made_selected: "'{{portrait_title}}' has been made your selected portrait."
+      failed_portrait: "'%{portrait_title}' failed to become your selected portrait."
+      made_selected: "'%{portrait_title}' has been made your selected portrait."
     move_portrait_higher:
-      failed_portrait: "'{{portrait_title}}' failed to move closer to the front of your portraits."
-      moved_higher: "'{{portrait_title}}' has been moved closer to the front of your portraits."
+      failed_portrait: "'%{portrait_title}' failed to move closer to the front of your portraits."
+      moved_higher: "'%{portrait_title}' has been moved closer to the front of your portraits."
     move_portrait_lower:
-      failed_portrait: "'{{portrait_title}}' failed to move closer to the end of your portraits."
-      moved_lower: "'{{portrait_title}}' has been moved closer to the end of your portraits."
+      failed_portrait: "'%{portrait_title}' failed to move closer to the end of your portraits."
+      moved_lower: "'%{portrait_title}' has been moved closer to the end of your portraits."
     redirect_if_user_portraits_arnt_enabled:
       not_enabled: "User portraits aren't enabled so you cannot use this feature."
     remove_portrait:
-      failed_portrait: "'{{portrait_title}}' failed to remove from your portraits."
-      removed_portrait: "'{{portrait_title}}' has been removed from your portraits."
+      failed_portrait: "'%{portrait_title}' failed to remove from your portraits."
+      removed_portrait: "'%{portrait_title}' has been removed from your portraits."
     reset_password:
       invalid_reset: "Sorry - That is an invalid password reset code. Please check your code and try again. (Perhaps your email client inserted a carriage return?)"
       password_mismatch: "Password mismatch"
@@ -433,21 +433,21 @@ en:
       not_reordered: "The portraits were not reordered permanently. You may only reorder portraits if they are yours.  If they are, Please try again."
       reordered: "Your portraits have been successfully reordered."
   active_scaffold:
-    ? "!="
-    : "!="
-    <: <
-    <=: <=
-    ? "="
-    : "="
-    ? ">"
-    : ">"
-    ? ">="
-    : ">="
+    # ? "!="
+    # : "!="
+    # <: <
+    # <=: <=
+    # ? "="
+    # : "="
+    # ? ">"
+    # : ">"
+    # ? ">="
+    # : ">="
     _select_: "- select -"
     _to_: " to "
     add: "Add"
     add_existing: "Add Existing"
-    add_existing_model: "Add Existing {{model}}"
+    add_existing_model: "Add Existing %{model}"
     are_you_sure: "Are you sure?"
     between: Between
     cancel: "cancel"
@@ -455,12 +455,12 @@ en:
     close: "Close"
     create: "Create"
     create_another: "Create Another"
-    create_model: "Create {{model}}"
+    create_model: "Create %{model}"
     create_new: "Create New"
-    created_model: "Created {{model}}"
+    created_model: "Created %{model}"
     customize: Customize
     delete: "Delete"
-    deleted_model: "Deleted {{model}}"
+    deleted_model: "Deleted %{model}"
     delimiter: Delimiter
     download: "Download"
     edit: "Edit"
@@ -471,7 +471,7 @@ en:
     internal_error: "Request Failed (code 500, Internal Error)"
     live_search: "Live Search"
     loading: Loading…
-    nested_for_model: "{{nested_model}} for {{parent_model}}"
+    nested_for_model: "%{nested_model} for %{parent_model}"
     next: Next
     no_entries: "No Entries"
     omit_header: "Omit Header"
@@ -484,15 +484,15 @@ en:
     remove_file: "Remove or Replace file"
     replace_with_new: "Replace With New"
     reset: "Reset"
-    revisions_for_model: "Revisions for {{model}}"
+    revisions_for_model: "Revisions for %{model}"
     saving: Saving…
     search: "Search"
     search_terms: "Search Terms"
     show: "Show"
-    show_model: "Show {{model}}"
-    udated_model: "Updated {{model}}"
+    show_model: "Show %{model}"
+    udated_model: "Updated %{model}"
     update: "Update"
-    update_model: "Update {{model}}"
+    update_model: "Update %{model}"
     version_inconsistency: "Version inconsistency - this record has been modified since you started editing it."
   activerecord:
     errors:
@@ -501,49 +501,49 @@ en:
         blank: "can't be blank"
         confirmation: "doesn't match confirmation"
         empty: "can't be empty"
-        equal_to: "must be equal to {{count}}"
+        equal_to: "must be equal to %{count}"
         even: "must be even"
         exclusion: "is reserved"
-        greater_than: "must be greater than {{count}}"
-        greater_than_or_equal_to: "must be greater than or equal to {{count}}"
+        greater_than: "must be greater than %{count}"
+        greater_than_or_equal_to: "must be greater than or equal to %{count}"
         inclusion: "is not included in the list. Are you sure entered the right type of file for what you wanted to upload?  For example, a .jpg for an image."
         invalid: "is invalid"
-        less_than: "must be less than {{count}}"
-        less_than_or_equal_to: "must be less than or equal to {{count}}"
+        less_than: "must be less than %{count}"
+        less_than_or_equal_to: "must be less than or equal to %{count}"
         not_a_number: "is not a number"
         odd: "must be odd"
         taken: "has already been taken"
-        too_long: "is too long (maximum is {{count}} characters)"
-        too_short: "is too short (minimum is {{count}} characters)"
-        wrong_length: "is the wrong length (should be {{count}} characters)"
+        too_long: "is too long (maximum is %{count} characters)"
+        too_short: "is too short (minimum is %{count} characters)"
+        wrong_length: "is the wrong length (should be %{count} characters)"
       template:
         body: "There were problems with the following fields:"
         header:
-          one: "1 error prohibited this {{model}} from being saved"
-          other: "{{count}} errors prohibited this {{model}} from being saved"
+          one: "1 error prohibited this %{model} from being saved"
+          other: "%{count} errors prohibited this %{model} from being saved"
   application_controller:
     link_related:
       added_relation: "Successfully added item relationships"
     redirect_if_current_basket_isnt_approved_for_public_viewing:
-      not_available: "The basket {{basket_name}} is not approved for public viewing"
+      not_available: "The basket %{basket_name} is not approved for public viewing"
     rescue_404:
       title: "404 Not Found"
     rescue_500:
       title: "500 Internal Server Error"
     setup_related_topic_and_zoom_and_redirect:
-      created: "{{zoom_class}} was successfully created."
-      portrait: "{{zoom_class}} was successfully created as a portrait."
-      related_item: "Related {{zoom_class}} was successfully created."
-      selected_portrait: "{{zoom_class}} was successfully created as your selected portrait."
+      created: "%{zoom_class} was successfully created."
+      portrait: "%{zoom_class} was successfully created as a portrait."
+      related_item: "Related %{zoom_class} was successfully created."
+      selected_portrait: "%{zoom_class} was successfully created as your selected portrait."
     unlink_related:
       unlinked_relation: "Successfully removed item relationships"
   application_helper:
     add_search_icon_and_default_text_to_search_box:
       more_search_options: "More search options"
     avatar_for:
-      users_avatar: "{{user_name}}'s Avatar. "
+      users_avatar: "%{user_name}'s Avatar. "
     browse_by_category_columns:
-      all_items: "All {{item_type}}"
+      all_items: "All %{item_type}"
     embedded_enabled_message:
       harvesting: "Embedded metadata will be harvested from the item's binary file to fill out any fields that match the site's settings."
     flagging_links_for:
@@ -562,12 +562,12 @@ en:
     header_links_to_baskets:
       more_baskets: more...
     kete_time_ago_in_words:
-      longer_than_a_week: "on {{date}}"
-      within_a_week: "{{time}} ago"
+      longer_than_a_week: "on %{date}"
+      within_a_week: "%{time} ago"
     link_for_rss:
       link_text: "From all types combined"
     link_to_add_item:
-      in_basket: " in {{basket_name}}"
+      in_basket: " in %{basket_name}"
     link_to_add_set_of_related_items:
       link_text: "Import Set of Related Items"
     link_to_basket_contact_for:
@@ -576,7 +576,7 @@ en:
       cancel: "cancel"
     link_to_last_stored_location:
       back_to_kete_home: "&lt;&lt; back to Kete Home"
-      back_to_stored_location: "&lt;&lt; back to '{{stored_location}}'"
+      back_to_stored_location: "&lt;&lt; back to '%{stored_location}'"
     link_to_members_of:
       members_link_text: "Members"
     link_to_membership_request_of:
@@ -591,15 +591,15 @@ en:
     link_to_preview_of:
       not_available: "not available"
     link_to_related_item_function:
-      link_text: "{{function}} an Existing Related Item"
+      link_text: "%{function} an Existing Related Item"
     link_to_related_items_of:
-      link_text: "View items related to {{item_title}}"
+      link_text: "View items related to %{item_title}"
     locale_dropdown:
       label: "Choose language"
     pending_review:
-      no_safe_version: "currently no non-disputed {{privacy_type}} versions of this item. Details of the {{privacy_type}} version of this item are not being displayed at this time."
+      no_safe_version: "currently no non-disputed %{privacy_type} versions of this item. Details of the %{privacy_type} version of this item are not being displayed at this time."
       pending: "Review Pending:"
-      reverted: "currently reverted to non-disputed {{privacy_type}} version # {{item_version}}"
+      reverted: "currently reverted to non-disputed %{privacy_type} version # %{item_version}"
     privacy_image:
       private: "private: "
     related_image_link_for:
@@ -614,7 +614,7 @@ en:
       ascending: "Ascending. "
       descending: "Descending. "
     show_comments_for:
-      comment_count: "There are {{count}} comments in this discussion."
+      comment_count: "There are %{count} comments in this discussion."
       confirm_delete: "Are you sure?"
       delete: "Delete"
       edit: "Edit"
@@ -644,7 +644,7 @@ en:
       updated: "Audio was successfully updated."
   audio_recording_model:
     not_acceptable_content_type: "is not acceptable. It should be a .mp3, .m4a, or other audio file."
-    not_acceptable_size: "is not acceptable. It should be less than {{max_size}} megabytes."
+    not_acceptable_size: "is not acceptable. It should be less than %{max_size} megabytes."
   authenticated_system_lib:
     access_denied:
       before_proceeding: "before proceeding to the next step."
@@ -677,7 +677,7 @@ en:
     logged_in: "Logged in user"
     moderate_before_approved: "moderator views before item approved"
     moderate_on_flagged: "moderation upon being flagged"
-    now_in_site_basket: "This version was in {{basket_name}} basket, but that basket has been deleted and no longer exists on the site, now this version is put in default site basket."
+    now_in_site_basket: "This version was in %{basket_name} basket, but that basket has been deleted and no longer exists on the site, now this version is put in default site basket."
     only_comments: "Only comments"
     only_details: "Only full details"
     private_item_notification_or_default:
@@ -717,14 +717,14 @@ en:
       button: "Save"
       controls: "Show/Hide Controls:"
       current_header: "Current Basket Header Image. "
-      current_inheritance: "The Site uses the <strong>{{theme_name}}</strong> theme."
+      current_inheritance: "The Site uses the <strong>%{theme_name}</strong> theme."
       font_family: "Font Family:"
       header_example: "URL for background image for the top of each page:"
       inherit: "Inherit"
       inherit_example: "Inherit this setting from the Site basket."
       new_theme: "Add new theme"
       no_themes: "No themes beyond the default are available right now."
-      screenshot_of: "Screenshot of {{theme}} theme. "
+      screenshot_of: "Screenshot of %{theme} theme. "
       show_actions_to: "Show Action Menu to:"
       show_actions_to_example: "(who can see the view, edit, history and other links)"
       show_add_links_to: "Show Add Links to:"
@@ -734,7 +734,7 @@ en:
       show_flagging_to: "Show Flagging to:"
       show_flagging_to_example: "(who can flag items)"
       theme: "Theme:"
-      title: "{{basket_name}} Appearance"
+      title: "%{basket_name} Appearance"
     basket_feeds_fields:
       add_another_feed: Add Another Feed
       how_to_remove_feed: "(to delete a feed, remove the value of the Feed URL field and save)"
@@ -747,20 +747,20 @@ en:
       no_baskets_available_description: "There are no baskets that you have access to add items to."
       no_baskets_available_try_later: "Find a basket to join, or Please try again later."
       spinner_working: "Working... "
-      that_relates_to: "that relates to {{item_title}}"
+      that_relates_to: "that relates to %{item_title}"
       what_to_add: "What would you like to add"
       where_to_add: "Where would you like to add it?"
     edit:
       accept: "Accept basket"
       currently_rejected: "(currently rejected)"
       reject: "Reject basket"
-      title: "{{basket_name}} Edit"
+      title: "%{basket_name} Edit"
       update: "Update"
     form:
       admin_contact: "Administrator contact?"
       admin_contact_disabled_example: "Users will not be able to contact administrators."
       admin_contact_enabled_example: "A link will be provided that allows users to send a message to administrators."
-      admin_contain_current_inheritance: "The Site has <strong>{{current_inheritance}}</strong> use of the administrator contact form."
+      admin_contain_current_inheritance: "The Site has <strong>%{current_inheritance}</strong> use of the administrator contact form."
       browse_order: "Default Browse Results Order:"
       browse_order_default: "use software default"
       browse_order_in_reverse: "in reverse?"
@@ -770,14 +770,14 @@ en:
       comment_control: "Who can add, edit and update comments on items?:"
       comment_control_allows: "allows"
       comment_control_anyone: "Anyone logged in"
-      comment_control_current_inheritance: "The Site <strong>{{current_inheritance}}</strong> non basket members to post comments"
+      comment_control_current_inheritance: "The Site <strong>%{current_inheritance}</strong> non basket members to post comments"
       comment_control_members: "Only basket members"
       comment_control_not_allows: "doesn't allow"
       disabled: "Disabled"
       doesnt_inherit: "(this setting does not inherit to other baskets)"
       enabled: "Enabled"
       file_privacy: "Default Original File Privacy:"
-      file_privacy_current_inheritance: "The Site has files <strong>{{current_inheritance}}</strong> by default"
+      file_privacy_current_inheritance: "The Site has files <strong>%{current_inheritance}</strong> by default"
       file_privacy_example: "You may use this to restrict the download of an item's original file.  For example, you may set a document to be 'public' and show the information about it, but limit downloading the actual document file to basket members.  Note this applies across all versions of an item."
       file_privacy_private_example: "can be downloaded only by authorized basket members"
       file_privacy_public_example: "can be downloaded by everyone"
@@ -789,13 +789,13 @@ en:
       inherit_example: "Inherit this setting from the Site basket."
       isnt_inherited: "(this setting is not inherited from site basket)"
       item_privacy: "Default Item Privacy:"
-      item_privacy_current_inheritance: "The Site has items <strong>{{current_inheritance}}</strong> by default"
+      item_privacy_current_inheritance: "The Site has items <strong>%{current_inheritance}</strong> by default"
       item_privacy_private_example: "can be viewed only by basket members"
       item_privacy_public_example: "can be viewed by everyone"
       join_policy: "Join Policy:"
       join_policy_closed: "Closed Membership"
       join_policy_closed_example: "Closed basket Membership. Members have to be added by basket Administrators manually."
-      join_policy_current_inheritance: "The Site has basket membership <strong>{{current_inheritance}}</strong> by default"
+      join_policy_current_inheritance: "The Site has basket membership <strong>%{current_inheritance}</strong> by default"
       join_policy_open: "Open Membership"
       join_policy_open_example: "Enable Open basket Membership. Anyone can join this basket with one click."
       join_policy_request: "Request Membership"
@@ -806,7 +806,7 @@ en:
       moderation: "Moderation Policy:"
       name: "Name:"
       privacy_controls: "Privacy Controls:"
-      privacy_controls_current_inheritance: "The Site has <strong>{{current_inheritance}}</strong> Privacy Controls"
+      privacy_controls_current_inheritance: "The Site has <strong>%{current_inheritance}</strong> Privacy Controls"
       privacy_controls_disabled_example: "Disable Privacy Controls if members can only create publicly readable items."
       privacy_controls_enabled_example: "Enable Privacy Controls if members of this basket can have both items that are readable by the public at large AND items that are only readable by themselves."
       privacy_controls_site_basket: "This baskets browsing controls are left enabled if any other baskets have privacy controls turned on (for site-wide private search)"
@@ -849,12 +849,12 @@ en:
       current_homepage: "Current homepage topic:"
       link_homepage: "Link to new basket homepage topic"
       new_homepage: "Add new basket homepage topic"
-      title: "{{basket_name}} Homepage Options"
+      title: "%{basket_name} Homepage Options"
     list:
       all: "all"
       options: Options
-      rejected: "{{rejected_num}} rejected"
-      requests: "{{request_num}} requests"
+      rejected: "%{rejected_num} rejected"
+      requests: "%{request_num} requests"
       sort_by_created_at: "Created"
       sort_by_name: "Name"
       title: "baskets"
@@ -873,16 +873,16 @@ en:
       email_link: "this Contact link"
       login_link: "logging in"
       part1: "We're sorry, but access to the page you requested is restricted. Here are some possible ways you may proceed:"
-      part2: "If you are using a shared computer, make sure you're logged in with the account that has access to this area. Try {{login_link}} again before revisiting the page."
-      part3: "You can join, or apply to join, the basket by visiting the {{basket_join_link}}. If joins need to be approved, you'll receive an email when you're let in. Otherwise, you should be able to access the basket content instantly."
-      part4: "If you should have permission to access this part of the site, you can try {{basket_contact_link}}"
-      part5: "Use {{email_link}} to email a site administrator to report the issue. Please specify that what page you tried to access in the email."
+      part2: "If you are using a shared computer, make sure you're logged in with the account that has access to this area. Try %{login_link} again before revisiting the page."
+      part3: "You can join, or apply to join, the basket by visiting the %{basket_join_link}. If joins need to be approved, you'll receive an email when you're let in. Otherwise, you should be able to access the basket content instantly."
+      part4: "If you should have permission to access this part of the site, you can try %{basket_contact_link}"
+      part5: "Use %{email_link} to email a site administrator to report the issue. Please specify that what page you tried to access in the email."
       part6: "Or simply proceed on to another page via the Browse or Search functions at the top of this page."
       thank_you: "Thank you,"
       title: "Permission Denied"
     rss:
       description: "Latest baskets"
-      title: "{{site_name}} - Latest {{amount}} baskets"
+      title: "%{site_name} - Latest %{amount} baskets"
     rss_feed:
       in_minutes: "in minutes"
       limit: "Display Limit:"
@@ -909,7 +909,7 @@ en:
     redirect_if_current_user_cant_add_or_request_basket:
       not_authorized: "You need to have the right permissions to add or request a basket"
     update:
-      feed_problem: "there was a problem adding your feeds. {{error}}"
+      feed_problem: "there was a problem adding your feeds. %{error}"
       updated: "Basket was successfully updated."
     update_appearance:
       sanitized: "Your submitted footer content was changed for security reasons."
@@ -936,13 +936,13 @@ en:
       security_warning: "Note: forms and javascript are not allowed for security reasons."
       security_warning_admin: "Unless you check the box below."
       security_warning_exception: "Allow forms and other possible insecure elements and attributes in the HTML?"
-      skip_email_notification: "Skip email notification to other {{role_type}} for this private comment?"
+      skip_email_notification: "Skip email notification to other %{role_type} for this private comment?"
       tags: "Tags (separated by commas)"
       tags_spinner: "Getting tags. "
       title: "Title:"
     new:
       button: "Save"
-      in_response_to: "In response to {{user_name}}"
+      in_response_to: "In response to %{user_name}"
       title: "New discussion"
       view_original: "(view original)"
   comments_controller:
@@ -969,7 +969,7 @@ en:
       installation_complete: "Installation complete"
       link_site_later: "You may do this later by visiting the Administrator's Toolbox and using the \"List site on Kete.net.nz\" link."
       missing_software: "Missing Software:"
-      missing_software_gem: "{{gem_name}} gem"
+      missing_software_gem: "%{gem_name} gem"
       must_restart: "Before you continue, you must restart the kete application server and start backgroundrb!"
       prime_search_engine: "Prime Search Engine"
       regular_options: "Regular Options"
@@ -985,12 +985,12 @@ en:
       settings_title: Settings
       setup_search_engine: "set up Search Engine"
       setup_site: "Before your new site is ready, you'll need to fill out some details, change some passwords, restart your server, prime the search engine, and then reload this page."
-      show: "Show {{show_link}}"
-      show_only: "Show only {{show_link}}"
+      show: "Show %{show_link}"
+      show_only: "Show only %{show_link}"
       site_configured: "Congratulations!  Your Kete site is configured and ready to be viewed. Click 'Reload Site' to move on to customising your Kete's content to suit."
       title: Configure
     link_to_site:
-      already_listed: "Kete.net.nz already lists the site. You can see details at {{listing_link}}."
+      already_listed: "Kete.net.nz already lists the site. You can see details at %{listing_link}."
       completed: "Completed. "
       description: "Would you like to send your site name, site url and a short description of your site for to a public list of Kete installations?"
       send_information: "Send Information"
@@ -1024,7 +1024,7 @@ en:
       not_yet_completed: "Not yet completed."
     get_site_linking_progress:
       incorrect_fields: "Some fields were incorrect:"
-      site_registered: "Your Kete installation has been registered. Thank you.<br />You can view the whole directory of Kete sites at <a href='{{kete_sites_link}}'>{{kete_sites_link}}</a>."
+      site_registered: "Your Kete installation has been registered. Thank you.<br />You can view the whole directory of Kete sites at <a href='%{kete_sites_link}'>%{kete_sites_link}</a>."
     prime_zebra:
       primed_zebra: "Search Engine has been primed."
     restart_server:
@@ -1051,7 +1051,7 @@ en:
       update_fields: "Update form"
     edit:
       return_to_content_types: "Return to content types"
-      title: "Editing content type: {{controller}}"
+      title: "Editing content type: %{controller}"
     form:
       class_name: "Class Name"
       controller: Controller
@@ -1116,7 +1116,7 @@ en:
       long: "%B %d, %Y"
       short: "%b %d"
     month_names:
-      - ~
+      # - ~
       - January
       - February
       - March
@@ -1129,43 +1129,43 @@ en:
       - October
       - November
       - December
-    order:
-      - !ruby/symbol year
-      - !ruby/symbol month
-      - !ruby/symbol day
+    # order:
+    #   - !ruby/symbol year
+    #   - !ruby/symbol month
+    #   - !ruby/symbol day
   datetime:
     distance_in_words:
       about_x_hours:
         one: "about 1 hour"
-        other: "about {{count}} hours"
+        other: "about %{count} hours"
       about_x_months:
         one: "about 1 month"
-        other: "about {{count}} months"
+        other: "about %{count} months"
       about_x_years:
         one: "about 1 year"
-        other: "about {{count}} years"
+        other: "about %{count} years"
       half_a_minute: "half a minute"
       less_than_x_minutes:
         one: "less than a minute"
-        other: "less than {{count}} minutes"
+        other: "less than %{count} minutes"
       less_than_x_seconds:
         one: "less than 1 second"
-        other: "less than {{count}} seconds"
+        other: "less than %{count} seconds"
       over_x_years:
         one: "over 1 year"
-        other: "over {{count}} years"
+        other: "over %{count} years"
       x_days:
         one: "1 day"
-        other: "{{count}} days"
+        other: "%{count} days"
       x_minutes:
         one: "1 minute"
-        other: "{{count}} minutes"
+        other: "%{count} minutes"
       x_months:
         one: "1 month"
-        other: "{{count}} months"
+        other: "%{count} months"
       x_seconds:
         one: "1 second"
-        other: "{{count}} seconds"
+        other: "%{count} seconds"
     prompts:
       day: Day
       hour: Hour
@@ -1175,7 +1175,7 @@ en:
       year: Year
   document_model:
     not_acceptable_content_type: "is not acceptable. It should be a .pdf, .doc, or other document file."
-    not_acceptable_size: "is not acceptable. It should be less than {{max_size}} megabytes."
+    not_acceptable_size: "is not acceptable. It should be less than %{max_size} megabytes."
   documents:
     details:
       filename: "Filename:"
@@ -1196,7 +1196,7 @@ en:
   email:
     contact:
       send: "Send"
-      title: "Contact {{recipient}}"
+      title: "Contact %{recipient}"
     contact_form:
       email_shared: "Note: Your email address will be shown to the person/people who receive this email."
       message: "Message:"
@@ -1293,31 +1293,31 @@ en:
           <h3>Thanks and once again sorry for the inconvenience.</h3>
   extended_content_lib:
     validate_extended_checkbox_field_content:
-      must_be_valid: "{{label}} must be a valid checkbox value (Yes or No)"
+      must_be_valid: "%{label} must be a valid checkbox value (Yes or No)"
     validate_extended_choice_field_content:
-      must_be_valid: "{{label}} must be a valid choice"
+      must_be_valid: "%{label} must be a valid choice"
     validate_extended_content_multiple_values:
-      need_at_least_one: "{{label}} must have at least one value"
+      need_at_least_one: "%{label} must have at least one value"
     validate_extended_content_single_value:
-      cannot_be_blank: "{{label}} cannot be blank"
+      cannot_be_blank: "%{label} cannot be blank"
     validate_extended_date_field_content:
-      must_be_valid: "{{label}} must be in the standard date format (YYYY-MM-DD)"
+      must_be_valid: "%{label} must be in the standard date format (YYYY-MM-DD)"
     validate_extended_topic_type_field_content:
-      must_be_valid: "{{label}} found the topic, but it is not a type of {{topic_type}}, nor one of it's sub-types."
-      no_such_topic: "{{label}} couldn't find the topic. Must be in the format of 'topic title (URL)?'"
+      must_be_valid: "%{label} found the topic, but it is not a type of %{topic_type}, nor one of it's sub-types."
+      no_such_topic: "%{label} couldn't find the topic. Must be in the format of 'topic title (URL)?'"
     validate_extended_year_field_content:
-      must_be_valid: "{{label}} must be in the standard year format (YYYY)"
-      not_a_hash: "{{label}} data expected to be Hash, but was {{class}} containing {{value}}. Why?"
+      must_be_valid: "%{label} must be in the standard year format (YYYY)"
+      not_a_hash: "%{label} data expected to be Hash, but was %{class} containing %{value}. Why?"
   extended_field_model:
-    already_used: ": labels of {{invalid_label_names}} aren't allowed because they already used be default"
-    invalid_chars: ": the following characters aren't allowed - {{invalid_chars}}"
+    already_used: ": labels of %{invalid_label_names} aren't allowed because they already used be default"
+    invalid_chars: ": the following characters aren't allowed - %{invalid_chars}"
     label_cant_have: "cannot be Form, Script, or Input because they are reserved words"
     no_spaces: ": spaces aren't allowed"
   extended_fields:
     choice_autocomplete_editor:
-      sub_setting: " Sub-{{field_name}}: "
+      sub_setting: " Sub-%{field_name}: "
     choice_select_editor:
-      sub_setting: " Sub-{{field_name}}: "
+      sub_setting: " Sub-%{field_name}: "
   extended_fields_controller:
     available_choices: "Available choices"
     available_choices_description: "Ftype must be a \"choices\" option for these options to be available to users."
@@ -1331,7 +1331,7 @@ en:
     topic_type_choices_description: "Ftype must be a \"Pre-populated Choices (topic type)\" option for these options to be available to users."
   extended_fields_helper:
     additional_extended_field_control:
-      add_another: "Add another {{field_name}}"
+      add_another: "Add another %{field_name}"
     children_form_column:
       need_choice_for_children: "You cannot select child choices until the choice has been created."
       add_more_sub_choices: "add more sub-choices"
@@ -1340,7 +1340,7 @@ en:
       getting_choices: "Getting choices. "
     extended_field_choice_select_editor:
       getting_choices: "Getting choices. "
-      suggest_a: "OR suggest a {{field_name}}"
+      suggest_a: "OR suggest a %{field_name}"
     extended_field_radio_editor:
       no: "No"
       no_value: "No value"
@@ -1380,28 +1380,28 @@ en:
       link_choice_values_yes: "Yes"
   field_mappings_controller:
     create:
-      created: "{{item_class}} was successfully created."
+      created: "%{item_class} was successfully created."
     destroy:
-      destroyed: "{{item_class}} was successfully deleted."
+      destroyed: "%{item_class} was successfully deleted."
     remove_mapping:
-      being_used: "The {{field_label}} mapping is in use by this {{item_class}} or its descendants and cannot be deleted."
-      removed: "The {{field_label}} mapping has been deleted."
+      being_used: "The %{field_label} mapping is in use by this %{item_class} or its descendants and cannot be deleted."
+      removed: "The %{field_label} mapping has been deleted."
     update:
-      updated: "{{item_class}} was successfully updated."
+      updated: "%{item_class} was successfully updated."
   flagging_controller_lib:
     flag_version:
       item_flagged: "Thank you for your input.  A moderator has been notified and will review the item in question. The item has been reverted to a non-contested version for the time being."
     preview:
-      no_public: "There is currently no public version of this {{controller}} available."
+      no_public: "There is currently no public version of this %{controller} available."
     reject:
-      rejected: "This version of this {{zoom_class}} has been rejected.  The user who submitted the revision will be notified by email."
+      rejected: "This version of this %{zoom_class} has been rejected.  The user who submitted the revision will be notified by email."
     restore:
-      approved: "The content of this {{zoom_class}} has been approved from the selected revision."
-      made_live: "Your contribution to {{site_name}} in {{basket_name}} has been made the live version."
+      approved: "The content of this %{zoom_class} has been approved from the selected revision."
+      made_live: "Your contribution to %{site_name} in %{basket_name} has been made the live version."
       missing_details: "The version you're reverting to is missing some compulsory content. Please contribute the missing details before continuing. You may need to contact the original author to collect additional information."
-      version_comment: "Content from revision # {{version}}."
+      version_comment: "Content from revision # %{version}."
     review:
-      reviewed: "This version of the {{zoom_class}} has been marked as reviewed."
+      reviewed: "This version of the %{zoom_class} has been marked as reviewed."
   gmaps4rails:
     gmaps4rails:
       need_javascript: "javascript needs to be on to use Google Maps"
@@ -1417,7 +1417,7 @@ en:
       need_javascript: "javascript needs to be on to use Google Maps"
       no_location: "don't record a location"
       search_for_location: "To set click on map, drag pin, or"
-      search_for_location_placeholder: "search for {{field_label}}"
+      search_for_location_placeholder: "search for %{field_label}"
       show_lat_lng: "Show Latitude/Longitude"
       zoom_lvl: "Zoom level for map:"
     set_display_state_for:
@@ -1430,17 +1430,17 @@ en:
       something_went_wrong: "Error: Something has happened. Please try again."
       something_went_wrong_602: "Error: Something has happened.<br />Google Maps cannot determine the location where you placed the marker.<br />Try repositioning it nearer to a road."
     validate_extended_map_field_content:
-      not_a_hash: "is not an hash containing zoom_lvl, no_map, coords, and optional address. Currently {{class}} {{value}}. Why?"
-      not_present_optional: "{{label}} is not present. If you don't want to include one, select 'don't record a location'."
-      not_present_required: "{{label}} is not present. This field is required so you must enter something before saving."
-      wrong_format: "is not in the right format (zoom (>=0), coords (lat,lng), no_map (0|1), address (string)). Currently {{class}} {{value}}. Why?"
+      not_a_hash: "is not an hash containing zoom_lvl, no_map, coords, and optional address. Currently %{class} %{value}. Why?"
+      not_present_optional: "%{label} is not present. If you don't want to include one, select 'don't record a location'."
+      not_present_required: "%{label} is not present. This field is required so you must enter something before saving."
+      wrong_format: "is not in the right format (zoom (>=0), coords (lat,lng), no_map (0|1), address (string)). Currently %{class} %{value}. Why?"
   has_contributors_lib:
     submitter_of:
       data_corruption: "Possible data corruption. You should consider running rake kete:repair."
-      no_contributor: "It looks like there is no contributor associated with version {{version}} of {{item_class}} {{item_id}}."
+      no_contributor: "It looks like there is no contributor associated with version %{version} of %{item_class} %{item_id}."
   image_file_model:
     not_acceptable_content_type: "is not acceptable. It should be a .jpg, .gif, or other image file."
-    not_acceptable_size: "is not acceptable. It should be less than {{max_size}} megabytes."
+    not_acceptable_size: "is not acceptable. It should be less than %{max_size} megabytes."
     unparsable_content_type: "was accepted, but Kete had difficulty extracting the height and width of the image. Please try a different image format."
   images:
     details:
@@ -1471,7 +1471,7 @@ en:
     update:
       updated: "Image was successfully updated."
   import_model:
-    invalid_chars: ": the following characters aren't allowed - {{invalid_chars}}"
+    invalid_chars: ": the following characters aren't allowed - %{invalid_chars}"
     must_be_seconds: "the interval must be in seconds"
   importer_lib:
     do_work:
@@ -1503,7 +1503,7 @@ en:
        public: "Public"
        public_description: "(can be viewed by everyone)"
        downloaded_by_everyone: "can be downloaded by everyone"
-       downloaded_by_role: "Can only be downloaded by people who have {{role_name}} access."
+       downloaded_by_role: "Can only be downloaded by people who have %{role_name} access."
        imported_items_file_privacy: "Imported Items Attached file privacy"
        imported_items_file_privacy_example: "Please note that once public, an attached file cannot be made private."
        tags: "What tags should we add to each imported item (separated by commas)?"
@@ -1519,7 +1519,7 @@ en:
       in_progress: "...in progress."
       starting_import: "Starting import..."
       stop_early: "Stop Import Early"
-      title: "Import from {{location}}"
+      title: "Import from %{location}"
     list:
       as_of: "as of"
       description: "This is the import facility. Using it you can import content into this basket that has been exported from supported systems such as Past Perfect."
@@ -1571,10 +1571,10 @@ en:
       xml_path_to_records_description: "What is the XML element path that specifies each record? For example 'Root/Record'.  For RSS 2.0, this would be 'rss/channel/item'."
     new_related_set_from_archive_file:
       add_related: "Add Related Items"
-      archive_limit: "The largest archive file you may upload is {{size}}.  You may want to scale down your items to be more reasonable sized to add to the site and recreate your archive file."
+      archive_limit: "The largest archive file you may upload is %{size}.  You may want to scale down your items to be more reasonable sized to add to the site and recreate your archive file."
       edit_after_import: "Alternatively, you may also edit any uploaded item's title or other details after it has been added to the site."
       folder_containing_items: "The archive file should be of a folder containing the items to be added.  Please do not uses spaces in the folder name and name the archive file after the folder.  For example \"the_images\" folder would become the \"the_images.zip\" archive file."
-      title: "Add related set of items to {{related_topic_title}} from uploaded archive file"
+      title: "Add related set of items to %{related_topic_title} from uploaded archive file"
       title_from_filename: "The title for the uploaded items will be based on the file's name as it was before it was added to the compressed archive file.  If you want a different title for the item you may to rename the file in question and recreate the archive file before you proceed."
       title_from_metadata: "If the title is in an item's embedded metadata it will be used as long as it is labeled 'Title' or one of the following:"
       title_from_metadata_or: OR
@@ -1587,10 +1587,10 @@ en:
       already_running: "There is another import of this type running at this time.  Please try again later."
     get_progress:
       all_processed: "All records processed."
-      amount_processed: "{{records_processed}} records processed"
-      back_to: "back to {{item_title}}"
-      error_message: "There was a problem with the import: {{error}}<p><b>The import has been stopped</b></p>"
-      import_failed: "Import failed. {{error}}"
+      amount_processed: "%{records_processed} records processed"
+      back_to: "back to %{item_title}"
+      error_message: "There was a problem with the import: %{error}<p><b>The import has been stopped</b></p>"
+      import_failed: "Import failed. %{error}"
       not_running: "import worker not running anymore?"
       to_imports: "back to Imports"
       to_related_topics: "Return to related topic."
@@ -1604,7 +1604,7 @@ en:
     index:
       all_tags: "all"
       categories_title: Categories
-      comments: "{{count}} comments"
+      comments: "%{count} comments"
       contents_by_type: "Contents by type"
       continue_to_topic: "Click here to continue to topic and its links"
       create_homepage_topic: "Create basket homepage"
@@ -1613,17 +1613,17 @@ en:
       image_from_archive: "Image from the Archive"
       keyword_search: "Keyword Search"
       latest: "Latest"
-      show_x_of_x: "showing {{count}} of {{total}}"
+      show_x_of_x: "showing %{count} of %{total}"
       tags_title: "Tags"
       topic: "topic"
       topics: "topics"
       view: "View "
     post_headline:
       read_more: "read more &gt;&gt;"
-      read_more_about: "Read More about {{post_title}}"
+      read_more_about: "Read More about %{post_title}"
     post_summary:
       read_more: "read more &gt;&gt;"
-      read_more_about: "Read More about {{post_title}}"
+      read_more_about: "Read More about %{post_title}"
     selected_image:
       next_image: "Next Image. "
       play_pause_slideshow: "Play/Pause Slideshow. "
@@ -1637,7 +1637,7 @@ en:
       accessibility: Accessibility
       add_link: "list site on Kete.net.nz"
       all_baskets: "all baskets"
-      basket_label: "Tools for basket: {{basket}}"
+      basket_label: "Tools for basket: %{basket}"
       basket_profiles: "basket profiles"
       choices: "choices for extended fields"
       combined_rss: "RSS feed for all items on site"
@@ -1656,8 +1656,8 @@ en:
       members: "members"
       moderate: "moderate contents"
       my_baskets: "my baskets"
-      new_search_value: "New Search of {{search_location_name}}"
-      new_search_value_within: "New Search within {{search_location_name}}"
+      new_search_value: "New Search of %{search_location_name}"
+      new_search_value_within: "New Search within %{search_location_name}"
       oai_pmh: "OAI PMH Sets"
       preferences: preferences
       rebuild: "Rebuild search databases"
@@ -1666,8 +1666,8 @@ en:
       search_button: Go
       search_label: "Search"
       search_sources: "search sources"
-      search_value: "Search {{search_location_name}}"
-      search_value_within: "Search within {{search_location_name}}"
+      search_value: "Search %{search_location_name}"
+      search_value_within: "Search within %{search_location_name}"
       site_members: "site members"
       sitemap: Sitemap
       support: "Support:"
@@ -1706,17 +1706,17 @@ en:
       moderator: "moderator"
       moderators: "moderators"
       or: or
-      rejected: "{{count}} rejected"
+      rejected: "%{count} rejected"
       request: "request"
       requests: "requests"
       site_admin: "site administrator"
       site_admins: "site administrators"
       tech_admin: "technical administrator"
       tech_admins: "technical administrators"
-      title: "{{basket_name}} Members"
+      title: "%{basket_name} Members"
       user_name: "User name"
     list_members_in:
-      current_no_users_of_type: "Currently no {{listing_type}}"
+      current_no_users_of_type: "Currently no %{listing_type}"
       search_button: "Search"
       search_for_members: "Search for new members"
     potential_new_members:
@@ -1724,8 +1724,8 @@ en:
       no_members: "No potential members are available."
       title: "Potential New Members"
     rss:
-      description: "Members of {{basket_name}}"
-      title: "{{site_name}} - {{basket_name}} - Latest 50 Members"
+      description: "Members of %{basket_name}"
+      title: "%{site_name} - %{basket_name} - Latest 50 Members"
   members_controller:
     add_members:
       added_plural: "Successfully added new members."
@@ -1740,15 +1740,15 @@ en:
       made_tech_admin: "User has been made technical administrator."
       need_site_admin: "Unable to have no site administrators."
     change_request_status:
-      accepted: "{{user_name}}'s membership request has been accepted."
-      rejected: "{{user_name}}'s membership request has been rejected."
+      accepted: "%{user_name}'s membership request has been accepted."
+      rejected: "%{user_name}'s membership request has been rejected."
     destroy:
-      destroyed: "{{user_name}} has been deleted from the site."
-      has_contributions: "{{user_name}} has contributions and cannot be deleted from the site. Perhaps a ban instead?"
+      destroyed: "%{user_name} has been deleted from the site."
+      has_contributions: "%{user_name} has contributions and cannot be deleted from the site. Perhaps a ban instead?"
       need_site_admin: "Unable to have no site administrators."
     join:
       already_joined: "You already have a role in this basket or you have already applied to join."
-      joined: "You have joined the {{basket_name}} basket."
+      joined: "You have joined the %{basket_name} basket."
       not_open: "This basket isn't currently accepting join requests."
       requested: "A basket membership request has been sent. You will get an email when it is approved."
     list_members_in:
@@ -1767,7 +1767,7 @@ en:
     remove:
       cant_remove_self: "You cannot remove yourself from the Site basket."
       need_site_admin: "Unable to have no basket administrators."
-      removed: "Successfully removed user from {{basket_name}}."
+      removed: "Successfully removed user from %{basket_name}."
     unban:
       unbanned: "Successfully removed ban on user."
   members_helper:
@@ -1789,7 +1789,7 @@ en:
       title: "Moderate"
     rss:
       description: "Items needing moderation"
-      title: "{{site_name}} - {{basket_name}} - Moderate"
+      title: "%{site_name} - %{basket_name} - Moderate"
   number:
     currency:
       format:
@@ -1826,23 +1826,23 @@ en:
     not_available: "OAI PMH Repository not available at this time."
     title: "Oai Pmh Repository"
   oai_pmh_repository_set_model:
-    invalid_chars: ": the following characters aren't allowed - {{invalid_chars}}"
+    invalid_chars: ": the following characters aren't allowed - %{invalid_chars}"
   oai_pmh_repository_sets_controller:
     title: "Oai Pmh Repository Sets"
   previous_searches_lib:
     short_search_title_from_params:
-      contributor: "by {{contributor_name}}"
-      date_since: "since {{since}}"
-      date_until: "until {{until}}"
-      extended_field: "{{extended_field}}"
+      contributor: "by %{contributor_name}"
+      date_since: "since %{since}"
+      date_until: "until %{until}"
+      extended_field: "%{extended_field}"
       in_reverse: "in reverse"
-      limit_to_choice: "{{choice_name}}"
-      search_terms: "for {{search_terms}}"
-      sort_type: "sorted by {{sort_type}}"
-      source_item: "related to {{source_item_name}}"
-      tag: "tagged {{tag_name}}"
-      topic_type: "of type {{topic_type_name}}"
-      type_and_basket: "{{all}} {{privacy}} {{item_type}} in {{basket_name}}"
+      limit_to_choice: "%{choice_name}"
+      search_terms: "for %{search_terms}"
+      sort_type: "sorted by %{sort_type}"
+      source_item: "related to %{source_item_name}"
+      tag: "tagged %{tag_name}"
+      topic_type: "of type %{topic_type_name}"
+      type_and_basket: "%{all} %{privacy} %{item_type} in %{basket_name}"
   privacy_controls_helper:
     privacy_controls_description:
       public_vs_private: "Note: Individual versions of this item can be public or private. The latest public version will be shown to non-basket members if available.  Otherwise, this item is completely private."
@@ -1852,7 +1852,7 @@ en:
     unauthorized: "Error 401: Unauthorized"
   profile_model:
     all_form_types_have_rule_type:
-      missing_rules_types: "The following forms are missing a rule type: {{missing}}"
+      missing_rules_types: "The following forms are missing a rule type: %{missing}"
       no_rules_submitted: "No profile rules have been submitted. Try again."
     rules:
       all: "All."
@@ -1867,7 +1867,7 @@ en:
       additional_footer_content: "Additional Footer Content:"
       additional_footer_content_do_not_sanitize: "Allow forms and other possible insecure elements and attributes in the HTML?"
       additional_footer_content_replace: "replace existing footer with above content?"
-      additional_footer_content_replace_description: "If checked, the above footer will totally replace the bottom of each page.  If you would rather it appear above the "Accessibility | Sitemap | back to Content" links, rather than replace them, leave this unchecked."
+      additional_footer_content_replace_description: "If checked, the above footer will totally replace the bottom of each page.  If you would rather it appear above the \"Accessibility | Sitemap | back to Content\" links, rather than replace them, leave this unchecked."
       basket_list_menu_options: "Basket List Menu Options:"
       basket_list_menu_options_description: "These settings only take effect if the basket list navigation menu is on in your template."
       font_family: "Font Family:"
@@ -1889,7 +1889,7 @@ en:
       sort_menu_by: "sort by:"
       sort_menu_in_reverse: "in reverse?"
       theme: "Theme:"
-      theme_alt: "Screenshot of {{theme}} theme. "
+      theme_alt: "Screenshot of %{theme} theme. "
     edit:
       administrator_contact: "Administrator contact?"
       allow_non_member_comment: "Who can add, edit and update comments on items?:"
@@ -1932,7 +1932,7 @@ en:
       archives: "Archives"
       archives_description: "List baskets archive contents as?"
       dont_redirect: "Don't redirect"
-      go_to_browse: "Go directly to "browse" options"
+      go_to_browse: "Go directly to \"browse\" options"
       go_to_browse_description: "Redirect to results of?"
       homepage_topic: "Homepage Topic"
       how_many_recent_topics: "List how many recent topics?"
@@ -1966,9 +1966,9 @@ en:
       all: "All "
       results_in: "Results in "
     for:
-      current_search: " for your search '{{search_terms}}'"
-      refine_search: "Refine your search for '{{search_terms}}' searching in {{basket_link}}"
-      refinements: " and {{refinements}}"
+      current_search: " for your search '%{search_terms}'"
+      refine_search: "Refine your search for '%{search_terms}' searching in %{basket_link}"
+      refinements: " and %{refinements}"
       results_in: "Results in "
       whole_site: " whole site"
     form:
@@ -1986,7 +1986,7 @@ en:
       update_results: "update"
     generic:
       more: "more &gt;&gt;"
-      more_on: "More information on {{title}}"
+      more_on: "More information on %{title}"
     homepage_topic_form:
       change_homepage_topic: "Change Homepage Topic"
       close: "Close"
@@ -1998,10 +1998,10 @@ en:
       title: "Change Homepage Topic"
     image:
       more: "more &gt;&gt;"
-      more_on: "More information on {{title}}"
+      more_on: "More information on %{title}"
       view_image: "View Image"
     index:
-      title: "Search {{basket_name}}"
+      title: "Search %{basket_name}"
     link_related:
       linked: "Linked successfully"
     list:
@@ -2010,7 +2010,7 @@ en:
       title: "Previous Searches"
     mini_controls:
       about_a: "about a"
-      all_of: "All of {{site_basket_name}}"
+      all_of: "All of %{site_basket_name}"
       and: "And"
       any_topic_type: "- any topic type - "
       categorised: "categorised"
@@ -2034,7 +2034,7 @@ en:
       completed: "Completed. "
       in_progress: "...in progress."
       starting: "Starting rebuild..."
-      title: "Zoom Index Rebuild from {{start}} to {{end}}"
+      title: "Zoom Index Rebuild from %{start} to %{end}"
     refine_by_choice:
       limit_to_category: "Limit it to category?"
     refine_by_date:
@@ -2043,38 +2043,38 @@ en:
     refine_results:
       refine: "Refine your Results"
     related:
-      more_on: "More information on {{title}}"
+      more_on: "More information on %{title}"
       title: "Related:"
     related_form:
       close: "Close"
-      executing_action: "Executing {{action}} action. "
-      function_a: "{{action}} a:"
-      no_items_found: "No {{item_class}} found"
+      executing_action: "Executing %{action} action. "
+      function_a: "%{action} a:"
+      no_items_found: "No %{item_class} found"
       search: "Search"
-      search_for: "Search for {{privacy}} {{item_class}}:"
+      search_for: "Search for %{privacy} %{item_class}:"
       search_private: "search private"
       search_public: "search public"
-      select_items: "Select which {{item_class}} to {{action}}, then click '{{action}}'."
-      title: "{{action}} related {{zoom_class_plural}}"
+      select_items: "Select which %{item_class} to %{action}, then click '%{action}'."
+      title: "%{action} related %{zoom_class_plural}"
     results:
       add_a_new: "Add a new "
       address: "Address:"
       coordinates: "Coordinates:"
       no_results_of_any_type_found: "No results of any type were found."
-      no_results_of_this_type_found: "No {{zoom_class}} results found, but there are other results:"
+      no_results_of_this_type_found: "No %{zoom_class} results found, but there are other results:"
       results_on_this_page: "results on this page"
       search_source_title: "More Resources"
       show: "Show"
-      showing_x-y_of_z: "showing {{start}}-{{finish}} results of {{total}}"
+      showing_x-y_of_z: "showing %{start}-%{finish} results of %{total}"
       view_list: "List View"
       view_map: "View on map"
-      x-y_have_z_locations: "{{start}}-{{finish}} results have {{n_locations}} locations"
+      x-y_have_z_locations: "%{start}-%{finish} results have %{n_locations} locations"
     rss:
       latest: "Latest"
       next: Next
       related: "Related:"
-      x_results_in: "{{amount}} Results in"
-      showing_x-y_of_z: "Showing {{start}} - {{end}} results of {{total}}"
+      x_results_in: "%{amount} Results in"
+      showing_x-y_of_z: "Showing %{start} - %{end} results of %{total}"
     setup_rebuild:
       all_types: "all types"
       clear_search_engine: "Clear and restart search engine first?"
@@ -2093,19 +2093,19 @@ en:
   search_controller:
     check_rebuild_status:
       all_processed: "All records processed"
-      amount_processed: "{{amount}} records processed"
+      amount_processed: "%{amount} records processed"
       browse: "Browse records"
       failed_reason: "These maybe private or pending moderation records, depending on the case. See log/backgroundrb... for details."
-      finished_at: "at {{end_time}}"
+      finished_at: "at %{end_time}"
       need_js: "You need javascript enabled for this feature."
       not_running: "rebuild worker not running anymore?"
-      rebuild_error: "There was a problem with the rebuild: {{error}}<p><b>The rebuild has been stopped</b></p>"
-      rebuild_failed: "Rebuild failed. {{error}}"
-      records_failed: "{{amount}} records failed"
-      records_skipped: "{{amount}} records skipped"
+      rebuild_error: "There was a problem with the rebuild: %{error}<p><b>The rebuild has been stopped</b></p>"
+      rebuild_failed: "Rebuild failed. %{error}"
+      records_failed: "%{amount} records failed"
+      records_skipped: "%{amount} records skipped"
       return_to_rebuild: "Return to Rebuild Set up"
-      started_at: "Started at {{start_time}}"
-      working_on: "Working on {{zoom_class}}"
+      started_at: "Started at %{start_time}"
+      working_on: "Working on %{zoom_class}"
     clear:
       previous_searches_removed: "All previous searches have been cleared."
       selected_search_removed: "The selected previous search has been removed."
@@ -2124,20 +2124,20 @@ en:
       zoom_rebuilt: "ZOOM indexes rebuilt"
   search_helper:
     contributor_show_link_options:
-      title: "More information about the contributor {{user_name}}. "
+      title: "More information about the contributor %{user_name}. "
     last_part_of_title_if_refinement_of:
-      about_a: " about a {{topic_type_name}}"
+      about_a: " about a %{topic_type_name}"
       and: " and"
-      contributed_by: " contributed by {{contributor}}"
-      date_since: " since {{date}}"
-      date_until: " until {{date}}"
-      extended_field: " with {{field_name}}"
-      limit_to_choice: " of {{choice}}"
-      privacy_type: " that are {{privacy}}"
-      related_to: " related to {{source_item}}"
-      tagged_as: " tagged as {{tag_name}}"
+      contributed_by: " contributed by %{contributor}"
+      date_since: " since %{date}"
+      date_until: " until %{date}"
+      extended_field: " with %{field_name}"
+      limit_to_choice: " of %{choice}"
+      privacy_type: " that are %{privacy}"
+      related_to: " related to %{source_item}"
+      tagged_as: " tagged as %{tag_name}"
     tag_show_link_options:
-      title: "More information about the tag {{tag_name}}. "
+      title: "More information about the tag %{tag_name}. "
   search_model:
     browse_default: "Browse Default"
     choice_hierarchy: "Choice Hierarchy"
@@ -2155,9 +2155,9 @@ en:
       search: "Search - User Inputted Search as is"
   site_linking_lib:
     error_linking_site:
-      appears_listed: "However, it appears that your site is now listed. Please check the listing to make sure it is correct at <a href='{{new_kete_site}}'>{{new_kete_site}}</a>."
+      appears_listed: "However, it appears that your site is now listed. Please check the listing to make sure it is correct at <a href='%{new_kete_site}'>%{new_kete_site}</a>."
       error_occured: "There was an error linking to your site. "
-      manual_linking: "You can do it manually at <a href='{{new_kete_site}}'>{{new_kete_site}}</a>."
+      manual_linking: "You can do it manually at <a href='%{new_kete_site}'>%{new_kete_site}</a>."
   slideshows_helper:
     all_results: "back to results"
     next: "Next &raquo;"
@@ -2170,19 +2170,19 @@ en:
       words_connector: ", "
   tagging_controller_lib:
     add_tags:
-      error_adding_tags: "There was an error adding the new tags to {{item_title}}: Tags {{errors}}"
-      no_tags_entered: "There was an error adding the new tags to {{item_title}}: No tags were entered."
-      tags_added: "The new tag(s) have been added to {{item_title}}"
-      version_comment: "Only tags added: {{tags_list}}"
+      error_adding_tags: "There was an error adding the new tags to %{item_title}: Tags %{errors}"
+      no_tags_entered: "There was an error adding the new tags to %{item_title}: No tags were entered."
+      tags_added: "The new tag(s) have been added to %{item_title}"
+      version_comment: "Only tags added: %{tags_list}"
   tags:
     list:
       retrieving_tags: "Retrieving tags. "
       title: "Tags"
     rss:
-      description: "Tags in {{basket_name}}"
-      title: "{{site_name}} - {{basket_name}} - Latest {{count}} Tags"
+      description: "Tags in %{basket_name}"
+      title: "%{site_name} - %{basket_name} - Latest %{count} Tags"
     show:
-      title: "Tag: {{tag_name}}"
+      title: "Tag: %{tag_name}"
     tags_list:
       no_tags: "No tags to display."
   time:
@@ -2193,7 +2193,7 @@ en:
       short: "%d %b %H:%M"
     pm: pm
   topic_type_model:
-    invalid_chars: ": the following characters aren't allowed - {{invalid_chars}}"
+    invalid_chars: ": the following characters aren't allowed - %{invalid_chars}"
   topic_types:
     available_fields_form:
       add: "Add to topic type"
@@ -2299,7 +2299,7 @@ en:
       description_example: "Note: new forms and javascript are not allowed for security reasons"
       description_example_exception: ", unless you check the box below"
       downloaded_by_everyone: "can be downloaded by everyone"
-      downloaded_by_role: "Can only be downloaded by people who have {{role_name}} access."
+      downloaded_by_role: "Can only be downloaded by people who have %{role_name} access."
       editing: "Editing"
       embedded_note: "If you fill out fields here as well, the embedded metadata will be added to it at the end."
       file_privacy: "Attached file privacy"
@@ -2318,7 +2318,7 @@ en:
       related_items_position: "Where should the Related Items content be inserted into the page?"
       required_fields: "* denotes a required field"
       short_summary: "Short Summary"
-      skip_email_notification: "Skip email notification to other {{role_type}} for this private item?"
+      skip_email_notification: "Skip email notification to other %{role_type} for this private item?"
       tags: "Tags (separated by commas)"
       title: Title
       update: "Update"
@@ -2330,7 +2330,7 @@ en:
       comments: "Comments"
       contributor: "Contributor"
       flags: "Flags"
-      has_private_version: "This item has private versions. {{login}} as a basket member to view these."
+      has_private_version: "This item has private versions. %{login} as a basket member to view these."
       login_link: "login"
       number: Number
       privacy: Privacy
@@ -2340,8 +2340,8 @@ en:
       updated: "Updated"
     license_chooser_or_agreement:
       how_to_set_license: "You can change or set your default licence by editing your profile"
-      license_description: "This {{item_type}} is licensed under the {{license_title}}. By editing it you agree that your changes will fall under this license."
-      see_terms: "Please see the {{tac_link}} for information on how contributions are licensed."
+      license_description: "This %{item_type} is licensed under the %{license_title}. By editing it you agree that your changes will fall under this license."
+      see_terms: "Please see the %{tac_link} for information on how contributions are licensed."
       tac_link: "site terms and conditions"
       title: "License"
       view_license: "view license"
@@ -2379,7 +2379,7 @@ en:
       remove: "Remove"
       restore: Restore
     related_items_section:
-      not_related: "This {{item_type}} is not related to any topics at this time."
+      not_related: "This %{item_type} is not related to any topics at this time."
       play_slideshow: "Play Slideshow. "
       private: "private"
       public: "public"
@@ -2387,7 +2387,7 @@ en:
       topic: "Topic:"
       topic_type: "topic type:"
     slideshow_controls:
-      current: "Viewing: {{slideshow_total}} of {{total}}"
+      current: "Viewing: %{slideshow_total} of %{total}"
     tags:
       click_to_add: "click to add tag(s)"
       getting_tags: "Getting tags. "
@@ -2406,62 +2406,62 @@ en:
       updated: "Topic was successfully updated."
   user_model:
     failed_security_answer: ": Your security question answer failed. Please try again."
-    locale_incorrect: ": Unrecognised language. Must be one of the following: {{locales}}"
+    locale_incorrect: ": Unrecognised language. Must be one of the following: %{locales}"
   user_notifier:
     activation:
-      activated: "{{user_name}}, your account has been activated."
+      activated: "%{user_name}, your account has been activated."
     banned:
-      deactivated: "{{user_name}} your account has been deactivated.  You will no longer be able to contribute to this site."
+      deactivated: "%{user_name} your account has been deactivated.  You will no longer be able to contribute to this site."
     basket_create_policy:
       approved:
-        approved_for_use: "The basket you requested, '{{basket_name}}', was approved for use."
+        approved_for_use: "The basket you requested, '%{basket_name}', was approved for use."
         edit_it_by: "You can edit this basket by going to"
         view_contents_at: "And view its contents at"
       created:
         edit_it_by: "You can edit this basket by going to"
         requires_approval: "It requires moderation before it will be available to the public."
-        user_created_basket: "{{user_name}} has created a new basket titled '{{basket_name}}'."
+        user_created_basket: "%{user_name} has created a new basket titled '%{basket_name}'."
       rejected:
-        basket_rejected: "The basket you requested, '{{basket_name}}', was rejected."
+        basket_rejected: "The basket you requested, '%{basket_name}', was rejected."
         not_suitable: "This may be because it was inappropriate or unsuitable for this site."
     email_footer:
       thanks: "Thank you,"
     email_to:
       create_new_email: "If not, you can create a new message and send it to"
-      on_behalf_of: "This email was sent by {{site_name}} on behalf of {{user_name}}."
-      replying_to_sender: "Replying to this message should send an email to {{user_name}}'s email address."
-      sent_from_basket_on_site: "{{user_name}} has sent you a message from the {{basket_name}} basket on {{site_name}}."
-      sent_from_site: "{{user_name}} has sent you a message from {{site_name}}."
+      on_behalf_of: "This email was sent by %{site_name} on behalf of %{user_name}."
+      replying_to_sender: "Replying to this message should send an email to %{user_name}'s email address."
+      sent_from_basket_on_site: "%{user_name} has sent you a message from the %{basket_name} basket on %{site_name}."
+      sent_from_site: "%{user_name} has sent you a message from %{site_name}."
     forgot_password:
-      follow_link: "{{user_name}}, follow the link to reset your password"
+      follow_link: "%{user_name}, follow the link to reset your password"
     item_flagged_for:
-      description: "{{flagging_user_name}} ({{email}}) has flagged Revision # {{revision}} of this item as {{flag}}. This revision was originally submitted by {{submitted_user_name}}."
+      description: "%{flagging_user_name} (%{email}) has flagged Revision # %{revision} of this item as %{flag}. This revision was originally submitted by %{submitted_user_name}."
       note_about_reviewing: "This will tell what versions have been flagged and with what.  You can then preview each version.  There is a \"Make this revision\" option on the preview page for the version, as well as a \"Reject\" link, too."
       review: "Please review the item's history and take appropriate action:"
       user_provided_details: "The user has also provided these details about the flagging:"
     join_policy:
       accepted:
-        membership_granted: "{{user_name}} has accepted your request for membership in the {{basket_name}} basket."
+        membership_granted: "%{user_name} has accepted your request for membership in the %{basket_name} basket."
         participate_by: "You can now participate by going to"
       member:
-        joined: "{{user_name}} has joined the {{basket_name}} basket."
+        joined: "%{user_name} has joined the %{basket_name} basket."
         view_memberlist_at: "You can view the member list at"
         youre_an_admin: "You are receiving this notification because our records show you are an admin of that basket."
       rejected:
-        membership_denied: "{{user_name}} has rejected your request for membership in the {{basket_name}} basket."
+        membership_denied: "%{user_name} has rejected your request for membership in the %{basket_name} basket."
       request:
         approve_or_reject: "You can approve or reject the application by going to"
-        want_access: "{{user_name}} has requested membership of the {{basket_name}} basket."
+        want_access: "%{user_name} has requested membership of the %{basket_name} basket."
         youre_an_admin: "Our records show you are an admin of that basket."
     login_changed:
-      description: "Your login for {{site_name}} was changed during an upgrade of the software the site runs on."
+      description: "Your login for %{site_name} was changed during an upgrade of the software the site runs on."
       login_using: "To login, please now use the following login (your password remains the same)"
     notification_to_administrators_of_new:
       new_user_created: "A new user has signed up to the site."
       review_account: "Please review the account and activate if acceptable. If not contact the user via email."
       username: "User name: "
     pending_review_for:
-      pending_review: "Your submission of Revision # {{revision}} of this item is {{flag}} review of a moderator.  You will be notified of the outcome of the review."
+      pending_review: "Your submission of Revision # %{revision} of this item is %{flag} review of a moderator.  You will be notified of the outcome of the review."
     private_notifications:
       comment_created:
         comment_created: "A private comment has been created in a basket you are a member of."
@@ -2477,18 +2477,18 @@ en:
         item_edited: "A private item has been edited in a basket you are a member of."
         view_item_at: "You can view the edited item at:"
     rejection_of:
-      description: "Revision # {{revision}} of this item has been reviewed by a moderator and {{flag}}. If you would like to alter your submission, you can view it here:"
+      description: "Revision # %{revision} of this item has been reviewed by a moderator and %{flag}. If you would like to alter your submission, you can view it here:"
       reason: "The moderator has provided these details about why the site decided not to accept your contribution:"
     reset_password:
-      reset: "{{user_name}}, Your password has been reset."
+      reset: "%{user_name}, Your password has been reset."
     review_flagged_for:
-      marked_as: "Marked as {{flag}} at {{time}}"
+      marked_as: "Marked as %{flag} at %{time}"
       or: or
-      please_review: "Please review the submitted content in {{basket_name}} and take the appropriate action."
+      please_review: "Please review the submitted content in %{basket_name} and take the appropriate action."
       review_version: "Review this version:"
       view_item_history: "the full item's history:"
     reviewing_of:
-      description: "Revision # {{revision}} of this item has been reviewed by a moderator and marked reviewed. If you would like to alter your submission, you can view it here:"
+      description: "Revision # %{revision} of this item has been reviewed by a moderator and marked reviewed. If you would like to alter your submission, you can view it here:"
       reason: "The moderator has provided these details about why the site decided to leave your contribution as is:"
     signup:
       activate_account: "Visit this url to activate your account:"
@@ -2501,33 +2501,33 @@ en:
     account_activated: "Your account has been activated!"
     account_banned: "Your account has been banned!"
     activate_account: "Please activate your new account"
-    awaiting_review: "User contributions waiting review in {{basket_name}}."
-    basket_approved: "{{basket_name}} basket creation has been approved"
-    basket_created: "{{user_name}} has created the {{basket_name}} basket"
-    basket_rejected: "{{basket_name}} basket creation has been rejected"
-    basket_requested: "{{user_name}} has requested creation of the {{basket_name}} basket"
-    item_flagged_with: "Item flagged {{flag}} for moderation."
+    awaiting_review: "User contributions waiting review in %{basket_name}."
+    basket_approved: "%{basket_name} basket creation has been approved"
+    basket_created: "%{user_name} has created the %{basket_name} basket"
+    basket_rejected: "%{basket_name} basket creation has been rejected"
+    basket_requested: "%{user_name} has requested creation of the %{basket_name} basket"
+    item_flagged_with: "Item flagged %{flag} for moderation."
     login_changed: "Your login has been altered in an upgrade."
-    membership_accepted: "Membership to {{basket_name}} accepted"
-    membership_rejected: "Membership to {{basket_name}} rejected"
+    membership_accepted: "Membership to %{basket_name} accepted"
+    membership_rejected: "Membership to %{basket_name} rejected"
     password_change: "Request to change your password"
     password_reset: "Your password has been reset"
-    pending_moderation: "Your submission is {{flag}} moderation."
+    pending_moderation: "Your submission is %{flag} moderation."
     private_comment_created: "A new private comment has been added to an item."
-    private_comment_created_with_title: "A new private comment titled '{{item_title}}' has been added to an item."
+    private_comment_created_with_title: "A new private comment titled '%{item_title}' has been added to an item."
     private_comment_edited: "A private comment has been edited."
-    private_comment_edited_with_title: "A private comment titled '{{item_title}}' has been edited."
-    private_item_created: "A new private item has been created in {{basket_name}}."
-    private_item_created_with_title: "A new private item titled '{{item_title}}' has been created in {{basket_name}}."
+    private_comment_edited_with_title: "A private comment titled '%{item_title}' has been edited."
+    private_item_created: "A new private item has been created in %{basket_name}."
+    private_item_created_with_title: "A new private item titled '%{item_title}' has been created in %{basket_name}."
     private_item_edited: "A private item has been edited."
-    private_item_edited_with_title: "The private item '{{item_title}}' has been edited."
-    rejected_submission: "A moderator has {{flag}} your submission."
-    review_new_account: "Review account for {{new_user}}"
-    reviewed_submission: "A moderator has {{flag}} your submission."
+    private_item_edited_with_title: "The private item '%{item_title}' has been edited."
+    rejected_submission: "A moderator has %{flag} your submission."
+    review_new_account: "Review account for %{new_user}"
+    reviewed_submission: "A moderator has %{flag} your submission."
     revision_live: "A moderator has made your submission the live revision."
-    user_joined: "{{user_name}} has joined the {{basket_name}} basket"
-    user_requested: "{{user_name}} has requested membership in {{basket_name}} basket"
-    user_sent_message: "{{user_name}} has sent you a message."
+    user_joined: "%{user_name} has joined the %{basket_name} basket"
+    user_requested: "%{user_name} has requested membership in %{basket_name} basket"
+    user_sent_message: "%{user_name} has sent you a message."
   video:
     details:
       filename: "Filename:"
@@ -2541,7 +2541,7 @@ en:
       updated: "Video was successfully updated."
   video_model:
     not_acceptable_content_type: "is not acceptable. It should be a .mov, .wmv, or other video file."
-    not_acceptable_size: "is not acceptable. It should be less than {{max_size}} megabytes."
+    not_acceptable_size: "is not acceptable. It should be less than %{max_size} megabytes."
   web_links:
     details:
       not_available: "no public version of this link available"
@@ -2574,9 +2574,9 @@ en:
       video: "Video"
       web_link: "Web links"
     zoom_destroy_and_redirect:
-      destroyed: "{{pretty_zoom_class}} was successfully deleted."
+      destroyed: "%{pretty_zoom_class} was successfully deleted."
   zoom_dbs_controller:
     title: "Zoom Dbs"
   zoom_helpers_lib:
     zoom_controllers_as_options:
-      all: "All {{zoom_class}}"
+      all: "All %{zoom_class}"
