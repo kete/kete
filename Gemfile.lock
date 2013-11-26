@@ -105,6 +105,9 @@ GEM
       debugger-ruby_core_source (~> 1.2.3)
     debugger-linecache (1.2.0)
     debugger-ruby_core_source (1.2.3)
+    debugger-xml (0.3.2)
+      builder (>= 2.0.0)
+      debugger (>= 1.6.2)
     diff-lcs (1.2.5)
     erubis (2.6.6)
       abstract (>= 1.0.0)
@@ -243,6 +246,7 @@ DEPENDENCIES
   byebug
   chronic
   debugger
+  debugger-xml
   factory_girl_rails (~> 4.3.0)
   gmaps4rails (= 1.4.2)
   haml

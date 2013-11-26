@@ -61,9 +61,13 @@ group :development, :test do
   gem "rspec-rails", "~> 2.14.0"
   gem "factory_girl_rails", "~> 4.3.0"
   gem "pry-rails"
+  
   gem "debugger", :platforms => [:mingw_19, :ruby_19]
+  gem 'debugger-xml', :platforms => [:mingw_19, :ruby_19]
+
   gem 'byebug', :platforms => [:mingw_20, :ruby_20]
   gem 'pry-byebug', :platforms => [:mingw_20, :ruby_20]
+
   gem 'awesome_print'
 
 
