@@ -11,7 +11,7 @@
         %h2= h(@title)
       = render :partial => "login_form"
   - if anonymous_ok_for?(session[:return_to])
-    - @title = @title + ' ' +t('account.login.or_enter_your_info')
+    - @title = @title + ' ' + t('account.login.or_enter_your_info')
     - @button_text = t('account.login.continue')
     - @button_classes << 'center'
     = render :partial => "your_info"

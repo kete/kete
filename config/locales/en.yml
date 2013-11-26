@@ -227,7 +227,7 @@ en:
       web_link: "web link"
   account:
     activate:
-      button: "{{t.base.activate.capatalize}}"
+      button: "{{t.base.activate.capitalize}}"
       label: "{{t.base.activation.capitalize}} {{t.base.code.capitalize}}"
       title: "{{t.base.enter.capitalize}} {{t.base.your}} {{t.base.activation}} {{t.base.code}}"
     avatar_updater:

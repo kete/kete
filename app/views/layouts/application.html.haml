@@ -105,7 +105,7 @@
 
     - if ['audio', 'video'].include?(params[:controller]) && params[:action] == 'show'
       = javascript_include_tag "anarchy_media/anarchy.js"
-      
+
   %body{:id => @current_basket.urlified_name}
     #body-outer-wrapper
       #body-inner-wrapper
@@ -197,7 +197,7 @@
       = render(:partial => "topics/content_wrapper_start",                                         |
         :locals => { :style_classes =>"full-width notabs" }) if render_full_width_content_wrapper? |
       = render(:partial => "licenses/install") if params[:controller] == 'licenses' && %w{ index list }.include?(params[:action])
-      = @content_for_layout
+      = yield
       = render(:partial => "topics/content_wrapper_end") if render_content_wrapper_end?
       %div{:style => "clear:both;"}
       #linkToRSS.footer_div
