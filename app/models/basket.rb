@@ -5,6 +5,8 @@ class Basket < ActiveRecord::Base
   scope :except_certain_baskets, lambda {|baskets| where("id not in (?) AND status = 'approved'", baskets)}
 
   def self.settings
+    # * EOIN: we are pretty sure this is not called - raise an exception to be sure
+    # * FIXME: this is temporary and should be removed before we go into production
     raise "died in Basket.settings"
   end
 
@@ -82,20 +84,23 @@ class Basket < ActiveRecord::Base
   # Note: NOT to be used outside this class! Used only when the application is loaded
   all_baskets = all
 
-  # Kieran Pilkington, 2008/08/19
-  # setup our default baskets on application load, rather than each request
-  # EOIN: FIXME: find these by name rather than magic number
-  HELP_BASKET_ID = 4
-  ABOUT_BASKET_ID = 5
-  DOCUMENTATION_BASKET_ID = 7
-  cattr_accessor :site_basket, :help_basket, :about_basket, :documentation_basket, :standard_baskets
+  cattr_accessor :site_basket, :help_basket, :about_basket, :documentation_basket, :standard_basket_ids
 
-  @@standard_baskets = [1, HELP_BASKET_ID, ABOUT_BASKET_ID, DOCUMENTATION_BASKET_ID]
-raise "EOIN & ROB WERE HERE"
-  @@documentation_basket = Basket.where(name: 'Documentation').first  || raise "Failed to find the required Documentation basket"
-  @@about_basket = Basket.where(name: 'About').first  || raise "Failed to find the required About basket"
-  @@help_basket = Basket.where(name: 'Help').first  || raise "Failed to find the required Help basket"
-  @@site_basket = Basket.where(name: 'Site').first  || raise "Failed to find the required Site basket"
+  @@documentation_basket = Basket.where(name: 'Documentation').first
+  raise "Failed to find the required Documentation basket" unless @@documentation_basket
+
+  @@about_basket = Basket.where(name: 'About').first
+  raise "Failed to find the required About basket" unless @@about_basket
+
+  @@help_basket = Basket.where(name: 'Help').first
+  raise "Failed to find the required Help basket" unless @@help_basket
+
+  @@site_basket = Basket.where(name: 'Site').first
+  raise "Failed to find the required Site basket" unless @@site_basket
+
+  # EOIN: possible future refactoring: make this return the actual baskets ???
+  @@standard_basket_ids = [@@site_basket.id, @@help_basket.id, @@about_basket.id, @@documentation_basket.id]
+
 
   after_save :reset_basket_class_variables
   before_destroy :reset_basket_class_variables
@@ -196,7 +201,7 @@ raise "EOIN & ROB WERE HERE"
     when 'number'
       find_tag_order = "taggings_count #{tag_direction}"
     else
-      find_tag_order = 'RAND()' 
+      find_tag_order = 'RAND()'
       # EOIN: this used to be :random but rails doesn't support that now (if it ever did)
       # RAND() is mysql specific, on postgres it would be RANDOM()
     end

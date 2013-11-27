@@ -169,7 +169,7 @@ module ApplicationHelper
 
     html = '<ul id="basket-list" class="nav-list">'
 
-    baskets = @standard_baskets
+    baskets = @standard_basket_ids
     baskets += [@current_basket] if @current_basket != @site_basket
 
     total_baskets_count = Basket.except_certain_baskets(baskets).count

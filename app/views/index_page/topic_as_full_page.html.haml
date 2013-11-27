@@ -1,51 +1,38 @@
-= render(:partial => 'topics/content_wrapper_start',   |
-  :locals => {:style_classes => 'full-width notabs' }) |
-- cache_with_privacy(@topic, {:part => 'details'}) do
-  = @topic.description
-  = pending_review(@topic)
-- cache_with_privacy(@topic, {:part => 'extended_fields'}) do
-  - extended_fields_html = display_xml_attributes(@topic)
-  - if !extended_fields_html.blank?
-    #detail-extended
-      %h4#detail-extended-heading= h(@topic.title)
-      %br/
-      = extended_fields_html
-- cache_with_privacy(@topic, {:part => 'license'}) do
-  .license= @topic.license_metadata
-  %div{:style => "clear:both;"}
+= render(:partial => 'topics/content_wrapper_start', :locals => {:style_classes => 'full-width notabs' })
+= @topic.description.html_safe
+= pending_review(@topic)
+- extended_fields_html = display_xml_attributes(@topic)
+- if !extended_fields_html.blank?
+  #detail-extended
+    %h4#detail-extended-heading= h(@topic.title)
+    %br/
+    = extended_fields_html
+.license
+  = @topic.license_metadata.html_safe
+%div{:style => "clear:both;"}
 - links = link_to_membership_request_of(@current_basket)
 - links += link_to_members_of(@current_basket)
-- if @current_basket.allows_contact_with_inheritance? ||
-- !links.blank? ||
-- logged_in? && (permitted_to_edit_current_item? || (@current_basket.show_privacy_controls_with_inheritance? &&  permitted_to_view_private_items?))
+- if @current_basket.allows_contact_with_inheritance? || !links.blank? || logged_in? && (permitted_to_edit_current_item? || (@current_basket.show_privacy_controls_with_inheritance? &&  permitted_to_view_private_items?))
   #moderator-tools
     %ul
       - if permitted_to_edit_basket_homepage_topic?
-        - cache_with_privacy(@topic, {:part => 'edit'}) do
-          %li.first
-            = link_to t('index_page.topic_as_full_page.edit'), :action => 'edit', |
-              :urlified_name => @topic.basket.urlified_name,                      |
-              :controller => 'topics',                                            |
-              :id => @topic,                                                      |
-              :private => params[:private]                                        |
-          %li
-            = link_to t('index_page.topic_as_full_page.history'), :action => 'history', |
-              :urlified_name => @topic.basket.urlified_name,                            |
-              :controller => 'topics',                                                  |
-              :id => @topic,                                                            |
-              :private => params[:private]                                              |
+        %li.first
+          = link_to t('index_page.topic_as_full_page.edit'), :action => 'edit', |
+            :urlified_name => @topic.basket.urlified_name,                      |
+            :controller => 'topics',                                            |
+            :id => @topic,                                                      |
+            :private => params[:private]                                        |
+        %li
+          = link_to t('index_page.topic_as_full_page.history'), :action => 'history', |
+            :urlified_name => @topic.basket.urlified_name,                            |
+            :controller => 'topics',                                                  |
+            :id => @topic,                                                            |
+            :private => params[:private]                                              |
       - if @current_basket.show_privacy_controls_with_inheritance? && permitted_to_view_private_items?
         = render :partial => 'topics/privacy_chooser', :locals => { :item => @topic }
       - if @current_basket.allows_contact_with_inheritance?
-        - cache({:part => 'contact'}) do
-          %ul
-            %li= link_to_basket_contact_for(@current_basket)
+        %ul
+          %li= link_to_basket_contact_for(@current_basket)
       = links unless links.blank?
     %div{:style => "clear:both;"}
-- cache_with_privacy(@topic, {:part => 'tools'}) do
-- cache({:part => "recent_topics_#{@privacy_type}"}) do
-- cache({:part => 'search'}) do
-- cache({:part => 'extra_side_bar_html'}) do
-- cache({:part => "archives_#{@privacy_type}"}) do
-- cache({:part => "tags_#{@privacy_type}"}) do
 = render(:partial => "topics/content_wrapper_end" )

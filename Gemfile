@@ -2,11 +2,12 @@ source "https://rubygems.org"
 
 gem "rails", "3.2.15"
 
+# EOIN: TODO: I suspect there are gems mentioned in here that rails pulls in implicitly - we should remove them from here if so.
 gem 'prototype-rails'
 gem 'rails-erd'
 gem 'haml'
 gem 'acts_as_licensed', github: 'kete/acts_as_licensed', branch: 'rails3-gem'
-gem "sql-logging"
+# gem "sql-logging"
 
 
 # RABID: the official version of acts_as_versioned seems to be abandoned but
@@ -20,7 +21,13 @@ gem "acts-as-taggable-on", "~> 2.4.1"
 gem 'pothoven-attachment_fu'
 # gem 'pothoven-attachment_fu', path: '/Users/eoinkelly/Code/kete-gems/po_attachment_fu'
 
-gem 'kete-feedzirra', github: 'kete/feedzirra'
+# EOIN: 
+# * kete had it's own feedzirra but it appears to differ in name only. There
+#   may have been a plan to diverge it but it doesn't seem to have happened - see
+#   https://github.com/kete/feedzirra/commits/master
+# * for this reason, we are now using the main feedzirra gem
+gem 'feedzirra', '~> 0.4.0'
+# gem 'kete-feedzirra', github: 'kete/feedzirra'
 
 # https://github.com/swanandp/acts_as_list
 gem 'acts_as_list', '~> 0.3.0'
@@ -42,7 +49,7 @@ gem "awesome_nested_set", "~> 2.1.6"
 # gem 'rake', '0.9.2.2' # version needed to use: require 'rake/rdoctask'
 gem "rake", "~> 10.1.0"
 gem "rdoc"
-gem 'nokogiri', '1.3.3'
+gem 'nokogiri', '~> 1.6.0'
 
 # Background tasks
 # ################
@@ -86,7 +93,7 @@ end
 
 # Note: the file config/required_software.yml is a good place to look for things that would be needed in a bundler file.
 
-gem 'oai', '0.3.0'
+gem 'oai', '~> 0.3.1'
 
 gem 'packet'
 gem 'RedCloth'

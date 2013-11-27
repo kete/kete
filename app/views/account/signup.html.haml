@@ -2,7 +2,8 @@
 %h2= h(@title)
 = form_for :user do |f|
   %fieldset
-    = error_messages_for :user
+    = render partial: 'shared/model_errors', model: @user
+
     .form-element
       %label{:for => "user_login"}= t 'account.signup.login'
       = f.text_field :login, :tabindex => '1'
@@ -22,13 +23,15 @@
       = f.text_field :display_name, :tabindex => '1'
       .form_example= t 'account.signup.user_name_example'
     - form_fields = @content_type.content_type_to_field_mappings
+
     - if form_fields.size > 0
-      = render(:partial => 'extended_fields/extended_field_mapping', |
-        :collection => form_fields,                                  |
-        :locals => { :form_fields => form_fields,                    |
-        :edit => false,                                              |
-        :extended_item => @user,                                     |
-        :item_key => 'user'})                                        |
+      = render(:partial => 'extended_fields/extended_field_mapping', 
+                :collection => form_fields, 
+                :locals => { :form_fields => form_fields, 
+                              :edit => false, 
+                              :extended_item => @user, 
+                              :item_key => 'user'})                                       
+
     - if I18n.available_locales_with_labels.keys.size > 1
       .form-element
         %label= t 'account.signup.language'

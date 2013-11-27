@@ -15,7 +15,8 @@
         %h4
           = t 'configure.zoom_dbs_edit.search_engine_database'
           = @zoom_db.database_name
-        = error_messages_for :zoom_db
+        = render partial: 'shared/model_errors', model: @zoom_db
+
         = fields_for "zoom_db[]" do |f|
           .form-element
             %label.required{:for => "@zoom_db"}= t 'configure.zoom_dbs_edit.port'

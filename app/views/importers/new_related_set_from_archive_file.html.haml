@@ -19,8 +19,9 @@
 = render 'contributing_user_form' if @site_admin
 = form_for :import, :url => { :action => 'create' }, :html => { :multipart => true } do |form|
   %fieldset
-    = error_messages_for 'import'
-    = error_messages_for 'import_archive_file'
+    = render partial: 'shared/model_errors', model: @import
+    = render partial: 'shared/model_errors', model: @import_archive_file
+
     = hidden_field_tag 'contributing_user', params[:contributing_user]
     = hidden_field_tag 'related_topic', @related_topic.id
     .form-element

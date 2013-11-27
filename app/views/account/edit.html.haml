@@ -3,7 +3,7 @@
 - form_for :user, :url => { :action => 'update',
 - :id => @user } do |f|
   %fieldset
-    = error_messages_for :user
+    = render partial: 'shared/model_errors', model: @user
     .form-element
       %label{:for => "user_login"}= t 'account.edit.login'
       = f.text_field :login, :tabindex => '1'

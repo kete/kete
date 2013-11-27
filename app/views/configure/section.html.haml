@@ -3,7 +3,7 @@
     = form_tag({ :action => 'update', :section => @section }, :remote => true) do
       - for @setting in @settings
         - if @setting.name != 'Is Configured' and (@advanced or !@setting.technically_advanced)
-          = error_messages_for :setting
+          = render partial: 'shared/model_errors', model: @setting
           .form-element
             <label
             - if @setting.required_to_be_configured

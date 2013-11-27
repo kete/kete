@@ -165,7 +165,7 @@ class ApplicationController < ActionController::Base
     @help_basket ||= Basket.help_basket
     @about_basket ||= Basket.about_basket
     @documentation_basket ||= Basket.documentation_basket
-    @standard_baskets ||= Basket.standard_baskets
+    @standard_basket_ids ||= Basket.standard_basket_ids
 
     if params[:urlified_name].blank?
       @current_basket = @site_basket
