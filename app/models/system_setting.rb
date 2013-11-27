@@ -49,9 +49,9 @@ class SystemSetting
     self.setting(:records_per_page_choices)
   end
 
-  #def self.default_records_per_page
-  #  self.setting(:default_records_per_page)
-  #end
+  def self.default_records_per_page
+   self.setting(:default_records_per_page)
+  end
 
   def self.default_search_class
    self.setting(:default_search_class)
@@ -511,7 +511,7 @@ private
     end
 
     def contact_url
-      "http://some.contact.url.com"
+      "mailto:eoin@rabidtech.co.nz"
     end
 
     def default_search_class
@@ -637,6 +637,10 @@ private
 
     def number_of_related_things_to_display_per_type
       0
+    end
+
+    def default_records_per_page
+      5 
     end
   end 
 end

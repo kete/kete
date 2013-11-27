@@ -180,7 +180,7 @@ class ApplicationController < ActionController::Base
       when @documentation_basket.urlified_name
         @current_basket = @documentation_basket
       else
-        @current_basket = Basket.where(:urlified_name => params[:urlified_name])
+        @current_basket = Basket.where(:urlified_name => params[:urlified_name]).first
       end
     end
 

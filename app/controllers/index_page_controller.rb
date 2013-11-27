@@ -1,5 +1,4 @@
 class IndexPageController < ApplicationController
-  caches_page :robots, :opensearchdescription
 
   # Kieran Pilkington, 2008/11/26
   # Instantiation of Google Map code for location settings

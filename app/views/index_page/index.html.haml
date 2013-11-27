@@ -1,18 +1,17 @@
 - tool_count = 1
-= render(:partial => "topics/content_wrapper_start", |
-  :locals => { :style_classes =>"notabs" })          |
+= render(:partial => "topics/content_wrapper_start", :locals => { :style_classes =>"notabs" })
 - if @topic.present?
   - @topic_related_items_count = related_items_count_for_current_item
   - if @topic_related_items_count > 0 && @topic.related_items_position == 'inset'
     = render(:partial => "topics/related_items", :locals => { :item => @topic, :position => 'inset' })
   - cache_with_privacy(@topic, {:part => 'details'}) do
-    = @topic.description
+    -# EOIN: FIXME: potential security hole?
+    = @topic.description.html_safe
     = pending_review(@topic)
   - cache_with_privacy(@topic, {:part => 'extended_fields'}) do
     - extended_fields_html = display_xml_attributes(@topic)
     - if !extended_fields_html.blank?
-      = render(:partial => "topics/secondary_wrapper_start",                       |
-        :locals => { :div_id => "detail-extended-box", :class_suffix => '-blue' }) |
+      = render(:partial => "topics/secondary_wrapper_start", :locals => { :div_id => "detail-extended-box", :class_suffix => '-blue' })
       #detail-extended
         %h4#detail-extended-heading= h(@topic.title)
         %br/
@@ -27,7 +26,7 @@
           = li_with_correct_class(tool_count) + link_to(t('.continue_to_topic'), @url_to_full_topic)
         - tool_count += 1
       - if !@url_to_comments.nil?
-        - if @comments.size > 0
+        - if @comments && @comments.size > 0
           %ul
             = li_with_correct_class(tool_count) + t('.view') + link_to( t('.comments', :count => @comments.size), @url_to_comments)
           - tool_count += 1
@@ -63,26 +62,22 @@
             :return_to_homepage => true                      |
       %div{:style => "clear:both;"}
 - cache({:part => "recent_topics_#{@privacy_type}"}) do
-  - if @recent_topics_limit > 0 &&
-  - @recent_topics_items.size > 0 &&
-  - !@current_basket.index_page_recent_topics_as.blank?
-    .home-feature-wrapper
-      %h3
-        = t '.latest'
-        = @recent_topics_items.size.to_s if @recent_topics_items.size > 1
-        - if @recent_topics_items.size > 1
-          = t '.topics'
-        - else
-          = t '.topic'
-      - case @current_basket.index_page_recent_topics_as
-      - when 'summaries'
-        = render :partial => 'post_summary',  |
-          :collection => @recent_topics_items |
-      - when 'headlines'
-        = render :partial => 'post_headline', |
-          :collection => @recent_topics_items |
-/ /main-content-container
-/ /main-content-wrapper
+  %h1= p @recent_topics_limit.nil?
+  %h1= p @recent_topics_items.nil?
+  / - if @recent_topics_limit > 0 && @recent_topics_items.size > 0 && !@current_basket.index_page_recent_topics_as.blank?
+  /   .home-feature-wrapper
+  /     %h3
+  /       = t '.latest'
+  /       = @recent_topics_items.size.to_s if @recent_topics_items.size > 1
+  /       - if @recent_topics_items.size > 1
+  /         = t '.topics'
+  /       - else
+  /         = t '.topic'
+  /     - case @current_basket.index_page_recent_topics_as
+  /     - when 'summaries'
+  /       = render :partial => 'post_summary', :collection => @recent_topics_items
+  /     - when 'headlines'
+  /       = render :partial => 'post_headline', :collection => @recent_topics_items
 #secondary-content-wrapper
   - if @topic.present? && @topic_related_items_count > 0 && @topic.related_items_position == 'sidebar'
     = render(:partial => "topics/related_items", :locals => { :item => @topic, :position => 'sidebar' }) if @topic.related_items_position == 'sidebar'
@@ -119,12 +114,10 @@
     = render(:partial => "topics/secondary_wrapper_start",                |
       :locals => { :div_id => "contents-by-type", :class_suffix => nil }) |
     %h3= t '.contents_by_type'
-    = # EOIN: comment out because it just contains zoom stuff |
-      # render :partial => 'archive_by_type'                  |
+    = # EOIN: comment out because it just contains zoom stuff render :partial => 'archive_by_type'                  |
     = render(:partial => "topics/secondary_wrapper_end")
   - if @current_basket.feeds.size > 0
-    = render(:partial => "topics/secondary_wrapper_start",                  |
-      :locals => { :div_id => "homepage-rss-feeds", :class_suffix => nil }) |
+    = render(:partial => "topics/secondary_wrapper_start", :locals => { :div_id => "homepage-rss-feeds", :class_suffix => nil }) 
     - @current_basket.feeds(true).each do |feed|
       %h4= h feed.title
       %ul
@@ -151,9 +144,7 @@
       :locals => { :div_id => "tags-box", :class_suffix => nil }) |
     - tag_counts = @tag_counts_total > @tag_counts_array.size ?
     - "( #{t('.show_x_of_x', :count => @tag_counts_array.size, :total => @tag_counts_total)} | " +
-    - link_to(t('.all_tags'),
-    - :controller => 'tags',
-    - :action => 'list') + " )" : ''
+    - link_to(t('.all_tags'), :controller => 'tags', :action => 'list') + " )" : ''
     - if @current_basket.index_page_tags_as == 'tag cloud'
       #tags-headline
         %h3{:style => "display:inline;"}= t '.tags_title'
@@ -171,7 +162,3 @@
         :locals => { :div_id => "license-box", :class_suffix => nil }) |
       .license= @topic.license_metadata
       = render(:partial => "topics/secondary_wrapper_end")
-  - # TODO: add following with logic
-  - # archive_by_date - requires adding searching by date
-/ /secondary-content-wrapper
-/ /content-wrapper
