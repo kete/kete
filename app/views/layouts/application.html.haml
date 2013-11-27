@@ -55,7 +55,6 @@
     - if SystemSetting.language_choices_position == 'header'
       :css
         #header { padding-top: 3em; padding-bottom: 1em; }
-    = javascript_include_tag :defaults
     = javascript_include_tag 'redbox'
     - if !SystemSetting.available_syntax_highlighters.blank?
       = javascript_include_tag 'dan_webb_code_highlighter/code_highlighter'
@@ -145,10 +144,7 @@
               %li= link_to_login(t('layouts.application.login'), account_hash.merge({ :action => 'login' }), { :tabindex => '2' })
             - else
               %li#user_baskets_list.first
-                = link_to_unless_current "#{current_user.user_name}",                                       |
-                  account_hash.merge({ :action => 'show', :urlified_name => @site_basket.urlified_name, }), |
-                  :tabindex => '2'                                                                          |
-                -#
+                = link_to_unless_current "#{current_user.user_name}", account_hash.merge({ :action => 'show', :urlified_name => @site_basket.urlified_name, }), :tabindex => '2' 
                 = link_to "<em>V</em>",                         |
                   account_hash.merge({ :action => 'baskets' }), |
                   :tabindex => '2',                             |
@@ -279,15 +275,11 @@
         %ul
           - unless SystemSetting.government_website.blank?
             %li= link_to SystemSetting.government_website.first, SystemSetting.government_website.last, :accesskey => '/', :tabindex => '2'
-          - cache({:part => 'accessibility'}) do
-            - accessibility_topic = @help_basket.topics.find_by_title('Accessibility')
-            = content_tag('li', link_to(t('layouts.application.accessibility'), |
-              { :urlified_name => @help_basket.urlified_name,                   |
-              :controller => 'topics',                                          |
-              :action => 'show',                                                |
-              :id => accessibility_topic },                                     |
-              { :accesskey => '0',                                              |
-              :tabindex => '2' })) if accessibility_topic                       |
+          - accessibility_topic = @help_basket.topics.find_by_title('Accessibility')
+          = content_tag('li', 
+                        link_to(t('layouts.application.accessibility'), 
+                                { :urlified_name => @help_basket.urlified_name, :controller => 'topics', :action => 'show', :id => accessibility_topic },
+                                { :accesskey => '0', :tabindex => '2' })) if accessibility_topic
           %li
             = link_to t('layouts.application.sitemap'),       |
               { :urlified_name => @site_basket.urlified_name, |
@@ -297,5 +289,5 @@
               :tabindex => '2' }                              |
           %li.last= link_to t('layouts.application.to_content'), '#content', :accesskey => '[', :tabindex => '2'
         = render 'index_page/credits'
-      %div{:style => "clear:both;"}
+    %div{:style => "clear:both;"}
     = render 'account/locale_selection', :classes => ['footer'] if SystemSetting.language_choices_position == 'footer' 

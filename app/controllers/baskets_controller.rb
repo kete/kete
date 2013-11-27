@@ -31,8 +31,9 @@ class BasketsController < ApplicationController
   end
 
   # GETs should be safe (see http://www.w3.org/2001/tag/doc/whenToUseGet.html)
-  verify :method => :post, :only => [ :destroy, :create, :update ],
-         :redirect_to => { :action => :list }
+  # EOIN: FIXME: verify is not in rails3 but we do need to limit the HTTP verbs in routing. This will need to be addressed before we go live
+  # verify :method => :post, :only => [ :destroy, :create, :update ],
+  #        :redirect_to => { :action => :list }
 
   def list
     list_baskets

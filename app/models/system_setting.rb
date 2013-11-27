@@ -519,7 +519,7 @@ private
     end
 
     def site_name
-      "localhost:3000"
+      "localhost"
     end
 
     def method_missing(meth, *args, &block)

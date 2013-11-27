@@ -1,11 +1,12 @@
 source "https://rubygems.org"
 
-gem "rails", "3.0.20"
+gem "rails", "3.2.15"
 
+gem 'prototype-rails'
 gem 'rails-erd'
 gem 'haml'
 gem 'acts_as_licensed', github: 'kete/acts_as_licensed', branch: 'rails3-gem'
-# gem "sql-logging"
+gem "sql-logging"
 
 
 # RABID: the official version of acts_as_versioned seems to be abandoned but
@@ -140,7 +141,7 @@ gem 'http_url_validation_improved'
 # (I've locked versions to avoid errors during upgrade).
 
 
-gem 'active_scaffold',              '3.0.5' # >> 2009-06-29
+gem 'active_scaffold',              '~> 3.3.3'
 gem "acts_as_authenticated", "2.0", :git => "git://github.com/gundestrup/acts_as_authenticated.git" # 2007-06-06
 #gem "acts_as_licensed", "#.#.#", :git => "git://github.com/shuber/sortable.git" # 2008-07-10
 gem "acts_as_soft_deletable", :git => "git://github.com/says/acts_as_soft_deletable.git" # 2009-02-16
@@ -160,7 +161,7 @@ gem 'authorization',                '1.0.11' # >> 2008-10-01
 #gem 'redhillonrails_core',          '1.0.4' # >> 2008-06-30
 #gem 'ssl_requirement',              '0.0.1' # >> 2008-05-29
 #gem 'nove-system-settings',         '0.2.0' # >> 2008-01-14, replaces 'system_settings'
-gem 'will_paginate',                '2.3.11' # ~= '2009-03-09', should be '2.3.8'
+gem 'will_paginate', '~> 3.0.5'
 
 
 # RABID: should be removed:

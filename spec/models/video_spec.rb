@@ -2,7 +2,7 @@ require 'spec_helper'
 
 describe Video do
   let(:video) { }
-  # let(:video) { Video.new }
+  let(:video) { Video.new }
 
   it "does not blow up when you initialize it" do
     video
@@ -91,8 +91,6 @@ describe Video do
 
         expect { vid2.save! }.to_not raise_error
         
-        binding.pry
-
         # ROB: ERROR
         # The #revert_to_latest_unflagged_version_or_create_blank_version()
         # method in lib/flagging.rb causes a quirk in the code.

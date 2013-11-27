@@ -84,15 +84,19 @@ class Basket < ActiveRecord::Base
 
   # Kieran Pilkington, 2008/08/19
   # setup our default baskets on application load, rather than each request
-  HELP_BASKET_ID = 2
-  ABOUT_BASKET_ID = 3
-  DOCUMENTATION_BASKET_ID = 4
+  # EOIN: FIXME: find these by name rather than magic number
+  HELP_BASKET_ID = 4
+  ABOUT_BASKET_ID = 5
+  DOCUMENTATION_BASKET_ID = 7
   cattr_accessor :site_basket, :help_basket, :about_basket, :documentation_basket, :standard_baskets
+
   @@standard_baskets = [1, HELP_BASKET_ID, ABOUT_BASKET_ID, DOCUMENTATION_BASKET_ID]
-  @@site_basket = all_baskets.find { |basket| basket.id == 1 }
-  @@help_basket = all_baskets.find { |basket| basket.id == HELP_BASKET_ID }
-  @@about_basket = all_baskets.find { |basket| basket.id == ABOUT_BASKET_ID }
-  @@documentation_basket = all_baskets.find { |basket| basket.id == DOCUMENTATION_BASKET_ID }
+raise "EOIN & ROB WERE HERE"
+  @@documentation_basket = Basket.where(name: 'Documentation').first  || raise "Failed to find the required Documentation basket"
+  @@about_basket = Basket.where(name: 'About').first  || raise "Failed to find the required About basket"
+  @@help_basket = Basket.where(name: 'Help').first  || raise "Failed to find the required Help basket"
+  @@site_basket = Basket.where(name: 'Site').first  || raise "Failed to find the required Site basket"
+
   after_save :reset_basket_class_variables
   before_destroy :reset_basket_class_variables
 

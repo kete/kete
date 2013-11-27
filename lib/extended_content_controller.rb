@@ -27,9 +27,9 @@ module ExtendedContentController
                           :only =>  [ :destroy, :restore, :reject, :make_theme ]
 
       # GETs should be safe (see http://www.w3.org/2001/tag/doc/whenToUseGet.html)
-      klass.send :verify, :method => :post,
-                          :only => [ :destroy, :create, :update ],
-                          :redirect_to => { :action => :list }
+      # klass.send :verify, :method => :post,
+      #                     :only => [ :destroy, :create, :update ],
+      #                     :redirect_to => { :action => :list }
 
       unless klass.name == 'TopicsController'
         # used to determined appropriate extended fields for the model you are operating on

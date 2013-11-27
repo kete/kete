@@ -1,7 +1,7 @@
 # RABID disable to get working
 # include ZoomControllerHelpers
 
-include Rails.application.routes.url_helpers
+# include Rails.application.routes.url_helpers # EOIN: commented out as it caused us to exceed system stack limits on second request
 # include ActionController::UrlWriter
 
 module Flagging
