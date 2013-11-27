@@ -8,7 +8,6 @@ mkmf.log
 *.tmproj
 *~
 config/database.yml
-config/backgroundrb.yml
 config/mongrel_cluster.yml
 config/gmaps_api_key.yml
 config/google_map_api.yml
