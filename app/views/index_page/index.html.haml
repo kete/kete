@@ -62,22 +62,20 @@
             :return_to_homepage => true                      |
       %div{:style => "clear:both;"}
 - cache({:part => "recent_topics_#{@privacy_type}"}) do
-  %h1= p @recent_topics_limit.nil?
-  %h1= p @recent_topics_items.nil?
-  / - if @recent_topics_limit > 0 && @recent_topics_items.size > 0 && !@current_basket.index_page_recent_topics_as.blank?
-  /   .home-feature-wrapper
-  /     %h3
-  /       = t '.latest'
-  /       = @recent_topics_items.size.to_s if @recent_topics_items.size > 1
-  /       - if @recent_topics_items.size > 1
-  /         = t '.topics'
-  /       - else
-  /         = t '.topic'
-  /     - case @current_basket.index_page_recent_topics_as
-  /     - when 'summaries'
-  /       = render :partial => 'post_summary', :collection => @recent_topics_items
-  /     - when 'headlines'
-  /       = render :partial => 'post_headline', :collection => @recent_topics_items
+  - if @recent_topics_limit > 0 && @recent_topics_items.size > 0 && !@current_basket.index_page_recent_topics_as.blank?
+    .home-feature-wrapper
+      %h3
+        = t '.latest'
+        = @recent_topics_items.size.to_s if @recent_topics_items.size > 1
+        - if @recent_topics_items.size > 1
+          = t '.topics'
+        - else
+          = t '.topic'
+      - case @current_basket.index_page_recent_topics_as
+      - when 'summaries'
+        = render :partial => 'post_summary', :collection => @recent_topics_items
+      - when 'headlines'
+        = render :partial => 'post_headline', :collection => @recent_topics_items
 #secondary-content-wrapper
   - if @topic.present? && @topic_related_items_count > 0 && @topic.related_items_position == 'sidebar'
     = render(:partial => "topics/related_items", :locals => { :item => @topic, :position => 'sidebar' }) if @topic.related_items_position == 'sidebar'
