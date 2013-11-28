@@ -84,23 +84,50 @@ class Basket < ActiveRecord::Base
   # Note: NOT to be used outside this class! Used only when the application is loaded
   all_baskets = all
 
-  cattr_accessor :site_basket, :help_basket, :about_basket, :documentation_basket, :standard_basket_ids
+  def self.documentation_basket 
+    b = Basket.where(name: 'Documentation').first 
+    b or raise("Failed to find the required Documentation basket")
+  end
 
-  @@documentation_basket = Basket.where(name: 'Documentation').first
-  raise "Failed to find the required Documentation basket" unless @@documentation_basket
+  def self.about_basket 
+    b = Basket.where(name: 'About').first
+    b or raise("Failed to find the required About basket")
+  end
 
-  @@about_basket = Basket.where(name: 'About').first
-  raise "Failed to find the required About basket" unless @@about_basket
+  def self.help_basket 
+    b = Basket.where(name: 'Help').first
+    b or raise("Failed to find the required Help basket")
+  end
 
-  @@help_basket = Basket.where(name: 'Help').first
-  raise "Failed to find the required Help basket" unless @@help_basket
-
-  @@site_basket = Basket.where(name: 'Site').first
-  raise "Failed to find the required Site basket" unless @@site_basket
+  def self.site_basket 
+    b = Basket.where(name: 'Site').first
+    b or raise("Failed to find the required Site basket")
+  end
 
   # EOIN: possible future refactoring: make this return the actual baskets ???
-  @@standard_basket_ids = [@@site_basket.id, @@help_basket.id, @@about_basket.id, @@documentation_basket.id]
+  def self.standard_basket_ids 
+    [site_basket.id, help_basket.id, about_basket.id, documentation_basket.id]
+  end
 
+  def documentation_basket
+    Basket.documentation_basket 
+  end
+
+  def about_basket
+    Basket.about_basket 
+  end
+
+  def help_basket
+    Basket.help_basket 
+  end
+
+  def site_basket
+    Basket.site_basket 
+  end
+
+  def standard_basket_ids
+    Basket.standard_basket_ids 
+  end
 
   after_save :reset_basket_class_variables
   before_destroy :reset_basket_class_variables
@@ -619,16 +646,12 @@ class Basket < ActiveRecord::Base
   # reset the baskets class variable if its one of those we cache
   def reset_basket_class_variables
     return unless @@standard_baskets.include?(self.id)
-    case self.id
-    when 1
-      @@site_basket = Basket.find(1)
-    when HELP_BASKET_ID
-      @@help_basket = Basket.find(HELP_BASKET_ID)
-    when ABOUT_BASKET_ID
-      @@about_basket = Basket.find(ABOUT_BASKET_ID)
-    when DOCUMENTATION_BASKET_ID
-      @@documentation_basket = Basket.find(DOCUMENTATION_BASKET_ID)
-    end
+
+    # ROB:  this previously had code that reloaded the @@help_basket/etc
+    #       baskets if self was one of these, probably to update these 
+    #       after a change.
+    #       This method can probably just be removed.
+
     # after we change these, we need to reload routes for index_page path
     # ActionController::Routing::Routes.reload!
     Rails.application.reload_routes!
