@@ -1,0 +1,5 @@
+-# we assume that if we got a variable then it is a also a valid model
+- if @model && @model.errors.any?
+  %ul
+    - @model.errors.full_messages.each do |msg|
+      %li= msg

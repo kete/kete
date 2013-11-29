@@ -1,0 +1,26 @@
+- rss_feed ||= nil
+.basket_rss_feed
+  %table
+    %tr
+      %th{:title => t('baskets.rss_feed.title_description')}= t('baskets.rss_feed.title')
+      %td{:colspan => "3"}
+        = text_field_tag "#{field_name_prefix}[][title]", (rss_feed.title if rss_feed), :size => 45
+        %span.remove_feed_link_span
+        - remove_feed_link = link_to(t('baskets.rss_feed.remove_feed'), '#', :class => 'remove_feed_link')
+        = javascript_tag("                                                                               |
+          $$('.remove_feed_link_span').last().update(#{::ActiveSupport::JSON.encode(remove_feed_link)}); |
+          $$('.remove_feed_link').last().observe('click', function(event) {                              |
+            this.up('div.basket_rss_feed').remove(); event.stop();                                       |
+          });")                                                                                          |
+    %tr
+      %th{:title => t('baskets.rss_feed.url_description')}= t('baskets.rss_feed.url')
+      %td{:colspan => "3"}= text_field_tag "#{field_name_prefix}[][url]", (rss_feed.url if rss_feed), :size => 45
+    %tr
+      %th{:title => t('baskets.rss_feed.limit_description')}= t('baskets.rss_feed.limit')
+      %td
+        = text_field_tag "#{field_name_prefix}[][limit]", (rss_feed.limit if rss_feed), :size => 4
+        (#{t('baskets.rss_feed.optional')})
+      %th{:title => t('baskets.rss_feed.update_frequency_description')}= t('baskets.rss_feed.update_frequency')
+      %td
+        = text_field_tag "#{field_name_prefix}[][update_frequency]", (rss_feed.update_frequency if rss_feed), :size => 4
+        (#{t('baskets.rss_feed.in_minutes')} - #{t('baskets.rss_feed.optional')})

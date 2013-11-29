@@ -1,0 +1,11 @@
+- without_label ||= false
+- clear_values ||= false
+- control = limit_search_to_choice_control(clear_values)
+- if @extended_field
+  = tag(:br) + content_tag("label", @extended_field.label) unless without_label
+  = control unless control.blank?
+- elsif categories_field
+  = tag(:br) + content_tag("label", t('search.refine_by_choice.limit_to_category')) unless without_label
+  = control unless control.blank?
+= hidden_field_tag 'extended_field', params[:extended_field] if params[:extended_field]
+= hidden_field_tag 'limit_to_choice', params[:limit_to_choice] if params[:limit_to_choice]

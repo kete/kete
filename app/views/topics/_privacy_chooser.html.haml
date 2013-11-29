@@ -1,0 +1,9 @@
+- location_hash = { :controller => params[:controller],
+- :action => ((params[:controller] == 'index_page') ? 'index' : 'show'),
+- :id => params[:id] }
+- cache_with_privacy(item, {:part => 'privacy_chooser'}) do
+  - if item.respond_to?(:private?)
+    - if item.private?
+      %li= link_to t('topics.privacy_chooser.public_version'), location_hash.merge({:private=>"false"}), :tabindex => '1'
+    - elsif !item.private? && item.has_private_version?
+      %li= link_to t('topics.privacy_chooser.private_version'), location_hash.merge({:private=>"true", :only_path => false}), :tabindex => '1'

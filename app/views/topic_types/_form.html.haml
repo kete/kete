@@ -1,0 +1,13 @@
+%fieldset
+  = error_messages_for 'topic_type'
+  .row
+    / [form:topic_type]
+    - if !params[:parent_id].nil?
+      = hidden_field_tag 'parent_id', params[:parent_id]
+    .form-element
+      %label.required{:for => "topic_type_name"}= t 'topic_types.form.name'
+      = text_field 'topic_type', 'name' , {:class=>"text-input"}
+    .form-element
+      %label{:for => "topic_type_description"}= t 'topic_types.form.description'
+      = text_field 'topic_type', 'description', {:size => 75 }
+    / [eoform:topic_type]

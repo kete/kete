@@ -1,0 +1,37 @@
+- tabs = Array.new
+- tabs << ['edit', t('baskets.actions_menu.edit'), 'baskets']
+- tabs << ['appearance', t('baskets.actions_menu.appearance'), 'baskets'] if any_fields_editable?(:appearance)
+- tabs << ['homepage_options', t('baskets.actions_menu.homepage_options'), 'baskets'] if any_fields_editable?(:homepage_options)
+- tabs << ['list', t('baskets.actions_menu.members'), 'members']
+- tabs << ['list', t('baskets.actions_menu.moderate'), 'moderate']
+- tab_count = 1
+#content-tabs
+  %ul.nav-list
+    - tabs.each do |tab|
+      - tab_action = tab[0]
+      - tab_label = tab[1]
+      - tab_controller = tab[2]
+      - tab_classes = Array.new
+      - tab_classes << 'first' if tab_count == 1
+      - tab_classes << 'selected' if params[:action] == tab_action and params[:controller] == tab_controller
+      - if tab_classes.size > 0
+        %li{:class => tab_classes.join(" ")}
+      - else
+        %li
+      = link_to "<span class=\"#{tab_action}-link\">#{tab_label}</span>", |
+        {:action => tab_action,                                           |
+        :controller => tab_controller,                                    |
+        :id => item}, :tabindex => '1'                                    |
+      - tab_count += 1
+    - if @tech_admin
+      %li{:class => ((params[:controller] == 'importers') ? 'selected' : '')}
+        = link_to t('baskets.actions_menu.importers'),  |
+                {:action => :list,                      |
+          :controller => 'importers'}, :tabindex => '1' |
+    - if @current_basket != @site_basket
+      %li= link_to t('baskets.actions_menu.delete'),                                   |
+                {:action => :destroy,                                                 |
+          :id => item},                                                               |
+          :method => :post,                                                           |
+          :confirm => t('baskets.actions_menu.delete_confirmation'), :tabindex => '1' |
+/ /content-tabs

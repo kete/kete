@@ -1,0 +1,21 @@
+%fieldset
+  = error_messages_for 'content_type'
+  .row
+    / [form:content_type]
+    %p= t 'content_types.form.note'
+    .form-element
+      %label.required{:for => "content_type_name"}= t 'content_types.form.controller'
+      = text_field 'content_type', 'controller' , {:class=>"text-input"}
+    .form-element
+      %label.required{:for => "content_type_name"}= t 'content_types.form.class_name'
+      = text_field 'content_type', 'class_name' , {:class=>"text-input"}
+    .form-element
+      %label.required{:for => "content_type_name"}= t 'content_types.form.humanize'
+      = text_field 'content_type', 'humanized' , {:class=>"text-input"}
+    .form-element
+      %label.required{:for => "content_type_name"}= t 'content_types.form.humanized_plural'
+      = text_field 'content_type', 'humanized_plural' , {:class=>"text-input"}
+    .form-element
+      %label{:for => "content_type_description"}= t 'content_types.form.description'
+      = text_area 'content_type', 'description'
+    / [eoform:content_type]

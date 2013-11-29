@@ -1,0 +1,16 @@
+= render(:partial => "topics/secondary_wrapper_start",                                                  |
+  :locals => { :div_id => "content-tools", :class_suffix => nil, :content_classes => 'content-tools' }) |
+- cache_with_privacy(item, {:part => 'contributor'}) do
+  - if item.created_at < item.updated_at
+    = stylish_link_to_contributions_of(@last_contributor, 'Topic',                                                                      |
+      :additional_classes => ['last_edited_link'],                                                                                      |
+      :additional_html => add_to_stylish_display_with("#{t('topics.flagging_contributor.last_to_edit')} #{h(item.title)}") +            |
+      add_to_stylish_display_with("#{t('topics.flagging_contributor.created_or_updated_on')} #{item.updated_at.to_s(:natural_short)}")) |
+  = stylish_link_to_contributions_of(@creator, 'Topic',                                                                               |
+    :additional_classes => ['created_link'],                                                                                          |
+    :additional_html => add_to_stylish_display_with("#{t('topics.flagging_contributor.created')} #{h(item.title)}") +                 |
+    add_to_stylish_display_with("#{t('topics.flagging_contributor.created_or_updated_on')} #{item.created_at.to_s(:natural_short)}")) |
+.clear
+- cache_with_privacy(item, {:part => 'flagging'}) do
+  = flagging_links_for(item)
+= render(:partial => "topics/secondary_wrapper_end")

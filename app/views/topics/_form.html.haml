@@ -1,0 +1,232 @@
+- controller = (@new_item_controller || params[:controller])
+- # @new_item_controller is passed in from the ajax add item forms (to replace the basket controller assignment)
+- zoom_class = zoom_class_from_controller(controller)
+- # If we are adding the item from the site basket into the about basket, neither @site_basket nor @current_basket
+- # helps here. We have to pass in the intended basket via an instance variable (used in ajax add item forms)
+- @basket = (Basket.find_by_urlified_name(@new_item_basket) || @current_basket)
+- @relate_to_item = (@relate_to_item || params[:relate_to_item])
+- @relate_to_type = (@relate_to_type || params[:relate_to_type])
+- @related_item_private = (@related_item_private || params[:related_item_private])
+- # @item is passed in from the ajax add item forms, so only set it if not already set
+- @item ||= current_item
+- @item_name = zoom_class_humanize(zoom_class)
+- @item_type = zoom_class.underscore.to_sym
+- @editing = !@item.new_record?
+- if @item.new_record? && %w(StillImage Document Video AudioRecording).include?(zoom_class)
+- @as_service = params[:as_service].present? && params[:as_service] == 'true'
+- if @as_service
+- @service_target = params[:service_target]
+- @append_show_url = params[:append_show_url].present?  && params[:append_show_url] == 'true'
+- end
+- end
+- if @editing
+- @title, @url, @submit_text = "#{t('topics.form.editing')} #{@item_name}", { :urlified_name => @basket.urlified_name,
+- :controller => controller,
+- :action => 'update',
+- :id => @item,
+- :private => params[:private] }, t('topics.form.update')
+- else
+- @title, @url, @submit_text = "#{t('topics.form.new')} #{@item_name}", { :urlified_name => @basket.urlified_name,
+- :controller => controller,
+- :action => 'create',
+- :private => params[:private] }, t('topics.form.create')
+- if params[:controller] == 'web_links' && params[:action] == 'create' && @item.errors.present? && @item.errors.size == 1
+- @submit_text = t('topics.form.confirm')
+- @force_url = true
+- # !! someone elses error, but should probably be fixed.
+- # HACK
+- # TODO: replace this in the model in Rails 3x
+- # in Rails 2.3.5 passing in a custom message to WebLink validates_http_url didn't work
+- @item.errors.add('url', t('.invalid_url'))
+- end
+- end
+%h2= @title
+- form_for(@item_type, @item, :builder => FormHelper,
+- :url => @url,
+- :html => { :multipart => true }) do |form|
+  %fieldset
+    = form.error_messages
+    %p.required
+      %em= t 'topics.form.required_fields'
+    - if @as_service
+      = hidden_field_tag 'as_service', @as_service
+      = hidden_field_tag 'service_target', @service_target
+      = hidden_field_tag 'append_show_url', @append_show_url
+    - if @item_type == :still_image
+      = error_messages_for 'image_file'
+      - if @editing
+        = hidden_field_tag 'image_file[still_image_id]', @item.id, :id => "image_file_still_image_id"
+        - @image_file = ImageFile.find_by_thumbnail_and_still_image_id("medium", @item.id)
+        .form-element
+          %label= t 'topics.form.current_image'
+          = render(:partial => "images/image_file", |
+            :locals => { :still_image => @item,     |
+            :image_file => @image_file,             |
+            :without_controls => true })            |
+      - if params[:portrait] || params[:selected_portrait]
+        = hidden_field_tag 'portrait', (params[:portrait] || params[:selected_portrait])
+      - if params[:selected_portrait]
+        = hidden_field_tag 'selected_portrait', params[:selected_portrait]
+    - unless @relate_to_item.nil?
+      = hidden_field_tag "relate_to_item", @relate_to_item
+      = hidden_field_tag "relate_to_type", @relate_to_type
+      - unless @related_item_private.nil?
+        = hidden_field_tag "related_item_private", @related_item_private
+    - if @item_type == :document && !params[:is_theme].nil? && @site_admin
+      = hidden_field_tag "is_theme", params[:is_theme]
+    - if @editing && @site_admin
+      = form.select 'basket_id', @baskets, {}, { :tabindex => '1', :label => t('topics.form.move_baskets') }
+    - else
+      = form.hidden_field :basket_id, :value => @basket.id
+    - if @item_type == :topic
+      - unless params[:index_for_basket].nil?
+        = hidden_field_tag "index_for_basket", params[:index_for_basket]
+        - unless params[:return_to_homepage].nil?
+          = hidden_field_tag "return_to_homepage", params[:return_to_homepage]
+      - if @editing
+        = render :partial => 'topic_types', :locals => { :topic_types => @topic_types }
+      - else
+        = form.hidden_field :topic_type_id, :value => params[:topic][:topic_type_id]
+    = embedded_enabled_message("<p class='help'>#{t('topics.form.note')} ", " #{t('topics.form.embedded_note')}</p>") if ATTACHABLE_CLASSES.include?(zoom_class) && !@editing
+    - item_private = adding_or_editing_private_item?
+    - if show_privacy_controls_for_basket?(@basket)
+      = form.radio_button :private,                                                                        |
+        [ [t('topics.form.public'), false, { :label_for => "#{@item_type.to_s}_private_false",             |
+                              :note => t('topics.form.public_description'),                                |
+                              :checked => (item_private ? '' : 'checked') }],                              |
+          [t('topics.form.private'), true, { :label_for => "#{@item_type.to_s}_private_true",              |
+                              :note => t('topics.form.private_description'),                               |
+                              :checked => (item_private ? 'checked' : '') }] ],                            |
+        { :tabindex => '1', :label => t('topics.form.privacy'), :example => privacy_controls_description } |
+    - else
+      = form.hidden_field :private, :value => item_private
+    = add_ons_item_form_beginning(form)
+    = form.text_field :title, { :tabindex => '1', :label => t('topics.form.title'), :required => true }
+    - if [:document, :topic].include?(@item_type)
+      = form.text_area :short_summary, { :class => "text-area", :cols => 120, :rows => 2, :tabindex => '1', |
+        :label => t('topics.form.short_summary') }                                                          |
+    = form.text_area :description, { :class => "mceEditor", :cols => 120, :tabindex => '1',                                     |
+      :label => t('topics.form.description'), :label_class => 'cleared-right',                                                  |
+      :example => "#{t('topics.form.description_example')} #{t('topics.form.description_example_exception') if @site_admin}." } |
+    - if @site_admin
+      = form.check_box :do_not_sanitize, { :tabindex => '1', |
+        :label => t('topics.form.allow_insecure_elements') } |
+    - unless [:topic, :web_link].include?(@item_type)
+      - if params[@item_type] && params[@item_type][:file_private]; file_private = params[@item_type][:file_private] == 'true' ? true : false
+      - elsif @editing; file_private = @item.file_private?
+      - else; file_private = @basket.file_private_default_with_inheritance?; end
+      - if show_privacy_controls_for?(@item, @basket)
+        = form.radio_button :file_private,                                                                            |
+          [ [t('topics.form.downloaded_by_everyone'), false,                                                          |
+          { :label_for => "#{@item_type.to_s}_file_private_false",                                                    |
+          :checked => (file_private ? '' : 'checked') }],                                                             |
+          [t('topics.form.downloaded_by_role', :role_name => @basket.private_file_visibility_with_inheritance), true, |
+          { :label_for => "#{@item_type.to_s}_file_private_true",                                                     |
+          :checked => (file_private ? 'checked' : '') }] ],                                                           |
+          file_private_radio_options(@item).merge({ :tabindex => '1',                                                 |
+          :label => t('topics.form.file_privacy'),                                                                    |
+          :example => t('topics.form.file_privacy_example') })                                                        |
+        = javascript_tag "                                                                                                                      |
+            if ($('#{@item_type.to_s}_private_true') && $('#{@item_type.to_s}_private_false')) {                                                |
+              $('#{@item_type.to_s}_private_true').observe('click', function(){ $('#{@item_type.to_s}_file_private_true').checked = true; });   |
+              $('#{@item_type.to_s}_private_false').observe('click', function(){ $('#{@item_type.to_s}_file_private_false').checked = true; }); |
+            }                                                                                                                                   |
+          "                                                                                                                                     |
+      - else
+        = form.hidden_field :file_private, :value => file_private
+    - if show_notification_controls?(@basket)
+      <div id="skip_email_notification_div"#{"style='display:none;'" unless item_private}>
+      - if params[@item_type] && params[@item_type][:skip_email_notification]; skip = (params[@item_type][:skip_email_notification] == '1' ? true : false)
+      - elsif @editing; skip = @item.skip_email_notification
+      - else; skip = false; end
+      = form.check_box :skip_email_notification, { :tabindex => '1',                                                        |
+        :label => t('topics.form.skip_email_notification',                                                                  |
+                    :role_type => Basket.level_value_from(@basket.setting(:private_item_notification)).downcase.pluralize), |
+        :checked => skip }                                                                                                  |
+      - if show_privacy_controls_for?(@item, @basket)
+        = javascript_tag "                                                            |
+            $('#{@item_type.to_s}_private_true').observe('change', function(event) {  |
+              $('skip_email_notification_div').show();                                |
+            });                                                                       |
+            $('#{@item_type.to_s}_private_false').observe('change', function(event) { |
+              $('skip_email_notification_div').hide();                                |
+            });                                                                       |
+          "                                                                           |
+    - if @item_type == :web_link && (show_privacy_controls_for?(@item, @basket) || !@editing)
+      = form.text_field :url, { :tabindex => '1', :label => t('topics.form.url'), :required => true }
+      - if @force_url
+        - Rails.logger.debug("what are errors: " + @item.errors.inspect)
+        = form.hidden_field :force_url, :value => @force_true
+    .form-element
+      %label{:for => "#{@item_type}_tag_list"}= t 'topics.form.tags'
+      = text_field_with_auto_complete(@item_type, :tag_list, { :tabindex => '1' }, |
+        { :tokens => ',',                                                          |
+        :indicator => 'data_spinner_tags' })                                       |
+      <img src='/images/indicator.gif' width='16' height='16' alt='#{t 'topics.form.getting_tags'}' id='data_spinner_tags' style='display:none;' />
+- # disabling overwriting of original file for the timebeing
+- # when we support versioning of files, we'll likely re-enable this
+  - unless [:topic, :web_link].include?(@item_type) || @editing
+    - if @item_type == :still_image
+      .form-element
+        %label.required{:for => "image_file_uploaded_data"}
+          = t 'topics.form.upload_image'
+          %em *
+        = file_field_tag 'image_file[uploaded_data]', { :id => 'image_file_uploaded_data', :tabindex => '1' }
+    - else
+      = form.file_field :uploaded_data, { :tabindex => '1', :label => "#{t('topics.form.upload')} #{@item_name}", :required => true }
+  = add_ons_item_form_mid(form)
+  - if @item_type == :topic
+    - @self_topic_type_and_ancestors = @editing ? @item.topic_type.self_and_ancestors :
+    - TopicType.find(params[:topic][:topic_type_id]).self_and_ancestors
+    - @self_topic_type_and_ancestors.each do |topic_type|
+      - form_fields = topic_type.topic_type_to_field_mappings
+      - if form_fields.size > 0
+        = render(:partial => 'extended_fields/extended_field_mapping', |
+          :collection => form_fields,                                  |
+          :locals => { :form_fields => form_fields,                    |
+          :edit => @editing,                                           |
+          :extended_item => @item,                                     |
+          :item_key => @item_type.to_s})                               |
+  - else
+    - form_fields = @content_type.content_type_to_field_mappings
+    - if form_fields.size > 0
+      = render(:partial => 'extended_fields/extended_field_mapping', |
+        :collection => form_fields,                                  |
+        :locals => { :form_fields => form_fields,                    |
+        :edit => @editing,                                           |
+        :extended_item => @item,                                     |
+        :item_key => @item_type.to_s })                              |
+  - if SystemSetting.enable_maps? && @maps_callbacks.present?
+    - @maps_callbacks.each do |map_callback|
+      = javascript_tag(map_callback)
+    = javascript_tag("Gmaps.loadMaps();") if params[:action] == 'render_item_form'
+  - if show_privacy_controls_for?(@item, @basket)
+    = javascript_tag "                                                            |
+        $('#{@item_type.to_s}_private_true').observe('change', function(event) {  |
+          $$('.private_only').each(function(field) { field.show(); });            |
+        });                                                                       |
+        $('#{@item_type.to_s}_private_false').observe('change', function(event) { |
+          $$('.private_only').each(function(field) { field.hide(); });            |
+        });                                                                       |
+      "                                                                           |
+  - if @editing
+    = form.text_field :version_comment, { :tabindex => '1',                               |
+      :value => (!params[@item_type].blank? ? params[@item_type][:version_comment] : ''), |
+      :label => t('topics.form.comment_on_edit') }                                        |
+  = render :partial => 'topics/license_chooser_or_agreement', |
+    :locals => { :item => @item }                             |
+  - if SystemSetting.hide_related_items_position_field
+    = form.hidden_field :related_items_position, :value => SystemSetting.related_items_position_default
+  - else
+    - if params[@item_type] && params[@item_type][:related_items_position]; position = params[@item_type][:related_items_position]
+    - elsif @editing && !@item.related_items_position.nil?; position = @item.related_items_position
+    - else; position = SystemSetting.related_items_position_default; end
+    = form.select :related_items_position, related_items_positions,           |
+      { :selected => position },                                              |
+      { :tabindex => '1', :label => t('topics.form.related_items_position') } |
+  = add_ons_item_form_end(form)
+  .wrap
+    = form.submit @submit_text, { :class => "save-button", :tabindex => '1' }
+= link_to_cancel
+|
+\#{link_to(t('topics.form.help'), { :controller => 'index_page', :action => :help_file }, :popup => ['help', 'height=500,width=780,scrollbars=yes,top=100,left=100'], :tabindex => '1')}

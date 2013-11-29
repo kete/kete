@@ -1,0 +1,25 @@
+= render(:partial => "topics/secondary_wrapper_start",        |
+  :locals => { :div_id => "tags-box", :class_suffix => nil }) |
+= cache_with_privacy(item, {:part => "secondary_content_tags"}) do
+  %h2= t 'topics.tags.title'
+  #tags_list
+    = tags_for(item)
+- if permitted_to_edit_current_item? && params[:action] != 'preview'
+  - item_key = zoom_class_from_controller(params[:controller]).underscore
+  #add_tag_button{:style => "display:none"}
+    [
+    %a{:href => "#", :onclick => "Element.show('add_tag_form_div');Element.hide('add_tag_button');$('#{item_key}_tag_list').activate();", :title => t 'topics.tags.click_to_add'}> +
+    ]
+  #add_tag_form_div
+    = form_remote_tag( :url => { :action => 'add_tags', :id => params[:id], :private => params[:private] }, |
+      :before => "Element.show('data_spinner')",                                                            |
+      :complete => "Element.hide('data_spinner')",                                                          |
+      :html => { :id => 'add_tag_form' } ) do                                                               |
+      = text_field_with_auto_complete item_key.to_sym, :tag_list, |
+        { :size => 15, :value => '' },                            |
+        { :tokens => ',', :indicator => 'data_spinner_tags' }     |
+      = submit_tag 'add tag'
+      %img#data_spinner{:alt => t 'topics.tags.sending_tags', :height => "16", :src => "/images/indicator.gif", :style => "display:none;", :width => "16"}/
+      %img#data_spinner_tags{:alt => t 'topics.tags.getting_tags', :height => "16", :src => "/images/indicator.gif", :style => "display:none;", :width => "16"}/
+  = javascript_tag "$('add_tag_button').show();$('add_tag_form_div').hide();"
+= render(:partial => "topics/secondary_wrapper_end")

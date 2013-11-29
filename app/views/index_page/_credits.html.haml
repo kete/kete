@@ -1,0 +1,8 @@
+.credits
+  - if SystemSetting.show_powered_by_kete?
+    = t('index_page.credits.powered_by')
+    %a{:href => "http://kete.net.nz/"}
+      %img{:alt => "small kete logo. ", :height => "17", :src => "/images/kete-logo-36x17-transparent-bg.gif", :style => "vertical-align: text-bottom;", :width => "36"}/
+  / additional credits here from system settings
+  = SystemSetting.additional_credits_html unless SystemSetting.additional_credits_html.blank?
+  / end additional credits here from system settings

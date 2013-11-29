@@ -1,0 +1,16 @@
+- if current_user_can_see_private_files_for?(item)
+  %p
+    = t 'audio.details.filename'
+    = item.filename
+    = link_to_original_of item, t('audio.details.listen')
+  %p
+    = t 'audio.details.size'
+    = number_to_human_size(item.size)
+  %p
+    = t 'audio.details.type'
+    = item.content_type
+- else
+  %p
+    = t 'audio.details.filename'
+    = item.filename
+    ( #{t 'audio.details.not_available'} )

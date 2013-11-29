@@ -1,0 +1,10 @@
+.form-element
+  = form.text_area :index_page_extra_side_bar_html, {:class => "mceEditor", :cols => 120, :rows => 10, :tabindex => '1'}
+.form_example
+  = t 'baskets.homepage_form.security_warning'
+  = t 'baskets.homepage_form.security_warning_admin' if @site_admin
+- if @site_admin
+  .form-element
+    = form.check_box :do_not_sanitize, :tabindex => '1'
+    %label.inline{:for => "basket_do_not_sanitize"}= t 'baskets.homepage_form.security_exception_example'
+    %br/
