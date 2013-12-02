@@ -1,6 +1,6 @@
 class UserObserver < ActiveRecord::Observer
   def after_create(user)
-    if SystemSetting.activation?
+    if SystemSetting.require_activation?
       if SystemSetting.administrator_activates?
         Role.find_by_name('site_admin').users.each do |admin|
           UserNotifier.notification_to_administrators_of_new(user, admin).deliver
