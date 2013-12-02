@@ -645,7 +645,7 @@ class Basket < ActiveRecord::Base
 
   # reset the baskets class variable if its one of those we cache
   def reset_basket_class_variables
-    return unless @@standard_baskets.include?(self.id)
+    return unless standard_basket_ids.include?(self.id)
 
     # ROB:  this previously had code that reloaded the @@help_basket/etc
     #       baskets if self was one of these, probably to update these 
