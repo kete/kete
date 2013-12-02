@@ -405,7 +405,7 @@ class SystemSetting
     self.setting(:use_backgroundrb_for_search_record_updates)
   end
 
-  def self.administrator_activates
+  def self.administrator_activates?
     self.setting(:administrator_activates)
   end
 
@@ -641,6 +641,14 @@ private
 
     def default_records_per_page
       5 
+    end
+
+    def self.administrator_activates
+      false
+    end
+
+    def self.require_activation
+      false
     end
   end 
 end
