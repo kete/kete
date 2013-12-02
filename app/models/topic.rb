@@ -137,10 +137,6 @@ class Topic < ActiveRecord::Base
 
   after_save :store_correct_versions_after_save
 
-  # James - 2008-09-08
-  # Ensure basket cache is cleared if this is a standard basket home-page topic
-  after_save :clear_basket_homepage_cache
-
   # Kieran Pilkington - 2008/10/21
   # Named scopes used in the index page controller for recent topics
   scope :recent, lambda { where('1 = 1').order('created_at DESC').limit(5) }
@@ -153,10 +149,6 @@ class Topic < ActiveRecord::Base
     self.taggings.each do |tagging|
       tagging.update_attribute(:basket_id, self.basket_id)
     end
-  end
-
-  def clear_basket_homepage_cache
-    self.basket.send(:reset_basket_class_variables) if self.basket.index_topic == self
   end
 
   # Walter McGinnis, 2011-02-15
@@ -175,8 +167,6 @@ class Topic < ActiveRecord::Base
       nil
     end
   end
-
-  private :clear_basket_homepage_cache
 
   def related_topics(only_non_pending = false)
     if only_non_pending

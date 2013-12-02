@@ -129,9 +129,6 @@ class Basket < ActiveRecord::Base
     Basket.standard_basket_ids 
   end
 
-  after_save :reset_basket_class_variables
-  before_destroy :reset_basket_class_variables
-
   # Kieran Pilkington, 2008/08/18
   # Store how many baskets have privacy controls enabled to determine
   # whether Site basket should keep its privacy browsing controls on
@@ -641,20 +638,6 @@ class Basket < ActiveRecord::Base
       role.reload
       role.destroy if role.users.size == 0
     end
-  end
-
-  # reset the baskets class variable if its one of those we cache
-  def reset_basket_class_variables
-    return unless standard_basket_ids.include?(self.id)
-
-    # ROB:  this previously had code that reloaded the @@help_basket/etc
-    #       baskets if self was one of these, probably to update these 
-    #       after a change.
-    #       This method can probably just be removed.
-
-    # after we change these, we need to reload routes for index_page path
-    # ActionController::Routing::Routes.reload!
-    Rails.application.reload_routes!
   end
 
   # when we create, update, or destroy, we recalcutate the amount of
