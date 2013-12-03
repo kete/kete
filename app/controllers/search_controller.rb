@@ -23,8 +23,9 @@ class SearchController < ApplicationController
   after_filter :store_results_for_slideshow, :only => [:for, :all]
 
   # GETs should be safe (see http://www.w3.org/2001/tag/doc/whenToUseGet.html)
-  verify :method => :post, :only => [ :rebuild_zoom_index ],
-         :redirect_to => { :action => :index }
+  # EOIN: TODO: these constraints need to implemented as routing in rails 3+
+  # verify :method => :post, :only => [ :rebuild_zoom_index ],
+  #        :redirect_to => { :action => :index }
 
   # these search actions should only be done by tech admins at this time
   permit "tech_admin", :only => [ :setup_rebuild, :rebuild_zoom_index, :check_rebuild_status ]
@@ -185,6 +186,8 @@ class SearchController < ApplicationController
     @zoom_connection = @search.zoom_db.open_connection
 
     @result_sets = Hash.new
+
+    # EOIN: put our new search stuff here
 
     # iterate through all record types and build up a result set for each
     if params[:related_class].nil?
@@ -958,7 +961,8 @@ class SearchController < ApplicationController
   # we now have combined version of each search/browse results RSS
   # in addition to the zoom class specific rss
   def setup_rss
-    @rss_tag_auto = [rss_tag, rss_tag(:combined => true)]
-    @rss_tag_link = [rss_tag(:auto_detect => false), rss_tag(:auto_detect => false, :combined => true)]
+    # EOIN: TODO: re-enable these sometime
+    # @rss_tag_auto = [rss_tag, rss_tag(:combined => true)]
+    # @rss_tag_link = [rss_tag(:auto_detect => false), rss_tag(:auto_detect => false, :combined => true)]
   end
 end

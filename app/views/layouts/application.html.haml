@@ -85,7 +85,7 @@
       = stylesheet_link_tag 'yui/treeview'
     - rss_tag_links = @rss_tag_link.blank? ? Array.new : @rss_tag_link.to_a
     - rss_tag_autos = @rss_tag_auto.blank? ? Array.new : @rss_tag_auto.to_a
-    - combined_rss_url = basket_all_rss_url( :urlified_name => @site_basket.urlified_name, :controller_name_for_zoom_class => 'combined' )
+    - combined_rss_url = # EOIN: this needs to be re-enabled when search is more understood:  basket_all_rss_url( :urlified_name => @site_basket.urlified_name, :controller_name_for_zoom_class => 'combined' )
     - rss_tag_autos.each do |rss_tag_auto|
       = rss_tag_auto.sub("title=\"RSS\"", "title=\"RSS #{stripped_title}\"")
 
@@ -106,7 +106,7 @@
           = "<![endif]-->"
 
     - if ['audio', 'video'].include?(params[:controller]) && params[:action] == 'show'
-      -# = javascript_include_tag "anarchy_media/anarchy.js"
+      = javascript_include_tag "anarchy_media/anarchy.js"
 
   %body{:id => @current_basket.urlified_name}
     #body-outer-wrapper
@@ -118,9 +118,7 @@
               = header_link_to_current_basket.html_safe unless header_link_to_current_basket.nil?
             = render 'account/locale_selection', :classes => ['header'] if SystemSetting.language_choices_position == 'header'
             #head-search-wrapper
-              = form_tag ({ :urlified_name => @site_basket.urlified_name, |
-                :controller => 'search',                                  |
-                :action => 'terms_to_page_url_redirect' }) do             |
+              = form_tag ({ :urlified_name => @site_basket.urlified_name, :controller => 'search', :action => 'for' }) do             |
                 .search_fields
                   #advanced_search_dropdown_trigger
                     %noscript= image_tag 'magnifier.png', :width => 16, :height => 16
