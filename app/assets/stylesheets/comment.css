@@ -1,0 +1,53 @@
+.comment-outer-wrapper {
+  margin-top: 20px;
+}
+
+.comment-outer-wrapper h3 {
+  margin: 0;
+}
+
+/* Any more than 4 depths, and comments start looking compacted */
+.comment-depth-1 { margin-left: 15px; }
+.comment-depth-2 { margin-left: 30px; }
+.comment-depth-3 { margin-left: 45px; }
+.comment-depth-4 { margin-left: 60px; }
+
+.comment-wrapper {
+  margin: 1.5em .8em 1em .8em;
+}
+
+.comment-wrapper-header-wrapper,
+.comment-wrapper-header {
+  height: 66px;
+}
+
+.comment-content {
+  padding: 1px 10px;
+  border-left: 1px solid #B6B5B2;
+  border-right: 1px solid #B6B5B2;
+  background-color: #fff;
+  margin-top: -47px;
+}
+
+.comment-date {
+  float: right;
+  margin-top: 15px;
+}
+
+.comment-tools ul {
+  margin-bottom: 0;
+}
+
+.comment-tools ul li {
+  border-left: 1px solid #000;
+  padding: 0 5px;
+}
+
+.comment-tools ul li.first {
+  border-left: none;
+}
+
+.comment-wrapper-footer-wrapper,
+.comment-wrapper-footer {
+  height: 10px;
+}

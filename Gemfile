@@ -2,6 +2,7 @@ source "https://rubygems.org"
 
 gem "rails", "3.2.15"
 
+gem 'sass-rails'
 # EOIN: TODO: I suspect there are gems mentioned in here that rails pulls in implicitly - we should remove them from here if so.
 gem 'prototype-rails'
 gem 'rails-erd'

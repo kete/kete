@@ -1,0 +1,12 @@
+/* printing styles */
+p, th, td, ul, ol, li, div, input, textarea, select, option {
+	font-family:arial,helvetica,sans-serif;
+	font-size: 1em;
+}
+h1, h2, h3, h4 {
+	font-family:arial,helvetica,sans-serif;
+	margin:0
+}
+form {
+	margin:0
+}

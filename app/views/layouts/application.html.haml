@@ -55,12 +55,15 @@
     - if SystemSetting.language_choices_position == 'header'
       :css
         #header { padding-top: 3em; padding-bottom: 1em; }
-    = javascript_include_tag 'redbox'
+
+    = javascript_include_tag "application" 
+
+    -# = javascript_include_tag 'redbox'
     - if !SystemSetting.available_syntax_highlighters.blank?
-      = javascript_include_tag 'dan_webb_code_highlighter/code_highlighter'
+      -# = javascript_include_tag 'dan_webb_code_highlighter/code_highlighter'
       - SystemSetting.available_syntax_highlighters.each do |syntax|
-        = javascript_include_tag "dan_webb_code_highlighter/#{syntax}"
-    = javascript_include_tag 'kete'
+        -# = javascript_include_tag "dan_webb_code_highlighter/#{syntax}"
+    -# = javascript_include_tag 'kete'
     - if SystemSetting.enable_maps? && initialize_gmap_headers?
       - if CACHES_CONTROLLERS.include?(params[:controller]) || params[:controller] == 'index_page'
         = stylesheet_link_tag 'gmaps4rails'
@@ -78,7 +81,7 @@
     - if ACTIVE_SCAFFOLD_CONTROLLERS.include?(params[:controller])
       = active_scaffold_includes
     - if ['extended_fields', 'choices'].include?(params[:controller])
-      = javascript_include_tag "yui/yahoo/yahoo", "yui/event/event-min", "yui/animation/animation-min", "yui/dom/dom-min", "yui/treeview/treeview-min"
+      -# = javascript_include_tag "yui/yahoo/yahoo", "yui/event/event-min", "yui/animation/animation-min", "yui/dom/dom-min", "yui/treeview/treeview-min"
       = stylesheet_link_tag 'yui/treeview'
     - rss_tag_links = @rss_tag_link.blank? ? Array.new : @rss_tag_link.to_a
     - rss_tag_autos = @rss_tag_auto.blank? ? Array.new : @rss_tag_auto.to_a
@@ -103,7 +106,7 @@
           = "<![endif]-->"
 
     - if ['audio', 'video'].include?(params[:controller]) && params[:action] == 'show'
-      = javascript_include_tag "anarchy_media/anarchy.js"
+      -# = javascript_include_tag "anarchy_media/anarchy.js"
 
   %body{:id => @current_basket.urlified_name}
     #body-outer-wrapper

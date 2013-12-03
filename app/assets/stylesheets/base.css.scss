@@ -29,7 +29,7 @@ otherwise text butts up against sidebar */
 }
 /* #################################### Header #################################### */
 #header {
-    background: #7a0203 url(../images/header-bg.gif) bottom repeat-x;
+    background: #7a0203 url(asset-path('header-bg.gif', image)) bottom repeat-x;
     color: white;
     padding-top: 2em;
     float: left;
@@ -225,7 +225,7 @@ body.mceContentBody {
     padding-left: 20px;
 }
 #extended-fields h2{
-    background-image: url(../images/icon-extended.gif);
+    background-image: url(asset-path('icon-extended.gif', image));
 }
 #tags-box h2 {
     background-image: url(../images/icon-tag.gif);
@@ -732,7 +732,7 @@ h3 a {
     background-position: center left;
     padding: 2px;
     padding-left: 20px !important;
-    background-image: url(../images/icon-flag.gif);
+    background-image: url(asset-path('icon-flag.gif', image));
 }
 .secondary-content-section .related-action a{
     color: #000033;
@@ -756,10 +756,10 @@ p.feed {
     background-position: center left;
     padding: 2px;
     padding-left: 20px;
-    background-image: url(../images/icon-help.gif);
+    background-image: url(asset-path('icon-help.gif', image));
 }
 p.feed {
-    background-image: url(../images/icon-feed.gif);
+    background-image: url(asset-path('icon-feed.gif', image));
 }
 p.feed a{
     font-weight: bold;
@@ -797,7 +797,7 @@ th {
 
 #basket-toolbox,
 #adminToolbox{
-    background-image: url(../images/toolbox.gif);
+    background-image: url(asset-path('toolbox.gif', image));
     background-repeat: no-repeat;
     background-position: 10px 10px;
     border: 2px solid #7A0203;
@@ -880,17 +880,17 @@ span.next-active {
 }
 
 .prev-inactive {
-    background-image: url(../images/icon_results_previous_off.gif);
+    background-image: url(asset-path('icon_results_previous_off.gif', image));
 }
 .prev-active {
-    background-image: url(../images/icon_results_previous.gif);
+    background-image: url(asset-path('icon_results_previous.gif', image));
 
 }
 .next-inactive {
-    background-image: url(../images/icon_results_next_off.gif);
+    background-image: url(asset-path('icon_results_next_off.gif', image));
 }
 .next-active {
-    background-image: url(../images/icon_results_next.gif);
+    background-image: url(asset-path('icon_results_next.gif', image));
 }
 
 /*
@@ -911,7 +911,7 @@ span.next-active {
   padding: 15px 0 5px 0;
 }
 #linkToRSS ul {
-  list-style-image: url(../images/icon-feed.gif);
+  list-style-image: url(asset-path('icon-feed.gif', image));
   margin: 0;
 }
 #footer_links {
@@ -1321,7 +1321,7 @@ select.extended_field_choice_dropdown {
   list-style: none;
 }
 .category_list li.current {
-  list-style: url(/images/icon_results_next.gif) circle;
+  list-style: url(asset-path('icon_results_next.gif', image)) circle;
 }
 .category_list li.current a {
   color: #000;

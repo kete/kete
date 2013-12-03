@@ -1,5 +1,25 @@
+//= require prototype
+//= require prototype_ujs
+//= require effects
+//= require dragdrop
+//= require controls
+//
+//= require_tree ./active_scaffold
+//= require_tree ./anarchy_media
+//= require controls.js
+//NO require_tree ./dan_webb_code_highlighter
+//= require dhtml_history.js
+//= require dragdrop.js
+//= require effects.js
+//= require_tree ./gmaps4rails
+//= require_tree ./image_selector_config
+//= require kete.js
+//= require redbox.js
+//= require rico_corner.js
+//NO require_tree ./yui
+//NO require prototype.js
+
 // Place your application-specific JavaScript functions and classes here
-// This file is automatically included by javascript_include_tag :defaults
 
 window.onload = function(){
   if (parseInt(navigator.appVersion)>3) {
@@ -12,7 +32,7 @@ window.onload = function(){
       winH = document.body.offsetHeight;
     }
   }
-	     
+
   if(winW < 1160) {
     if(document.getElementById('home-second-row')){
       document.getElementById('home-second-row').style.clear = "both";
@@ -24,7 +44,7 @@ window.onload = function(){
       document.getElementById('home-second-row').style.paddingTop = "0px";
     }
   }
-}
+};
 
 window.onresize = function(){
   if (parseInt(navigator.appVersion)>3) {
@@ -37,7 +57,7 @@ window.onresize = function(){
       winH = document.body.offsetHeight;
     }
   }
-	     
+
   if(winW < 1160) {
     if(document.getElementById('home-second-row')){
       document.getElementById('home-second-row').style.clear = "both";
@@ -49,4 +69,4 @@ window.onresize = function(){
       document.getElementById('home-second-row').style.paddingTop = "0px";
     }
   }
-}
+};
