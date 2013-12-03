@@ -42,7 +42,8 @@ gem 'routing-filter', '~> 0.3.1'
 
 #gem 'oembed_provider_engine' # !! re-enable on Rails 3.2
 
-gem "mysql"
+# gem "mysql"
+gem 'pg'
 
 gem 'railroady'
 gem "awesome_nested_set", "~> 2.1.6"

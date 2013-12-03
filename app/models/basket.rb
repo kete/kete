@@ -225,7 +225,7 @@ class Basket < ActiveRecord::Base
     when 'number'
       find_tag_order = "taggings_count #{tag_direction}"
     else
-      find_tag_order = 'RAND()'
+      find_tag_order = 'RANDOM()'
       # EOIN: this used to be :random but rails doesn't support that now (if it ever did)
       # RAND() is mysql specific, on postgres it would be RANDOM()
     end
