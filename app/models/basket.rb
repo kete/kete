@@ -230,35 +230,37 @@ class Basket < ActiveRecord::Base
       # RAND() is mysql specific, on postgres it would be RANDOM()
     end
 
-    tag_options = {
-      :select => 'tags.id, tags.name, count(taggings.id) AS taggings_count',
-      :joins => 'INNER JOIN taggings ON (tags.id = taggings.tag_id)',
-      :group => 'taggings.tag_id',
-      :order => find_tag_order,
-      :limit => tag_limit,
-      :offset => (((options[:page] || 1) - 1) * tag_limit),
-      :conditions => "taggings.context = 'public_tags'"
-    }
-    tag_options[:conditions] = "taggings.context IN ('public_tags', 'private_tags')" if private_tags
-    tag_options[:conditions] += " AND taggings.basket_id = #{self.id}" unless self == @@site_basket
+    tag_offset = (((options[:page] || 1) - 1) * tag_limit)
 
-    @tag_counts_array = Array.new
-    ActsAsTaggableOn::Tag.all(tag_options).each do |tag|
-      @tag_counts_array << {
+    conditions = "taggings.context = 'public_tags'"
+    conditions += "taggings.context IN ('public_tags', 'private_tags')" if private_tags
+    conditions += " AND taggings.basket_id = #{self.id}" unless self == site_basket
+
+# SELECT tags.id, tags.name, count(taggings.id) AS taggings_count FROM "tags" INNER JOIN taggings ON (tags.id = taggings.tag_id) WHERE (taggings.context = 'public_tags') GROUP BY taggings.tag_id ORDER BY RANDOM() LIMIT 30 OFFSET 0
+# SELECT tags.id, tags.name, count(taggings.id) AS taggings_count FROM "tags" INNER JOIN "taggings" ON "taggings"."tag_id" = "tags"."id" WHERE (taggings.context = 'public_tags') GROUP BY taggings.tag_id ORDER BY RANDOM() LIMIT 30 OFFSET 0
+
+    tags = ActsAsTaggableOn::Tag.select('tags.id, tags.name, count(taggings.id) AS taggings_count')
+      .where(conditions)
+      .group('taggings.tag_id, tags.id, tags.name')
+      .joins(:taggings)
+      .order(find_tag_order)
+      .offset(tag_offset)
+      .limit(tag_limit)
+
+    tags.map do |tag|
+      {
         :id => tag.id,
         :name => tag.name,
         :to_param => tag.to_param,
         :total_taggings_count => tag.taggings_count
       }
     end
-
-    return @tag_counts_array
   end
 
   def tag_publicity_conditions(private_tags = false)
     conditions = "taggings.context = 'public_tags'"
     conditions = "taggings.context IN ('public_tags', 'private_tags')" if private_tags
-    conditions += " AND taggings.basket_id = #{self.id}" unless self == @@site_basket
+    conditions += " AND taggings.basket_id = #{self.id}" unless self == site_basket
     conditions
   end
 
@@ -271,7 +273,7 @@ class Basket < ActiveRecord::Base
       :conditions => "taggings.context = 'public_tags'"
     }
     tag_options[:conditions] = "taggings.context IN ('public_tags', 'private_tags')" if private_tags
-    tag_options[:conditions] += " AND taggings.basket_id = #{self.id}" unless self == @@site_basket
+    tag_options[:conditions] += " AND taggings.basket_id = #{self.id}" unless self == site_basket
 
     ActsAsTaggableOn::Tag.count(tag_options)
   end
@@ -541,7 +543,7 @@ class Basket < ActiveRecord::Base
   # find if we should let users access the basket contact form
   # get the baskets setting or if nil, get it from the site basket
   def allows_contact_with_inheritance?
-    (self.setting(:allow_basket_admin_contact) == true || (self.setting(:allow_basket_admin_contact).class == NilClass && @@site_basket.setting(:allow_basket_admin_contact) == true))
+    (self.setting(:allow_basket_admin_contact) == true || (self.setting(:allow_basket_admin_contact).class == NilClass && site_basket.setting(:allow_basket_admin_contact) == true))
   end
 
   # return a boolean for whether basket join requests (with inheritance) are enabled
@@ -651,7 +653,7 @@ class Basket < ActiveRecord::Base
   before_destroy :prevent_site_basket_destruction
 
   def prevent_site_basket_destruction
-    if self == @@site_basket
+    if self == site_basket
       raise I18n.t('basket_model.cannot_delete_site')
       false
     else
