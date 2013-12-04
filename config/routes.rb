@@ -1,12 +1,29 @@
   KeteApp::Application.routes.draw do
 
-  # EOIN: 
-  # * locale is a built-in filter of the routing-filter gem
+  ####################################################
+  ####################################################
+  # prepend locale to all routes 
+  # * see routing-filter gem for details
   # * it prepends the :locale to all routes e.g. /de/ping
+
   # * it is not clear if this gem is still required in rails 3. We are
   #   keeping it around until we figure out whether the same stuff can be
-  #   achieved with standard rails 3 routing stuff
+  #   achieved with standard rails 3 routing stuff. EOIN: personally I am keen
+  #   to do this to minimise our dependencies
+  #   http://stackoverflow.com/questions/8459506/prepend-path-prefix-to-all-rails-routes
+  #   http://stackoverflow.com/questions/4613996/implementing-account-scoping/4614466#4614466
+  #   https://gist.github.com/pixeltrix/653543
+  # scope(path: :locale) do
+  #   # all other routes
+  # end
+
   filter :locale
+
+
+  ####################################################
+  ####################################################
+
+
 
   match '/oai_pmh_repository' => 'oai_pmh_repository#index', :as => :oai
 
@@ -47,30 +64,37 @@
   ####################################################
 
 
-  # RABID: This probably breaks search but I can't figure out where this route
-  #        comes from (either in this file or the routes file in the master branch).
-  #        Adding this route so we can get the basic app working
+  ####################################################
+  # terrible hacks ###################################
 
-  # BEGIN terrible hacks ############################
-  # EOIN: terrible hacks to enable us to get one controller working
   match 'account/sign_up' => 'account#signup'
   match 'account/login' => 'account#login'
   match 'site/baskets/choose_type' => 'baskets#choose_type'
   match 'site/baskets/list' => 'baskets#list'
   match 'site/account/forgot_password' => 'account#forgot_password'
-  # match 'site/search/all' => 'search#all'
 
   match 'site/index_page/selected_image' => 'index_page#selected_image'
   match 'site/account/show_captcha' => 'account#show_captcha'
   match 'site/account/disclaimer/:id' => 'account#disclaimer'
   match 'topics/new' => 'topics#new'
-  # match 'search/find_related' => 'search#find_related'
   match 'tags/list' => 'tags#list'
-  # END terrible hacks ############################
+
+  ####################################################
+  ####################################################
+
+
+  ####################################################
+  # rails 3+ search routes ###########################
 
   match 'site/search/for' => 'search#for'
   match 'site/search/all' => 'search#all'
   match 'site/search/rss' => 'search#rss'
+
+  # EOIN: I think we should change :urlified_name to :basket for all routes as it is clearer
+
+  ####################################################
+  ####################################################
+
   ####################################################
   # All search related routes (all, rss, for) ########
 # 

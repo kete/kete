@@ -111,6 +111,35 @@ class SearchController < ApplicationController
     save_current_search
   end
 
+  # search method now is smart enough to handle rss situation
+  # especially now that we have pagination in rss (ur, atom?)
+  def rss
+    @search_terms = params[:search_terms]
+
+    # set up the cache key, which handles our params beyond basket, action, and controller
+    @cache_key_hash = Hash.new
+
+    @cache_key_hash[:page] = (params[:page] || 1).to_i
+    @cache_key_hash[:number_per_page] = (params[:count] || 50).to_i
+
+    @cache_key_hash[:privacy] = "private" if is_a_private_search?
+
+    # set the following, if they exist in params
+    relevant_keys = %w( search_terms_slug search_terms tag contributor limit_to_choice source_controller_singular source_item )
+    relevant_keys.each do |key|
+      key = key.to_sym
+      @cache_key_hash[key] = params[key] unless params[key].blank?
+    end
+
+    @search = Search.new
+    search
+
+    respond_to do |format|
+      format.xml
+    end
+  end
+
+  # EOIN: does this method need to be public? 
   def search
     @search = Search.new
 
@@ -203,34 +232,6 @@ class SearchController < ApplicationController
     else
       # populate_result_sets_for(relate_to_class)
       populate_result_sets_for(only_valid_zoom_class(params[:related_class]).name)
-    end
-  end
-
-  # search method now is smart enough to handle rss situation
-  # especially now that we have pagination in rss (ur, atom?)
-  def rss
-    @search_terms = params[:search_terms]
-
-    # set up the cache key, which handles our params beyond basket, action, and controller
-    @cache_key_hash = Hash.new
-
-    @cache_key_hash[:page] = (params[:page] || 1).to_i
-    @cache_key_hash[:number_per_page] = (params[:count] || 50).to_i
-
-    @cache_key_hash[:privacy] = "private" if is_a_private_search?
-
-    # set the following, if they exist in params
-    relevant_keys = %w( search_terms_slug search_terms tag contributor limit_to_choice source_controller_singular source_item )
-    relevant_keys.each do |key|
-      key = key.to_sym
-      @cache_key_hash[key] = params[key] unless params[key].blank?
-    end
-
-    @search = Search.new
-    search
-
-    respond_to do |format|
-      format.xml
     end
   end
 

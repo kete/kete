@@ -750,14 +750,19 @@ module ApplicationHelper
 
   # Link to the related items of a certain item
   def link_to_related_items_of(item, zoom_class, options={}, location={})
-    options = { :link_text => t('application_helper.link_to_related_items_of.link_text',
-                                :item_title => item.title) }.merge(options)
-    location = { :urlified_name => @site_basket.urlified_name,
-                 :controller_name_for_zoom_class => zoom_class_controller(zoom_class),
-                 :source_controller_singular => zoom_class_controller(item.class.name).singularize,
-                 :source_item => item }.merge(location)
-    related_item_url = (location[:privacy_type] == 'private') ? basket_all_private_related_to_path(location) :
-                                                                basket_all_related_to_path(location)
+    # EOIN: currently related items are implemented as a search (presumably because zoom was considered faster than MySQL
+    # should related items be implemented as a scope on the model?
+
+    # EOIN: commenting this out until the time comes to re-implement it
+    # options = { :link_text => t('application_helper.link_to_related_items_of.link_text',
+    #                             :item_title => item.title) }.merge(options)
+    # location = { :urlified_name => @site_basket.urlified_name,
+    #              :controller_name_for_zoom_class => zoom_class_controller(zoom_class),
+    #              :source_controller_singular => zoom_class_controller(item.class.name).singularize,
+    #              :source_item => item }.merge(location)
+    # related_item_url = (location[:privacy_type] == 'private') ? basket_all_private_related_to_path(location) : basket_all_related_to_path(location)
+    related_item_url = ''
+
     link_to options[:link_text], related_item_url, { :class => 'small' }
   end
 
@@ -837,8 +842,9 @@ module ApplicationHelper
       disabled = true if restore_count < 1
       link_text += " (#{restore_count})"
     end
-    link = disabled ? link_text : link_to(link_text, { :controller => 'search', :action => 'find_related' }.merge(options),
-                                                     { :popup => ['links', 'height=500,width=500,scrollbars=yes,top=100,left=100,resizable=yes'] })
+    # EOIN: re-enable when we have decided how to implement related items
+    # link = disabled ? link_text : link_to(link_text, { :controller => 'search', :action => 'find_related' }.merge(options), { :popup => ['links', 'height=500,width=500,scrollbars=yes,top=100,left=100,resizable=yes'] })
+    link = ''
     content_tag('li', link)
   end
 

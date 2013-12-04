@@ -225,9 +225,9 @@ class Basket < ActiveRecord::Base
     when 'number'
       find_tag_order = "taggings_count #{tag_direction}"
     else
-      find_tag_order = 'RANDOM()'
-      # EOIN: this used to be :random but rails doesn't support that now (if it ever did)
-      # RAND() is mysql specific, on postgres it would be RANDOM()
+      # EOIN: the value here in old kete is :random but rails doesn't support that now (if it ever did)
+      # TODO: do we really need to specify that the order should be random?
+      find_tag_order = 'RANDOM()' # RAND() is mysql specific, on postgres it would be RANDOM()
     end
 
     tag_offset = (((options[:page] || 1) - 1) * tag_limit)
@@ -235,9 +235,6 @@ class Basket < ActiveRecord::Base
     conditions = "taggings.context = 'public_tags'"
     conditions += "taggings.context IN ('public_tags', 'private_tags')" if private_tags
     conditions += " AND taggings.basket_id = #{self.id}" unless self == site_basket
-
-# SELECT tags.id, tags.name, count(taggings.id) AS taggings_count FROM "tags" INNER JOIN taggings ON (tags.id = taggings.tag_id) WHERE (taggings.context = 'public_tags') GROUP BY taggings.tag_id ORDER BY RANDOM() LIMIT 30 OFFSET 0
-# SELECT tags.id, tags.name, count(taggings.id) AS taggings_count FROM "tags" INNER JOIN "taggings" ON "taggings"."tag_id" = "tags"."id" WHERE (taggings.context = 'public_tags') GROUP BY taggings.tag_id ORDER BY RANDOM() LIMIT 30 OFFSET 0
 
     tags = ActsAsTaggableOn::Tag.select('tags.id, tags.name, count(taggings.id) AS taggings_count')
       .where(conditions)
