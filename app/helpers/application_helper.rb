@@ -255,10 +255,10 @@ module ApplicationHelper
     }
   end
 
-  def search_link_to_searched_basket
-    html = String.new
-    html += ' ' + link_to_index_for(@current_basket, { :class => 'basket' }) if @current_basket != @site_basket
-  end
+  # def search_link_to_searched_basket
+  #   html = String.new
+  #   html += ' ' + link_to_index_for(@current_basket, { :class => 'basket' }) if @current_basket != @site_basket
+  # end
 
   # making this a dedicated method so that it can be overwritten in add-ons
   def link_to_login(phrase, url_for_options, html_options)

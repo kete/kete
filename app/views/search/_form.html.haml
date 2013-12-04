@@ -16,11 +16,11 @@
       #search-options-wrapper
         %h4= t 'search.form.options'
         %label{:for => "sort_type"}= t 'search.form.sort_by'
-        - sort_type = (params[:sort_type].blank? and !@current_basket.setting(:sort_order_default).blank?) ? @current_basket.setting(:sort_order_default) : params[:sort_type]
-        = select_tag 'sort_type', @search.sort_type_options_for(sort_type, params[:action]), :tabindex => '1'
+        - sort_type = (params[:sort_type].blank? and !@search_presenter.current_basket.setting(:sort_order_default).blank?) ? @search_presenter.current_basket.setting(:sort_order_default) : params[:sort_type]
+        = select_tag 'sort_type', @search_presenter.sort_type_options_for(sort_type, params[:action]), :tabindex => '1'
         <div id="sort_direction_field" #{'style="display:none"' if params[:action] == 'for' && (params[:sort_type].blank? || params[:sort_type] == 'none')}>
         %label{:for => "sort_direction"}= t 'search.form.in_reverse'
-        - currently_reversed = ((!params[:sort_direction].blank? && params[:sort_direction] == 'reverse') or (params[:sort_type].blank? && @current_basket.setting(:sort_direction_reversed_default) == 'reverse'))
+        - currently_reversed = ((!params[:sort_direction].blank? && params[:sort_direction] == 'reverse') or (params[:sort_type].blank? && @search_presenter.current_basket.setting(:sort_direction_reversed_default) == 'reverse'))
         - currently_disabled = (params[:action] == 'for' && (params[:sort_type].blank? || params[:sort_type] == 'none'))
         <input type="checkbox" name="sort_direction" id="sort_direction" value="reverse"#{' disabled="true"' if currently_disabled}#{' checked="checked"' if currently_reversed} tabindex="1" />
       %br/
@@ -35,12 +35,12 @@
       %br/
       = render 'search/refine_by_date'
       %br/
-      %input#update{:name => "update", :tabindex => "1", :type => "submit", :value => t 'search.form.update_results'}/
+      %input#update{:name => "update", :tabindex => "1", :type => "submit", :value => t('search.form.update_results')}
       #searchheader
         #searchheader-results
           %h3= headline
         .wrap
-          = text_field_tag 'search_terms', h(@search_terms.to_s), {:class => 'searchheader-search', :size => '30', :tabindex => '1'}
+          = text_field_tag 'search_terms', @search_presenter.search_terms, {:class => 'searchheader-search', :size => '30', :tabindex => '1'}
           = submit_tag t('search.form.search'), {:class => 'searchbutton', :tabindex => '1'}
     .main-content-footer-wrapper
       .main-content-footer &nbsp;
