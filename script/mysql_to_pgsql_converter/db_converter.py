@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 
+# This is a modified version of https://github.com/lanyrd/mysql-postgresql-converter
 """
 Fixes a MySQL dump made with the right format so it can be directly
 imported to a new PostgreSQL database.
