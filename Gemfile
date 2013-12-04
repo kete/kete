@@ -70,6 +70,10 @@ group :development, :test do
   gem "sqlite3", "~> 1.3.7"
   gem "rspec-rails", "~> 2.14.0"
   gem "factory_girl_rails", "~> 4.3.0"
+
+  gem "capybara"
+  gem "database_cleaner"
+
   gem "pry-rails"
   
   gem "debugger", :platforms => [:mingw_19, :ruby_19]

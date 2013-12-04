@@ -79,11 +79,18 @@ GEM
     byebug (2.3.1)
       columnize (~> 0.3.6)
       debugger-linecache (~> 1.2.0)
+    capybara (2.2.0)
+      mime-types (>= 1.16)
+      nokogiri (>= 1.3.3)
+      rack (>= 1.0.0)
+      rack-test (>= 0.5.4)
+      xpath (~> 2.0)
     choice (0.1.6)
     chronic (0.10.2)
     coderay (1.1.0)
     columnize (0.3.6)
     curb (0.8.5)
+    database_cleaner (1.2.0)
     debugger (1.6.2)
       columnize (>= 0.3.1)
       debugger-linecache (~> 1.2.0)
@@ -225,6 +232,8 @@ GEM
       activerecord (>= 2.0.0)
     will_paginate (3.0.5)
     xml-simple (1.1.2)
+    xpath (2.0.0)
+      nokogiri (~> 1.3)
     ya2yaml (0.31)
 
 PLATFORMS
@@ -246,7 +255,9 @@ DEPENDENCIES
   awesome_print
   backgroundrb-rails3 (~> 1.1.6)
   byebug
+  capybara
   chronic
+  database_cleaner
   debugger
   debugger-xml
   factory_girl_rails (~> 4.3.0)
