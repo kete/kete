@@ -286,11 +286,11 @@ class SystemSetting
     end
 
     def audio_content_types
-      ['audio/mpeg']
+      ['audio/mpeg', 'audio/mpg', 'audio/x-mpeg', 'audio/x-mpegurl', 'audio/wav', 'audio/x-wav', 'audio/x-ms-wma', 'audio/x-ms-waxaudio', 'audio/ogg', 'application/ogg', 'audio/x-vorbis+ogg', 'audio/x-aiff', 'application/octet-stream', 'audio/vorbis', 'audio/speex', 'audio/flac']
     end
 
     def document_content_types
-      ['text/html']
+      ['text/html', 'text/plain', 'text/rtf', 'text/css', 'application/mac-binhex40', 'application/msword', 'application/word', 'application/pdf', 'application/pics-rules', 'application/postscript', 'application/rtf', 'application/vnd.ms-excel', 'application/vnd.ms-powerpoint', 'application/x-gtar', 'application/x-gzip', 'application/zip', 'application/x-zip', 'application/x-zip-compressed', 'application/x-tar', 'application/x-compressed-tar', 'application/vnd.oasis.opendocument.chart', 'application/vnd.oasis.opendocument.database', 'application/vnd.oasis.opendocument.formula', 'application/vnd.oasis.opendocument.drawing', 'application/vnd.oasis.opendocument.image', 'application/vnd.oasis.opendocument.text-master', 'application/vnd.oasis.opendocument.presentation', 'application/vnd.oasis.opendocument.spreadsheet', 'application/vnd.oasis.opendocument.text', 'application/vnd.oasis.opendocument.text-web', 'image/jpeg', 'image/jpg', 'application/octet-stream', 'application/excel', 'application/x-excel', 'application/x-msexcel', 'application/msexcel', 'application/x-ms-excel', 'application/ms-excel', 'application/x-dos_ms_excel', 'image/vnd.adobe.photoshop', 'image/x-photoshop', 'application/x-photoshop', 'image/xcf', 'application/xml']
     end
 
     def enable_converting_documents
@@ -302,11 +302,11 @@ class SystemSetting
     end
 
     def image_content_types
-      [:image]
+      ['image/tiff', 'image/bmp', 'image/x-ms-bmp', 'image/quicktime', 'image/x-quicktime', 'application/postscript', 'application/octet-stream', 'image/vnd.adobe.photoshop', 'image/x-photoshop', 'image/vnd.adobe.photoshop', 'image/x-photoshop', 'application/x-photoshop', 'image/xcf', :image]
     end
 
     def video_content_types
-      ['video/mpeg']
+      ['application/x-shockwave-flash', 'application/flash-video', 'application/x-flash-video', 'video/x-flv', 'video/mp4', 'video/x-m4v', 'video/mpeg', 'video/quicktime', 'video/x-msvideo', 'video/avi', 'video/x-quicktime', 'application/x-director', 'image/mov', 'application/asx', 'video/x-ms-asf-plugin', 'application/x-mplayer2', 'video/x-ms-asf', 'video/x-ms-wm', 'video/x-ms-wmv', 'video/x-ms-wvx', 'application/x-dvi', 'application/octet-stream', 'application/ogg', 'video/ogg', 'video/theora']
     end
 
     def site_url
