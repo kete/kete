@@ -1,14 +1,83 @@
 class SearchPresenter
 
-  def initialize(query: SearchQuery.new, results: [])
+  include ActionView::Helpers
+
+  def initialize(query: SearchQuery.new, results: [], params: {})
     @query = query
     @results = results
+    @params = params
   end
 
   def results
     @results.map do |result|
       result.to_legacy_kete_format
+      # views expect a total_pages method on this
     end
+
+    # expects ActiveRecord::Relation
+    results = Topic.where('1=1').limit(5)
+
+    number_per_page = 10
+    current_page = 1
+    size = results.size
+
+    # EOIN: old-kete does it this way
+    WillPaginate::Collection.new(current_page, number_per_page, size).concat(results)
+  end
+
+  def date_since
+    nil
+    # @query.date_since unless clear_values
+  end
+
+  def date_until
+    nil
+    # @query.date_until unless clear_values
+  end
+
+  def extended_field
+    @params[:extended_field]
+  end
+
+  def limit_to_choice
+    @params[:limit_to_choice]
+  end
+
+  def view_as_choice_heirarchy?
+    view_as == 'choice_hierarchy'
+  end
+
+  def view_as
+    # map|choice_heirarchy
+    @params[:view_as]
+  end
+
+  def view_as_map?
+    view_as == 'map'
+  end
+
+
+  def category_columns
+    browse_by_category_columns
+  end
+
+  def result_sets
+    sets = {}
+    zoom_classes.map do |content_type|
+      sets[content_type] = []
+    end
+    sets
+  end
+
+  def clear_values
+    false
+    # seems to be a flag that says whether the html form should have empty values
+    # expects a boolean
+  end
+
+  def extended_field
+    # expects a thing that implements #label
+    OpenStruct.new(label: "some label")
   end
 
   def title
@@ -22,6 +91,25 @@ class SearchPresenter
   end
 
   def current_basket
+    Basket.site_basket # FIXME: make this find the basket the user is ucrrently in
+  end
+
+  def zoom_classes # TODO: rename this
+    # EOIN: TODO: not clear where we should pull this from yet
+    %w(Topic StillImage AudioRecording Video WebLink Document Comment)
+  end
+
+  def search_sources_amount
+    # FIXME: this model comes from a rails plugin in old kete
+    # SearchSource.count(:conditions => ["source_target IN (?)", ['all', 'search']])
+    0
+  end
+
+  def number_per_page
+    10
+  end
+
+  def current_class
   end
 
   def sort_type_options_for(*args)
@@ -38,6 +126,45 @@ class SearchPresenter
 
   def search_terms
     @query.search_terms
+  end
+
+  def link_to_add_item(options={})
+    # phrase = options[:phrase]
+    # item_class = options[:item_class]
+
+    # phrase += ' ' + content_tag('span', zoom_class_humanize(item_class), :class => 'current_zoom_class')
+
+    # if @current_basket != @site_basket
+    #   phrase += t('application_helper.link_to_add_item.in_basket',
+    #               :basket_name => @current_basket.name)
+    # end
+
+    # return link_to(phrase, {:controller => zoom_class_controller(item_class), :action => :new}, :tabindex => '1')
+    ''
+  end
+
+  def search_results_info_and_links
+  #   statement, links = Array.new, Array.new
+
+  #   statement << t('search.results.showing_x-y_of_z',
+  #                 :start => @start, :finish => @end_record,
+  #                 :total => @result_sets[@current_class].size)
+
+  #   links << '<div id="refine_search_dropdown_trigger"></div>'
+
+  #   if @number_of_locations_count && @number_of_locations_count > 0
+  #     statement << t('search.results.x-y_have_z_locations',
+  #                    :start => @start, :finish => @end_record,
+  #                    :n_locations => @number_of_locations_count)
+  #     if params[:view_as] != 'map' && SystemSetting.enable_maps?
+  #       links << link_to(t('search.results.view_map'), { :overwrite_params => { :view_as => 'map' } }, { :tabindex => '1' } )
+  #     elsif params[:view_as] == 'map'
+  #       links << link_to(t('search.results.view_list'), { :overwrite_params => { :view_as => nil } }, { :tabindex => '1' } )
+  #     end
+  #   end
+
+  #   statement.join(', ') + " [ " + links.join(' | ') + " ] "
+    ''
   end
 
   private

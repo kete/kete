@@ -9,6 +9,7 @@ describe "An anonymous user can search the site" do
 
   it "should work" do
     visit '/'
+
     within '#head-search-wrapper' do
       fill_in 'search_terms', with: 'maori battilion'
       click 'Go'

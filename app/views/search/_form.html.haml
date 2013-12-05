@@ -1,14 +1,15 @@
-- if params[:view_as] && params[:view_as] == 'choice_hierarchy'
-  - category_columns = browse_by_category_columns
-  - unless category_columns.blank?
-    = render "topics/content_wrapper_start", :style_classes => "full-width notabs choices"
+- if @search_presenter.view_as_choice_heirarchy?
+  - unless @search_presenter.category_columns.blank?
+    = render "topics/content_wrapper_start", style_classes: "full-width notabs choices"
     %h3
-      = t 'search.form.browse_by_category'
-      <img src='/images/indicator.gif' width='16' height='16' alt='#{t 'search.form.getting_categories'}' id='categories_spinner' style='display:none;' />
-    #category_selections= category_columns
+      = t('search.form.browse_by_category')
+      -# <img src='/images/indicator.gif' width='16' height='16' alt='#{t 'search.form.getting_categories'}' id='categories_spinner' style='display:none;' />
+      %img#categories_spinner{src: '/images/indicator.gif', width: '16', height: '16', alt: t('search.form.getting_categories'), style: 'display:none;'}
+    #category_selections
+      = @search_presenter.category_columns
     .main-content-footer-wrapper
-      .main-content-footer &nbsp;
-    = render "topics/content_wrapper_end"
+      .main-content-footer 
+        &nbsp;
 - else
   %noscript
     = render "topics/content_wrapper_start", :style_classes => "full-width notabs"
@@ -27,10 +28,11 @@
       - if params[:controller_name_for_zoom_class] == 'topics'
         %label{:for => "topic_type"}= t 'search.form.about_a'
         = topic_type_select_with_indent('topic_type', nil, TopicType.find(1).full_set, :name, :name, params[:topic_type], {}, [[t('search.form.any_topic_type'), '']])
-    - # Only show private search control if allowed and we aren't relating something to a topic.
+
       - if params[:relate_to_topic].blank? && show_privacy_search_controls? && permitted_to_view_private_items?
         %label{:for => "privacy_type"}= t 'search.form.privacy_type'
         = select_tag 'privacy_type', options_for_select({ t('search.form.private') => 'private', t('search.form.public') => 'public' }, params[:privacy_type] || 'public'), :tabindex => '1'
+
       = render 'search/refine_by_choice'
       %br/
       = render 'search/refine_by_date'
@@ -44,4 +46,3 @@
           = submit_tag t('search.form.search'), {:class => 'searchbutton', :tabindex => '1'}
     .main-content-footer-wrapper
       .main-content-footer &nbsp;
-    = render "topics/content_wrapper_end"

@@ -1,8 +1,7 @@
-- clear_values ||= false
 %table
   %tr
     %td= t('search.refine_by_date.date_since')
-    %td= text_field_tag 'date_since', (params[:date_since] unless clear_values), :size => 10
+    %td= text_field_tag 'date_since', @search_presenter.date_since, size: 10
   %tr
     %td= t('search.refine_by_date.date_until')
-    %td= text_field_tag 'date_until', (params[:date_until] unless clear_values), :size => 10
+    %td= text_field_tag 'date_until', @search_presenter.date_until, size: 10

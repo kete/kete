@@ -357,8 +357,8 @@ class SystemSetting
    self.setting(:search_select_current_basket)
   end
 
-  def self.dc_date_display_on_search_results
-    self.setting(:dc_date_display_on_search_results)
+  def self.dc_date_display_on_search_results?
+    self.setting(:dc_date_display_on_search_results?)
   end
 
   def self.dc_date_display_detail_level
@@ -648,6 +648,14 @@ private
     end
 
     def self.require_activation
+      false
+    end
+
+    def records_per_page_choices
+      []
+    end
+
+    def dc_date_display_on_search_results?
       false
     end
   end 

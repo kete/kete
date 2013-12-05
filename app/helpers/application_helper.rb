@@ -648,19 +648,19 @@ module ApplicationHelper
     link_to phrase, url_for_profile_of(user), link_options
   end
 
-  def link_to_add_item(options={})
-    phrase = options[:phrase]
-    item_class = options[:item_class]
+  # def link_to_add_item(options={})
+  #   phrase = options[:phrase]
+  #   item_class = options[:item_class]
 
-    phrase += ' ' + content_tag('span', zoom_class_humanize(item_class), :class => 'current_zoom_class')
+  #   phrase += ' ' + content_tag('span', zoom_class_humanize(item_class), :class => 'current_zoom_class')
 
-    if @current_basket != @site_basket
-      phrase += t('application_helper.link_to_add_item.in_basket',
-                  :basket_name => @current_basket.name)
-    end
+  #   if @current_basket != @site_basket
+  #     phrase += t('application_helper.link_to_add_item.in_basket',
+  #                 :basket_name => @current_basket.name)
+  #   end
 
-    return link_to(phrase, {:controller => zoom_class_controller(item_class), :action => :new}, :tabindex => '1')
-  end
+  #   return link_to(phrase, {:controller => zoom_class_controller(item_class), :action => :new}, :tabindex => '1')
+  # end
 
   #
   # START RELATED ITEM HELPERS
