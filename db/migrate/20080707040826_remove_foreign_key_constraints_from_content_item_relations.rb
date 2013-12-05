@@ -22,7 +22,7 @@ class RemoveForeignKeyConstraintsFromContentItemRelations < ActiveRecord::Migrat
       if postgres?
         execute(postgres_add_fk_statement(table_name, symbol, foreign_table, foreign_primary_key))
       elsif mysql?
-        execute(postgres_add_fk_statement(table_name, symbol, foreign_table, foreign_primary_key))
+        execute(mysql_add_fk_statement(table_name, symbol, foreign_table, foreign_primary_key))
       else
         raise "Could not run this migration because I couldn't identify the database adapter in use"
       end
@@ -34,7 +34,7 @@ class RemoveForeignKeyConstraintsFromContentItemRelations < ActiveRecord::Migrat
       if postgres?
         execute(postgres_remove_fk_statement(table_name, symbol))
       elsif mysql?
-        execute(postgres_remove_fk_statement(table_name, symbol))
+        execute(mysql_remove_fk_statement(table_name, symbol))
       else
         raise "Could not run this migration because I couldn't identify the database adapter in use"
       end
