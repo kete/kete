@@ -24,7 +24,7 @@ RSpec.configure do |config|
   # If you're not using ActiveRecord, or you'd prefer not to run each of your
   # examples within a transaction, remove the following line or assign false
   # instead of true.
-  config.use_transactional_fixtures = false
+  config.use_transactional_fixtures = false 
 
   config.before(:suite) do
     DatabaseCleaner.strategy = :truncation
@@ -32,6 +32,7 @@ RSpec.configure do |config|
 
   config.before(:each) do
     DatabaseCleaner.start
+    load "#{Rails.root}/db/seeds.rb" # EOIN: this is not optimal
   end
 
   config.after(:each) do

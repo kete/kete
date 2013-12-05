@@ -1,0 +1,17 @@
+- login: admin
+  email: admin@changeme.com
+  password: changeme
+  password_confirmation: changeme
+  agree_to_terms: '1'
+  security_code: changeme
+  security_code_confirmation: changeme
+  locale: en 
+
+- login: anonymous
+  email: anonymous@changeme.com
+  password: changeme
+  password_confirmation: changeme
+  agree_to_terms: '1'
+  security_code: changeme
+  security_code_confirmation: changeme
+  locale: en 
