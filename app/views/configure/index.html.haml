@@ -130,7 +130,7 @@
     - if Rails.env == 'production'
       = button_to t('configure.index.clear_cache'), {:action => 'clear_cache'},     |
         { :confirm => 'Are you sure? This can affect the performance of the site.'} |
-= render(:partial => "topics/content_wrapper_end" )
+
 = javascript_tag do
   $(document).ready(function(){
   $(document).on('ajax:before', '#prime_zebra_form', function(){
