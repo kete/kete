@@ -2,6 +2,12 @@ class SearchPresenter
 
   include ActionView::Helpers
 
+  private
+
+  attr_reader :params
+
+  public
+
   def initialize(query: SearchQuery.new, results: [], params: {})
     @query = query
     @results = results
@@ -25,6 +31,15 @@ class SearchPresenter
     WillPaginate::Collection.new(current_page, number_per_page, size).concat(results)
   end
 
+  # TODO: should this be renamed url_safe_basket_name ??
+  def urlified_basket_name
+    params[:urlified_name]
+  end
+
+  def selected_content_item_types
+    (params[:controller_name_for_zoom_class].blank? || clear_values ? 'topics' : params[:controller_name_for_zoom_class])
+  end
+
   def date_since
     nil
     # @query.date_since unless clear_values
@@ -36,11 +51,11 @@ class SearchPresenter
   end
 
   def extended_field
-    @params[:extended_field]
+    params[:extended_field]
   end
 
   def limit_to_choice
-    @params[:limit_to_choice]
+    params[:limit_to_choice]
   end
 
   def view_as_choice_heirarchy?
@@ -49,13 +64,21 @@ class SearchPresenter
 
   def view_as
     # map|choice_heirarchy
-    @params[:view_as]
+    params[:view_as]
   end
 
   def view_as_map?
     view_as == 'map'
   end
 
+  def topic_type
+    ""
+  end
+
+  def action
+    # EOIN: this is heinous but Search.all_sort_types needs to be changed to fix it
+    "for"
+  end
 
   def category_columns
     browse_by_category_columns
@@ -63,7 +86,7 @@ class SearchPresenter
 
   def result_sets
     sets = {}
-    zoom_classes.map do |content_type|
+    content_item_types.map do |content_type|
       sets[content_type] = []
     end
     sets
@@ -94,7 +117,25 @@ class SearchPresenter
     Basket.site_basket # FIXME: make this find the basket the user is ucrrently in
   end
 
-  def zoom_classes # TODO: rename this
+  def site_basket
+    Basket.site_basket
+  end
+
+  def about_basket
+    Basket.about_basket
+  end
+
+  def documentation_basket
+    Basket.documentation_basket
+  end
+
+  def current_privacy
+    default = current_basket.private_default_with_inheritance? ? 'private' : 'public'
+    ((params[:privacy_type] unless clear_values) || (SystemSetting.default_search_privacy if display_menu) || default)
+  end
+
+  def content_item_types
+    # EOIN: these used to be called ZOOM_CLASSES
     # EOIN: TODO: not clear where we should pull this from yet
     %w(Topic StillImage AudioRecording Video WebLink Document Comment)
   end
@@ -141,6 +182,11 @@ class SearchPresenter
 
     # return link_to(phrase, {:controller => zoom_class_controller(item_class), :action => :new}, :tabindex => '1')
     ''
+  end
+
+  def topic_type_useful_here?(type)
+    # display_search_field_for?(type, SystemSetting.display_topic_type_field) || params[:controller_name_for_zoom_class] == 'topics'
+    true
   end
 
   def search_results_info_and_links

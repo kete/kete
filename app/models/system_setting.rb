@@ -658,6 +658,10 @@ private
     def dc_date_display_on_search_results?
       false
     end
+
+    def search_selected_topic_type
+      ""
+    end
   end 
 end
 

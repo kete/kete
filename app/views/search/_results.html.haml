@@ -1,7 +1,7 @@
 .clear &nbsp;
 #content-tabs
   %ul.nav-list
-    - @search_presenter.zoom_classes.each do |zoom_class|
+    - @search_presenter.content_item_types.each do |zoom_class|
       - if zoom_class == @search_presenter.current_class
         %li.selected= link_to_zoom_class_results(zoom_class, @search_presenter.result_sets[zoom_class].size, '#')
       - else
