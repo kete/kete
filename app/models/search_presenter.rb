@@ -1,10 +1,9 @@
 class SearchPresenter
 
-  include ActionView::Helpers
-
   private
 
-  attr_reader :params
+  # readers & writers that are only accessible within this class
+  attr_reader :params, :query
 
   public
 
@@ -162,11 +161,11 @@ class SearchPresenter
   end
 
   def search_terms_are_present?
-    @query.search_terms.present?
+    query.search_terms.present?
   end
 
   def search_terms
-    @query.search_terms
+    query.search_terms
   end
 
   def link_to_add_item(options={})

@@ -71,30 +71,14 @@ group :development, :test do
   gem "sqlite3", "~> 1.3.7"
   gem "rspec-rails", "~> 2.14.0"
   gem "factory_girl_rails", "~> 4.3.0"
-
   gem "capybara"
   gem "database_cleaner"
-
   gem "pry-rails"
-  
   gem "debugger", :platforms => [:mingw_19, :ruby_19]
   gem 'debugger-xml', :platforms => [:mingw_19, :ruby_19]
-
   gem 'byebug', :platforms => [:mingw_20, :ruby_20]
   gem 'pry-byebug', :platforms => [:mingw_20, :ruby_20]
-
   gem 'awesome_print'
-
-
-#  gem 'webrat'
-#  gem 'shoulda', "2.0.0" # !! ruby 1.8.7 requirement
-#  gem 'factory_girl', "1.2.4"
-#  gem "rspec-rails", "~> 2.13.0"
-#  # gem "shoulda", "~> 3.4.0"
-#  gem "capybara", "~> 2.0.2"
-#  gem "poltergeist", "~> 1.1.0"
-#  gem "debugger", "~> 1.4.0"
-#  gem "factory_girl_rails", "~> 4.2.1"
 end
 
 
@@ -155,7 +139,8 @@ gem 'http_url_validation_improved'
 # (I've locked versions to avoid errors during upgrade).
 
 
-gem 'active_scaffold',              '~> 3.3.3'
+gem 'active_scaffold', '~> 3.3.3'
+
 gem "acts_as_authenticated", "2.0", :git => "git://github.com/gundestrup/acts_as_authenticated.git" # 2007-06-06
 #gem "acts_as_licensed", "#.#.#", :git => "git://github.com/shuber/sortable.git" # 2008-07-10
 gem "acts_as_soft_deletable", :git => "git://github.com/says/acts_as_soft_deletable.git" # 2009-02-16

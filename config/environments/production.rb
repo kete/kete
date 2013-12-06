@@ -2,7 +2,11 @@ KeteApp::Application.configure do
   # Settings specified here will take precedence over those in config/application.rb
 
   # Code is not reloaded between requests
-  config.cache_classes = true
+
+  # EOIN: FIXME: This must be set to true before we go into production
+  # EOIN: I have set this to false just to get a demo running on heroku
+  puts "XXXXXXXXXXXXXXX Engage rails extra slow mode ..."
+  config.cache_classes = false 
 
   # Full error reports are disabled and caching is turned on
   config.consider_all_requests_local       = false

@@ -140,24 +140,16 @@ class SearchController < ApplicationController
   end
 
   def for
-    if params[:search_terms].nil?
+    query = SearchQuery.new(params)
+
+    if query.has_search_terms?
       flash[:notice] = t('search_controller.for.no_search_terms')
-      render
+      @search_presenter = SearchPresenter.new(query: query)
+      render :for
     end
 
-    query = SearchQuery.new(
-      search_terms: params[:search_terms],
-      date_since:   params[:date_since],
-      date_until:   params[:date_until],
-      privacy_type: params[:privacy_type],
-      topics:       params[:controller_name_for_zoom_class],
-      topic_type:   params[:topic_type],
-      basket:       params[:target_basket]
-    )
-
-    search_results = Searcher.new(query: query).run
-
-    @search_presenter = SearchPresenter.new(query: query, results: search_results)
+    results = Searcher.new(query: query).run
+    @search_presenter = SearchPresenter.new(query: query, results: results)
   end
 
   # EOIN: does this method need to be public? 

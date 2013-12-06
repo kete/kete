@@ -3,7 +3,7 @@ require File.expand_path('../application', __FILE__)
 
 # Walter McGinnis, 2010-05-08
 # For holding info about the kete application instance
-require File.join(File.dirname(__FILE__), '../lib/kete')
+# require File.join(File.dirname(__FILE__), '../lib/kete')
 
 
 # Walter McGinnis, 2007-10-18

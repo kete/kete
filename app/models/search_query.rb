@@ -11,4 +11,9 @@ class SearchQuery
       @topic_type   = params[:topic_type]
       @basket       = params[:target_basket]
   end
+
+
+  def has_search_terms?
+    @search_terms.nil?
+  end
 end
