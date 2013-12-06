@@ -10,6 +10,7 @@ gem 'haml'
 gem 'acts_as_licensed', github: 'kete/acts_as_licensed', branch: 'rails3-gem'
 # gem "sql-logging"
 
+gem "figaro", "~> 0.7.0"
 
 # RABID: the official version of acts_as_versioned seems to be abandoned but
 # 		 this fork claims to have rails 3 support
@@ -179,3 +180,11 @@ gem 'will_paginate', '~> 3.0.5'
 
 # RABID: should be removed:
 gem 'validates_xml',                '1.0.3' # >> 2007-06-06 
+
+group :assets do
+  gem 'sass-rails'
+  gem 'compass-rails'
+  gem 'coffee-rails', '~> 3.2.1'
+  gem 'uglifier', '>= 1.0.3'
+end
+
