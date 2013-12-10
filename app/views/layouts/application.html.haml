@@ -31,13 +31,13 @@
     = javascript_tag('jQuery.noConflict();')
     = yield :add_on_scripts_and_links
     = include_tiny_mce_if_needed({ :content_css => "/stylesheets/cache/#{@theme}_theme.css", :extended_valid_elements => (@site_admin ? EXTENDED_VALID_ELEMENTS : '') })
-    = stylesheet_link_tag 'kete-print', :media => 'print'
-    = stylesheet_link_tag 'base', :media => 'screen'
-    = stylesheet_link_tag 'comment', :media => 'screen'
-    = stylesheet_link_tag 'redbox'
-    = stylesheet_link_tag('left-hand-column') if show_basket_list_naviation_menu?
+    = stylesheet_link_tag 'application'
+
+    = stylesheet_link_tag('/stylesheets/left-hand-column') if show_basket_list_naviation_menu?
+
     - load_styles(@theme).each do |stylesheet|
       = stylesheet_link_tag stylesheet, :media => 'screen'
+
     - if !SystemSetting.enable_user_portraits? && !SystemSetting.enable_gravatar_support?
       :css
         .comment-outer-wrapper .stylish_user_contribution_link_extra,
@@ -47,7 +47,7 @@
         .comment-wrapper {
           margin-top: 0px;
         }
-    = stylesheet_link_tag('serif') if @theme_font_family == 'serif'
+    = stylesheet_link_tag('/stylesheets/serif') if @theme_font_family == 'serif'
     - if !@header_image.blank?
     - # allows for banner style background image
       :css
@@ -66,7 +66,7 @@
     -# = javascript_include_tag 'kete'
     - if SystemSetting.enable_maps? && initialize_gmap_headers?
       - if CACHES_CONTROLLERS.include?(params[:controller]) || params[:controller] == 'index_page'
-        = stylesheet_link_tag 'gmaps4rails'
+        = stylesheet_link_tag '/stylesheets/gmaps4rails'
       - else
         = yield :gmap4rails_head
       - if params[:action] == 'choose_type'
@@ -82,7 +82,7 @@
       = active_scaffold_includes
     - if ['extended_fields', 'choices'].include?(params[:controller])
       -# = javascript_include_tag "yui/yahoo/yahoo", "yui/event/event-min", "yui/animation/animation-min", "yui/dom/dom-min", "yui/treeview/treeview-min"
-      = stylesheet_link_tag 'yui/treeview'
+      = stylesheet_link_tag '/stylesheets/yui/treeview'
     - rss_tag_links = @rss_tag_link.blank? ? Array.new : @rss_tag_link.to_a
     - rss_tag_autos = @rss_tag_auto.blank? ? Array.new : @rss_tag_auto.to_a
     - combined_rss_url = # EOIN: this needs to be re-enabled when search is more understood:  basket_all_rss_url( :urlified_name => @site_basket.urlified_name, :controller_name_for_zoom_class => 'combined' )
@@ -92,7 +92,7 @@
     %link{:href => combined_rss_url, :rel => "alternate", :title => t('layouts.application.combined_rss'), :type => "application/rss+xml"}
 
     /[if IE] 
-      = stylesheet_link_tag 'kete-ie', media: 'screen'
+      = stylesheet_link_tag '/stylesheets/kete-ie', media: 'screen'
 
     - unless @ie_stylesheet_paths.blank?
       - if @ie_stylesheet_paths[:all].present?
@@ -124,7 +124,8 @@
                     %noscript= image_tag 'magnifier.png', :width => 16, :height => 16
                   = text_field_tag 'search_terms', nil, { :accesskey => '3', :tabindex => '2' }
                   = submit_tag t('layouts.application.search_button'), { :class => 'submit', :tabindex => '2' }
-                = render 'search/mini_controls', :id => 'advanced_search_dropdown', :type => 'menu'
+                -# EOIN: TODO: re-enable this when we have refactored SearchPresenter into SearchFormPresenter & SearchResultsPresenter (or something similar)
+                -# = render 'search/mini_controls', :id => 'advanced_search_dropdown', :type => 'menu'
                 = add_search_icon_and_default_text_to_search_box('advanced_search_dropdown', 'advanced_search_dropdown_trigger')
                 = javascript_tag("$('search_terms').observe('change', function(event) {                 |
                     if (this.value == '') {                                                             |
