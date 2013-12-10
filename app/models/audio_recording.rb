@@ -1,4 +1,14 @@
 class AudioRecording < ActiveRecord::Base
+
+  include PgSearch
+  include PgSearchCustomisations
+  multisearchable against: [
+    :title,
+    :description,
+    :raw_tag_list,
+    :searchable_extended_content_values
+  ]
+
   # all the common configuration is handled by this module
   include ConfigureAsKeteContentItem
 

@@ -2,6 +2,7 @@
 # using term basket here to spell out concept for developers
 # and to avoid confusion with the kete app
 class Basket < ActiveRecord::Base
+
   scope :except_certain_baskets, lambda {|baskets| where("id not in (?) AND status = 'approved'", baskets)}
 
   def self.settings

@@ -1,22 +1,15 @@
 class Topic < ActiveRecord::Base
 
   include PgSearch
+  include PgSearchCustomisations
   multisearchable against: [
     :title,
     :short_summary,
     :description,
     :raw_tag_list,
-    :searchable_extended_content_values
+    :extended_content_values
   ]
 
-  def searchable_extended_content_values
-    return "" if extended_content.blank?
-
-    xml = Nokogiri::XML(extended_content)
-    hash = Hash.from_xml(xml.to_s)
-    clean_hash = hash.values.reject { |value| value.class == Hash }
-    clean_hash.join(' ')
-  end
 
   # this is where the actual content lives
   # using the extended_fields associated with this topic's topic_type

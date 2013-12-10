@@ -14,20 +14,34 @@ class SearchPresenter
   end
 
   def results
-    @results.map do |result|
-      result.to_legacy_kete_format
-      # views expect a total_pages method on this
-    end
+    # @results.map do |result|
+    #   result.to_legacy_kete_format
+    #   # views expect a total_pages method on this
+    # end
 
-    # expects ActiveRecord::Relation
-    results = Topic.where('1=1').limit(5)
+    ###################
+    ###################
+    # hacking on search
+    results = PgSearch.multisearch(query.search_terms).paginate(page: 1) # => ActiveRecord::Relation
 
     number_per_page = 10
     current_page = 1
     size = results.size
 
     # EOIN: old-kete does it this way
-    WillPaginate::Collection.new(current_page, number_per_page, size).concat(results)
+    #
+    # Topic.paginate(page: 1)
+    # "SELECT  \"topics\".* FROM \"topics\"  LIMIT 30 OFFSET 0"
+    #
+    # Topic.paginate(page: 3)
+    # "SELECT  \"topics\".* FROM \"topics\"  LIMIT 30 OFFSET 60"
+    #
+    # old kete expected a willpaginate::collection
+    # WillPaginate::Collection.new(current_page, number_per_page, size).concat(results)
+    results
+    ###################
+    ###################
+
   end
 
   # TODO: should this be renamed url_safe_basket_name ??
