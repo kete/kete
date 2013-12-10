@@ -11,6 +11,7 @@ gem 'acts_as_licensed', github: 'kete/acts_as_licensed', branch: 'rails3-gem'
 # gem "sql-logging"
 
 gem "figaro", "~> 0.7.0"
+gem "pg_search", "~> 0.7.2"
 
 # RABID: the official version of acts_as_versioned seems to be abandoned but
 # 		 this fork claims to have rails 3 support
