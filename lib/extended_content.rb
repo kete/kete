@@ -157,11 +157,12 @@ module ExtendedContent
       self.extended_content = convert_extended_content_to_xml(content_as_array)
     end
 
+
     # Pulls xml attributes in extended_content column out into a hash wrapped in a key that corresponds to the fields position
     # Example output:
     # => { "1" => { "first_names" => "Joe" }, "2" => { "last_name" => "Bloggs" }, "3" => { "place_of_birth" => { "xml_element_name" => "dc:subject" } } }
     def xml_attributes
-      extended_content_hash = XmlSimple.xml_in("<dummy>#{extended_content}</dummy>", "contentkey" => "value", "forcearray" => false)
+      extended_content_hash = xml_attributes_without_position
 
       ordered_hash = Hash.new
       position = 1
@@ -209,15 +210,8 @@ module ExtendedContent
     #   }
     # }
     def xml_attributes_without_position
-      # we use rexml for better handling of the order of the hash
-
-      XmlSimple.xml_in("<dummy>#{extended_content}</dummy>", "contentkey" => "value", "forcearray" => false)
-
-      # TODO: Clean this up
-
-      # OLD METHOD
-      # extended_content_hash = Hash.from_xml("<dummy_root>#{self.extended_content}</dummy_root>")
-      # return extended_content_hash["dummy_root"]
+      hash = XmlSimple.xml_in("<dummy>#{add_xml_fix(extended_content)}</dummy>", "contentkey" => "value", "forcearray" => false)
+      remove_xml_fix(hash)
     end
 
     # Checks whether the current class (Topic, AudioRecording, etc) can have a short summary
@@ -989,6 +983,36 @@ module ExtendedContent
                :label => extended_field_mapping.extended_field_label,
                :topic_type => parent_topic_type.name)
       end
+    end
+
+    def tweaked_key(k) 
+      if k =~ /\Aposition_(\d)+\z/ 
+        $1   # special case: "position_1" -> "1"
+      else
+        k
+      end
+    end
+
+    def remove_xml_fix(in_hash) 
+      out_hash = Hash.new
+
+      in_hash.each do |k,v| 
+        new_k = tweaked_key(k) 
+        new_v = v.dup
+
+        if new_v.kind_of?(Hash)
+          out_hash[new_k] = remove_xml_fix(new_v)
+        else
+          out_hash[new_k] = new_v
+        end
+      end
+      
+      out_hash
+    end
+
+    def add_xml_fix(xml_ish)
+      return nil if xml_ish.nil?
+      xml_ish.gsub(/<(\/?)(\d+)>/, '<\1position_\2>')
     end
 
   end

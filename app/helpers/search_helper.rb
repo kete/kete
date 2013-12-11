@@ -3,12 +3,12 @@ module SearchHelper
 
   # take current url, replace :controller_for_zoom_class
   # with passed with one for passed in zoom_class
-  def link_to_zoom_class_results(zoom_class, results_count, location = nil, text = nil)
-    location = location || params.merge(:controller_name_for_zoom_class => zoom_class_controller(zoom_class), :page => nil)
-    location.merge!({ :trailing_slash => true }) if location.is_a?(Hash) && params[:action] == 'all'
-    text ||= "#{zoom_class_plural_humanize(zoom_class)} (#{number_with_delimiter(results_count)})"
-    link_to(text, location, :tabindex => '1')
-  end
+  # def link_to_zoom_class_results(zoom_class, results_count, location = nil, text = nil)
+  #   location = location || params.merge(:controller_name_for_zoom_class => zoom_class_controller(zoom_class), :page => nil)
+  #   location.merge!({ :trailing_slash => true }) if location.is_a?(Hash) && params[:action] == 'all'
+  #   text ||= "#{zoom_class_plural_humanize(zoom_class)} (#{number_with_delimiter(results_count)})"
+  #   link_to(text, location, :tabindex => '1')
+  # end
 
   # look in parameters for what this is a refinement of
   # def last_part_of_title_if_refinement_of(add_links = true)

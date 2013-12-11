@@ -1,5 +1,8 @@
 class SearchPresenter
 
+  include ActionView::Helpers::NumberHelper
+  include ActionView::Helpers::UrlHelper
+
   private
 
   # readers & writers that are only accessible within this class
@@ -14,34 +17,7 @@ class SearchPresenter
   end
 
   def results
-    # @results.map do |result|
-    #   result.to_legacy_kete_format
-    #   # views expect a total_pages method on this
-    # end
-
-    ###################
-    ###################
-    # hacking on search
-    results = PgSearch.multisearch(query.search_terms).paginate(page: 1) # => ActiveRecord::Relation
-
-    number_per_page = 10
-    current_page = 1
-    size = results.size
-
-    # EOIN: old-kete does it this way
-    #
-    # Topic.paginate(page: 1)
-    # "SELECT  \"topics\".* FROM \"topics\"  LIMIT 30 OFFSET 0"
-    #
-    # Topic.paginate(page: 3)
-    # "SELECT  \"topics\".* FROM \"topics\"  LIMIT 30 OFFSET 60"
-    #
-    # old kete expected a willpaginate::collection
-    # WillPaginate::Collection.new(current_page, number_per_page, size).concat(results)
-    results
-    ###################
-    ###################
-
+    @results
   end
 
   # TODO: should this be renamed url_safe_basket_name ??
@@ -224,6 +200,24 @@ class SearchPresenter
 
   #   statement.join(', ') + " [ " + links.join(' | ') + " ] "
     ''
+  end
+
+  # %li.selected= @search_presenter.link_to_content_item_type_results(ci_type, @search_presenter.result_sets[ci_type].size, '#')
+  def link_to_content_item_type_results(ci_type, location = nil, text = nil)
+
+    # how many results are there for this content-type
+    # results_count = result_stats[ci_type].size || 0
+    results_count = 100
+
+    # default_location = params.merge(:controller_name_for_ci_type => ci_type_controller(ci_type), :page => nil)
+    # location = location || default_location
+    # location.merge!({ :trailing_slash => true }) if location.is_a?(Hash) && params[:action] == 'all'
+    location = '#'
+
+    default_text = "#{ci_type.pluralize.humanize} (#{number_with_delimiter(results_count)})"
+    text = text || default_text
+
+    link_to(text, location, tabindex: '1')
   end
 
   private

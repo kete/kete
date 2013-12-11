@@ -1,11 +1,12 @@
 .clear &nbsp;
 #content-tabs
   %ul.nav-list
-    - @search_presenter.content_item_types.each do |zoom_class|
-      - if zoom_class == @search_presenter.current_class
-        %li.selected= link_to_zoom_class_results(zoom_class, @search_presenter.result_sets[zoom_class].size, '#')
+    - @search_presenter.content_item_types.each do |ci_type|
+      - if ci_type == @search_presenter.current_class
+        %li.selected= @search_presenter.link_to_content_item_type_results(ci_type, '#')
       - else
-        %li= link_to_zoom_class_results(zoom_class, @search_presenter.result_sets[zoom_class].size)
+        %li= @search_presenter.link_to_content_item_type_results(ci_type)
+
   %div{:style => "clear:both;"}
 
 = render(:partial => "topics/content_wrapper_start", :locals => { :style_classes => "full-width" })

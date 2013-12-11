@@ -5,16 +5,23 @@ class Searcher
   end
 
   def run
-    result_docs = PgSearch.multisearch(query.search_terms)
+    WillPaginate.per_page = 10
+    # current_page = query.params[:page] || 1
+    current_page = 1
 
-    # => ActiveRecord::Relation
-    # result_docs.first.searchable returns the real model that was found
+    pg_search_docs = PgSearch.multisearch(query.search_terms).paginate(page: current_page) # => ActiveRecord::Relation
+
+    # results = pg_search_docs.map do |doc|
+    #   doc.searchable
+    # end
+
+    # content_item_types.each do |ci_type|
+    #   result_stats[ci_type] = pg_search_docs.where(searchable_type: ci_type).count
+    # end
     # binding.pry
-    # need to filter down the results based on the criteria we got from query
 
-
-    # return an array of SearchResult or []
-    []
+    # results
+    pg_search_docs
   end
 
   private
