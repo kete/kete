@@ -1,6 +1,6 @@
 class SearchQuery
 
-  attr_reader :search_terms
+  attr_reader :search_terms, :page
 
   def initialize(params)
       @search_terms = params[:search_terms]
@@ -10,10 +10,10 @@ class SearchQuery
       @topics       = params[:controller_name_for_zoom_class]
       @topic_type   = params[:topic_type]
       @basket       = params[:target_basket]
+      @page         = params[:page]
   end
 
-
-  def has_search_terms?
+  def has_no_search_terms?
     @search_terms.nil?
   end
 end

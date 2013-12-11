@@ -142,13 +142,13 @@ class SearchController < ApplicationController
   def for
     query = SearchQuery.new(params)
 
-    if query.has_search_terms?
+    if query.has_no_search_terms?
       flash[:notice] = t('search_controller.for.no_search_terms')
       @search_presenter = SearchPresenter.new(query: query)
       render :for
     end
 
-    results = Searcher.new(query: query).run
+    results = Searcher.new(query: query).run # => ActiveRecord::Relation
     @search_presenter = SearchPresenter.new(query: query, results: results)
   end
 

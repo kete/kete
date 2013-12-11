@@ -1,27 +1,29 @@
 class Searcher
 
+  # class SearchResult
+  #   def initialize(paginitation_info, klass)
+
+  #   def count_for(content_type) # => Fixnum
+
+  #   def results_for(content_type) # => ActiveRecord::Relation
+  #     # pagination happens in here
+  #     # we do not return a relation
+  #   end
+
+  #   
+  # end
+
   def initialize(query: SearchQuery.new)
     @query = query
   end
 
   def run
-    WillPaginate.per_page = 10
-    # current_page = query.params[:page] || 1
-    current_page = 1
+    PgSearch.multisearch(query.search_terms)
+    # do any filtering down of results based on query parameters here
 
-    pg_search_docs = PgSearch.multisearch(query.search_terms).paginate(page: current_page) # => ActiveRecord::Relation
 
-    # results = pg_search_docs.map do |doc|
-    #   doc.searchable
-    # end
 
-    # content_item_types.each do |ci_type|
-    #   result_stats[ci_type] = pg_search_docs.where(searchable_type: ci_type).count
-    # end
-    # binding.pry
-
-    # results
-    pg_search_docs
+    # must return ActiveRecord::Relation
   end
 
   private

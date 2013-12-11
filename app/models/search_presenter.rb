@@ -6,18 +6,34 @@ class SearchPresenter
   private
 
   # readers & writers that are only accessible within this class
-  attr_reader :params, :query
+  attr_reader :params, :query, :search_relation
 
   public
 
   def initialize(query: SearchQuery.new, results: [], params: {})
     @query = query
-    @results = results
+    @search_relation = results # ActiveRecord::Relation
     @params = params
   end
 
+  def paginated_results
+    paginated_results_for(selected_content_item_type) # => ActiveRecord::Relation
+  end
+
   def results
-    @results
+    paginated_results_for(selected_content_item_type).map(&:searchable) # => Array of models
+  end
+
+  def results_for(content_item_type)
+    search_relation.where(searchable_type: content_item_type) # => ActiveRecord::Relation
+  end
+
+  def paginated_results_for(content_item_type)
+    results_for(content_item_type).paginate(page: query.page) # => ActiveRecord::Relation
+  end
+
+  def count_for(content_item_type)
+    search_relation.where(searchable_type: content_item_type).count # => Fixnum
   end
 
   # TODO: should this be renamed url_safe_basket_name ??
@@ -25,8 +41,9 @@ class SearchPresenter
     params[:urlified_name]
   end
 
-  def selected_content_item_types
-    (params[:controller_name_for_zoom_class].blank? || clear_values ? 'topics' : params[:controller_name_for_zoom_class])
+  def selected_content_item_type
+    "Topic"
+    # (params[:controller_name_for_zoom_class].blank? || clear_values ? 'topics' : params[:controller_name_for_zoom_class])
   end
 
   def date_since
@@ -202,12 +219,10 @@ class SearchPresenter
     ''
   end
 
-  # %li.selected= @search_presenter.link_to_content_item_type_results(ci_type, @search_presenter.result_sets[ci_type].size, '#')
   def link_to_content_item_type_results(ci_type, location = nil, text = nil)
 
     # how many results are there for this content-type
-    # results_count = result_stats[ci_type].size || 0
-    results_count = 100
+    results_count = count_for(ci_type) 
 
     # default_location = params.merge(:controller_name_for_ci_type => ci_type_controller(ci_type), :page => nil)
     # location = location || default_location

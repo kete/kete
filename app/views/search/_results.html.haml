@@ -13,7 +13,7 @@
 %h3= @search_presenter.title
 
 .prev-next.before-results
-  = will_paginate @search_presenter.results, next_label: t('slideshows_helper.next'), previous_label: t('slideshows_helper.previous')
+  = will_paginate @search_presenter.paginated_results, next_label: t('slideshows_helper.next'), previous_label: t('slideshows_helper.previous')
 
 - search_source_result = ''
 - if @search_presenter.search_sources_amount > 0
@@ -89,7 +89,9 @@
     = t 'search.results.no_results_of_this_type_found', :zoom_class => zoom_class_humanize(@search_presenter.current_class).downcase
 %div{:style => "clear:both;"}
 .prev-next.after-results
-  = will_paginate @search_presenter.results, next_label: t('slideshows_helper.next'), previous_label: t('slideshows_helper.previous')
+  = will_paginate @search_presenter.paginated_results, 
+                  next_label: t('slideshows_helper.next'), 
+                  previous_label: t('slideshows_helper.previous')
 #bottomlinks
   #addnew
     - if current_user_can_see_add_links? && @search_presenter.current_class != 'Comment'

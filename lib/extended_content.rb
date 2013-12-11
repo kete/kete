@@ -985,12 +985,12 @@ module ExtendedContent
       end
     end
 
-    def tweaked_key(k) 
-      if k =~ /\Aposition_(\d)+\z/ 
-        $1   # special case: "position_1" -> "1"
-      else
-        k
-      end
+    # XML does not allow tag names to begin with numbers so '<1></1>' is not
+    # valid XML. The old Kete uses this format (somehow!) so we filter <1> to 
+    # <position_1> for XML conversion.
+    def add_xml_fix(xml_ish)
+      return nil if xml_ish.nil?
+      xml_ish.gsub(/<(\/?)(\d+)>/, '<\1position_\2>')
     end
 
     def remove_xml_fix(in_hash) 
@@ -1010,10 +1010,15 @@ module ExtendedContent
       out_hash
     end
 
-    def add_xml_fix(xml_ish)
-      return nil if xml_ish.nil?
-      xml_ish.gsub(/<(\/?)(\d+)>/, '<\1position_\2>')
+    def tweaked_key(k) 
+      if k =~ /\Aposition_(\d)+\z/ 
+        $1   # special case: "position_1" -> "1"
+      else
+        k
+      end
     end
+
+
 
   end
 end
