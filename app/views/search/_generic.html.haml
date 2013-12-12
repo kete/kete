@@ -1,13 +1,16 @@
-%div{:class => "generic-result-wrapper#{' first' if first_result}", :id => "item_#{result}_wrapper"}
-  - if topic_types && !topic_types.last.blank? && SystemSetting.display_topic_type_on_search_result
+%div{:class => "generic-result-wrapper#{' first' if (@search_presenter.results.first == result)}", :id => "item_#{result.id}_wrapper"}
+
+  - if result.topic_types && !result.topic_types.last.blank? && SystemSetting.display_topic_type_on_search_result
     .generic-result-topic-type
-      = topic_types.last
+      = result.topic_types.last
   .generic-result-header
-    %h4= link_to h(title), source_url, :tabindex => '1'
+    %h4= link_to h(result.title), url_for(result.model), :tabindex => '1'
   .generic-result-description
-    = strip_tags(short_summary)
+    = strip_tags(result.short_summary)
     .generic-result-more
-      = link_to(t('search.generic.more').html_safe, source_url, { :title => t('search.generic.more_on', :title => title), :tabindex => '1' })
-  = render('related', :related => related, :locally_hosted => locally_hosted, :source_url => source_url, :title => title) if related
-  = dc_date_display_of(dc_dates)
+      = link_to(t('search.generic.more').html_safe, url_for(result.model), { :title => t('search.generic.more_on', :title => result.title), :tabindex => '1' })
+
+  = render('related', :related => result.related, :locally_hosted => result.locally_hosted, :source_url => url_for(result.model), :title => result.title) if result.related
+  = dc_date_display_of(result.dc_dates)
+
   %div{:style => "clear:left;"}

@@ -5,7 +5,6 @@ class SearchPresenter
 
   private
 
-  # readers & writers that are only accessible within this class
   attr_reader :params, :query, :search_relation
 
   public
@@ -17,11 +16,60 @@ class SearchPresenter
   end
 
   def paginated_results
-    paginated_results_for(selected_content_item_type) # => ActiveRecord::Relation
+    paginated_results_for(query.content_item_type) # => ActiveRecord::Relation
+  end
+
+  class SearchResult
+
+    include ActionView::Helpers::UrlHelper
+
+    attr_reader :model
+
+    def initialize(model)
+      @model = model
+    end
+
+    def id
+      (model.respond_to? :id) ? model.id : ""
+    end
+
+    def class 
+      (model.respond_to? :class) ? model.class : ""
+    end
+
+    def title
+      (model.respond_to? :title) ? model.title : ""
+    end
+
+    def short_summary
+      (model.respond_to? :short_summary) ? model.short_summary : ""
+    end
+
+    def related
+      (model.respond_to? :related) ? model.related : { counts: {} }
+    end
+
+    def locally_hosted
+      (model.respond_to? :locally_hosted) ? model.locally_hosted : ""
+    end
+
+    def topic_types
+      (model.respond_to? :topic_types) ? model.topic_types : []
+    end
+
+    def dc_dates
+      (model.respond_to? :dc_dates) ? model.dc_dates : ""
+    end
+
+    def thumbnail
+      (model.respond_to? :thumbnail) ? model.thumbnail : ""
+    end
   end
 
   def results
-    paginated_results_for(selected_content_item_type).map(&:searchable) # => Array of models
+    paginated_results_for(query.content_item_type).map do |pg_search_doc|
+      SearchResult.new(pg_search_doc.searchable)
+    end
   end
 
   def results_for(content_item_type)
@@ -37,23 +85,18 @@ class SearchPresenter
   end
 
   # TODO: should this be renamed url_safe_basket_name ??
+  # EOIN: it's not clear whether this it he basket within which we are
+  #       searching or the basket we are currently displaying
   def urlified_basket_name
     params[:urlified_name]
   end
 
-  def selected_content_item_type
-    "Topic"
-    # (params[:controller_name_for_zoom_class].blank? || clear_values ? 'topics' : params[:controller_name_for_zoom_class])
-  end
-
   def date_since
-    nil
-    # @query.date_since unless clear_values
+    query.date_since #unless clear_values
   end
 
   def date_until
-    nil
-    # @query.date_until unless clear_values
+    query.date_until #unless clear_values
   end
 
   def extended_field
@@ -79,6 +122,10 @@ class SearchPresenter
 
   def topic_type
     ""
+  end
+
+  def pagination_link_params
+    query.pagination_link_params
   end
 
   def action
@@ -110,13 +157,15 @@ class SearchPresenter
   end
 
   def title
+    query.to_title
+    # "the title"
     # title = title_setup_first_part(t('search.for.results_in'), true)
+    #
     # if @query.search_terms.present?
     #   title += t('search.for.current_search', search_terms: h(@query.search_terms))
     #   refinements = last_part_of_title_if_refinement_of
     #   title += t('search.for.refinements', :refinements => refinements) if !refinements.blank?
     # end
-    "the title"
   end
 
   def current_basket
@@ -156,7 +205,8 @@ class SearchPresenter
     10
   end
 
-  def current_class
+  def current_content_item_type
+    query.content_item_type
   end
 
   def sort_type_options_for(*args)
@@ -219,20 +269,13 @@ class SearchPresenter
     ''
   end
 
-  def link_to_content_item_type_results(ci_type, location = nil, text = nil)
+  def query_params_for(content_item_type)
+    query.query_params_for(content_item_type)
+  end
 
-    # how many results are there for this content-type
-    results_count = count_for(ci_type) 
-
-    # default_location = params.merge(:controller_name_for_ci_type => ci_type_controller(ci_type), :page => nil)
-    # location = location || default_location
-    # location.merge!({ :trailing_slash => true }) if location.is_a?(Hash) && params[:action] == 'all'
-    location = '#'
-
-    default_text = "#{ci_type.pluralize.humanize} (#{number_with_delimiter(results_count)})"
-    text = text || default_text
-
-    link_to(text, location, tabindex: '1')
+  def link_text_for(content_item_type)
+    count = count_for(content_item_type) 
+    "#{content_item_type.pluralize.humanize} (#{number_with_delimiter(count)})"
   end
 
   private
