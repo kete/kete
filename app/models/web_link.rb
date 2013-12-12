@@ -1,5 +1,15 @@
 class WebLink < ActiveRecord::Base
 
+  include PgSearch
+  include PgSearchCustomisations
+  multisearchable against: [
+    :title,
+    :description,
+    :url,
+    :raw_tag_list,
+    :searchable_extended_content_values
+  ]
+
   # Common configuration
   # ####################
   # * all the common configuration is handled by this module

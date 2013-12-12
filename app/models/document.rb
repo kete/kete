@@ -1,4 +1,15 @@
 class Document < ActiveRecord::Base
+
+  include PgSearch
+  include PgSearchCustomisations
+  multisearchable against: [
+    :title,
+    :description,
+    :raw_tag_list,
+    :short_summary,
+    :searchable_extended_content_values
+  ]
+
   # all the common configuration is handled by this module
   include ConfigureAsKeteContentItem
 

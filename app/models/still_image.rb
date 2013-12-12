@@ -1,5 +1,15 @@
 class StillImage < ActiveRecord::Base
 
+  include PgSearch
+  include PgSearchCustomisations
+  multisearchable against: [
+    :title,
+    :description,
+    :raw_tag_list,
+    :searchable_extended_content_values
+  ]
+
+
   # image files, including different sized versions of the original
   # are handled by ImageFile model
   has_many :image_files, :dependent => :destroy

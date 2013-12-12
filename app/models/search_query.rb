@@ -73,7 +73,7 @@ class SearchQuery
   end
 
   def to_title
-    "All results in #{content_item_type.pluralize.humanize} ...english version of the query..."
+    "All results in #{content_item_type.pluralize.humanize} for "#{search_terms}" ...other query info here..."
   end
 
   private

@@ -1,4 +1,14 @@
 class Comment < ActiveRecord::Base
+
+  include PgSearch
+  include PgSearchCustomisations
+  multisearchable against: [
+    :title,
+    :description,
+    :raw_tag_list,
+    :searchable_extended_content_values
+  ]
+
   # don't orphan children
   # reassign them as children of their grandparent
   # if you destroy their parent
