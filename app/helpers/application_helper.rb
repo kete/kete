@@ -274,39 +274,39 @@ module ApplicationHelper
     link_to basket.name, basket_index_url({ :urlified_name => basket.urlified_name }), options
   end
 
-  def header_browse_links
-    html = '<li id="header_browse">'
+  # def header_browse_links
+  #   html = '<li id="header_browse">'
 
-    pre_text = String.new
-    site_link_text = String.new
-    current_basket_html = String.new
-    default_controller = zoom_class_controller(SystemSetting.default_search_class)
-    if @current_basket != @site_basket
-      pre_text = "#{t('application_helper.header_browse_links.browse')}: "
-      site_link_text = @site_basket.name
-      privacy_type = (@current_basket.private_default_with_inheritance? && permitted_to_view_private_items?) ? 'private' : nil
-      current_basket_html = " #{t('application_helper.header_browse_links.browse_or')} "
-      current_basket_html += link_to_unless_current( @current_basket.name,
-                                                     { :controller => 'search',
-                                                       :action => 'all',
-                                                       :urlified_name => @current_basket.urlified_name,
-                                                       :controller_name_for_zoom_class => default_controller,
-                                                       :trailing_slash => true,
-                                                       :privacy_type => privacy_type,
-                                                       :view_as => @current_basket.browse_type_with_inheritance },
-                                                     { :tabindex => '2' } )
-    else
-      site_link_text = t('application_helper.header_browse_links.browse')
-    end
+  #   pre_text = String.new
+  #   site_link_text = String.new
+  #   current_basket_html = String.new
+  #   default_controller = "topics"  ### zoom_class_controller(SystemSetting.default_search_class)
 
-    html += pre_text + link_to_unless_current( site_link_text,
-                                               {:controller => 'search',
-                                               :action => 'all',
-                                               :urlified_name => @site_basket.urlified_name,
-                                               :controller_name_for_zoom_class => default_controller,
-                                               :trailing_slash => true,
-                                               :view_as => @site_basket.browse_type_with_inheritance }, {:tabindex => '2'} ) + current_basket_html + '</li>'
-  end
+  #   if @current_basket != @site_basket
+  #     pre_text = "#{t('application_helper.header_browse_links.browse')}: "
+  #     site_link_text = @site_basket.name
+  #     privacy_type = (@current_basket.private_default_with_inheritance? && permitted_to_view_private_items?) ? 'private' : nil
+  #     current_basket_html = " #{t('application_helper.header_browse_links.browse_or')} "
+  #     current_basket_html += link_to_unless_current( @current_basket.name,
+  #                                                    { :controller => 'search',
+  #                                                      :action => 'all',
+  #                                                      :urlified_name => @current_basket.urlified_name,
+  #                                                      :controller_name_for_zoom_class => default_controller,
+  #                                                      :trailing_slash => true,
+  #                                                      :privacy_type => privacy_type,
+  #                                                      :view_as => @current_basket.browse_type_with_inheritance },
+  #                                                    { :tabindex => '2' } )
+  #   else
+  #     site_link_text = t('application_helper.header_browse_links.browse')
+  #   end
+
+  #   html += pre_text + link_to_unless_current( site_link_text, {:controller => 'search',
+  #                                                               :action => 'all',
+  #                                                               :urlified_name => @site_basket.urlified_name,
+  #                                                               :controller_name_for_zoom_class => default_controller,
+  #                                                               :trailing_slash => true,
+  #                                                               :view_as => @site_basket.browse_type_with_inheritance }, {:tabindex => '2'} ) + current_basket_html + '</li>'
+  # end
 
   def header_add_links(options={})
     return unless current_user_can_see_add_links?

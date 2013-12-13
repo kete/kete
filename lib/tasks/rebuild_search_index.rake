@@ -2,7 +2,7 @@ namespace :kete do
   desc 'Rebuild the pg_search multisearch index'
   task :rebuild_search_index => :environment do
 
-    puts "Starting search index rebuild"
+    puts "Starting search index rebuild:"
     searchable_models = [Topic, AudioRecording, StillImage, Document, Comment, WebLink, Video]
 
     searchable_models.each do |model|

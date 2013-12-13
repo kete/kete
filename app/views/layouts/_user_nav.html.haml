@@ -1,0 +1,27 @@
+%ul.user-nav.nav-list
+  = ("<li class='locale_selection first'>" + render('account/locale_selection', :classes => ['menu_center']) + "</li>") if SystemSetting.language_choices_position == 'top_menu_center'
+  - account_hash = { :controller => 'account' }
+
+  - if !logged_in?
+    %li.first= link_to_register(t('layouts.application.register'), account_hash.merge({ :action => 'signup' }), { :tabindex => '2' })
+    %li= link_to_login(t('layouts.application.login'), account_hash.merge({ :action => 'login' }), { :tabindex => '2' })
+
+  - else
+    %li#user_baskets_list.first
+      = link_to_unless_current "#{current_user.user_name}", account_hash.merge({ :action => 'show', :urlified_name => @site_basket.urlified_name, }), :tabindex => '2' 
+      = link_to "<em>V</em>",                         |
+        account_hash.merge({ :action => 'baskets' }), |
+        :tabindex => '2',                             |
+        :title => t('layouts.application.my_baskets') |
+      %ul.submenu{:style => "display:none;"}
+        = users_baskets_list
+        %li{:style => "padding-top:15px;"}
+          = link_to t('layouts.application.all_baskets'),   |
+            { :urlified_name => @site_basket.urlified_name, |
+            :controller => 'baskets',                       |
+            :action => 'list' }                             |
+
+    = add_ons_logged_in_user_list if respond_to?(:add_ons_logged_in_user_list)
+    %li= link_to_unless_current t('layouts.application.logout'), account_hash.merge({ :action => 'logout' }), :tabindex => '2'
+  = ("<li class='locale_selection'>" + render('account/locale_selection', :classes => ['menu_right']) + "</li>") if SystemSetting.language_choices_position == 'top_menu_farthest_right'
+

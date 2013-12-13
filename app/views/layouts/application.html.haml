@@ -138,50 +138,9 @@
                   });")                                                                                 |
             = header_links_to_baskets.html_safe
         #top-menu
-          %ul.user-nav.nav-list
-            = ("<li class='locale_selection first'>" + render('account/locale_selection', :classes => ['menu_center']) + "</li>") if SystemSetting.language_choices_position == 'top_menu_center'
-            - account_hash = { :controller => 'account' }
-            - if !logged_in?
-              %li.first= link_to_register(t('layouts.application.register'), account_hash.merge({ :action => 'signup' }), { :tabindex => '2' })
-              %li= link_to_login(t('layouts.application.login'), account_hash.merge({ :action => 'login' }), { :tabindex => '2' })
-            - else
-              %li#user_baskets_list.first
-                = link_to_unless_current "#{current_user.user_name}", account_hash.merge({ :action => 'show', :urlified_name => @site_basket.urlified_name, }), :tabindex => '2' 
-                = link_to "<em>V</em>",                         |
-                  account_hash.merge({ :action => 'baskets' }), |
-                  :tabindex => '2',                             |
-                  :title => t('layouts.application.my_baskets') |
-                %ul.submenu{:style => "display:none;"}
-                  = users_baskets_list
-                  %li{:style => "padding-top:15px;"}
-                    = link_to t('layouts.application.all_baskets'),   |
-                      { :urlified_name => @site_basket.urlified_name, |
-                      :controller => 'baskets',                       |
-                      :action => 'list' }                             |
-              = add_ons_logged_in_user_list if respond_to?(:add_ons_logged_in_user_list)
-              %li= link_to_unless_current t('layouts.application.logout'), account_hash.merge({ :action => 'logout' }), :tabindex => '2'
-            = ("<li class='locale_selection'>" + render('account/locale_selection', :classes => ['menu_right']) + "</li>") if SystemSetting.language_choices_position == 'top_menu_farthest_right'
-          %ul#main-nav.nav-list
-            %li#header_home.first
-              = link_to t('layouts.application.home'),                              |
-                basket_index_url({ :urlified_name => @site_basket.urlified_name }), |
-                :tabindex => '2', :accesskey => '1'                                 |
-            = header_browse_links.html_safe
-            %li#header_about
-              = link_to_unless_current h(@about_basket.name),                    |
-                basket_index_url(:urlified_name => @about_basket.urlified_name), |
-                :tabindex => '2'                                                 |
-            %li#header_help
-              = link_to_unless_current h(@help_basket.name),                    |
-                basket_index_url(:urlified_name => @help_basket.urlified_name), |
-                :tabindex => '2'                                                |
-            - if SystemSetting.contact_url.present?
-              = content_tag('li', link_to(t('layouts.application.contact'), SystemSetting.contact_url, :accesskey => '9', :tabindex => '2'), :id => 'header_contact' )
-            - else
-              = content_tag('li', mail_to(SystemSetting.contact_email, t('layouts.application.contact'), :encode => "hex", :accesskey => '9', :tabindex => '2'), :id => 'header_contact')
-            = header_add_links.html_safe
-            - add_basket_link = header_add_basket_link
-            = content_tag('li', add_basket_link, :id => 'header_add_basket') unless add_basket_link.blank?
+          = render "layouts/user_nav"
+          = render "layouts/main_nav"
+
         .clear{:style => "height:1px;"}
           %a{:name => "content"} &nbsp;
         <div id="notice" #{flash[:notice].blank? ? "style='display:none;'" : ''}>

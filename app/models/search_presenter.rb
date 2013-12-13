@@ -19,53 +19,6 @@ class SearchPresenter
     paginated_results_for(query.content_item_type) # => ActiveRecord::Relation
   end
 
-  class SearchResult
-
-    include ActionView::Helpers::UrlHelper
-
-    attr_reader :model
-
-    def initialize(model)
-      @model = model
-    end
-
-    def id
-      (model.respond_to? :id) ? model.id : ""
-    end
-
-    def class 
-      (model.respond_to? :class) ? model.class : ""
-    end
-
-    def title
-      (model.respond_to? :title) ? model.title : ""
-    end
-
-    def short_summary
-      (model.respond_to? :short_summary) ? model.short_summary : ""
-    end
-
-    def related
-      (model.respond_to? :related) ? model.related : { counts: {} }
-    end
-
-    def locally_hosted
-      (model.respond_to? :locally_hosted) ? model.locally_hosted : ""
-    end
-
-    def topic_types
-      (model.respond_to? :topic_types) ? model.topic_types : []
-    end
-
-    def dc_dates
-      (model.respond_to? :dc_dates) ? model.dc_dates : ""
-    end
-
-    def thumbnail
-      (model.respond_to? :thumbnail) ? model.thumbnail : ""
-    end
-  end
-
   def results
     paginated_results_for(query.content_item_type).map do |pg_search_doc|
       SearchResult.new(pg_search_doc.searchable)
@@ -158,14 +111,6 @@ class SearchPresenter
 
   def title
     query.to_title
-    # "the title"
-    # title = title_setup_first_part(t('search.for.results_in'), true)
-    #
-    # if @query.search_terms.present?
-    #   title += t('search.for.current_search', search_terms: h(@query.search_terms))
-    #   refinements = last_part_of_title_if_refinement_of
-    #   title += t('search.for.refinements', :refinements => refinements) if !refinements.blank?
-    # end
   end
 
   def current_basket

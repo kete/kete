@@ -18,7 +18,7 @@ class SearchQuery
   def initialize(params)
 
     # the string that the user typed into the search box
-    @search_terms = params[:search_terms]
+    @search_terms = params[:search_terms] || ""
 
     # ?exactly what date in DB does this constrain?
     # ? wording in UI copy implies that user can enter a date and/or time here
@@ -55,7 +55,6 @@ class SearchQuery
     @page = params[:page] || 1
   end
 
-
   def missing_search_terms?
     @search_terms.nil?
   end
@@ -64,16 +63,12 @@ class SearchQuery
     to_hash
   end
 
-  # def query_string_for(content_item_type)
-  #   to_hash.map { |key, value| "#{key}=#{value}" }.join('&')
-  # end
-
   def query_params_for(content_item_type)
     to_hash.merge({ controller_name_for_zoom_class: content_item_type })
   end
 
   def to_title
-    "All results in #{content_item_type.pluralize.humanize} for "#{search_terms}" ...other query info here..."
+    "All results in #{content_item_type.pluralize.humanize} for '#{search_terms}' ...other query info here..."
   end
 
   private

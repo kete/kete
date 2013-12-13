@@ -1,0 +1,45 @@
+%ul#main-nav.nav-list
+  %li#header_home.first
+    = link_to t('layouts.application.home'), basket_index_url({ :urlified_name => @site_basket.urlified_name }), :tabindex => '2', :accesskey => '1'                                 |
+
+  %li#header_browse
+
+    - not_in_site_basket = @current_basket != @site_basket
+
+    - if not_in_site_basket
+      = "#{t('application_helper.header_browse_links.browse')}: "
+      - privacy_type = (@current_basket.private_default_with_inheritance? && permitted_to_view_private_items?) ? 'private' : nil
+      = link_to_unless_current( @current_basket.name, { :controller => 'search',
+                                                        :action => 'all',
+                                                        :urlified_name => @current_basket.urlified_name,
+                                                        :controller_name_for_zoom_class => default_controller,
+                                                        :trailing_slash => true,
+                                                        :privacy_type => privacy_type,
+                                                        :view_as => @current_basket.browse_type_with_inheritance },
+                                                      { :tabindex => '2' } )
+
+    - site_link_text = not_in_site_basket ? @site_basket.name : t('application_helper.header_browse_links.browse')
+
+    = link_to_unless_current( site_link_text, {:controller => 'search',
+                                                              :action => 'all',
+                                                              :urlified_name => @site_basket.urlified_name,
+                                                              :controller_name_for_zoom_class => default_controller,
+                                                              :trailing_slash => true,
+                                                              :view_as => @site_basket.browse_type_with_inheritance }, {:tabindex => '2'} )
+                                                              
+    = " #{t('application_helper.header_browse_links.browse_or')} " if not_in_site_basket
+
+  %li#header_about
+    = link_to_unless_current h(@about_basket.name), basket_index_url(urlified_name: @about_basket.urlified_name), tabindex: '2'
+  %li#header_help
+    = link_to_unless_current h(@help_basket.name), basket_index_url(urlified_name: @help_basket.urlified_name), tabindex:'2'
+    
+  %li#header_contact
+    - if SystemSetting.contact_url.present?
+      = link_to(t('layouts.application.contact'), SystemSetting.contact_url, accesskey: '9', tabindex: '2')
+    - else
+      = mail_to(SystemSetting.contact_email, t('layouts.application.contact'), encode: "hex", accesskey: '9', tabindex: '2')
+
+  = header_add_links.html_safe
+
+  %li#header_add_basket= header_add_basket_link unless header_add_basket_link.blank?  
