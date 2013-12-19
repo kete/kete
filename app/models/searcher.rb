@@ -20,3 +20,4 @@ class Searcher
 
   attr_reader :query
 
+end

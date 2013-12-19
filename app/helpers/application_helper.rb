@@ -274,6 +274,11 @@ module ApplicationHelper
     link_to basket.name, basket_index_url({ :urlified_name => basket.urlified_name }), options
   end
 
+  def default_controller
+    # RABID: ROB: ContentItem to search by default when a users browses a basket.
+    "topics"
+  end 
+
   # def header_browse_links
   #   html = '<li id="header_browse">'
 
