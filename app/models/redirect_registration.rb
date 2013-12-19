@@ -36,4 +36,16 @@ class RedirectRegistration < ActiveRecord::Base
                       LOWER(source_url_pattern) LIKE \'#{without_file_and_query_string}%\'"
     }
   }
+
+  def new_url(request_url)
+    partial_re = Regexp.new(/^\/.+\/$/)
+
+    if source_url_pattern =~ partial_re && target_url_pattern =~ partial_re
+      new_url = request_url.sub(source_url_pattern, target_url_pattern)
+    else
+      # target_url_pattern is actually direct replacement
+      new_url = target_url_pattern
+    end
+  end
+
 end
