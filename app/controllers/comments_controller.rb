@@ -10,6 +10,8 @@ class CommentsController < ApplicationController
   end
 
   def show
+    @comment = Comment.find(params[:id])
+
     if params[:format] == 'xml'
       @comment = @current_basket.comments.find(params[:id])
       @title = @comment.title

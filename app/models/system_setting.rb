@@ -72,22 +72,22 @@ class SystemSetting
   #def self.flagging_tags
   #  self.setting(:flagging_tags)
   #end
-  #
-  #def self.legacy_imagefile_paths_up_to
-  #  self.setting(:legacy_imagefile_paths_up_to)
-  #end
-  #
-  #def self.legacy_audiorecording_paths_up_to
-  #  self.setting(:legacy_audiorecording_paths_up_to)
-  #end
-  #
-  #def self.legacy_document_paths_up_to
-  #  self.setting(:legacy_document_paths_up_to)
-  #end
-  #
-  #def self.legacy_video_paths_up_to
-  #  self.setting(:legacy_video_paths_up_to)
-  #end
+  
+  def self.legacy_imagefile_paths_up_to
+    self.setting(:legacy_imagefile_paths_up_to)
+  end
+  
+  def self.legacy_audiorecording_paths_up_to
+    self.setting(:legacy_audiorecording_paths_up_to)
+  end
+  
+  def self.legacy_document_paths_up_to
+    self.setting(:legacy_document_paths_up_to)
+  end
+  
+  def self.legacy_video_paths_up_to
+    self.setting(:legacy_video_paths_up_to)
+  end
 
   def self.require_activation?
     self.setting(:require_activation)
@@ -661,6 +661,22 @@ private
 
     def search_selected_topic_type
       ""
+    end
+
+    def legacy_imagefile_paths_up_to
+      0
+    end
+
+    def legacy_document_paths_up_to
+      0
+    end
+
+    def legacy_audiorecording_paths_up_to
+      0
+    end
+
+    def legacy_video_paths_up_to
+      0
     end
   end 
 end
