@@ -84,8 +84,8 @@
   # do not exist (or behave in the standard RESTful way)
 
   get 'topics/:id'           => 'topics#show', as: 'topic'
-  get 'audio_recordings/:id' => 'audio_recordings#show', as: 'audio_recording'
-  get 'still_images/:id'     => 'still_images#show', as: 'still_image'
+  get 'audio/:id'            => 'audio#show', as: 'audio_recording'
+  get 'images/:id'           => 'images#show', as: 'still_image'
   get 'videos/:id'           => 'videos#show', as: 'video'
   get 'web_links/:id'        => 'web_links#show', as: 'web_link'
   get 'documents/:id'        => 'documents#show', as: 'document'
