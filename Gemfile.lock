@@ -166,6 +166,10 @@ GEM
       builder (>= 2.0.0)
       faraday
       faraday_middleware
+    oembed_provider_engine (0.2.0)
+      addressable
+      nokogiri
+      rails (~> 3.2.8)
     packet (0.1.15)
     pg (0.16.0)
     pg_search (0.7.2)
@@ -302,6 +306,7 @@ DEPENDENCIES
   mini_exiftool (< 2.0.0)
   nokogiri (~> 1.6.0)
   oai (~> 0.3.1)
+  oembed_provider_engine
   packet
   pg
   pg_search (~> 0.7.2)

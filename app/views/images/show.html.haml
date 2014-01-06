@@ -6,7 +6,7 @@
 = render(:partial => "topics/related_items", :locals => { :item => @still_image, :topics_only => true, :position => 'inset' }) if @still_image.related_items_position == 'inset'
 - if show_attached_files_for?(@still_image)
   = render(:partial => "details", :locals => { :item => @still_image })
-- # default to medium view
+  - # default to medium view
   = render(:partial => "image_file",           |
     :locals => { :still_image => @still_image, |
     :image_file => @image_file })              |

@@ -42,7 +42,7 @@ gem 'acts_as_configurable', '0.0.8'
 
 gem 'routing-filter', '~> 0.3.1'
 
-#gem 'oembed_provider_engine' # !! re-enable on Rails 3.2
+gem 'oembed_provider_engine' 
 
 # gem "mysql"
 gem 'pg'

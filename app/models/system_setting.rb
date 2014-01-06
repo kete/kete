@@ -678,6 +678,14 @@ private
     def legacy_video_paths_up_to
       0
     end
+
+    def download_warning
+      "You are about to download a file from Kete. Kete is an open digital repository"+
+      "and as such we can not guarantee the integrity of any file in the repository.  "+
+      "Please ensure that your virus scan software is operating and is configured to "+
+      "scan this download.\n"+
+      "Are you sure you want to proceed?"
+    end
   end 
 end
 
