@@ -17,7 +17,9 @@ class ExtendedField < ActiveRecord::Base
   # these fields, this attributes can be made writeable again.
   attr_readonly :label, :ftype, :multiple
 
-  acts_as_configurable
+  def setting(name, *args)
+    ExtendedFieldSettings.get(name, *args)
+  end
 
   # some input mechanisms for different languages can add whitespace
   # which messes with our label_for_params, etc.

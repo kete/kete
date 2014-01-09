@@ -1091,8 +1091,11 @@ module ApplicationHelper
     raq = " &raquo; "
     html = []
 
-    mappings = item.is_a?(Topic) ? item.all_field_mappings : \
-      ContentType.find_by_class_name(item.class.name).content_type_to_field_mappings
+    if item.is_a?(Topic)
+      mappings = item.all_field_mappings
+    else
+      mappings = ContentType.find_by_class_name(item.class.name).content_type_to_field_mappings
+    end
 
     content = item.extended_content_pairs
 

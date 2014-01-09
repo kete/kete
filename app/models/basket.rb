@@ -16,7 +16,7 @@ class Basket < ActiveRecord::Base
     raise "Woah, we expected just a name but we got the name #{name} and these extras: #{args}" unless args.empty?
     p "called basket instance #setting. You passed #{name}"
 
-    BasketSettings.get(name)
+    BasketSettings.get(name, *args)
   end
 
   # we use these for who can see what
