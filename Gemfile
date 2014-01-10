@@ -24,13 +24,11 @@ gem "acts-as-taggable-on", "~> 2.4.1"
 gem 'pothoven-attachment_fu'
 # gem 'pothoven-attachment_fu', path: '/Users/eoinkelly/Code/kete-gems/po_attachment_fu'
 
-# EOIN: 
-# * kete had it's own feedzirra but it appears to differ in name only. There
-#   may have been a plan to diverge it but it doesn't seem to have happened - see
-#   https://github.com/kete/feedzirra/commits/master
-# * for this reason, we are now using the main feedzirra gem
-gem 'feedzirra', '~> 0.4.0'
-# gem 'kete-feedzirra', github: 'kete/feedzirra'
+# ROB:  kete had it's own feedzirra which adds some extra functions needed by the 
+#       external_search_sources plugin.
+#       It'll probably be possible to pull these function into external_search_sources
+#       allowing us to use the stock feedzirra gem.
+gem 'kete-feedzirra', github: 'kete/feedzirra'
 
 # https://github.com/swanandp/acts_as_list
 gem 'acts_as_list', '~> 0.3.0'

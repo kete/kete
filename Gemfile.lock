@@ -20,6 +20,18 @@ GIT
       railties (>= 3.0.0)
 
 GIT
+  remote: git://github.com/kete/feedzirra.git
+  revision: c38c7ab43d75de4f073f6f8f34531a785054f363
+  specs:
+    kete-feedzirra (0.0.20.1)
+      activesupport (>= 2.0.0)
+      builder (>= 2.1.2)
+      curb (>= 0.2.3)
+      loofah (>= 0.3.1)
+      nokogiri (> 0.0.0)
+      sax-machine (>= 0.0.12)
+
+GIT
   remote: git://github.com/says/acts_as_soft_deletable.git
   revision: 17b5ca72307be459c70cad6e7f9990be055e8d3a
   specs:
@@ -127,11 +139,6 @@ GEM
       multipart-post (~> 1.2.0)
     faraday_middleware (0.9.0)
       faraday (>= 0.7.4, < 0.9)
-    feedzirra (0.4.0)
-      curb (~> 0.8.1)
-      loofah (~> 1.2.1)
-      nokogiri (~> 1.6.0)
-      sax-machine (~> 0.2.1)
     figaro (0.7.0)
       bundler (~> 1.0)
       rails (>= 3, < 5)
@@ -294,13 +301,13 @@ DEPENDENCIES
   debugger
   debugger-xml
   factory_girl_rails (~> 4.3.0)
-  feedzirra (~> 0.4.0)
   figaro (~> 0.7.0)
   gmaps4rails (= 1.4.2)
   haml
   hpricot
   htmlentities
   http_url_validation_improved
+  kete-feedzirra!
   libxml-ruby
   mime-types
   mini_exiftool (< 2.0.0)

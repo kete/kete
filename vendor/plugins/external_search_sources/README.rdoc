@@ -1,0 +1,201 @@
+= External Search Sources
+
+This Rails Engine provides an interface, helpers, and fixture data for pulling search results from external sources via RSS feeds.
+
+External Search Sources was developed for the [Kete](http://kete.net.nz) open source Ruby on Rails application by [Katipo Communications, Ltd.](http://katipo.co.nz) and was funded by [Digital New Zealand](http://digitalnz.org).
+
+It is built upon work originally funded by Auckland City Libraries (http://www.aucklandcitylibraries.com).
+
+== Requirements
+
+* Rails 2.3 or higher - Prior versions will not work because of incomplete engine support or missing I18n support
+* ActiveScaffold plugin installed for admin interface to work (http://github.com/activescaffold/active_scaffold)
+* Kete version of the Feedzirra gem (http://github.com/kete/feedzirra) (version 0.0.20.1 or higher)
+* Acts as List - For ordering the display of search sources (http://github.com/rails/acts_as_list)
+
+== Assumptions (configurable, see Configuration section for details)
+
+* Authorization plugin (http://github.com/DocSavage/rails-authorization-plugin)
+* Acts as authenticated (http://svn.techno-weenie.net/projects/plugins/acts_as_authenticated)
+
+
+== Installation
+
+=== Step 1
+
+Open a console, and in the root of you Rails application, install the plugin by running one of the following (depending on the method you use to import plugins):
+
+* script/plugin install git://github.com/kete/external_search_sources.git
+* piston import git://github.com/kete/external_search_sources.git vendor/plugins/external_search_sources
+* git submodule add git://github.com/kete/external_search_sources.git vendor/plugins/external_search_sources
+* Download the latest files ( http://github.com/kete/external_search_sources/tarball/master ) and extract to vendor/plugins/external_search_sources
+
+=== Step 2
+
+Install migrations and public images.
+
+  rake external_search_sources:sync
+
+=== Step 3
+
+Update your database.
+
+  rake db:migrate
+
+=== Step 4
+
+Where you want search sources displayed, add the following to the view file
+
+  display_search_sources 'test'
+
+Replace the string 'test' with a search term variable or other search term string you want search sources to return results of.
+
+=== Step 5
+
+Add some search sources. Go to /search_sources/list and add some data into the correct fields.
+
+Alternatively, use some fixture data included with the plugin. You can do this in two ways:
+
+* Importing search sources via import form on search sources controller
+
+* Running a rake task - rake external_search_sources:import
+
+
+== Configuration
+
+=== Styling
+
+Nesting of divs and results is as follows. You'll need firebug or examine the source manually if you need more than this.
+
+Format: Element name followed by #[string] (id) and .[string] (classes). e.g.  div#some_div.class1.class2 = <div id="some_div" class="class1 class2">
+
+  div#search_sources
+    h3#search_sources_heading
+    for each search source
+      h4#[search_source_title_id]_heading
+      div#[search_source_title_id]_links
+        for each link result
+          div#[search_source_title_id]_result_[result_object_id].ExternalSearchSources[:default_link_classes]
+      div#[search_source_title_id]_images.images
+        for each image result
+          div#[search_source_title_id]_result_[result_object_id].ExternalSearchSources[:image_link_classes]
+      div#[search_source_title_id]_more_results.ExternalSearchSources[:default_link_classes]
+
+=== Settings
+
+ExternalSearchSources has methods for [] (accessor) and []= (writer). The settings available can be found in
+
+  lib/external_search_sources.rb
+
+To override some settings, create an initializer, copy the config lines from lib/external_search_sources.rb to the initializer, and change to suit.
+
+If you don't add settings to the initializer, the plugin will fall back to what is uses by default.
+
+Once you've done the initial configuration to get things working, the one you'll most likely want to change is:
+
+  :source_targets
+    Allows you to limit search sources to various pages based on the target.
+    For example, if you have a products search sources that you want on other product pages,
+    and a blog posts search source that you want on the news page, you would create two targets,
+    product and news, then adjust the options in the call to display_search_sources so that
+    :target is set and pulls only the search sources you want.
+
+=== Method Overrides
+
+The plugin makes an assumption about other plugins you have installed and uses methods from them to get things working.
+
+Most of the time though, you'll have a different setup.
+
+There are two methods that you can override to suit your applications environment. They are:
+
+  authorized_to_access_search_sources?
+    This method returns a true or false depending on whether the current user is allowed access to the search sources admin interface.
+
+  redirect_if_not_authorized
+    This method calls the authorized_to_access_search_sources? method, and if it returns false, it will redirect to the unauthorized path (see ExternalSearchSources[:unauthorized_path]) with a flash message.
+
+The last assumption is a login_required method exists that runs on a before_filter, which you can change to your own method by configuring ExternalSearchSources[:login_method]
+
+Override any of the above methods by adding a similarly named method in application_controller.rb. If the call to super works, then it'll use it. Else if will fall back to what the plugin has by default.
+
+=== Output
+
+The display_search_sources helper method takes an options hash as a second parameter.
+
+So far, the working options are:
+
+  :target => [symbol] / [array of symbols]
+    Matches search sources with same value
+    More targets can be added to ExternalSearchSources[:source_targets]
+    If no target is passed in, all search sources are displayed.
+    Default(s) => :homepage or :search.
+
+  :do_not_cache => [boolean]
+    Overwrite caching on a per display basis.
+    Set to true to disable caching for the output.
+    When false, falls back to ExternalSearchSources[:cache_results]
+    Default(s) => false
+
+  :limit => [integer]
+    Overwrite the search sources default limit.
+    Useful for cases where the number per page changes dynamically.
+    When nil, falls back to search source default
+    Default(s) => nil
+
+  :title => [string]
+    The title of the search sources box.
+    Default(s) => 'Other Resources'
+
+=== Internationalization (I18n)
+
+This engine uses the I18n features of Rails 2.2 and later to allow for easily translation of the search source interface, and output.
+
+Locales are stored in config/locales  inside the engine directory. When locales are completed, they are added to I18n load path automatically when the application is started (this is done in the engines init.rb).
+
+To use your own strings, open up the locale of your choice in an editor of your choice and change them to suit.
+
+Alternatively, overwrite values from your applications locale file.
+
+We accept new locales for the engine. If you willing and able to help, please feel free to fork the engine on Github, make your changes, and send a pull request.
+
+
+== Testing
+
+The plugin comes with a test suite that can be run once the plugin is installed in an application.
+
+Change into the plugins directory and run 'rake' to start them.
+
+Note: The tests are run on Rails 2.3 because it is the only version with engine support (see requirements section)
+
+
+== Reporting an Issue
+
+If you have a problem, please report it on the external_search_sources plugin ticket tracker (on Ligthouseapp)
+
+http://kete.lighthouseapp.com/projects/32521-external_search_sources/tickets
+
+Be sure to include Rails version, plugin version, and when possible, a sample application that can reproduce the problem.
+
+Upload it to one of the various file hosting sites and link to it in the ticket.
+
+Don't include vendored rails or the external_search_sources plugin in the archive (if I know the versions, I'll add these myself).
+
+
+== Contributing
+
+If you've added something, why not share it.
+
+Fork the repository (http://github.com/kete/external_search_sources), make the changes and send a pull request to the maintainers.
+
+Changes with tests, and full documentation are preferred, but not required.
+
+
+= Credits
+
+This engine was designed, implemented, and tested by Kieran Pilkington ( http://github.com/KieranP )
+
+Walter McGinnis ( http://github.com/walter ) did the system design and gave feedback on the engine as it was being developed.
+
+The original concept of "contextual search" is from Paul Reynolds of McGovern Online (http://www.mcgovern.co.nz).
+
+Current maintainers: Kieran Pilkington and Walter McGinnis
