@@ -134,7 +134,7 @@ module ApplicationHelper
     # We don't have a published date at the moment
     # metadata += meta_tag(:name => 'DC.date', :content => item.created_at.to_date, :scheme => "IS08601")
 
-    metadata
+    metadata.html_safe
   end
 
   def opensearch_descriptions
