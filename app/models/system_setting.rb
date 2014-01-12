@@ -686,6 +686,10 @@ private
       "scan this download.\n"+
       "Are you sure you want to proceed?"
     end
+
+    def force_https_on_restricted_pages
+      false
+    end
   end 
 end
 

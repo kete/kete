@@ -32,7 +32,7 @@ class IndexPageController < ApplicationController
       else
         @url_to_full_topic = nil
         @url_to_comments = nil
-        if !@topic.nil?
+        if !@topic.nil? # if @topic is not nil do ...
           case @current_basket.index_page_link_to_index_topic_as
           when 'full topic and comments'
             @url_to_full_topic = url_for( :urlified_name => @topic.basket.urlified_name,
