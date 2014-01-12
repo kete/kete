@@ -10,9 +10,9 @@
       %ul
         - if @still_image_is_portrait
           - unless @still_image.user_portrait_relation.first?
-            %li= link_to t('images.portrait_controls.make_selected'), :controller => 'account', |
-                :action => 'make_selected_portrait',                                           |
-                :id => @still_image.id                                                         |
+            %li= link_to t('images.portrait_controls.make_selected'), :controller => 'account', 
+                    :action => 'make_selected_portrait', 
+                    :id => @still_image.id 
           %li= link_to t('images.portrait_controls.remove_image'), :controller => 'account', |
               :action => 'remove_portrait',                                                 |
               :id => @still_image.id                                                        |

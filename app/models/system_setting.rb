@@ -1,446 +1,180 @@
+
 class SystemSetting
-
-  # EOIN:
-  # This class manages system settings in Kete. Currently it is a bit of a mess
-  # internally but we don't care as long as it provides a nice clean external
-  # interface for the rest of the app to use. 
-  
-  def self.admin_email
-    self.setting(:admin_email)
-  end
-
-  def self.is_configured?
-    self.setting(:is_configured)
-  end
-
-  def self.pretty_site_name
-    self.setting(:pretty_site_name)
-  end
-
-  def self.is_configured
-   self.setting(:is_configured)
-  end
-
-  def self.pretty_site_name
-    self.setting(:pretty_site_name)
-  end
-
-  def self.site_name
-    self.setting(:site_name)
-  end
-
-  def self.full_site_url
-    "http:/#{self.setting(:site_url)}/"
-  end
-
-  def self.site_url
-    self.setting(:site_url)
-  end
-
-  def self.notifier_email
-    self.setting(:notifier_email)
-  end
-
-  def self.contact_email
-    self.setting(:contact_email)
-  end
-
-  def self.records_per_page_choices
-    self.setting(:records_per_page_choices)
-  end
-
-  def self.default_records_per_page
-   self.setting(:default_records_per_page)
-  end
-
-  def self.default_search_class
-   self.setting(:default_search_class)
-  end
-
-  def self.number_of_related_things_to_display_per_type
-   self.setting(:number_of_related_things_to_display_per_type)
-  end
-
-  def self.number_of_related_images_to_display
-   self.setting(:number_of_related_images_to_display)
-  end
-
-  #def self.default_number_of_multiples
-  #  self.setting(:default_number_of_multiples)
-  #end
-
-  #def self.flagging_tags
-  #  self.setting(:flagging_tags)
-  #end
-  
-  def self.legacy_imagefile_paths_up_to
-    self.setting(:legacy_imagefile_paths_up_to)
-  end
-  
-  def self.legacy_audiorecording_paths_up_to
-    self.setting(:legacy_audiorecording_paths_up_to)
-  end
-  
-  def self.legacy_document_paths_up_to
-    self.setting(:legacy_document_paths_up_to)
-  end
-  
-  def self.legacy_video_paths_up_to
-    self.setting(:legacy_video_paths_up_to)
-  end
-
-  def self.require_activation?
-    self.setting(:require_activation)
-  end
-
-  def self.about_basket
-    self.setting(:about_basket)
-  end
-
-  #def self.help_basket
-  #  self.setting(:help_basket)
-  #end
-  #
-  #def self.extended_field_for_user_name
-  #  self.setting(:extended_field_for_user_name)
-  #end
-
-  def self.download_warning
-    self.setting(:download_warning)
-  end
-
-  #def self.tags_synonyms
-  #  self.setting(:tags_synonyms)
-  #end
-
-  #def self.description_synonyms
-  #  self.setting(:description_synonyms)
-  #end
-  #
-  #def self.description_template
-  #  self.setting(:description_template)
-  #end
-
-  def self.image_sizes
-    self.setting(:image_sizes)
-  end
-
-  def self.image_content_types
-   self.setting(:image_content_types)
-  end
-  #
-  def self.maximum_uploaded_file_size
-    self.setting(:maximum_uploaded_file_size)
-  end
-  
-  def self.document_content_types
-   self.setting(:document_content_types)
-  end
-  
-  def self.audio_content_types
-   self.setting(:audio_content_types)
-  end
-  
-  def self.video_content_types
-   self.setting(:video_content_types)
-  end
-  #
-  #def self.setup_sections
-  #  self.setting(:setup_sections)
-  #end
-  
-  #def self.documentation_basket
-  #  self.setting(:documentation_basket)
-  #end
-  
-  def self.enable_converting_documents
-   self.setting(:enable_converting_documents)
-  end
-  
-  #def self.default_policy_is_full_moderation
-  #  self.setting(:default_policy_is_full_moderation)
-  #end
-
-  def self.blank_title
-    self.setting(:blank_title)
-  end
-
-  def self.pending_flag
-    self.setting(:pending_flag)
-  end
-
-  def self.rejected_flag
-    self.setting(:rejected_flag)
-  end
-
-  def self.blank_flag
-    self.setting(:blank_flag)
-  end
-
-  def self.reviewed_flag
-    self.setting(:reviewed_flag)
-  end
-
-  def self.frequency_of_moderation_email
-    self.setting(:frequency_of_moderation_email)
-  end
-
-  #def self.title_synonyms
-  #  self.setting(:title_synonyms)
-  #end
-
-  #def self.short_summary_synonyms
-  #  self.setting(:short_summary_synonyms)
-  #end
-
-  #def self.import_fields_to_ignore
-  #  self.setting(:import_fields_to_ignore)
-  #end
-
-  #def self.default_baskets_ids
-  #  self.setting(:default_baskets_ids)
-  #end
-
-  def self.captcha_type
-    self.setting(:captcha_type)
-  end
-
-  #def self.default_content_license
-  #  self.setting(:default_content_license)
-  #end
-
-  def self.force_https_on_restricted_pages
-    self.setting(:force_https_on_restricted_pages)
-  end
-
-  def self.no_public_version_title
-    self.setting(:no_public_version_title)
-  end
-
-  def self.no_public_version_description
-    self.setting(:no_public_version_description)
-  end
-
-  def self.provide_oai_pmh_repository
-    self.setting(:provide_oai_pmh_repository)
-  end
-
-  #def self.uses_basket_list_navigation_menu_on_every_page
-  #  self.setting(:uses_basket_list_navigation_menu_on_every_page)
-  #end
-
-  #def self.available_syntax_highlighters
-  #  self.setting(:available_syntax_highlighters)
-  #end
-
-  def self.government_website
-    self.setting(:government_website)
-  end
-
-  def self.default_page_keywords
-   self.setting(:default_page_keywords)
-  end
-
-  def self.default_page_description
-    self.setting(:default_page_description)
-  end
-
-  #def self.enable_user_portraits
-  #  self.setting(:enable_user_portraits)
-  #end
-
-  #def self.enable_gravatar_support
-  #  self.setting(:enable_gravatar_support)
-  #end
-
-  #def self.basket_creation_policy
-  #  self.setting(:basket_creation_policy)
-  #end
-
-  def self.enable_embedded_support
-   self.setting(:enable_embedded_support)
-  end
-
-  def self.image_slideshow_size
-   self.setting(:image_slideshow_size)
-  end
-
-  def self.related_items_position_default
-    self.setting(:related_items_position_default)
-  end
-
-  def self.hide_related_items_position_field
-    self.setting(:hide_related_items_position_field)
-  end
-
-  def self.show_powered_by_kete?
-    self.setting(:show_powered_by_kete)
-  end
-
-  def self.additional_credits_html
-    self.setting(:additional_credits_html)
-  end
-
-  #def self.notify_site_admins_of_flaggings
-  #  self.setting(:notify_site_admins_of_flaggings)
-  #end
-
-  def self.keep_embedded_metadata_for_all_sizes
-   self.setting(:keep_embedded_metadata_for_all_sizes)
-  end
-
-  #def self.display_topic_type_on_search_result
-  #  self.setting(:display_topic_type_on_search_result)
-  #end
-
-  #def self.display_related_topics_as_topic_type_counts
-  #  self.setting(:display_related_topics_as_topic_type_counts)
-  #end
-
-  def self.restricted_flag
-    self.setting(:restricted_flag)
-  end
-
-  def self.add_date_created_to_item_search_record
-    self.setting(:add_date_created_to_item_search_record)
-  end
-
-  def self.display_search_terms_field
-   self.setting(:display_search_terms_field)
-  end
-
-  def self.display_date_range_fields
-   self.setting(:display_date_range_fields)
-  end
-
-  def self.display_privacy_fields
-   self.setting(:display_privacy_fields)
-  end
-
-  #def self.default_search_privacy
-  #  self.setting(:default_search_privacy)
-  #end
-
-  def self.display_item_type_field
-   self.setting(:display_item_type_field)
-  end
-
-  def self.display_topic_type_field
-   self.setting(:display_topic_type_field)
-  end
-
-  def self.display_basket_field
-   self.setting(:display_basket_field)
-  end
-
-  def self.display_sorting_fields
-   self.setting(:display_sorting_fields)
-  end
-
-  def self.display_choices_field
-   self.setting(:display_choices_field)
-  end
-
-  #def self.language_choices_position
-  #  self.setting(:language_choices_position)
-  #end
-
-  #def self.language_choices_display_type
-  #  self.setting(:language_choices_display_type)
-  #end
-
-  def self.search_selected_topic_type
-   self.setting(:search_selected_topic_type)
-  end
-
-  def self.search_select_current_basket
-   self.setting(:search_select_current_basket)
-  end
-
-  def self.dc_date_display_on_search_results?
-    self.setting(:dc_date_display_on_search_results?)
-  end
-
-  def self.dc_date_display_detail_level
-    self.setting(:dc_date_display_detail_level)
-  end
-
-  def self.dc_date_display_formulator
-    self.setting(:dc_date_display_formulator)
-  end
-
-  def self.list_baskets_number
-   self.setting(:list_baskets_number)
-  end
-
-  def self.contact_url
-   self.setting(:contact_url)
-  end
-
-  def self.allowed_anonymous_actions
-    self.setting(:allowed_anonymous_actions)
-  end
-
-  def self.enable_maps?
-    self.setting(:enable_maps)
-  end
-
-  def self.default_latitude
-    self.setting(:default_latitude)
-  end
-
-  def self.default_longitude
-    self.setting(:default_longitude)
-  end
-
-  def self.default_zoom_level
-    self.setting(:default_zoom_level)
-  end
-
-  def self.use_backgroundrb_for_cache_expirations
-    self.setting(:use_backgroundrb_for_cache_expirations)
-  end
-
-  def self.use_backgroundrb_for_search_record_updates
-    self.setting(:use_backgroundrb_for_search_record_updates)
-  end
-
-  def self.administrator_activates?
-    self.setting(:administrator_activates)
-  end
-
-  def self.uses_basket_list_navigation_menu_on_every_page?
-    self.setting(:uses_basket_list_navigation_menu_on_every_page)
-  end
-
-  def self.enable_user_portraits?
-    self.setting(:enable_user_portraits)
-  end
-
-  def self.enable_gravatar_support?
-    self.setting(:enable_gravatar_support)
-  end
-
-  def self.language_choices_position
-    self.setting(:language_choices_position)
-  end
-
-  def self.available_syntax_highlighters
-    self.setting(:available_syntax_highlighters)
-  end
-
-private
-
-  def self.setting(setting)
-    # EOIN: 
+  module Defaults
+    # RABID:
+    #
+    # Defaults, mostly taken from the system_setting table on an existing 
+    # Kete2 system's database.
+    # 
     # we are unsure what the final use-case of these system settings will be so
     # we feel it is too early to do persistance for them. When it becomes
     # clearer, we can (if required) add the ability to load settings from
     # YAML/DB/whatever. 
-    Defaults.new.send setting
-  end
+ 
 
-  class Defaults
+    def contact_email
+      "kete@example.com"
+    end
+
+    #def default_number_of_multiples
+    #  5
+    #end
+
+    #def flagging_tags
+    #  ['inaccurate', 'duplicate', 'inappropriate', 'entered by mistake', 'has typos']
+    #end
+    
+    def about_basket
+      3
+    end
+
+    #def help_basket
+    #  2
+    #end
+    #
+    #def extended_field_for_user_name
+    #  "user_name"
+    #end
+
+    #def tags_synonyms
+    #  nil
+    #end
+
+    #def description_synonyms
+    #  nil
+    #end
+    #
+    #def description_template
+    #  nil
+    #end
+
+    #def setup_sections
+    #  ['Server', 'System', 'Accounts', 'Warnings', 'Flagging', 'Results Display', 'Related Items Display', 'Extended Fields']
+    #end
+    
+    #def documentation_basket
+    #  4
+    #end
+    
+    #def default_policy_is_full_moderation
+    #  false
+    #end
+
+    def rejected_flag
+      "rejected"
+    end
+
+    def blank_flag
+      "used for moderation"
+    end
+
+    def reviewed_flag
+      "reviewed by moderator"
+    end
+
+    def frequency_of_moderation_email
+      4
+    end
+
+    #def title_synonyms
+    #  nil
+    #end
+
+    #def short_summary_synonyms
+    #  nil
+    #end
+
+    #def import_fields_to_ignore
+    #  ['HiliteLibrary']
+    #end
+
+    #def default_baskets_ids
+    #  # ROB: not in the Kete2 system's system_settings database.
+    #end
+
+    #def default_content_license
+    #  ""
+    #end
+
+    def force_https_on_restricted_pages
+      false
+    end
+
+    def no_public_version_description
+      "There is currently no public version of this item."
+    end
+
+    #def uses_basket_list_navigation_menu_on_every_page
+    #  false
+    #end
+
+    #def basket_creation_policy
+    #  "closed"
+    #end
+
+    def related_items_position_default
+      "inset"
+    end
+
+    def hide_related_items_position_field
+      true
+    end
+
+    #def notify_site_admins_of_flaggings
+    #  false
+    #end
+
+    #def display_topic_type_on_search_result
+    #  false
+    #end
+
+    #def display_related_topics_as_topic_type_counts
+    #  false
+    #end
+
+    def restricted_flag
+      "restricted"
+    end
+
+    def add_date_created_to_item_search_record
+      true
+    end
+
+    #def default_search_privacy
+    #  "public"
+    #end
+
+    #def language_choices_display_type
+    #  "dropdown"
+    #end
+
+    def dc_date_display_detail_level
+      "year_month_and_day"
+    end
+
+    def dc_date_display_formulator
+      nil
+    end
+
+    def default_latitude
+      -41.3368981
+    end
+
+    def default_longitude
+      174.7725319
+    end
+
+    def default_zoom_level
+      5
+    end
+
+    def use_backgroundrb_for_cache_expirations
+      false
+    end
+
+    def use_backgroundrb_for_search_record_updates
+      false
+    end
 
     def default_page_keywords
       ""
@@ -643,11 +377,11 @@ private
       5 
     end
 
-    def self.administrator_activates
+    def administrator_activates
       false
     end
 
-    def self.require_activation
+    def require_activation
       false
     end
 
@@ -655,7 +389,7 @@ private
       []
     end
 
-    def dc_date_display_on_search_results?
+    def dc_date_display_on_search_results
       false
     end
 
@@ -679,6 +413,10 @@ private
       0
     end
 
+    def force_https_on_restricted_pages
+      false
+    end
+
     def download_warning
       "You are about to download a file from Kete. Kete is an open digital repository"+
       "and as such we can not guarantee the integrity of any file in the repository.  "+
@@ -686,11 +424,35 @@ private
       "scan this download.\n"+
       "Are you sure you want to proceed?"
     end
-
-    def force_https_on_restricted_pages
-      false
-    end
-  end 
-end
+  end
+end 
 
 
+class SystemSetting
+  # EOIN:
+  # This class manages system settings in Kete. Currently it is a bit of a mess
+  # internally but we don't care as long as it provides a nice clean external
+  # interface for the rest of the app to use. 
+
+  extend SystemSetting::Defaults
+
+  class << self
+    alias_method :is_configured?, :is_configured
+    alias_method :require_activation?, :require_activation
+    alias_method :show_powered_by_kete?, :show_powered_by_kete
+    alias_method :dc_date_display_on_search_results?, :dc_date_display_on_search_results
+    alias_method :enable_maps?, :enable_maps
+    alias_method :administrator_activates?, :administrator_activates
+    alias_method :uses_basket_list_navigation_menu_on_every_page?, :uses_basket_list_navigation_menu_on_every_page
+    alias_method :enable_user_portraits?, :enable_user_portraits
+    alias_method :enable_gravatar_support?, :enable_gravatar_support
+  end
+
+  def self.uses_basket_list_navigation_menu_on_every_page?
+    self.uses_basket_list_navigation_menu_on_every_page
+  end
+
+  def self.full_site_url
+    "http:/#{self.site_url}/"
+  end
+end 

@@ -31,8 +31,9 @@ class Profile < ActiveRecord::Base
   has_many :profile_mappings, :dependent => :destroy
   has_many :baskets, :through => :profile_mappings
 
-  # holds our profile's rule set
-  acts_as_configurable
+  def setting(name, *args)
+    ProfileSettings.get(name, *args)
+  end
 
   # to start, profiles are only available to Basket model
   # so we simply hard code it here, that way we don't need to do anything in our interface
