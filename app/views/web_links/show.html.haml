@@ -6,7 +6,7 @@
 = render(:partial => "topics/related_items", :locals => { :item => @web_link, :topics_only => true, :position => 'inset' }) if @web_link.related_items_position == 'inset'
 - cache_with_privacy(@web_link, {:part => 'details_second'}) do
   = render(:partial => "details", :locals => { :item => @web_link })
-  %p= @web_link.description
+  %p= @web_link.description.html_safe
   = pending_review(@web_link)
 = render(:partial => "topics/extended_fields", :locals => { :item => @web_link, :embedded => true })
 %div{:style => "clear:both;"}
