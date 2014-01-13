@@ -6,7 +6,7 @@
 = render(:partial => "topics/related_items", :locals => { :item => @video, :topics_only => true, :position => 'inset' }) if @video.related_items_position == 'inset'
 = render(:partial => "details", :locals => { :item => @video }) if show_attached_files_for?(@video)
 - cache_with_privacy(@video, {:part => 'details_second'}) do
-  %p= @video.description
+  %p= @video.description.html_safe
   = pending_review(@video)
 = render(:partial => "topics/extended_fields", :locals => { :item => @video, :embedded => true })
 %div{:style => "clear:both;"}

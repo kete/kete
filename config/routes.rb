@@ -86,7 +86,7 @@
   get 'topics/:id'           => 'topics#show', as: 'topic'
   get 'audio/:id'            => 'audio#show', as: 'audio_recording'
   get 'images/:id'           => 'images#show', as: 'still_image'
-  get 'videos/:id'           => 'videos#show', as: 'video'
+  get 'videos/:id'           => 'video#show', as: 'video'
   get 'web_links/:id'        => 'web_links#show', as: 'web_link'
   get 'documents/:id'        => 'documents#show', as: 'document'
   get 'comments/:id'         => 'comments#show', as: 'comment'
