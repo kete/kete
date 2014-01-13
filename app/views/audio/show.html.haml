@@ -6,7 +6,7 @@
 = render(:partial => "topics/related_items", :locals => { :item => @audio_recording, :topics_only => true, :position => 'inset' }) if @audio_recording.related_items_position == 'inset'
 = render(:partial => "details", :locals => { :item => @audio_recording }) if show_attached_files_for?(@audio_recording)
 - cache_with_privacy(@audio_recording, {:part => 'details_second'}) do
-  %p= @audio_recording.description
+  %p= @audio_recording.description.html_safe
   = pending_review(@audio_recording)
 = render(:partial => "topics/extended_fields", :locals => { :item => @audio_recording, :embedded => true })
 %div{:style => "clear:both;"}

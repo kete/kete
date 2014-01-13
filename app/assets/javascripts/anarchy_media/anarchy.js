@@ -10,7 +10,7 @@ For non-WP pages call script in <HEAD>:
 */
 // Configure plugin options below
 
-var anarchy_url = '/javascripts/anarchy_media' // http address for the anarchy-media folder (no trailing slash).
+var anarchy_url = '/assets/anarchy_media' // http address for the anarchy-media folder (no trailing slash).
 var accepted_domains=new Array("") 	// OPTIONAL - Restrict script use to your domains. Add root domain name (minus 'http' or 'www') in quotes, add extra domains in quotes and separated by comma.
 var viddownloadLink = 'inline'	// Download link for flv and wmv links: One of 'none' (to turn downloading off) or 'inline' to display the link. ***Use $qtkiosk for qt***.
 
