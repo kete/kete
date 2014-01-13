@@ -39,6 +39,7 @@ describe "site search" do
     end
 
     # ... then the topic should appear as the sole search result
-    expect(page).to have_content 'Topics (1)'
+    expect(page).to have_content('Topics (1)')
+    expect(page).to have_content(unique)
   end
 end
