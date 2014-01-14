@@ -13,9 +13,13 @@ class SearchQuery
               :content_item_type,
               # :topic_type,
               :basket,
-              :page
+              :page,
+              :controller,
+              :action
 
   def initialize(params)
+    @controller = params[:controller]
+    @action = params[:action]
 
     # the string that the user typed into the search box
     @search_terms = params[:search_terms] || ""

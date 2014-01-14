@@ -7,7 +7,7 @@
           = @search_presenter.link_text_for(ci_type)
       - else
         %li
-          = link_to @search_presenter.link_text_for(ci_type), { controller: "search", action: "for", params: @search_presenter.query_params_for(ci_type)}
+          = link_to @search_presenter.link_text_for(ci_type), @search_presenter.link_path_params_for(ci_type)
 
   %div{:style => "clear:both;"}
 

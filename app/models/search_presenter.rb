@@ -37,6 +37,14 @@ class SearchPresenter
     search_relation.where(searchable_type: content_item_type).count # => Fixnum
   end
 
+  def link_path_params_for(content_item_type)
+    {
+      controller: @query.controller, 
+      action: @query.action, 
+      params: query_params_for(content_item_type)
+    }
+  end
+
   # TODO: should this be renamed url_safe_basket_name ??
   # EOIN: it's not clear whether this it he basket within which we are
   #       searching or the basket we are currently displaying
