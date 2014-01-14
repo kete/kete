@@ -276,7 +276,8 @@ module ApplicationHelper
 
   def default_controller
     # RABID: ROB: ContentItem to search by default when a users browses a basket.
-    "topics"
+    # (is used in _main_nav view to generate URLs so needs to be upper case singular)
+    "Topic"
   end 
 
   # def header_browse_links
