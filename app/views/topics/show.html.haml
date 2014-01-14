@@ -7,12 +7,12 @@
   = extras_after_title_headline
   %h4
     %span.topic-type-prefix= t 'topics.show.topic_type'
-    = topic_type_breadcrumb_for(@topic)
+    = topic_type_breadcrumb_for(@topic).html_safe
   %p
     %b= @topic.short_summary
 = render(:partial => "related_items", :locals => { :item => @topic, :position => 'inset' }) if @topic.related_items_position == 'inset'
 - cache_with_privacy(@topic, {:part => 'details_second'}) do
-  = @topic.description
+  = @topic.description.html_safe
   = pending_review(@topic)
 = render(:partial => "extended_fields", :locals => { :item => @topic, :embedded => true })
 %div{:style => "clear:both;"}
