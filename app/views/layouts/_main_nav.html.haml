@@ -41,5 +41,5 @@
       = mail_to(SystemSetting.contact_email, t('layouts.application.contact'), encode: "hex", accesskey: '9', tabindex: '2')
 
   = header_add_links.html_safe
-
-  %li#header_add_basket= header_add_basket_link unless header_add_basket_link.blank?  
+  - if !header_add_basket_link.blank?  
+    %li#header_add_basket= header_add_basket_link 
