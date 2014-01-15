@@ -6,7 +6,7 @@ class BasketSettings
   def self.get(name, *args)
     # EOIN: just while we are figuring out how this works
     raise "Woah, we expected just a name but we got the name #{name} and these extras: #{args}" unless args.empty?
-    p "called basket instance #setting. You passed #{name}"
+    # p "called basket instance #setting. You passed #{name}"
 
     settings.fetch(name)
   rescue

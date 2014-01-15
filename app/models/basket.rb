@@ -11,11 +11,9 @@ class Basket < ActiveRecord::Base
     raise "died in Basket.settings"
   end
 
+  # EOIN: TEMP: just while we are figuring out how this works
   def setting(name, *args)
-    # EOIN: just while we are figuring out how this works
-    raise "Woah, we expected just a name but we got the name #{name} and these extras: #{args}" unless args.empty?
-    p "called basket instance #setting. You passed #{name}"
-
+    fail "Basket#setting expected just a name but we got the name '#{name}' and these extras: #{args}" unless args.empty?
     BasketSettings.get(name, *args)
   end
 

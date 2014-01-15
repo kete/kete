@@ -80,7 +80,6 @@ module ConfigureAsKeteContentItem
       RUBY
 
       # methods and declarations related to moderation and flagging
-      # RABID: disable to get working
       klass.send :include, Flagging
 
       klass.send :validates_presence_of, :title

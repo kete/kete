@@ -413,6 +413,10 @@ class SystemSetting
       0
     end
 
+    def force_https_on_restricted_pages
+      false
+    end
+
     def download_warning
       "You are about to download a file from Kete. Kete is an open digital repository"+
       "and as such we can not guarantee the integrity of any file in the repository.  "+
@@ -451,6 +455,4 @@ class SystemSetting
   def self.full_site_url
     "http:/#{self.site_url}/"
   end
-
-end
-
+end 

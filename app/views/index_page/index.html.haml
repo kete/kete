@@ -7,7 +7,7 @@
   - if @topic_related_items_count > 0 && @topic.related_items_position == 'inset'
     = render(:partial => "topics/related_items", :locals => { :item => @topic, :position => 'inset' })
 
-  = @topic.description.html_safe
+  = @topic.description.html_safe if @topic.description.present?
   = pending_review(@topic)
   - extended_fields_html = display_xml_attributes(@topic)
 

@@ -1,8 +1,66 @@
-# RABID disable to get working
-# include ZoomControllerHelpers
+# RABID:
+# * this module is 
+#   * included directly in Topic, 
+#   * included by ConfigureAsKeteContentItem into every class that it is included in
+#     * AudioRecording
+#     * Comment
+#     * Document
+#     * StillImage
+#     * Video
+#     * WebLink
+# * it adds the ClassMethods module to the class and a bunch of stuff into the instance
+# * it adds an after_save callback that invokes moderation
+# * it adds 3 attributes to the instances
+# 1. do_not_moderate
+# 2. pending_version
+# 3. flagged_at
+# * it adds some methods to the {FOO}::Version class
 
-# include Rails.application.routes.url_helpers # EOIN: commented out as it caused us to exceed system stack limits on second request
-# include ActionController::UrlWriter
+# This module seems to be responsible for
+# Flagging seems to be used in Kete to do
+#   * moderation
+#   * review
+
+
+
+# Moderation
+# ==========
+# * moderation is implemented by saving particular tags with the model
+# * moderation also has to be aware of the various older versions of the model 
+
+# flags that can be set on a model (as tags):
+# * blank
+# * pending
+#     * whether a model is "pending" or not seems to depend on the contents of it's title and description attribute too - see #find_non_pending below
+# * reviewed
+#     * can save an option message with the flag
+# * rejected
+
+# * restricted
+
+# the following flags are inferred by the state of other flags
+# * disputed
+
+
+# when a model has been moderated, it has one of the following values:
+#     [0] "reviewed by moderator",
+#     [1] "rejected",
+#     [2] "restricted",
+#     [3] "used for moderation"
+
+# * Tags are not just used for moderation - users can set their own tags on models for search etc.
+
+# Kete sets up 2 tag contexts for it's models
+# 1. public_tags
+# 2. private_tags
+
+# It adds a further tag context to the MyModel::Version models
+# 3. flags
+
+# Admins can click on 'moderate contents' for a basket and then be presented with links that do
+# * "make live"
+# * "mark as reviewed"
+# * "reject"
 
 module Flagging
   unless included_modules.include? Flagging
@@ -79,14 +137,14 @@ module Flagging
     end
 
     # not used, kept for reference
-    def approve_this(version_number)
-      version = self.versions.find_by_version(version_number)
-      revert_to_version!(version)
-      clear_flags_for(version)
+    # def approve_this(version_number)
+    #   version = self.versions.find_by_version(version_number)
+    #   revert_to_version!(version)
+    #   clear_flags_for(version)
 
-      # Make sure version in the model is public
-      store_correct_versions_after_save if self.respond_to?(:store_correct_versions_after_save)
-    end
+    #   # Make sure version in the model is public
+    #   store_correct_versions_after_save if self.respond_to?(:store_correct_versions_after_save)
+    # end
 
     def remove_pending_flag(version_number)
       version = self.versions.find_by_version(version_number)
@@ -313,6 +371,7 @@ module Flagging
       end
     end
 
+    # EOIN: I do not know what the purpose of making these methods protected is.
     protected
 
       def do_moderation

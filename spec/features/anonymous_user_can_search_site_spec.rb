@@ -1,20 +1,45 @@
 require 'spec_helper'
 
-describe "An anonymous user can search the site" do
+describe "site search" do
 
-  it "seeds should have loaded" do
-    expect(User.count).to eq(2)
-    expect(Basket.count).to eq(4)
-  end
+  it "triggering site search from the homepage should not result in an error" do
+    # given the required seeds exist
+    load_production_seeds
 
-  it "should work" do
+    # ... when we visit the homepage
     visit '/'
 
+    # ... and search for a string that does not exist in the DB
     within '#head-search-wrapper' do
-      fill_in 'search_terms', with: 'maori battilion'
-      click 'Go'
+      fill_in 'search_terms', with: 'something that does not exist'
+      click_on 'Go'
     end
 
-    expect(page).to have_content 'ANZAC Day around Horowhenua'
+    # ... then the user should be presented with a message saying there were no results
+    expect(page).to have_content 'No results of any type were found'
+  end
+
+  it "searches topic by exact title" do
+ 
+    # Given a topic in the DB with a unique title ...
+    unique = 'snowflake'
+    FactoryGirl.create(:topic, title: unique)
+
+    # ... which has been added to the search index ...
+    PgSearch::Document.delete_all(searchable_type: "Topic") # reset search index
+    PgSearch::Multisearch.rebuild(Topic) # add all Topics to it
+
+    # ... when we visit the home page
+    visit '/'
+
+    # ... and search for exactly that title
+    within '#head-search-wrapper' do
+      fill_in 'search_terms', with: unique
+      click_on 'Go'
+    end
+
+    # ... then the topic should appear as the sole search result
+    expect(page).to have_content('Topics (1)')
+    expect(page).to have_content(unique)
   end
 end
