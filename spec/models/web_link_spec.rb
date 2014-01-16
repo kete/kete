@@ -1,8 +1,35 @@
 require 'spec_helper'
 
 describe WebLink do
+  let(:web_link) { WebLink.new }
+
   it "does not blow up when you initialize it" do
-    foo = WebLink.new
+    web_link
+  end
+
+  it "can be saved to the database with minimal data filled in" do
+    web_link_attrs = {
+       title: "Merube",  
+          # NOTE:  title IS SAVED AS "blank title" for some reason
+          #        but can be correctly set with wl.title = "Merube" 
+          #        after it is saved.
+       #description: "Wonderful ideas. Stunning. Gorgeous",
+       url: "http://merube.com/",
+       basket_id: 1,
+    }
+
+    web_link = WebLink.new(web_link_attrs)
+
+    expect(web_link).to be_valid
+
+
+    # web_link needs to have a basket before it will save
+    # TODO: this implies that basket should be checked by a validation ???
+    web_link.basket = basket
+
+    expect { web_link.save! }.to_not raise_error
+    
+    expect(web_link.versions.size).to eq(1)
   end
 
   it "behaves like a Kete content item"
