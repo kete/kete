@@ -116,38 +116,6 @@ system_settings_013:
   id: "13"
   value: "['inaccurate', 'duplicate', 'inappropriate', 'entered by mistake', 'has typos']"
   section: Flagging
-system_settings_014:
-  name: Legacy Imagefile Paths Up to
-  technically_advanced: true
-  required_to_be_configured: true
-  explanation: Only applicable to a very small number of existing sites.  Safely skipped.
-  id: "14"
-  value: "0"
-  section: Legacy Support
-system_settings_015:
-  name: Legacy Audiorecording Paths Up to
-  technically_advanced: true
-  required_to_be_configured: true
-  explanation: See 'Legacy Imagefile Paths Up to'.
-  id: "15"
-  value: "0"
-  section: Legacy Support
-system_settings_016:
-  name: Legacy Document Paths Up to
-  technically_advanced: true
-  required_to_be_configured: true
-  explanation: See 'Legacy Imagefile Paths Up to'.
-  id: "16"
-  value: "0"
-  section: Legacy Support
-system_settings_017:
-  name: Legacy Video Paths Up to
-  technically_advanced: true
-  required_to_be_configured: true
-  explanation: See 'Legacy Imagefile Paths Up to'.
-  id: "17"
-  value: "0"
-  section: Legacy Support
 system_settings_018:
   name: Require Activation
   technically_advanced: false

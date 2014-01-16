@@ -397,22 +397,6 @@ class SystemSetting
       ""
     end
 
-    def legacy_imagefile_paths_up_to
-      0
-    end
-
-    def legacy_document_paths_up_to
-      0
-    end
-
-    def legacy_audiorecording_paths_up_to
-      0
-    end
-
-    def legacy_video_paths_up_to
-      0
-    end
-
     def force_https_on_restricted_pages
       false
     end

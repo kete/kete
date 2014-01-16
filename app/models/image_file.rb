@@ -46,7 +46,7 @@ class ImageFile < ActiveRecord::Base
 
   include ResizeAsJpegWhenNecessary
 
-  include HandleLegacyAttachmentFuPaths
+  include OverrideAttachmentFuPaths
 
   # custom error message, probably overkill
   # validates the size and content_type attributes according to the current model's options

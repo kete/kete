@@ -38,7 +38,7 @@ class Document < ActiveRecord::Base
 
   validates_as_attachment
 
-  include HandleLegacyAttachmentFuPaths
+  include OverrideAttachmentFuPaths
 
   # this supports auto populated description
   # attribute with converted pdfs, msword docs,
