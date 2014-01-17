@@ -7,93 +7,36 @@ describe Video do
     video
   end
 
-  it "can be saved to the database with minimal data filled in (INCOMPLETE?)" do
-    video_attrs = {
-      title: "The Doge of Venice",
-      #description: "Much trade. So wealth.",
-      filename: "doge.avi",
-      content_type: "video/mp4",
-      size: 30,
-      basket_id: 1,
-      #parent_id: ,
-    }
-    video = Video.new(video_attrs)
+  it "can be validated" do
+    expect( FactoryGirl.build(:validateable_video) ).to be_valid
 
-    expect(video).to be_valid
-    expect { video.save! }.to_not raise_error
+    # ROB:  Not saveable because of basket (see note in factory).
+    expect { FactoryGirl.create(:validateable_video) }.to raise_error
+  end 
+
+  it "can be saved to the database with minimal data filled in" do
+    expect( FactoryGirl.create(:saveable_video) ).to be_a(Video)
   end
 
-  it "can be saved to the database with minimal data filled in (COMPLETE?)" do
-    video_content_type = ContentType.create!(class_name: "Video",
-                             description: "foo",
-                             controller: "video",
-                             humanized_plural: "Videos",
-                             humanized: "Video")
-    expect(video_content_type).to be_valid
-
-    # this must exist in the DB before you can create a user
-    user_content_type = ContentType.create!(class_name: "User",
-                             description: "foo",
-                             controller: "user",
-                             humanized_plural: "Users",
-                             humanized: "User")
-    expect(user_content_type).to be_valid
-
-
-    valid_user_attributes = { 
-      :login => 'quire',
-      :email => 'quire@example.com',
-      :password => 'quire',
-      :password_confirmation => 'quire',
-      :agree_to_terms => '1',
-      :security_code => 'test',
-      :security_code_confirmation => 'test',
-      :locale => 'en' 
-    }
-
-    user = User.create!(valid_user_attributes)
-    expect(user).to be_valid
-
-
-    basket = Basket.create!( name: 'Site',
-                             urlified_name: 'site',
-                             index_page_basket_search: "0",
-                             index_page_archives_as: 'by type',
-                             private_default: false,
-                             file_private_default: false,
-                             allow_non_member_comments: true,
-                             show_privacy_controls: false,
-                             status: 'approved',
-                             creator_id: 1)
-
-    expect(basket).to be_valid
-
-
-    #video_attrs = {
-    #  title:         "foo",
-    #  content_type:  "video/mpeg",
-    #  size:          123,
-    #  filename:      "foo.mpg"
-    #}
-
-     
-    vid2 = Video.new(video_attrs)
-    expect(vid2).to be_valid
-
-    # video needs to have a basket before it will save
-    # TODO: this implies that basket should be checked by a validation ???
-    vid2.basket = basket
-
-    expect { vid2.save! }.to_not raise_error
-    
+  it "creates two versions when first save (ERROR)" do
     # ROB: ERROR
     # The #revert_to_latest_unflagged_version_or_create_blank_version()
     # method in lib/flagging.rb causes a quirk in the code.
     # If there aren't any video_versions rows in the DB, an update_attributes!
     # is run creating an new row in the video_versions table with null values.
-    expect(vid2.versions.size).to eq(2)
-  end
 
+    video1 = FactoryGirl.create(:saveable_video)
+    expect(video1.versions.size).to eq(2)
+    # Oops there should be 1 version
+
+    video1.update_attribute(:title, "changed title")
+    expect(video1.versions.size).to eq(3)
+    # It seems to work fine after that.
+
+    video2 = FactoryGirl.create(:saveable_video)
+    expect(video2.versions.size).to eq(2)
+    # but a new video gets the same problem
+  end
 
   describe "item privacy" do
     describe "(versioned overload) how it interacts with versioning" do
