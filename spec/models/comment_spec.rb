@@ -9,12 +9,10 @@ describe Comment do
 
   it "can be validated" do
     expect( FactoryGirl.build(:validatable_comment) ).to be_valid
-
-    # ROB:  Not savable because of basket (see note in factory).
-    expect { FactoryGirl.create(:validateable_comment) }.to raise_error
+    expect { FactoryGirl.create(:validatable_comment) }.to raise_error
   end 
 
   it "can be saved to the database with minimal data filled in" do
-    expect( FactoryGirl.create(:savable_comment) ).to be_a(Comment)
+    expect( FactoryGirl.create(:saveable_comment) ).to be_a(Comment)
   end
 end  

@@ -2,7 +2,7 @@ FactoryGirl.define do
   factory :basket do
     sequence :name do |n| "Basket name #{n}" end
 
-    factory :savable_basket, class: Basket do
+    factory :saveable_basket, class: Basket do
       sequence :name do |n| "Basket name #{n}" end
       urlified_name 'site'
       index_page_basket_search "0"

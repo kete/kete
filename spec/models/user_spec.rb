@@ -6,7 +6,7 @@ describe User do
   end
 
   it "can be saved to the database with minimal data filled in" do
-    expect( FactoryGirl.build(:savable_user) ).to be_a(User)
+    expect( FactoryGirl.build(:saveable_user) ).to be_a(User)
   end
 end
 

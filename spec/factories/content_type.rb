@@ -2,7 +2,7 @@ FactoryGirl.define do
   factory :content_type do
   end
 
-  factory :savable_content_type, class: ContentType do
+  factory :saveable_content_type, class: ContentType do
   end
 
   # must exist in the DB before you can create a video

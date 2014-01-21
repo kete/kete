@@ -6,6 +6,6 @@ describe Basket do
   end
 
   it "can be saved to the database with minimal data filled in" do
-    expect( FactoryGirl.build(:savable_basket) ).to be_a(Basket)
+    expect( FactoryGirl.build(:saveable_basket) ).to be_a(Basket)
   end
 end 

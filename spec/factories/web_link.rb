@@ -7,12 +7,12 @@ FactoryGirl.define do
     #description: "Wonderful ideas. Stunning. Gorgeous"
     url "http://merube.com/"
 
-    factory :savable_web_link do
-      association :basket, factory: :savable_basket
+    factory :saveable_web_link do
+      association :basket, factory: :saveable_basket
 
-      before(:create) do 
+      after(:build) do 
         # Required models:
-        FactoryGirl.create(:savable_user) if User.count  == 0
+        FactoryGirl.create(:saveable_user)
       end  
     end
   end

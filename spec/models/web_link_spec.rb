@@ -9,13 +9,11 @@ describe WebLink do
 
   it "can be validated" do
     expect( FactoryGirl.build(:validatable_web_link) ).to be_valid
-
-    # rob:  not savable because of basket (see note in factory).
-    expect { FactoryGirl.create(:validateable_web_link) }.to raise_error
+    expect { FactoryGirl.create(:validatable_web_link) }.to raise_error
   end 
 
   it "can be saved to the database with minimal data filled in" do
-    expect( FactoryGirl.create(:savable_web_link) ).to be_a(WebLink)
+    expect( FactoryGirl.create(:saveable_web_link) ).to be_a(WebLink)
   end
 
   it "behaves like a Kete content item"
