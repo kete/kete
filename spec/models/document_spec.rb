@@ -7,19 +7,14 @@ describe Document do
     document
   end
 
-  it "can be saved to the database with minimal data filled in" do
-    document_attrs = {
-      title: "The book of Nyan",
-      #description: "nyan nyan nyan nyan nyan",
-      filename: "nyan.pdf",
-      content_type: "application/pdf",
-      size: 30,
-      #parent_id: ,
-      basket_id: 1,
-    }
-    document = Document.new(document_attrs)
+  it "can be validated" do
+    expect( FactoryGirl.build(:validatable_document) ).to be_valid
 
-    expect(document).to be_valid
-    expect { document.save! }.to_not raise_error
+    # ROB:  Not savable because of basket (see note in factory).
+    expect { FactoryGirl.create(:validateable_document) }.to raise_error
+  end 
+
+  it "can be saved to the database with minimal data filled in" do
+    expect( FactoryGirl.create(:savable_document) ).to be_a(Document)
   end
-end 
+end  

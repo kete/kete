@@ -7,18 +7,14 @@ describe Comment do
     comment
   end
 
-  it "can be saved to the database with minimal data filled in" do
-    comment_attrs = {
-      title: "Non judemental",
-      #description: "are you really going to wear those shoes?",
-      commentable_id: StillImage.last,
-      commentable_type: "still_image",
-      #parent_id: ,
-      basket_id: 1,
-    }
-    comment = Comment.new(comment_attrs)
+  it "can be validated" do
+    expect( FactoryGirl.build(:validatable_comment) ).to be_valid
 
-    expect(comment).to be_valid
-    expect { comment.save! }.to_not raise_error
+    # ROB:  Not savable because of basket (see note in factory).
+    expect { FactoryGirl.create(:validateable_comment) }.to raise_error
+  end 
+
+  it "can be saved to the database with minimal data filled in" do
+    expect( FactoryGirl.create(:savable_comment) ).to be_a(Comment)
   end
-end 
+end  

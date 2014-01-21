@@ -7,6 +7,17 @@ describe StillImage do
     still_image
   end
 
+  it "can be validated" do
+    expect( factorygirl.build(:validatable_still_image) ).to be_valid
+
+    # rob:  not savable because of basket (see note in factory).
+    expect { factorygirl.create(:validateable_still_image) }.to raise_error
+  end 
+
+  it "can be saved to the database with minimal data filled in" do
+    expect( factorygirl.create(:savable_still_image) ).to be_a(StillImage)
+  end
+
   it "can be saved to the database with minimal data filled in" do
     still_image_attrs = {
       title: "Fur Seal",

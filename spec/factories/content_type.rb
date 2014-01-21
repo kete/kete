@@ -2,7 +2,7 @@ FactoryGirl.define do
   factory :content_type do
   end
 
-  factory :saveable_content_type, class: ContentType do
+  factory :savable_content_type, class: ContentType do
   end
 
   # must exist in the DB before you can create a video
@@ -21,6 +21,15 @@ FactoryGirl.define do
     controller "user"
     humanized_plural "Users"
     humanized "User"
+  end
+
+  # must exist in the DB before you can create a video
+  factory :audio_recording_content_type, class: ContentType do
+    class_name "AudioRecording"
+    description "foo"
+    controller "audio_recording"
+    humanized_plural "Audio Recordings"
+    humanized "Audio Recording"
   end
 
 

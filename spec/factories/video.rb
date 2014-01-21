@@ -1,5 +1,4 @@
 FactoryGirl.define do
-
   factory :validateable_video, class: Video do
     title "The Doge of Venice"
     #description "Much trade. So wealth."
@@ -8,17 +7,23 @@ FactoryGirl.define do
     size 30
     #parent_id 
 
-    factory :saveable_video, class: Video do
+    factory :savable_video do
       # ROB:  video needs to have a basket before it will save.
       #       This implies that basket should be checked by a validation.
-      association :basket, factory: :saveable_basket
+      association :basket, factory: :savable_basket
 
       before(:create) do 
-        # Make sure required models exist in the database.
-        FactoryGirl.create(:video_content_type) if ContentType.where(class_name: "Video").empty?
-        FactoryGirl.create(:user_content_type)  if ContentType.where(class_name: "User").empty?
-        FactoryGirl.create(:saveable_user)      if User.count  == 0
+        # Required models:
+        FactoryGirl.create(:savable_user) if User.count  == 0
+      end
+
+      factory :versionable_video do
+        before(:create) do 
+          # Required models:
+          FactoryGirl.create(:video_content_type) if ContentType.where(class_name: "Video").empty?
+          FactoryGirl.create(:user_content_type)  if ContentType.where(class_name: "User").empty?
         end
+      end
     end
   end
 end 

@@ -2,7 +2,7 @@ FactoryGirl.define do
   factory :user do
   end
 
-  factory :saveable_user, class: User do
+  factory :savable_user, class: User do
     login 'quirk'
     email 'quirk@example.com'
     password 'quirk'

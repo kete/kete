@@ -6,6 +6,6 @@ describe ContentType do
   end
 
   it "can be saved to the database with minimal data filled in" do
-    expect( FactoryGirl.build(:saveable_content_type) ).to be_a(ContentType)
+    expect( FactoryGirl.build(:savable_content_type) ).to be_a(ContentType)
   end
 end 
