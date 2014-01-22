@@ -102,7 +102,7 @@ require 'xmlsimple'
 #   in a dc:description tag as mentioned in the point above in some cases. Where hierarchical selections are present, the
 #   values are presented as follows <dc:description>:first choice:child of first choice:</dc:description>.
 
-module ExtendedContent
+  module ExtendedContent
   CLASSES_WITH_SUMMARIES = ['Topic', 'Document']
 
   unless included_modules.include? ExtendedContent
@@ -735,7 +735,7 @@ module ExtendedContent
         "noattr"      => false
       }
 
-      XmlSimple.xml_in("<dummy>#{extended_content}</dummy>", options).map do |key, value|
+      XmlSimple.xml_in("<dummy>#{add_xml_fix(extended_content)}</dummy>", options).map do |key, value|
         recursively_convert_values(key, value)
       end
     end
