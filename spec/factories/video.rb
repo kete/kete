@@ -12,14 +12,14 @@ FactoryGirl.define do
 
       after(:build) do 
         # Required models:
-        FactoryGirl.create(:saveable_user) if User.count  == 0
+        FactoryGirl.create(:saveable_user)
       end
 
       factory :versionable_video do
         after(:build) do 
           # Required models:
-          FactoryGirl.create(:video_content_type) if ContentType.where(class_name: "Video").empty?
-          FactoryGirl.create(:user_content_type)  if ContentType.where(class_name: "User").empty?
+          FactoryGirl.create(:singleton_video_content_type)
+          FactoryGirl.create(:singleton_user_content_type)
         end
       end
     end

@@ -3,8 +3,8 @@ FactoryGirl.define do
   end
 
   factory :saveable_user, class: User do
-    login 'quirk'
-    email 'quirk@example.com'
+    sequence(:login) {|n| "user_#{n}" }
+    sequence(:email) {|n| "user_#{n}@example.com" }
     password 'quirk'
     password_confirmation 'quirk'
     agree_to_terms '1'
