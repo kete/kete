@@ -1547,10 +1547,8 @@ module ApplicationHelper
   end
 
   def link_to_edit_for(item)
-      args[:private] = params[:private]
-
       link_to("<span class=\"edit-link\">#{t("topics.actions_menu.edit")}</span>".html_safe,
-              { :action => :edit, :id => item },
+              { :action => :edit, :id => item, :private => params[:private] },
               :tabindex => '1')
   end
 
