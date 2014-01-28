@@ -26,7 +26,8 @@ class BasketSettings
       browse_view_as: "",
       show_add_links: false,
       replace_existing_footer: false,
-      additional_footer_content: ""
+      additional_footer_content: "",
+      show_action_menu: "all users"  # ROB: all users can see "Item Details"/"Edit"/... menu for items in a basket.
     }
   end
 end

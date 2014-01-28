@@ -91,6 +91,21 @@
   get 'documents/:id'        => 'documents#show', as: 'document'
   get 'comments/:id'         => 'comments#show', as: 'comment'
 
+  get 'topics/:id/history'      => 'topics#history', as: 'topic_history'
+  get 'audio/:id/history'       => 'documents#history', as: 'document_history'
+  get 'images/:id/history'      => 'images#history', as: 'still_image_history'
+  get 'videos/:id/history'      => 'video#history', as: 'video_history'
+  get 'web_links/:id/history'   => 'web_links#history', as: 'web_link_history'
+  get 'documents/:id/history'   => 'documents#history', as: 'document_history'
+
+  get 'topics/:id/edit'      => 'topics#edit', as: 'topic_edit'
+  get 'audio/:id/edit'       => 'documents#edit', as: 'document_edit'
+  get 'images/:id/edit'      => 'images#edit', as: 'still_image_edit'
+  get 'videos/:id/edit'      => 'video#edit', as: 'video_edit'
+  get 'web_links/:id/edit'   => 'web_links#edit', as: 'web_link_edit'
+  get 'documents/:id/edit'   => 'documents#edit', as: 'document_edit'
+
+
   ####################################################
   ####################################################
 

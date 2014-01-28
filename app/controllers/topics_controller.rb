@@ -13,6 +13,7 @@ class TopicsController < ApplicationController
 
   def show
     @topic = prepare_item_and_vars
+    @comments = @topic.non_pending_comments
 
     respond_to do |format|
       format.html
@@ -168,6 +169,13 @@ class TopicsController < ApplicationController
       end
       render :action => 'edit'
     end
+  end
+
+  def history
+    @item = Topic.find(params[:id])
+    @versions = @item.versions
+    @item_taggings = @item.taggings
+    @item_contributors = @item.contributors
   end
 
   def destroy

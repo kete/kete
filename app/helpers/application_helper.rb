@@ -462,6 +462,7 @@ module ApplicationHelper
   end
 
   def current_user_can_see_action_menu?
+    #return true
     if @current_basket.setting(:show_action_menu) == "at least moderator"
         can_see_action_menu = logged_in? && @at_least_a_moderator
     else
@@ -1545,23 +1546,18 @@ module ApplicationHelper
     end
   end
 
-  # link to action menu helper methods
-  # destroy skipped, as it is more of a special case
-  %w(edit history).each do |action|
-    code = lambda { |item|
-      args = { :action => action.to_sym,
-        :id => item }
+  def link_to_edit_for(item)
+      args[:private] = params[:private]
 
-      args[:private] = params[:private] if action == 'edit'
+      link_to("<span class=\"edit-link\">#{t("topics.actions_menu.edit")}</span>".html_safe,
+              { :action => :edit, :id => item },
+              :tabindex => '1')
+  end
 
-      t_key = t("topics.actions_menu.#{action}")
-
-      link_to("<span class=\"#{action}-link\">#{t_key}</span>",
-              args,
-              :tabindex => '1')  
-    }
-
-    define_method('link_to_' + action + '_for', &code)
+  def link_to_history_for(item)
+      link_to("<span class=\"history-link\">#{t("topics.actions_menu.history")}</span>".html_safe,
+              { :action => :history, :id => item },
+              :tabindex => '1')
   end
 
   # we use this in imports, too

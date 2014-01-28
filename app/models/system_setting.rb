@@ -342,7 +342,9 @@ class SystemSetting
     end
 
     def government_website
-      "http://the.gov.is.watching"
+      # This appears to be an array used to generate a link (see layouts/.application.html.haml).
+      # Being blank seems to indicate this isn't a government website.
+      []
     end
 
     def show_powered_by_kete
