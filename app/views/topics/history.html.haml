@@ -33,14 +33,11 @@
         %td
           = tag_names.join(', ')
         %td
-          PRIVATE !!
-          /- private_condition = case params[:controller]
-          /- when "comments"
-          /- @item.private?
-          /- else
-          /- (version.respond_to?(:private?) && version.private?)
-          /- end
-          /= private_condition ? "<strong>#{t('topics.history.private')}</strong>" : t('topics.history.public')
+          - if params[:controller] = "comments"
+            - private_condition = @item.private?
+          - else
+            - private_condition = (version.respond_to?(:private?) && version.private?)
+          = private_condition ? "<strong>#{t('topics.history.private')}</strong>" : t('topics.history.public')
         %td
           CONTRIBUTOR/S !!
           /- begin
