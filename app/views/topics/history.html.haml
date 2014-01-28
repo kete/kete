@@ -26,8 +26,7 @@
             - if tag_names.include?(SystemSetting.restricted_flag) && !@at_least_moderator
               %b restricted
             - else
-              /= link_to_preview_of(@item, version, true, :submitter => @item_contributors[@contributor_index])
-              = link_to_preview_of(@item, version, true, :submitter => @item_contributors[0])
+              = link_to_preview_of(@item, version, true, :submitter => @item_contributors[@contributor_index])
           - else
             %b current
           ]

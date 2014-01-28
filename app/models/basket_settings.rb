@@ -19,7 +19,7 @@ class BasketSettings
   def self.settings
     {
       theme: "",
-      fully_moderated: true,
+      fully_moderated: false, # ROB: the default site-basket in non-moderated, but most of the others are.
       moderated_except: "",
       theme_font_family: "",
       header_image: "",

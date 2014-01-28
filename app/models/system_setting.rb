@@ -56,9 +56,9 @@ class SystemSetting
     #  4
     #end
     
-    #def default_policy_is_full_moderation
-    #  false
-    #end
+    def default_policy_is_full_moderation
+      false
+    end
 
     def rejected_flag
       "rejected"
