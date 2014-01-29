@@ -48,6 +48,18 @@ class ImageFile < ActiveRecord::Base
 
   include OverrideAttachmentFuPaths
 
+  def public_filename
+    # ROB: override the Attachment-FU (?) getter
+    attachments_overide_url="http://horowhenua.kete.net.nz"
+    relative_link = super
+
+    if attachments_overide_url
+      "#{attachments_overide_url}#{relative_link}"
+    else
+      relative_link
+    end
+  end
+
   # custom error message, probably overkill
   # validates the size and content_type attributes according to the current model's options
   def attachment_attributes_valid?
