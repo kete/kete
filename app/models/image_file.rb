@@ -51,10 +51,23 @@ class ImageFile < ActiveRecord::Base
   def public_filename
     # ROB: override the Attachment-FU (?) getter
     attachments_overide_url="http://horowhenua.kete.net.nz"
-    relative_link = super
+    relative_link = super()
+    relative_link = fix_attachment_fu_links(relative_link)
 
     if attachments_overide_url
       "#{attachments_overide_url}#{relative_link}"
+    else
+      relative_link
+    end
+  end
+
+  def fix_attachment_fu_links(relative_link)
+    if still_image.id < 9320
+      #   0000/0004/9312/charles_st_medium.jpg -> /49312/charles_st_medium.jpg
+      %r{/image_files/(\d*)/(\d*)/(\d*)/(.*)}.match(relative_link)
+      number = "#{$1}#{$2}#{$3}".to_i
+
+      "/image_files/#{number}/#{$4}"
     else
       relative_link
     end
