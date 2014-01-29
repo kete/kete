@@ -148,6 +148,18 @@ class SearchPresenter
     %w(Topic StillImage AudioRecording Video WebLink Document Comment)
   end
 
+  def content_item_type_to_tab_nav_name(content_item_type)
+    mapping = {   "Topic" => "Topics",
+        "StillImage" => "Images",
+        "AudioRecording" => "Audio",
+        "Video" => "Video",
+        "WebLink" => "Web links",
+        "Document" => "Documents",
+        "Comment" => "Discussions",
+    }
+    mapping[content_item_type] || "Unknown content_item_type"
+  end
+
   def search_sources_amount
     # FIXME: this model comes from a rails plugin in old kete
     # SearchSource.count(:conditions => ["source_target IN (?)", ['all', 'search']])
@@ -228,7 +240,8 @@ class SearchPresenter
 
   def link_text_for(content_item_type)
     count = count_for(content_item_type) 
-    "#{content_item_type.pluralize.humanize} (#{number_with_delimiter(count)})"
+    text = content_item_type_to_tab_nav_name(content_item_type)
+    "#{text} (#{number_with_delimiter(count)})"
   end
 
   private

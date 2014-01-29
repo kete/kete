@@ -84,26 +84,28 @@
   # do not exist (or behave in the standard RESTful way)
 
   get 'topics/:id'           => 'topics#show', as: 'topic'
-  get 'audio/:id'            => 'audio#show', as: 'audio_recording'
-  get 'images/:id'           => 'images#show', as: 'still_image'
+  get 'audio/:id'            => 'audio#show', as: 'audio'
+  get 'images/:id'           => 'images#show', as: 'image'
   get 'videos/:id'           => 'video#show', as: 'video'
   get 'web_links/:id'        => 'web_links#show', as: 'web_link'
   get 'documents/:id'        => 'documents#show', as: 'document'
   get 'comments/:id'         => 'comments#show', as: 'comment'
 
-  get 'topics/:id/history'      => 'topics#history', as: 'topic_history'
-  get 'audio/:id/history'       => 'documents#history', as: 'document_history'
-  get 'images/:id/history'      => 'images#history', as: 'still_image_history'
-  get 'videos/:id/history'      => 'video#history', as: 'video_history'
-  get 'web_links/:id/history'   => 'web_links#history', as: 'web_link_history'
-  get 'documents/:id/history'   => 'documents#history', as: 'document_history'
+  get 'topics/:id/history'      => 'topics#history', as: 'history_topic'
+  get 'audio/:id/history'       => 'audio#history', as: 'history_audio'
+  get 'images/:id/history'      => 'images#history', as: 'history_still_image'
+  get 'videos/:id/history'      => 'video#history', as: 'history_video'
+  get 'web_links/:id/history'   => 'web_links#history', as: 'history_web_link'
+  get 'documents/:id/history'   => 'documents#history', as: 'history_document'
+  get 'comments/:id/history'    => 'comments#history', as: 'history_document'
 
-  get 'topics/:id/edit'      => 'topics#edit', as: 'topic_edit'
-  get 'audio/:id/edit'       => 'documents#edit', as: 'document_edit'
-  get 'images/:id/edit'      => 'images#edit', as: 'still_image_edit'
-  get 'videos/:id/edit'      => 'video#edit', as: 'video_edit'
-  get 'web_links/:id/edit'   => 'web_links#edit', as: 'web_link_edit'
-  get 'documents/:id/edit'   => 'documents#edit', as: 'document_edit'
+  get 'topics/:id/edit'      => 'topics#edit', as: 'edit_topic'
+  get 'audio/:id/edit'       => 'audio#edit', as: 'edit_audio'
+  get 'images/:id/edit'      => 'images#edit', as: 'edit_still_image'
+  get 'videos/:id/edit'      => 'video#edit', as: 'edit_video'
+  get 'web_links/:id/edit'   => 'web_links#edit', as: 'edit_web_link'
+  get 'documents/:id/edit'   => 'documents#edit', as: 'edit_document'
+  get 'comments/:id/edit'    => 'comments#edit', as: 'edit_document'
 
 
   ####################################################

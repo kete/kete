@@ -12,6 +12,7 @@ class VideoController < ApplicationController
 
   def show
     @video = prepare_item_and_vars
+    @comments = @video.non_pending_comments
 
     respond_to do |format|
       format.html

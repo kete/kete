@@ -14,6 +14,7 @@ class WebLinksController < ApplicationController
 
   def show
     @web_link = prepare_item_and_vars
+    @comments = @web_link.non_pending_comments
 
     respond_to do |format|
       format.html

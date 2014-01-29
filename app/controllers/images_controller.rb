@@ -12,6 +12,7 @@ class ImagesController < ApplicationController
 
   def show
     @still_image = prepare_item_and_vars
+    @comments = @still_image.non_pending_comments
 
     @view_size = params[:view_size] || "medium"
     @image_file = ImageFile.find_by_thumbnail_and_still_image_id(@view_size, params[:id])

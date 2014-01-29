@@ -12,6 +12,7 @@ class AudioController < ApplicationController
 
   def show
     @audio_recording = prepare_item_and_vars
+    @comments = @audio_recording.non_pending_comments
 
     respond_to do |format|
       format.html

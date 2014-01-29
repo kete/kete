@@ -12,6 +12,7 @@ class DocumentsController < ApplicationController
 
   def show
     @document = prepare_item_and_vars
+    @comments = @document.non_pending_comments
 
     respond_to do |format|
       format.html
