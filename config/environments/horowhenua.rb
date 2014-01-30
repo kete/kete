@@ -23,6 +23,6 @@ KeteApp::Application.configure do # Settings specified here will take precedence
   #  :enable_starttls_auto => false
   #}
 
-  # Attachments (images/audio) link files on the local disk.
-  config.attachments_overide_url = nil
+  # Attachments (images/audio) link on horowhenua, because our DB is taken from this 
+  config.attachments_overide_url = "http://horowhenua.kete.net.nz"
 end
