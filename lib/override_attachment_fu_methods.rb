@@ -24,48 +24,44 @@ module OverrideAttachmentFuMethods
     end
   end
 
+
+  private
+
   def fix_attachment_fu_links(relative_link)
     # ROB: At a seemingly random point (roughly around mid July 2007) the attachments 
     # returned by attachment_fu's public_filename() change from 
     #   e.g. /images/0000/0004/9312/charles_st_medium.jpg 
     # to 
-    #   e.g. /49312/charles_st_medium.jpg
+    #   e.g. /images/49312/charles_st_medium.jpg
     # This isn't followed by the pothoven-attachment_fu gem we're using so we have to
     # fix it manually.
 
     if self.class == ImageFile && still_image.id < 9320
-      capture_numbers_and_filename = %r{/image_files/(\d*)/(\d*)/(\d*)/(.*)}
-      capture_numbers_and_filename.match(relative_link)
-      numbers_without_zeros = "#{$1}#{$2}#{$3}".to_i
-
-      "/image_files/#{numbers_without_zeros}/#{$4}"
+      apply_attachment_fu_link_fix(relative_link)
 
     elsif self.class == AudioRecording && id < 29
-      capture_numbers_and_filename = %r{/audio/(\d*)/(\d*)/(\d*)/(.*)}
-      capture_numbers_and_filename.match(relative_link)
-      numbers_without_zeros = "#{$1}#{$2}#{$3}".to_i
-
-      "/audio/#{numbers_without_zeros}/#{$4}"
+      apply_attachment_fu_link_fix(relative_link)
 
     elsif self.class == Video && id < 16
-      capture_numbers_and_filename = %r{/video/(\d*)/(\d*)/(\d*)/(.*)}
-      capture_numbers_and_filename.match(relative_link)
-      numbers_without_zeros = "#{$1}#{$2}#{$3}".to_i
-
-      "/video/#{numbers_without_zeros}/#{$4}"
+      apply_attachment_fu_link_fix(relative_link)
 
     elsif self.class == Document && id < 643
-      capture_numbers_and_filename = %r{/documents/(\d*)/(\d*)/(\d*)/(.*)}
-      capture_numbers_and_filename.match(relative_link)
-      numbers_without_zeros = "#{$1}#{$2}#{$3}".to_i
-
-      "/documents/#{numbers_without_zeros}/#{$4}"
+      apply_attachment_fu_link_fix(relative_link)
 
     else
       relative_link
     end
   end
+
+  def apply_attachment_fu_link_fix(relative_link)
+    capture_numbers_and_filename = %r{/(\w*)/(\d*)/(\d*)/(\d*)/(.*)}
+    capture_numbers_and_filename.match(relative_link)
+
+    ci_type_name = $1
+    numbers_without_zeros = "#{$2}#{$3}#{$4}".to_i
+    filename = $5
+
+    "/#{ci_type_name}/#{numbers_without_zeros}/#{filename}"
+  end
+
 end
-
-
-
