@@ -1,0 +1,84 @@
+%head
+  -### meta tags ###
+  -#################
+
+  %meta{content: "text/html; charset=utf-8", "http-equiv" => "Content-Type"}/
+  %meta{content: page_keywords,    name: "keywords"}/
+  %meta{content: page_description, name: "description"}/
+  = csrf_meta_tag
+
+
+  -### title ###
+  -#############
+
+  %title= title_with_context
+
+
+  -### DC Meta tags ###
+  -####################
+
+  = dc_metadata_for(current_item) if current_item && !current_item.private?
+  = opensearch_descriptions
+  = open_search_metadata if params[:controller] == 'search' && %w{ all for }.include?(params[:action])
+  - if %w(images topics).include?(params[:controller]) && params[:action] == "show"
+    = oembed_provider_links
+
+
+  -### Stylesheets ###
+  -###################
+
+  = stylesheet_link_tag 'application'
+  = stylesheet_link_tag('left-hand-column') if show_basket_list_naviation_menu?
+
+  /[if IE] 
+    = stylesheet_link_tag 'kete-ie'
+
+
+  -### javascript ###
+  -##################
+
+  %script{:src => "http://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"}
+  = javascript_tag('jQuery.noConflict();')
+
+  = yield :add_on_scripts_and_links
+
+  = javascript_include_tag "application" 
+
+  = javascript_include_tag 'redbox'
+  = javascript_include_tag 'kete'
+  - if SystemSetting.enable_maps? && initialize_gmap_headers?
+
+    - if CACHES_CONTROLLERS.include?(params[:controller]) || params[:controller] == 'index_page'
+      = stylesheet_link_tag '/stylesheets/gmaps4rails'
+    - else
+      = yield :gmap4rails_head
+
+    - if params[:action] == 'choose_type'
+      = load_maps_javascript_files
+    - else
+      - if CACHES_CONTROLLERS.include?(params[:controller]) || params[:controller] == 'index_page'
+        = load_maps_javascript_files
+      - else
+        = yield :gmap4rails_scripts
+      = javascript_tag("window.onload = Gmaps.loadMaps;")
+
+    = javascript_tag("keteMaps = new Object();")
+
+  - if ACTIVE_SCAFFOLD_CONTROLLERS.include?(params[:controller])
+    = active_scaffold_includes
+
+  - if ['extended_fields', 'choices'].include?(params[:controller])
+    = javascript_include_tag "yui/yahoo/yahoo", "yui/event/event-min", "yui/animation/animation-min", "yui/dom/dom-min", "yui/treeview/treeview-min"
+    = stylesheet_link_tag 'yui/treeview'
+
+  - if ['audio', 'video'].include?(params[:controller]) && params[:action] == 'show'
+    = javascript_include_tag "anarchy_media/anarchy.js"
+
+
+-### Feeds ###
+-#############
+
+- combined_rss_url = # EOIN: this needs to be re-enabled when search is more understood:  basket_all_rss_url( :urlified_name => @site_basket.urlified_name, :controller_name_for_zoom_class => 'combined' )
+- rss_tag_autos.each do |rss_tag_auto|
+  = rss_tag_auto.sub("title=\"RSS\"", "title=\"RSS #{stripped_title}\"")
+%link{:href => combined_rss_url, :rel => "alternate", :title => t('layouts.application.combined_rss'), :type => "application/rss+xml"} 

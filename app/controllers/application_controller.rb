@@ -91,8 +91,6 @@ class ApplicationController < ActionController::Base
   # and will always be specified in our routes
   before_filter :load_standard_baskets
 
-  before_filter :load_theme_related
-
   # sets up instance variables for authentication
   include KeteAuthorization
 
@@ -191,16 +189,6 @@ class ApplicationController < ActionController::Base
         raise ActiveRecord::RecordNotFound, "Couldn't find Basket with NAME=#{params[:urlified_name]}."
       end
     end
-  end
-
-  # figure out which theme we need
-  # and load up an array of the web paths
-  # to the css files
-  def load_theme_related
-    # EOIN: these settings should probably be somewhere else but it's not clear where yet.
-    @theme = @current_basket.setting(:theme) || @site_basket.setting(:theme) || 'default'
-    @theme_font_family =  @current_basket.setting(:theme_font_family) || @site_basket.setting(:theme_font_family) || 'sans-serif'
-    @header_image = @current_basket.setting(:header_image) || @site_basket.setting(:header_image) || nil
   end
 
   def security_check_of_do_not_moderate
@@ -1119,7 +1107,6 @@ class ApplicationController < ActionController::Base
     # when an exception occurs, before filters arn't called, so we have to manually call them here
     # only call the ones absolutely nessesary (required settings, themes, permissions etc)
     load_standard_baskets
-    load_theme_related
     redirect_if_current_basket_isnt_approved_for_public_viewing
     update_basket_permissions_hash
 
