@@ -38,4 +38,6 @@ KeteApp::Application.configure do
   # ActionMailer Config
   config.action_mailer.default_url_options = { :host => 'kete.org.nz' }
 
+  # Attachments (images/audio) link files on the local disk.
+  config.attachments_overide_url = nil
 end 

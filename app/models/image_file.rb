@@ -49,25 +49,33 @@ class ImageFile < ActiveRecord::Base
   include OverrideAttachmentFuPaths
 
   def public_filename
-    # ROB: override the Attachment-FU (?) getter
-    attachments_overide_url="http://horowhenua.kete.net.nz"
-    relative_link = super()
-    relative_link = fix_attachment_fu_links(relative_link)
+    # ROB: Override the link attachment link method provided by attachment_fu
+    # so that we can point to valid content when using the Kete Horowhenua database (which 
+    # assumes Horowhenua content files).
 
-    if attachments_overide_url
-      "#{attachments_overide_url}#{relative_link}"
+    if Rails.configuration.attachments_overide_url
+      relative_link = fix_attachment_fu_links( super() )
+      "#{Rails.configuration.attachments_overide_url}#{relative_link}"
     else
-      relative_link
+      super
     end
   end
 
   def fix_attachment_fu_links(relative_link)
-    if still_image.id < 9320
-      #   0000/0004/9312/charles_st_medium.jpg -> /49312/charles_st_medium.jpg
-      %r{/image_files/(\d*)/(\d*)/(\d*)/(.*)}.match(relative_link)
-      number = "#{$1}#{$2}#{$3}".to_i
+    # ROB: At a seemingly random point (roughly id=9320) the attachments returned by 
+    # attachment_fu's public_filename() change from 
+    #   e.g. /images/0000/0004/9312/charles_st_medium.jpg 
+    # to 
+    #   e.g. /49312/charles_st_medium.jpg
+    # This isn't followed by the pothoven-attachment_fu gem we're using so we have to
+    # fix it manually.
 
-      "/image_files/#{number}/#{$4}"
+    if still_image.id < 9320
+      capture_numbers_and_filename = %r{/image_files/(\d*)/(\d*)/(\d*)/(.*)}
+      capture_numbers_and_filename.match(relative_link)
+      numbers_without_zeros = "#{$1}#{$2}#{$3}".to_i
+
+      "/image_files/#{numbers_without_zeros}/#{$4}"
     else
       relative_link
     end
