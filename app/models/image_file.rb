@@ -46,40 +46,7 @@ class ImageFile < ActiveRecord::Base
 
   include ResizeAsJpegWhenNecessary
 
-  include OverrideAttachmentFuPaths
-
-  def public_filename
-    # ROB: Override the link attachment link method provided by attachment_fu
-    # so that we can point to valid content when using the Kete Horowhenua database (which 
-    # assumes Horowhenua content files).
-
-    if Rails.configuration.attachments_overide_url
-      relative_link = fix_attachment_fu_links( super() )
-      "#{Rails.configuration.attachments_overide_url}#{relative_link}"
-    else
-      super
-    end
-  end
-
-  def fix_attachment_fu_links(relative_link)
-    # ROB: At a seemingly random point (roughly id=9320) the attachments returned by 
-    # attachment_fu's public_filename() change from 
-    #   e.g. /images/0000/0004/9312/charles_st_medium.jpg 
-    # to 
-    #   e.g. /49312/charles_st_medium.jpg
-    # This isn't followed by the pothoven-attachment_fu gem we're using so we have to
-    # fix it manually.
-
-    if still_image.id < 9320
-      capture_numbers_and_filename = %r{/image_files/(\d*)/(\d*)/(\d*)/(.*)}
-      capture_numbers_and_filename.match(relative_link)
-      numbers_without_zeros = "#{$1}#{$2}#{$3}".to_i
-
-      "/image_files/#{numbers_without_zeros}/#{$4}"
-    else
-      relative_link
-    end
-  end
+  include OverrideAttachmentFuMethods
 
   # custom error message, probably overkill
   # validates the size and content_type attributes according to the current model's options
