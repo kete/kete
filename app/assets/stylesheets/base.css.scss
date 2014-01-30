@@ -228,23 +228,23 @@ body.mceContentBody {
     background-image: url(asset-path('icon-extended.gif', image));
 }
 #tags-box h2 {
-    background-image: url(../images/icon-tag.gif);
+    background-image: url(asset-path('icon-tag.gif', image));
 }
 .view-link{
-    background-image: url(../images/icon-view.gif);
+    background-image: url(asset-path('icon-view.gif', image));
 }
 .edit-link{
-    background-image: url(../images/icon-edit.gif);
+    background-image: url(asset-path('icon-edit.gif', image));
 }
 .history-link{
-    background-image: url(../images/icon-history.gif);
+    background-image: url(asset-path('icon-history.gif', image));
 }
 .related-link{
     display: inline;
-    background-image: url(../images/icon-related.gif);
+    background-image: url(asset-path('icon-related.gif', image));
 }
 .discuss-link{
-    background-image: url(../images/icon-discuss.gif);
+    background-image: url(asset-path('icon-discuss.gif', image));
 }
 
 /* #################################### item_class_choices #################################### */
