@@ -250,7 +250,7 @@ class AccountController < ApplicationController
         render :update do |page|
           page.replace_html params[:avatar_id],
                             avatar_tag(User.new({ :email => params[:email] || String.new }),
-                                                { :size => 30, :rating => 'G', :gravatar_default_url => "#{SystemSetting.full_site_url}images/no-avatar.png" },
+                                                { :size => 30, :rating => 'G', :gravatar_default_url => "/images/no-avatar.png" },
                                                 { :width => 30, :height => 30, :alt => t('account_controller.fetch_gravatar.your_gravatar') })
         end
       end

@@ -3,7 +3,7 @@
 - cache_with_privacy(item, {:part => cache_key}) do
   - extended_fields_html = display_xml_attributes(item, :embedded_only => embedded)
   - if !extended_fields_html.blank?
-    = '<div id="embedded_extended_field_data">' if embedded
+    = '<div id="embedded_extended_field_data">'.html_safe if embedded
     = render(:partial => "topics/secondary_wrapper_start",               |
       :locals => { :div_id => "extended-fields", :class_suffix => nil }) |
     #detail-extended
@@ -11,4 +11,4 @@
       %br/
       = extended_fields_html
     = render(:partial => "topics/secondary_wrapper_end")
-    = '</div>' if embedded
+    = '</div>'.html_safe if embedded

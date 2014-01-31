@@ -2,5 +2,5 @@
   - unless item.license_metadata.nil?
     = render(:partial => "topics/secondary_wrapper_start",           |
       :locals => { :div_id => "license-box", :class_suffix => nil }) |
-    .license= item.license_metadata
+    .license= item.license_metadata.html_safe
     = render(:partial => "topics/secondary_wrapper_end")

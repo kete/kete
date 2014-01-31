@@ -140,7 +140,6 @@ module SearchHelper
       image_hash = still_images_hash[key][:thumbnail]
       image_hash[:alt] = altify(still_images_hash[key][:title])
       src = image_hash[:src]
-      src = src.sub(SystemSetting.site_url, '/') if locally_hosted
       image_hash.delete(:size)
       image_hash.delete(:src)
 

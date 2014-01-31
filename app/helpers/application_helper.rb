@@ -61,7 +61,7 @@ module ApplicationHelper
     end
 
     if SystemSetting.enable_gravatar_support?
-      return avatar_tag(user, { :size => 50, :rating => 'G', :gravatar_default_url => "#{SystemSetting.full_site_url}images/no-avatar.png" }, options)
+      return avatar_tag(user, { :size => 50, :rating => 'G', :gravatar_default_url => "/images/no-avatar.png" }, options)
     end
 
     return ''
@@ -140,7 +140,7 @@ module ApplicationHelper
   def opensearch_descriptions
     tag(:link, :rel => "search",
                :type => "application/opensearchdescription+xml",
-               :href => "#{SystemSetting.full_site_url}opensearchdescription.xml",
+               :href => "/opensearchdescription.xml",
                :title => "#{SystemSetting.pretty_site_name} Web Search")
   end
 
@@ -1119,6 +1119,8 @@ module ApplicationHelper
 
       value = formatted_extended_content_value(field, field_name, value, item, mapping)
 
+      value = value.html_safe
+
       if field.ftype == 'map' || field.ftype == 'map_address'
         next if value.blank?
         td = content_tag("td", "#{display_label_for(field)}:<br />#{value}", :class => "detail-extended-field-label", :colspan => 2)
@@ -1130,8 +1132,10 @@ module ApplicationHelper
       html << content_tag("tr", td)
     end
 
+    html = html.join.html_safe
+
     unless html.empty?
-      content_tag("table", content_tag("tbody", html.join), :class => "detail-extended-field-table", :summary => "Extended details")
+      content_tag("table", content_tag("tbody", html), :class => "detail-extended-field-table", :summary => "Extended details")
     end
 
   end

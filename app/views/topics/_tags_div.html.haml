@@ -3,7 +3,7 @@
 = cache_with_privacy(item, {:part => "secondary_content_tags"}) do
   %h2= t 'topics.tags.title'
   #tags_list
-    = tags_for(item)
+    = tags_for(item).html_safe
 - if permitted_to_edit_current_item? && params[:action] != 'preview'
   - item_key = zoom_class_from_controller(params[:controller]).underscore
   #add_tag_button{:style => "display:none"}

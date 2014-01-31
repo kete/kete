@@ -13,7 +13,7 @@
 - cache_with_privacy(@still_image, {:part => 'caption'}) do
   - if !@still_image.already_at_blank_version?
     %h4= t 'images.show.caption'
-    %p= @still_image.description
+    %p= @still_image.description.html_safe
 - cache_with_privacy(@still_image, {:part => 'details_second'}) do
   = pending_review(@still_image)
 = render(:partial => "topics/extended_fields", :locals => { :item => @still_image, :embedded => true })

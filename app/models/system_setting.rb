@@ -310,7 +310,7 @@ class SystemSetting
     end
 
     def site_url
-      "kete.net.nz"
+      "kete.net.nz/"
     end
 
     def notifier_email
@@ -439,6 +439,6 @@ class SystemSetting
   end
 
   def self.full_site_url
-    "http:/#{self.site_url}/"
+    "http://#{self.site_url}"
   end
 end 

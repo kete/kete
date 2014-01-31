@@ -5,7 +5,7 @@ require 'user'
 class OaiPmhRepositoryProvider < OAI::Provider::Base
   if SystemSetting.is_configured?  && SystemSetting.provide_oai_pmh_repository
     repository_name SystemSetting.pretty_site_name
-    repository_url "#{SystemSetting.full_site_url}oai_pmh_repository"
+    repository_url "/oai_pmh_repository"
     record_prefix '' # this may need to be ZoomDb.zoom_id_stub.chop
     admin_email SystemSetting.admin_email
 
