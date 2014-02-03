@@ -226,26 +226,26 @@ body.mceContentBody {
     padding-left: 20px;
 }
 #extended-fields h2{
-    background-image: url(/images/icon-extended.gif);
+    background-image: url(image-path('icon-extended.gif'));
 }
 #tags-box h2 {
-    background-image: url(/images/icon-tag.gif);
+    background-image: url(image-path('icon-tag.gif'));
 }
 .view-link{
-    background-image: url(/images/icon-view.gif);
+    background-image: url(image-path('icon-view.gif'));
 }
 .edit-link{
-    background-image: url(/images/icon-edit.gif);
+    background-image: url(image-path('icon-edit.gif'));
 }
 .history-link{
-    background-image: url(/images/icon-history.gif);
+    background-image: url(image-path('icon-history.gif'));
 }
 .related-link{
     display: inline;
-    background-image: url(/images/icon-related.gif);
+    background-image: url(image-path('icon-related.gif'));
 }
 .discuss-link{
-    background-image: url(/images/icon-discuss.gif);
+    background-image: url(image-path('icon-discuss.gif'));
 }
 
 /* #################################### item_class_choices #################################### */
@@ -733,7 +733,7 @@ h3 a {
     background-position: center left;
     padding: 2px;
     padding-left: 20px !important;
-    background-image: url(/images/icon-flag.gif);
+    background-image: url(image-path('icon-flag.gif'));
 }
 .secondary-content-section .related-action a{
     color: #000033;
@@ -757,10 +757,10 @@ p.feed {
     background-position: center left;
     padding: 2px;
     padding-left: 20px;
-    background-image: url(/images/icon-help.gif);
+    background-image: url(image-path('icon-help.gif'));
 }
 p.feed {
-    background-image: url(/images/icon-feed.gif);
+    background-image: url(image-path('icon-feed.gif'));
 }
 p.feed a{
     font-weight: bold;
@@ -798,7 +798,7 @@ th {
 
 #basket-toolbox,
 #adminToolbox{
-    background-image: url(/images/toolbox.gif);
+    background-image: url(images-path('toolbox.gif'));
     background-repeat: no-repeat;
     background-position: 10px 10px;
     border: 2px solid #7A0203;
@@ -881,17 +881,17 @@ span.next-active {
 }
 
 .prev-inactive {
-    background-image: url(/images/icon_results_previous_off.gif);
+    background-image: url(image-path('icon_results_previous_off.gif'));
 }
 .prev-active {
-    background-image: url(/images/icon_results_previous.gif);
+    background-image: url(image-path('icon_results_previous.gif'));
 
 }
 .next-inactive {
-    background-image: url(/images/icon_results_next_off.gif);
+    background-image: url(image-path('icon_results_next_off.gif'));
 }
 .next-active {
-    background-image: url(/images/icon_results_next.gif);
+    background-image: url(image-path('icon_results_next.gif'));
 }
 
 /*
@@ -912,7 +912,7 @@ span.next-active {
   padding: 15px 0 5px 0;
 }
 #linkToRSS ul {
-  list-style-image: url(/images/icon-feed.gif);
+  list-style-image: url(image-path('icon-feed.gif'));
   margin: 0;
 }
 #footer_links {
@@ -1322,7 +1322,7 @@ select.extended_field_choice_dropdown {
   list-style: none;
 }
 .category_list li.current {
-  list-style: url(/images/icon_results_next.gif) circle;
+  list-style: url(image-path('icon_results_next.gif')) circle;
 }
 .category_list li.current a {
   color: #000;
@@ -1884,7 +1884,7 @@ sup.badge {
 	width: 250px;
 	height: 250px;
   text-align: center;
-  background: #FFF url(/images/redbox_spinner.gif) no-repeat center center;
+  background: #FFF url(image-path('redbox_spinner.gif')) no-repeat center center;
 }
 */
 #RB_loading {
@@ -1892,7 +1892,7 @@ sup.badge {
 	width: 70px;
 	height: 70px;
   text-align: center;
-  background: #666 url(/images/redbox_spinner.gif) no-repeat center center;
+  background: #666 url(image-path('redbox_spinner.gif')) no-repeat center center;
   border: 2px solid black;
   z-index: 1003;
 }
@@ -1903,12 +1903,12 @@ sup.badge {
 }
 /* --------- /themes/horowhenua/stylesheets/rounded_corners.css --------- */ 
 .notabs #main-content-wrapper {
-        background-image: url(/images/content-tab-sel-lf.gif);
+        background-image: url(image-path('content-tab-sel-lf.gif'));
         background-position: top left;
         background-repeat: no-repeat;
 }
 #search-content-wrapper {
-	background-image: url(/images/content-tab-sel-lf.gif);
+	background-image: url(image-path('content-tab-sel-lf.gif'));
 	background-position: top left;
 	background-repeat: no-repeat;
 }
@@ -1916,36 +1916,36 @@ sup.badge {
         margin: 0 0 -1em -1em;
 }
 #top-menu {
-        background-image: url(/images/top-menu-btrt-bg.gif);
+        background-image: url(image-path('top-menu-btrt-bg.gif'));
         background-position: 100% 100%;
         background-repeat: no-repeat;
 }
 #top-menu ul {
-        background-image: url(/images/top-menu-btlf-bg.gif);
+        background-image: url(image-path('top-menu-btlf-bg.gif'));
         background-position: 0 100%;
         background-repeat: no-repeat;
 }
 #content-tabs ul li{
-        background-image: url(/images/content-tab-unsel-lf.gif);
+        background-image: url(image-path('content-tab-unsel-lf.gif'));
         background-repeat: no-repeat;
 }
 #content-tabs ul li a{
-        background-image: url(/images/content-tab-unsel-rt.gif);
+        background-image: url(image-path('content-tab-unsel-rt.gif'));
         background-repeat: no-repeat;
         background-position: 100% 0;
 }
 #content-tabs ul li.selected{
-        background-image: url(/images/content-tab-sel-lf.gif);
+        background-image: url(image-path('content-tab-sel-lf.gif'));
         background-repeat: no-repeat;
 }
 #content-tabs ul li.selected a{
-        background-image: url(/images/content-tab-sel-rt.gif);
+        background-image: url(image-path('content-tab-sel-rt.gif'));
         background-repeat: no-repeat;
         background-position: 100% 0;
 }
 #content-wrapper, #search-wrapper {
         background-color: white;
-        background-image: url(/images/content-tab-sel-rt.gif);
+        background-image: url(image-path('content-tab-sel-rt.gif'));
         background-repeat: no-repeat;
         background-position: 100% 0;
 }
@@ -1954,18 +1954,18 @@ sup.badge {
  * SECONDARY CONTENT WRAPPER FOR MAIN CONTENT (BLUE)
  */
 .secondary-content-section-wrapper-blue {
-  background: #cddced url(/images/insetbox-2-tplf.gif) no-repeat top left;
+  background: #cddced url(image-path('insetbox-2-tplf.gif')) no-repeat top left;
   width: auto;
 }
 .secondary-content-section-wrapper-blue .secondary-content-section {
-  background: transparent url(/images/insetbox-2-tprt.gif) no-repeat top right;
+  background: transparent url(image-path('insetbox-2-tprt.gif')) no-repeat top right;
 }
 .secondary-content-section-wrapper-blue .secondary-content-section-footer-wrapper {
-  background: transparent url(/images/insetbox-2-btlf.gif) no-repeat bottom left;
+  background: transparent url(image-path('insetbox-2-btlf.gif')) no-repeat bottom left;
   width: auto; height: 13px; padding: 0; margin: 0;
 }
 .secondary-content-section-wrapper-blue .secondary-content-section-footer {
-  background: transparent url(/images/insetbox-2-btrt.gif) no-repeat bottom right;
+  background: transparent url(image-path('insetbox-2-btrt.gif')) no-repeat bottom right;
   width: auto; height: 13px; padding: 0; margin: 0;
 }
 
@@ -1973,18 +1973,18 @@ sup.badge {
  * SECONDARY CONTENT WRAPPER FOR MAIN CONTENT (GREY)
  */
 .secondary-content-section-wrapper {
-  background: #dfdfdf url(/images/insetbox-1-tplf.gif) no-repeat top left;
+  background: #dfdfdf url(image-path('insetbox-1-tplf.gif')) no-repeat top left;
   width: auto;
 }
 .secondary-content-section-wrapper .secondary-content-section {
-  background: transparent url(/images/insetbox-1-tprt.gif) no-repeat top right;
+  background: transparent url(image-path('insetbox-1-tprt.gif')) no-repeat top right;
 }
 .secondary-content-section-wrapper .secondary-content-section-footer-wrapper {
-  background: transparent url(/images/insetbox-1-btlf.gif) no-repeat bottom left;
+  background: transparent url(image-path('insetbox-1-btlf.gif')) no-repeat bottom left;
   width: auto; height: 13px; padding: 0; margin: 0;
 }
 .secondary-content-section-wrapper .secondary-content-section-footer {
-  background: transparent url(/images/insetbox-1-btrt.gif) no-repeat bottom right;
+  background: transparent url(image-path('insetbox-1-btrt.gif')) no-repeat bottom right;
   width: auto; height: 13px; padding: 0; margin: 0;
 }
 
@@ -1992,16 +1992,16 @@ sup.badge {
  * CONTENT WRAPPER FOR COMMENTS
  */
 .comment-wrapper .comment-wrapper-header-wrapper {
-        background: transparent url(/images/comment_tplf.gif) no-repeat top left;
+        background: transparent url(image-path('comment_tplf.gif')) no-repeat top left;
 }
 .comment-wrapper .comment-wrapper-header {
-        background: transparent url(/images/comment_tprt.gif) no-repeat top right;
+        background: transparent url(image-path('comment_tprt.gif')) no-repeat top right;
 }
 .comment-wrapper .comment-wrapper-footer-wrapper {
-        background: transparent url(/images/comment_btlf.gif) no-repeat bottom left;
+        background: transparent url(image-path('comment_btlf.gif')) no-repeat bottom left;
 }
 .comment-wrapper .comment-wrapper-footer {
-        background: transparent url(/images/comment_btrt.gif) no-repeat bottom right;
+        background: transparent url(image-path('comment_btrt.gif')) no-repeat bottom right;
 }
 /* --------- /themes/horowhenua/stylesheets/general.css --------- */ 
 #body-outer-wrapper {
@@ -2111,7 +2111,7 @@ a {
         position: relative;
         height: 125px;
         padding-top: 15px;
-        background: #ffeede url(/themes/horowhenua/images/header_background.jpg) top left no-repeat;
+        background: #ffeede url(image-path('themes/horowhenua/header_background.jpg')) top left no-repeat;
         zindex: 100;
 }
 #header #description{
@@ -2125,7 +2125,7 @@ a {
 #head-search-wrapper{
         float: left;
         padding-top: 95px;
-        background: transparent url(/themes/horowhenua/images/hlt.gif) top right no-repeat;
+        background: transparent url(image-path('themes/horowhenua/hlt.gif')) top right no-repeat;
         z-index: 1;
 }
 
@@ -2150,11 +2150,11 @@ input.searchheader-search {
 }
 
 #top-menu  #main-nav{
-	background: transparent url(/themes/horowhenua/images/top-menu-btlf-bg.gif) bottom left no-repeat !important;
+	background: transparent url(image-path('horowhenua/top-menu-btlf-bg.gif')) bottom left no-repeat !important;
 }
 
 #top-menu {
-	background: #344533 url(/themes/horowhenua/images/top-menu-btrt-bg.gif) bottom right no-repeat !important;
+	background: #344533 url(image-path('horowhenua/top-menu-btrt-bg.gif')) bottom right no-repeat !important;
 }
 #top-menu li{
 	color: #ccc;
