@@ -65,9 +65,9 @@
               - markers << marker_options
           - else
             - if result.class == 'StillImage'
-              = render partial: "image", locals: { result: result }
+              = render partial: "image", locals: { result: result, scope: scope }
             - else
-              = render partial: "generic", locals: { result: result }
+              = render partial: "generic", locals: { result: result, scope: scope }
       - else
         #result-show
           - if other_results.size > 0
