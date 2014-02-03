@@ -1024,31 +1024,31 @@ module ApplicationHelper
     })
   end
 
-  def adjust_target_basket_options_for_privacy(privacy)
-    return unless privacy
-    html = javascript_tag("
-      function show_all_target_baskets() {
-        $$('#target_basket option').each(function(element) { element.show(); });
-      }
+  # def adjust_target_basket_options_for_privacy(privacy)
+  #   return unless privacy
+  #   html = javascript_tag("
+  #     function show_all_target_baskets() {
+  #       $$('#target_basket option').each(function(element) { element.show(); });
+  #     }
 
-      function hide_all_non_member_target_baskets() {
-        $$('#target_basket option.not_member').each(function(element) { element.hide(); });
-        var current_selection = $('target_basket').options[$('target_basket').selectedIndex];
-        // TODO: take this IE specific code out when it is no longer needed
-        var agent = navigator.userAgent.toLowerCase ();
-        if (agent.search ('msie') > -1) {
-          if (!current_selection.style.visibility == 'hidden') { $('target_basket').options[0].selected = true; }
-        } else {
-          if (!current_selection.visible()) { $('target_basket').options[0].selected = true; }
-        }
-      }
+  #     function hide_all_non_member_target_baskets() {
+  #       $$('#target_basket option.not_member').each(function(element) { element.hide(); });
+  #       var current_selection = $('target_basket').options[$('target_basket').selectedIndex];
+  #       // TODO: take this IE specific code out when it is no longer needed
+  #       var agent = navigator.userAgent.toLowerCase ();
+  #       if (agent.search ('msie') > -1) {
+  #         if (!current_selection.style.visibility == 'hidden') { $('target_basket').options[0].selected = true; }
+  #       } else {
+  #         if (!current_selection.visible()) { $('target_basket').options[0].selected = true; }
+  #       }
+  #     }
 
-      $('privacy_type_public').observe('click', function() { show_all_target_baskets(); });
-      $('privacy_type_private').observe('click', function() { hide_all_non_member_target_baskets(); });
-    ")
-    html += javascript_tag("hide_all_non_member_target_baskets();") if privacy.to_sym == :private
-    html
-  end
+  #     $('privacy_type_public').observe('click', function() { show_all_target_baskets(); });
+  #     $('privacy_type_private').observe('click', function() { hide_all_non_member_target_baskets(); });
+  #   ")
+  #   html += javascript_tag("hide_all_non_member_target_baskets();") if privacy.to_sym == :private
+  #   html
+  # end
 
   #
   # End Search Control Dropdown Helpers

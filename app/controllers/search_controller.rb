@@ -27,18 +27,18 @@ class SearchController < ApplicationController
 
     if query.missing_search_terms?
       flash[:notice] = t('search_controller.for.no_search_terms')
-      @search_presenter = SearchPresenter.new(query: query)
+      @scope = SearchPresenter.new(query: query)
       render :for
     end
 
     relation = Searcher.new(query: query).run
-    @search_presenter = SearchPresenter.new(query: query, results: relation)
+    @scope = SearchPresenter.new(query: query, results: relation)
   end
   
   def all
     query = SearchQuery.new(params)
     relation = Searcher.new(query: query).all
-    @search_presenter = SearchPresenter.new(query: query, results: relation)
+    @scope = SearchPresenter.new(query: query, results: relation)
   end
 
 

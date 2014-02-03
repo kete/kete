@@ -2,102 +2,81 @@
 - display_refine = (type == 'refine')
 - clear_values = display_menu
 - horizontal = display_refine
-%div{:class => "search_dropdown#{' horizontal' if horizontal}", :id => id, :style => "display:none;"}
+
+%div{class: "search_dropdown#{' horizontal' if horizontal}", id: id, style: "display:none;"}
   - if display_menu
     .header= t('search.mini_controls.and')
   %table
     = "<tr><td valign='top'><table>" if horizontal
     - if display_search_field_for?(type, SystemSetting.display_search_terms_field)
       %tr
-        %td.header{:colspan => "3"}
-          %label{:for => "search_terms"}= t('search.mini_controls.search_terms')
+        %td.header{colspan: "3"}
+          %label{for: "search_terms"}= t('search.mini_controls.search_terms')
       %tr
-        %td.fields{:colspan => "3"}
-          = text_field_tag 'search_terms', (h(@search_presenter.search_terms.to_s) unless clear_values), :size => 30, :tabindex => '1'
+        %td.fields{colspan: "3"}
+          = text_field_tag 'search_terms', (h(scope.search_terms.to_s) unless clear_values), size: 30, tabindex: '1'
     - if display_search_field_for?(type, SystemSetting.display_date_range_fields)
       %tr
-        %td.header{:colspan => "3"}
-          %label{:for => "date_since"}= t('search.mini_controls.date')
+        %td.header{colspan: "3"}
+          %label{for: "date_since"}= t('search.mini_controls.date')
       %tr
-        %td.fields{:colspan => "3"}
-          = render 'search/refine_by_date', :clear_values => clear_values
+        %td.fields{colspan: "3"}
+          = render partial: 'search/refine_by_date', locals: { scope: scope }
+
     = "</table></td><td valign='top'><table>" if horizontal
+
     %tr
-      %td.header{:colspan => "3"}= t('search.mini_controls.results_display')
-    - controls_permitted = display_menu || @search_presenter.current_basket.show_privacy_controls_with_inheritance?
-    - if display_search_field_for?(type, SystemSetting.display_privacy_fields) && logged_in? && controls_permitted && Basket.privacy_exists
-      %tr
-        %td.label= t('search.mini_controls.that_are')
-        - %w{ public private }.each do |privacy_type|
-          %td.fields
-            = radio_button_tag('privacy_type', privacy_type, (privacy_type == @search_presenter.current_privacy))
-            = t("search.mini_controls.#{privacy_type}")
+      %td.header{colspan: "3"}= t('search.mini_controls.results_display')
+    - controls_permitted = display_menu || scope.current_basket.show_privacy_controls_with_inheritance?
+
     - if display_search_field_for?(type, SystemSetting.display_item_type_field)
       %tr
         %td.label= t('search.mini_controls.show')
-        %td.fields{:colspan => "2"}
-          - options = @search_presenter.content_item_types.collect do |zoom_class|
+        %td.fields{colspan: "2"}
+          - options = scope.content_item_types.collect do |zoom_class|
             - [zoom_class_plural_humanize(zoom_class), zoom_class_controller(zoom_class)]
 
-          = select_tag('controller_name_for_zoom_class', options_for_select(options, @search_presenter.selected_content_item_type))
-    - if @search_presenter.topic_type_useful_here?(type)
+          != select_tag('controller_name_for_zoom_class', options_for_select(options, scope.selected_content_item_type))
+
+    - if scope.topic_type_useful_here?(type)
       %tr
         %td.label= t 'search.mini_controls.about_a'
-        %td.fields{:colspan => "2"}
-          = topic_type_select_with_indent('topic_type', nil, TopicType.find(1).full_set,                       |
-            :name, :name, (clear_values ? SystemSetting.search_selected_topic_type : @search_presenter.topic_type), {}, |
-            [[t('search.mini_controls.any_topic_type'), '']])                                                  |
+        %td.fields{colspan: "2"}
+          != topic_type_select_with_indent('topic_type', nil, TopicType.find(1).full_set,
+            :name, :name, (clear_values ? SystemSetting.search_selected_topic_type : scope.topic_type), {},
+            [[t('search.mini_controls.any_topic_type'), '']])
           = toggle_topic_types_field_js_helper_for(id)
+
     - if display_search_field_for?(type, SystemSetting.display_basket_field)
       %tr
         %td.label= t('search.mini_controls.within')
-        %td.fields{:colspan => "2"}
-          - selected = @search_presenter.urlified_basket_name
-          - selected = (SystemSetting.search_select_current_basket ? @search_presenter.current_basket.urlified_name : @search_presenter.site_basket.urlified_name) if clear_values
-          - options = basket_option_for(@search_presenter.site_basket, :label => t('search.mini_controls.all_of', :site_basket_name => @search_presenter.site_basket.name))
-          - baskets = Basket.all(:conditions => ["id NOT IN (?)", @search_presenter.standard_baskets]) +
-          - [@search_presenter.help_basket, @search_presenter.about_basket, @search_presenter.documentation_basket]
+        %td.fields{colspan: "2"}
+          - selected = scope.urlified_basket_name
+          - selected = (SystemSetting.search_select_current_basket ? scope.current_basket.urlified_name : scope.site_basket.urlified_name) if clear_values
+          - options = basket_option_for(scope.site_basket, :label => t('search.mini_controls.all_of', :site_basket_name => scope.site_basket.name))
+          - baskets = Basket.all(:conditions => ["id NOT IN (?)", scope.standard_baskets]) +
+          - [scope.help_basket, scope.about_basket, scope.documentation_basket]
           - baskets.each { |basket| options += basket_option_for(basket, :selected => selected) }
           = select_tag('target_basket', options)
-          = adjust_target_basket_options_for_privacy(@search_presenter.current_privacy)
-    - if display_search_field_for?(type, SystemSetting.display_sorting_fields)
-      %tr
-        %td.label= t('search.mini_controls.sorted_by')
-        %td.fields{:colspan => "2"}
-          - sort_type = clear_values ? '' : current_sort_type
-          = select_tag 'sort_type', Search.all_sort_types(sort_type, @search_presenter.action, true), :tabindex => '1'
-          %br/
-          #sort_direction_field
-            %label{:for => "sort_direction"}= t 'search.mini_controls.in_reverse'
-            - sort_direction = clear_values ? '' : current_sort_direction
-            = check_box_tag 'sort_direction', 'reverse', (sort_direction == 'reverse'), :tabindex => '1'
-          = toggle_relevance_field_js_helper_for(id)
-          = toggle_in_reverse_field_js_helper_for(id)
-    - if display_search_field_for?(type, SystemSetting.display_choices_field) && (@search_presenter.extended_field || categories_field)
+
+    - if display_search_field_for?(type, SystemSetting.display_choices_field) && (scope.extended_field || categories_field)
       %tr
         %td.label= t('search.mini_controls.categorised')
-        %td.fields{:colspan => "2"}
-          = render 'search/refine_by_choice', :without_label => true, :clear_values => clear_values
+        %td.fields{colspan: "2"}
+          = render partial: 'search/refine_by_choice', locals: { without_label: true, clear_values: clear_values, scope: scope }
+
     = "</table></td></tr>" if horizontal
+
   - if display_refine
     .submit
       %hr/
       %input{:type => "submit", :value => t('search.mini_controls.update')}/
+
   - if display_menu
     .reset
       %input{:type => "reset", :value => t('search.mini_controls.clear')}/
-  - if display_menu && users_previous_searches.size > 0
-    #recent_searches
-      .header= t('search.mini_controls.recent_searches')
-      %ul.searches
-        - users_previous_searches[0...5].each do |search|
-          %li= link_to truncate(search[:title], :length => 35), search[:url], :title => search[:title]
-      %ul.actions
-        - options = { :urlified_name => @search_presenter.site_basket.urlified_name, :controller => 'search' }
-        %li.first= link_to t('search.mini_controls.previous_searches'), options.merge(:action => 'list')
-        %li= link_to t('search.mini_controls.clear_all_searches'), options.merge(:action => 'clear')
-  .close= link_to('[x]', '#', :alt => t('search.mini_controls.close'), |
-      :title => t('search.mini_controls.close'),                   |
-      :onclick => "$('#{id}').hide();")                            |
+
+  .close
+    = link_to('[x]', '#', alt: t('search.mini_controls.close'), title: t('search.mini_controls.close'), onclick: "$('#{id}').hide();")                            |
   - if display_menu
     %div{:style => "clear:both;"}

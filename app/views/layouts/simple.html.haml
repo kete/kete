@@ -12,8 +12,8 @@
       /[if IE] 
         = stylesheet_link_tag 'kete-ie'
 
-      %script{:src => "http://ajax.googleapis.com/ajax/libs/jquery/1.6.2/jquery.min.js"}
-      = javascript_tag('jQuery.noConflict();')
+      = render partial: "layouts/jquery"
+
       = javascript_include_tag :defaults
       = javascript_include_tag 'redbox'
       - if SystemSetting.enable_maps? && initialize_gmap_headers?

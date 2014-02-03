@@ -1,8 +1,8 @@
 - without_label ||= false
 - clear_values ||= false
 - control = limit_search_to_choice_control(clear_values)
-- if @search_presenter.extended_field
-  = tag(:br) + content_tag("label", @search_presenter.extended_field.label) unless without_label
+- if scope.extended_field
+  = tag(:br) + content_tag("label", scope.extended_field.label) unless without_label
   = control unless control.blank?
 - elsif categories_field
   = tag(:br) + content_tag("label", t('search.refine_by_choice.limit_to_category')) unless without_label

@@ -1,4 +1,4 @@
-%div{:class => "generic-result-wrapper#{' first' if (@search_presenter.results.first == result)}", :id => "item_#{result.id}_wrapper"}
+%div{:class => "generic-result-wrapper#{' first' if (scope.results.first == result)}", :id => "item_#{result.id}_wrapper"}
 
   - if result.topic_types && !result.topic_types.last.blank? && SystemSetting.display_topic_type_on_search_result
     .generic-result-topic-type
