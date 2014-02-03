@@ -21,9 +21,11 @@
                     %noscript= image_tag 'magnifier.png', :width => 16, :height => 16
                   = text_field_tag 'search_terms', nil, { :accesskey => '3', :tabindex => '2' }
                   = submit_tag t('layouts.application.search_button'), { :class => 'submit', :tabindex => '2' }
-                -# EOIN: TODO: re-enable this when we have refactored SearchPresenter into SearchFormPresenter & SearchResultsPresenter (or something similar)
-                -# = render 'search/mini_controls', :id => 'advanced_search_dropdown', :type => 'menu'
+
+                  = render partial: 'search/mini_controls', locals: {id: 'advanced_search_dropdown', scope: SearchPresenter.new, type: 'menu' }
+
                 = add_search_icon_and_default_text_to_search_box('advanced_search_dropdown', 'advanced_search_dropdown_trigger')
+
                 = javascript_tag("$('search_terms').observe('change', function(event) {                 |
                     if (this.value == '') {                                                             |
                       advanced_search_dropdown_reset_relevance(true);                                   |

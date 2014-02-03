@@ -140,9 +140,9 @@ class SystemSetting
       true
     end
 
-    #def default_search_privacy
-    #  "public"
-    #end
+    def default_search_privacy
+     "public"
+    end
 
     #def language_choices_display_type
     #  "dropdown"
@@ -201,19 +201,19 @@ class SystemSetting
     end
 
     def display_search_terms_field
-      false
+      "menu"
     end
 
     def display_date_range_fields
-      false
+      "menu"
     end
 
     def display_privacy_fields
-      false
+      "menu"
     end
 
     def display_item_type_field
-      false
+      "menu"
     end
 
     def display_topic_type_field
@@ -221,15 +221,15 @@ class SystemSetting
     end
 
     def display_basket_field
-      false
+      "menu"
     end
 
-    def display_sorting_fields
-      false
-    end
+    # def display_sorting_fields
+    #   "menu"
+    # end
 
     def display_choices_field
-      false
+      "menu"
     end
       
     def search_select_current_basket

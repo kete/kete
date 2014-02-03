@@ -1,2 +1,3 @@
-= render 'form', headline: t('search.for.refine_search', search_terms: @search_presenter.search_terms, basket_link: @search_presenter.basket_link)
-= render 'results' #if @search_presenter.search_terms_are_present?
+= render partial: 'form', 
+         locals: { headline: t('search.for.refine_search', search_terms: @scope.search_terms, basket_link: @scope.basket_link), scope: @scope }
+= render partial: 'results', locals: { scope: @scope }

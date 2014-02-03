@@ -1,13 +1,13 @@
 .clear &nbsp;
 #content-tabs
   %ul.nav-list
-    - @search_presenter.content_item_types.each do |ci_type|
-      - if ci_type == @search_presenter.current_content_item_type
+    - scope.content_item_types.each do |ci_type|
+      - if ci_type == scope.current_content_item_type
         %li.selected
-          = @search_presenter.link_text_for(ci_type)
+          = scope.link_text_for(ci_type)
       - else
         %li
-          = link_to @search_presenter.link_text_for(ci_type), @search_presenter.link_path_params_for(ci_type)
+          = link_to scope.link_text_for(ci_type), scope.link_path_params_for(ci_type)
 
   %div{:style => "clear:both;"}
 
@@ -16,30 +16,30 @@
   #main-content-wrapper
     #main-content-container
       %a{name: "main-content"}
-      %h3= @search_presenter.title
+      %h3= scope.title
 
       .prev-next.before-results
-        = will_paginate @search_presenter.paginated_results,
+        = will_paginate scope.paginated_results,
                         next_label:     t('slideshows_helper.next'),
                         previous_label: t('slideshows_helper.previous'),
-                        params:         @search_presenter.pagination_link_params
+                        params:         scope.pagination_link_params
 
       - search_source_result = ''
-      - if @search_presenter.search_sources_amount > 0
-        - search_source_result = display_search_sources(@search_presenter.search_terms, { :target => [:all, :search], :do_not_cache => true, 
-          :limit => (@search_presenter.number_per_page.to_f / @search_presenter.search_sources_amount.to_f).ceil, 
+      - if scope.search_sources_amount > 0
+        - search_source_result = display_search_sources(scope.search_terms, { :target => [:all, :search], :do_not_cache => true, 
+          :limit => (scope.number_per_page.to_f / scope.search_sources_amount.to_f).ceil, 
           :title => t('search.results.search_source_title') })
         - unless search_source_result.blank?
           #search_page_search_sources
             = search_source_result
 
-      - if @search_presenter.results.size > 0
+      - if scope.results.size > 0
         #result-show
-          = @search_presenter.search_results_info_and_links
-          = render 'search/refine_results'
+          = scope.search_results_info_and_links
+          = render partial: 'search/refine_results', locals: { scope: scope }
         - markers = Array.new
-        - @search_presenter.results.each_with_index do |result,index|
-          - if SystemSetting.enable_maps? && @search_presenter.view_as_map?
+        - scope.results.each_with_index do |result,index|
+          - if SystemSetting.enable_maps? && scope.view_as_map?
             - marker_options = { 'title' => result[:title] }
             - summary_for_info_window = result[:short_summary].present? ? result[:short_summary] : String.new
             - marker_options['description'] = link_to(h(result[:title]), result[:url], :tabindex => '1') + '<br />' + summary_for_info_window
@@ -65,45 +65,44 @@
               - markers << marker_options
           - else
             - if result.class == 'StillImage'
-              = render partial: "image", locals: { result: result }
+              = render partial: "image", locals: { result: result, scope: scope }
             - else
-              = render partial: "generic", locals: { result: result }
+              = render partial: "generic", locals: { result: result, scope: scope }
       - else
         #result-show
           - if other_results.size > 0
-            = t 'search.results.no_results_of_this_type_found', :zoom_class => zoom_class_humanize(@search_presenter.current_content_item_type).downcase
+            = t 'search.results.no_results_of_this_type_found', :zoom_class => zoom_class_humanize(scope.current_content_item_type).downcase
             %ul= other_results.collect { |r| "<li>#{r.downcase}</li>" }.join
           - else
             = t 'search.results.no_results_of_any_type_found'
-          [
-          #refine_search_dropdown_trigger
-          ]
-          \#{render 'search/refine_results'}
 
-      - if @search_presenter.view_as_map? 
+          #refine_search_dropdown_trigger
+            = render partial: 'search/refine_results', locals: {scope: scope}
+
+      - if scope.view_as_map? 
         - if markers.present?
           = gmaps("markers" => { 'data' => markers.to_json, 'options' => { 'randomize' => true, 'do_clustering' => true, 'clusterer_maxZoom' => 20 } } )                                                      |
-          - if @search_presenter.search_sources_amount.present? && @search_presenter.search_sources_amount > 0
+          - if scope.search_sources_amount.present? && scope.search_sources_amount > 0
             = javascript_tag("jQuery('.map_container').css('width', '600px'); jQuery('.gmaps4rails_map').css('width', '600px');")
         - else
-          = t 'search.results.no_results_of_this_type_found', :zoom_class => zoom_class_humanize(@search_presenter.current_content_item_type).downcase
+          = t 'search.results.no_results_of_this_type_found', :zoom_class => zoom_class_humanize(scope.current_content_item_type).downcase
 
       %div{:style => "clear:both;"}
 
       .prev-next.after-results
-        = will_paginate @search_presenter.paginated_results, 
+        = will_paginate scope.paginated_results, 
                         next_label:     t('slideshows_helper.next'), 
                         previous_label: t('slideshows_helper.previous'),
-                        params:         @search_presenter.pagination_link_params
+                        params:         scope.pagination_link_params
       #bottomlinks
         #addnew
-          - if current_user_can_see_add_links? && @search_presenter.current_content_item_type != 'Comment'
-            = @search_presenter.link_to_add_item(:phrase => t('search.results.add_a_new'), :item_class => @search_presenter.current_content_item_type)
+          - if current_user_can_see_add_links? && scope.current_content_item_type != 'Comment'
+            = scope.link_to_add_item(:phrase => t('search.results.add_a_new'), :item_class => scope.current_content_item_type)
         \&nbsp;
         #showlinks
           = t 'search.results.show'
           - SystemSetting.records_per_page_choices.each do |choice|
-            - if @search_presenter.number_per_page != choice
+            - if scope.number_per_page != choice
               = link_to(choice, { :overwrite_params => { :number_of_results_per_page => choice, :page => 1 } }, { :tabindex => '1', :rel => 'nofollow' })
             - else
               %a#thisnumber{:href => "#"}= choice

@@ -1,13 +1,12 @@
+// TODO: is all of this stuff still required?
 //= require prototype
 //= require prototype_ujs
 //= require effects
 //= require dragdrop
 //= require controls
-//
 //= require_tree ./active_scaffold
 //= require_tree ./anarchy_media
 //= require controls.js
-//NO require_tree ./dan_webb_code_highlighter
 //= require dhtml_history.js
 //= require dragdrop.js
 //= require effects.js
@@ -16,10 +15,6 @@
 //= require kete.js
 //= require redbox.js
 //= require rico_corner.js
-//NO require_tree ./yui
-//NO require prototype.js
-
-// Place your application-specific JavaScript functions and classes here
 
 window.onload = function(){
   if (parseInt(navigator.appVersion)>3) {

@@ -9,8 +9,13 @@ class SearchPresenter
 
   public
 
-  def initialize(query: SearchQuery.new, results: [], params: {})
-    @query = query
+  def initialize(query: nil, results: [], params: {})
+    if query
+      @query = query
+    else
+      @query = SearchQuery.new(params)
+    end
+
     @search_relation = results # ActiveRecord::Relation
     @params = params
   end
@@ -125,6 +130,10 @@ class SearchPresenter
     Basket.site_basket # FIXME: make this find the basket the user is ucrrently in
   end
 
+  def help_basket
+    Basket.help_basket
+  end
+
   def site_basket
     Basket.site_basket
   end
@@ -137,8 +146,13 @@ class SearchPresenter
     Basket.documentation_basket
   end
 
+  def standard_baskets
+    Basket.standard_basket_ids
+  end
+
   def current_privacy
     default = current_basket.private_default_with_inheritance? ? 'private' : 'public'
+    display_menu = true # EOIN: TODO: this method needs to be cleaned up
     ((params[:privacy_type] unless clear_values) || (SystemSetting.default_search_privacy if display_menu) || default)
   end
 
@@ -171,6 +185,10 @@ class SearchPresenter
   end
 
   def current_content_item_type
+    query.content_item_type
+  end
+
+  def selected_content_item_type
     query.content_item_type
   end
 
