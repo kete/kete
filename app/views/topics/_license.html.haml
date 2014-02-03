@@ -1,6 +1,7 @@
 - cache_with_privacy(item, {:part => "secondary_content_license_metadata"}) do
   - unless item.license_metadata.nil?
-    = render(:partial => "topics/secondary_wrapper_start",           |
-      :locals => { :div_id => "license-box", :class_suffix => nil }) |
-    .license= item.license_metadata.html_safe
-    = render(:partial => "topics/secondary_wrapper_end")
+    %div{:class => "secondary-content-section-wrapper"}
+      %div{:class => "secondary-content-section", :id => "license-box"}
+        .secondary-content-section-content
+          .license= item.license_metadata.html_safe
+          %div{:style => "clear:both;"}

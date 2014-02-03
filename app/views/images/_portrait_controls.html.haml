@@ -27,4 +27,5 @@
         = render :partial => 'account/portraits', :locals => { :viewer_portraits => @viewer_portraits, :viewer_is_user => @viewer_is_user }
     %div{:style => "clear:both;"}
     #portrait_help= link_to t('images.portrait_controls.whats_this'), :controller => 'account', :action => 'show', :whats_this => true
-    = render(:partial => "topics/secondary_wrapper_end")
+    %div{:style => "clear:both;"}
+

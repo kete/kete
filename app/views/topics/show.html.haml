@@ -1,5 +1,4 @@
-/= render(:partial => "actions_menu", :locals => { :item => @topic }) if current_user_can_see_action_menu?
-= render(:partial => "actions_menu", :locals => { :item => @topic }) 
+= render(:partial => "actions_menu", :locals => { :item => @topic }) if current_user_can_see_action_menu?
 
 #content-wrapper{class: (defined?(style_classes) ? style_classes : '')}
   = render "basket_navigation_menu" if show_basket_list_naviation_menu?
