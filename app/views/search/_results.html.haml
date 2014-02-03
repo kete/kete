@@ -75,10 +75,9 @@
             %ul= other_results.collect { |r| "<li>#{r.downcase}</li>" }.join
           - else
             = t 'search.results.no_results_of_any_type_found'
-          [
+
           #refine_search_dropdown_trigger
-          ]
-          \#{render 'search/refine_results'}
+            = render partial: 'search/refine_results', locals: {scope: scope}
 
       - if scope.view_as_map? 
         - if markers.present?
