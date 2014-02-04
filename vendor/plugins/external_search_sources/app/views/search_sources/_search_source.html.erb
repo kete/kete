@@ -36,7 +36,7 @@
     <% unless entries[:total] < (options[:limit] || source.limit) %>
       <div id="<%= search_source_id %>_more_results"
            class='<%= ExternalSearchSources[:default_link_classes] %>'>
-        <%= link_to(t('search_sources.search_source.more'), source.more_link,
+        <%= link_to(t('search_sources.search_source.more').html_safe, source.more_link,
                     :title => t('search_sources.search_source.more_like_this'),
                     :target => '_blank') %>
       </div>
@@ -44,7 +44,7 @@
 
     <% unless source.source_credit.blank? %>
       <div id="<%= search_source_id %>_credit">
-        <%= source.source_credit %>
+        <%= source.source_credit.html_safe %>
       </div>
     <% end %>
 

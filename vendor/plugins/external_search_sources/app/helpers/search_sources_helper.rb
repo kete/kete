@@ -6,10 +6,6 @@ module SearchSourcesHelper
     @do_not_cache = options[:do_not_cache] || false
     html = String.new
 
-    # ROB: search sources is not showing up so just leave a note for the time being.
-    html = "<br />Note: external search-sources isn't working yet."
-
-
     conditions = Hash.new
     if options[:target]
       # support for :target and [:target1, :target2]
