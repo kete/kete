@@ -2285,7 +2285,7 @@ en:
       review_button: "Review"
       review_instructions: "Please add a message to the user telling them why you have reviewed their submitted revision and left it as is."
       review_revision_title: "Review this revision"
-    flagging_contributor:
+    contributors:
       created: "created"
       created_or_updated_on: "on"
       last_to_edit: "was the last to edit"

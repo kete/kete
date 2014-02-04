@@ -10,7 +10,7 @@
   = pending_review(@audio_recording)
 = render(:partial => "topics/extended_fields", :locals => { :item => @audio_recording, :embedded => true })
 %div{:style => "clear:both;"}
-= render(:partial => "topics/flagging_contributor", :locals => { :item => @audio_recording }) if current_user_can_see_flagging?
+= render(:partial => "topics/contributors", :locals => { :item => @audio_recording }) if current_user_can_see_contributors?
 = render(:partial => "topics/related_items", :locals => { :item => @audio_recording, :topics_only => true, :position => 'below' }) if @audio_recording.related_items_position == 'below'
 = render(:partial => "topics/discussion" , :locals => { :item => @audio_recording }) if current_user_can_see_discussion?
 / /main-content-container

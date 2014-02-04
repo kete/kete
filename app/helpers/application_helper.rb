@@ -443,13 +443,10 @@ module ApplicationHelper
     html += '</ul>'
   end
 
-  def current_user_can_see_flagging?
-    if @current_basket.setting(:show_flagging) == "at least moderator"
-        can_see_flagging = logged_in? && @at_least_a_moderator
-    else
-        can_see_flagging = true
-    end
-    can_see_flagging
+  def current_user_can_see_contributors?
+    # ROB:  Was previously current_user_can_see_flagging?(). Hiding the contributors
+    #       lumped with flagging makes less sense.
+    true
   end
 
   def current_user_can_see_add_links?

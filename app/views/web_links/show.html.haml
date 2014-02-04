@@ -10,7 +10,7 @@
   = pending_review(@web_link)
 = render(:partial => "topics/extended_fields", :locals => { :item => @web_link, :embedded => true })
 %div{:style => "clear:both;"}
-= render(:partial => "topics/flagging_contributor" , :locals => { :item => @web_link }) if current_user_can_see_flagging?
+= render(:partial => "topics/contributors" , :locals => { :item => @web_link }) if current_user_can_see_contributors?
 = render(:partial => "topics/related_items", :locals => { :item => @web_link, :topics_only => true, :position => 'below' }) if @web_link.related_items_position == 'below'
 = render(:partial => "topics/discussion" , :locals => { :item => @web_link }) if current_user_can_see_discussion?
 / /main-content-container

@@ -100,8 +100,10 @@ module KeteAuthorisationSettings
   alias :current_user_can_import_archive_sets? :current_user_can_import_archive_sets_for?
 
 
-  def current_user_can_see_flagging?
-    current_user_is?(@current_basket.setting(:show_flagging))
+  def current_user_can_see_contributors?
+    # ROB:  Was previously current_user_can_see_flagging?(). Hiding the contributors
+    #       lumped with flagging makes less sense.
+    true
   end
 
   def current_user_can_see_add_links?

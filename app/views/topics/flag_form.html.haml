@@ -1,4 +1,4 @@
-- if current_user_can_see_flagging?
+- if current_user_can_see_contributors?
   - case @flag
   - when SystemSetting.rejected_flag
   - @title = t('topics.flag_form.reject_revision_title')

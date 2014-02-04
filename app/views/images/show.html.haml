@@ -29,7 +29,7 @@
 
         = render(:partial => "topics/extended_fields", :locals => { :item => @still_image, :embedded => true })
         %div{:style => "clear:both;"}
-        = render(:partial => "topics/flagging_contributor" , :locals => { :item => @still_image }) if current_user_can_see_flagging?
+        = render(:partial => "topics/contributors" , :locals => { :item => @still_image }) if current_user_can_see_contributors?
         = render(:partial => "topics/related_items", :locals => { :item => @still_image, :topics_only => true, :position => 'below' }) if @still_image.related_items_position == 'below'
         = render(:partial => "topics/discussion" , :locals => { :item => @still_image }) if current_user_can_see_discussion?
 
