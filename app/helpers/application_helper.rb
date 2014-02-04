@@ -632,12 +632,12 @@ module ApplicationHelper
       display_html += '<div class="stylish_user_contribution_link_avatar">' + avatar_for(user) + '</div>' unless avatar.blank?
     end
     user_link = link_to_contributions_of(user, zoom_class)
-    link_text = (options[:link_text] || user_link).gsub('|user_name_link|', user_link)
+    link_text = (options[:link_text] || user_link).gsub('|user_name_link|', user_link).html_safe
     display_html += content_tag('div', link_text, :class => 'stylish_user_contribution_link_extra')
     display_html += options[:additional_html] if options[:additional_html]
     display_html += '<div style="clear:both;"></div>'
     display_html += '</div>'
-    display_html
+    display_html.html_safe
   end
 
   def add_to_stylish_display_with(content)

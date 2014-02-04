@@ -14,6 +14,9 @@ class ImagesController < ApplicationController
     @still_image = prepare_item_and_vars
     @comments = @still_image.non_pending_comments
 
+    @creator = @still_image.creator
+    @last_contributor = @still_image.contributors.last || @creator
+
     @view_size = params[:view_size] || "medium"
     @image_file = ImageFile.find_by_thumbnail_and_still_image_id(@view_size, params[:id])
 

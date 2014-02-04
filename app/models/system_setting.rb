@@ -20,9 +20,9 @@ class SystemSetting
     #  5
     #end
 
-    #def flagging_tags
-    #  ['inaccurate', 'duplicate', 'inappropriate', 'entered by mistake', 'has typos']
-    #end
+    def flagging_tags
+      ['inaccurate', 'duplicate', 'inappropriate', 'entered by mistake', 'has typos']
+    end
     
     def about_basket
       3
@@ -189,7 +189,7 @@ class SystemSetting
     end
 
     def enable_user_portraits
-      false
+      true
     end
 
     def language_choices_position

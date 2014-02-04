@@ -18,6 +18,8 @@ class BasketSettings
 
   def self.settings
     {
+      #show_discussion: "all users",
+      show_flagging: "all users",
       theme: "",
       fully_moderated: false, # ROB: the default site-basket in non-moderated, but most of the others are.
       moderated_except: "",
