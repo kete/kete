@@ -18,6 +18,8 @@
             %img#data_spinner{:alt => t('topics.tags.sending_tags'), :height => "16", :src => "/images/indicator.gif", :style => "display:none;", :width => "16"}/
             %img#data_spinner_tags{:alt => t('topics.tags.getting_tags'), :height => "16", :src => "/images/indicator.gif", :style => "display:none;", :width => "16"}/
         = javascript_tag "$('add_tag_button').show();$('add_tag_form_div').hide();"
+    .secondary-content-section-footer-wrapper
+      .secondary-content-section-footer &nbsp;
 
 :javascript
   $(document).ready(function(){
