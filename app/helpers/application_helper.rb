@@ -1366,7 +1366,6 @@ module ApplicationHelper
         comment_string += "#{tags_for_comment}\n" unless tags_for_comment.blank?
         comment_string += pending_review(comment) + "\n"
         comment_string += "<div class=\"comment-tools\">\n"
-        comment_string += flagging_links_for(comment,true,'comments')
         comment_string += "<div class=\"comment-date\">
                             #{t('application_helper.show_comments_for.posted_on')} #{comment.created_at.to_s(:natural)}
                           </div>"
@@ -1416,7 +1415,7 @@ module ApplicationHelper
                                        :commentable_private => (item.respond_to?(:private) && item.private?) ? 1 : 0 }) + "</p>"
     end
 
-    return html_string
+    return html_string.html_safe
   end
 
   # Calculate the comment depth (how many ancestors)
@@ -1442,46 +1441,6 @@ module ApplicationHelper
       classes << "comment-depth-#{depth}"
     end
     classes.join(' ')
-  end
-
-  def flagging_links_for(item, first = false, controller = nil)
-    html_string = String.new
-    if SystemSetting.flagging_tags.size > 0 and !item.already_at_blank_version?
-      if first
-        html_string = "<ul><li class=\"first flag\">#{t('application_helper.flagging_links_for.flag_as')}</li>\n"
-      else
-        html_string = "<ul><li class=\"flag\">#{t('application_helper.flagging_links_for.flag_as')}</li>\n"
-      end
-      html_string += "<li class=\"first\"><ul>\n"
-      flag_count = 1
-      SystemSetting.flagging_tags.each do |flag|
-        if flag_count == 1
-          html_string += "<li class=\"first\">"
-        else
-          html_string += "<li>"
-        end
-        if !controller.nil?
-          html_string += link_to(flag,
-                                 { :controller => controller,
-                                   :action => 'flag_form',
-                                   :flag => flag,
-                                   :id => item,
-                                   :version => item.version },
-                                 :confirm => t('application_helper.flagging_links_for.can_you_edit')) + "</li>\n"
-        else
-          html_string += link_to(flag,
-                                 { :action => 'flag_form',
-                                   :flag => flag,
-                                   :id => item,
-                                   :version => item.version },
-                                 :confirm => t('application_helper.flagging_links_for.can_you_edit')) + "</li>\n"
-        end
-
-        flag_count += 1
-      end
-      html_string += "                                            </ul>
-                                        </li></ul>\n"
-    end
   end
 
   def pending_review(item)

@@ -89,7 +89,8 @@
   get 'videos/:id'           => 'video#show', as: 'video'
   get 'web_links/:id'        => 'web_links#show', as: 'web_link'
   get 'documents/:id'        => 'documents#show', as: 'document'
-  get 'comments/:id'         => 'comments#show', as: 'comment'
+
+  resource 'comments'
 
   get 'topics/:id/history'      => 'topics#history', as: 'history_topic'
   get 'audio/:id/history'       => 'audio#history', as: 'history_audio_recording'
