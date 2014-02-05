@@ -689,7 +689,26 @@ module ApplicationHelper
     end
   end
 
-  def class_and_styles_from(position = nil, count = nil)
+  def related_items_class_from(position = nil, count = nil)
+    class_names = Array.new
+    class_names << position if position
+
+    # Used to hide the empty, thin related items box on inset or sidebar display when no related items
+    # are present. Only apply this if no items are present and only if we are on non-topic controller
+    # (topic page related items have create/link etc controls that we don't want to hide)
+    class_names << "no-items" if count && count == 0 && params[:controller] != 'topics'
+
+    class_names.join(' ')
+  end
+
+  def related_items_styles_from(position = nil, count = nil)
+    styles = Array.new
+
+    styles << "width: #{(image_size_of(SystemSetting.image_slideshow_size) + 30)}px;" if position && position == 'inset'
+
+    styles.join
+  end
+  def class_and_styless_from(position = nil, count = nil)
     class_names, styles = Array.new, Array.new
 
     class_names << position if position
@@ -700,7 +719,7 @@ module ApplicationHelper
     # (topic page related items have create/link etc controls that we don't want to hide)
     class_names << "no-items" if count && count == 0 && params[:controller] != 'topics'
 
-    " class='#{class_names.join(' ')}' style='#{styles.join}'"
+    {class: class_names.join(' '), style: styles.join }
   end
 
   def related_items_count_for_current_item
