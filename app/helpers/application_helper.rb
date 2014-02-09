@@ -708,6 +708,7 @@ module ApplicationHelper
 
     styles.join
   end
+
   def class_and_styless_from(position = nil, count = nil)
     class_names, styles = Array.new, Array.new
 
@@ -784,7 +785,7 @@ module ApplicationHelper
     #              :source_controller_singular => zoom_class_controller(item.class.name).singularize,
     #              :source_item => item }.merge(location)
     # related_item_url = (location[:privacy_type] == 'private') ? basket_all_private_related_to_path(location) : basket_all_related_to_path(location)
-    related_item_url = ''
+    related_item_url = not_implemented_path()
 
     link_to options[:link_text], related_item_url, { :class => 'small' }
   end
