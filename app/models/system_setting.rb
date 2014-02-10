@@ -348,7 +348,7 @@ class SystemSetting
     end
 
     def show_powered_by_kete
-      false
+      true
     end
 
     def additional_credits_html

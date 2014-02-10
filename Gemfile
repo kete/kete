@@ -2,7 +2,6 @@ source "https://rubygems.org"
 
 gem "rails", "3.2.16"
 
-gem 'sass-rails'
 # EOIN: TODO: I suspect there are gems mentioned in here that rails pulls in implicitly - we should remove them from here if so.
 gem 'prototype-rails'
 gem 'rails-erd'
@@ -165,9 +164,12 @@ gem 'will_paginate', '~> 3.0.5'
 # RABID: should be removed:
 gem 'validates_xml',                '1.0.3' # >> 2007-06-06 
 
-group :assets do
+group :assets, :development do
   gem 'sass-rails'
   gem 'compass-rails'
+end
+
+group :assets do
   gem 'coffee-rails', '~> 3.2.1'
   gem 'uglifier', '>= 1.0.3'
 end
