@@ -1,3 +1,5 @@
+@import "compass";
+
 body {
     margin:0;
     padding:0;
@@ -91,12 +93,13 @@ ul.nav-list a img {
 }
 
 #top-menu {
-                clear: both;
-                float: left;
-                width: 100%;
-                margin-bottom: 2em;
-                padding: 0;
-    background-color: #838383;
+  @include clearfix();
+  clear: both;
+  float: left;
+  width: 100%;
+  margin-bottom: 2em;
+  padding: 0;
+  background-color: #838383;
 }
 
 #top-menu ul {
@@ -897,6 +900,7 @@ span.next-active {
  * Container
  */
 #container {
+  @include clearfix();
   margin-bottom: -5px;
 }
 
@@ -904,6 +908,7 @@ span.next-active {
  * FOOTER
  */
 .footer_div {
+  @include clearfix();
   background-color: white;
   padding: 5px 15px;
 }
