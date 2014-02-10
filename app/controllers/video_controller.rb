@@ -14,6 +14,12 @@ class VideoController < ApplicationController
     @video = prepare_item_and_vars
     @comments = @video.non_pending_comments
 
+    @creator = @video.creator
+    @last_contributor = @video.contributors.last || @creator
+
+    @related_items = @video.related_items
+    @related_item_topics = @related_items.select {|ri| ri.is_a? Topic}
+
     respond_to do |format|
       format.html
       format.xml { render_oai_record_xml(:item => @video) }
