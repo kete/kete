@@ -6,24 +6,24 @@
   #main-content-wrapper
     #main-content-container
       %a{:name => "main-content"}
-        - cache_with_privacy(@video, {:part => 'details_first'}) do
-          %h2= h(@video.title)
+      - cache_with_privacy(@video, {:part => 'details_first'}) do
+        %h2= h(@video.title)
 
-        = extras_after_title_headline
+      = extras_after_title_headline
 
-        = render(:partial => "topics/related_items", :locals => { :item => @video, :position => 'inset' }) if @video.related_items_position == 'inset'
+      = render(:partial => "topics/related_items", :locals => { :item => @video, :position => 'inset' }) if @video.related_items_position == 'inset'
 
-        = render(:partial => "details", :locals => { :item => @video }) if show_attached_files_for?(@video)
+      = render(:partial => "details", :locals => { :item => @video }) if show_attached_files_for?(@video)
 
-        - cache_with_privacy(@video, {:part => 'details_second'}) do
-          %p= @video.description.html_safe
-          = pending_review(@video)
+      - cache_with_privacy(@video, {:part => 'details_second'}) do
+        %p= @video.description.html_safe
+        = pending_review(@video)
 
-        = render(:partial => "topics/extended_fields", :locals => { :item => @video, :embedded => true })
-        %div{:style => "clear:both;"}
-        = render(:partial => "topics/contributors" , :locals => { :item => @video }) if current_user_can_see_contributors?
-        = render(:partial => "topics/related_items", :locals => { :item => @video, :position => 'below' }) if @video.related_items_position == 'below'
-        = render(:partial => "topics/discussion" , :locals => { :item => @video }) if current_user_can_see_discussion?
+      = render(:partial => "topics/extended_fields", :locals => { :item => @video, :embedded => true })
+      %div{:style => "clear:both;"}
+      = render(:partial => "topics/contributors" , :locals => { :item => @video }) if current_user_can_see_contributors?
+      = render(:partial => "topics/related_items", :locals => { :item => @video, :position => 'below' }) if @video.related_items_position == 'below'
+      = render(:partial => "topics/discussion" , :locals => { :item => @video }) if current_user_can_see_discussion?
 
   #secondary-content-wrapper
     = render(:partial => "topics/tags_div" , :locals => { :item => @video })

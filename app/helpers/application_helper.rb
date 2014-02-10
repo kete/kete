@@ -617,6 +617,9 @@ module ApplicationHelper
 
     url = user.anonymous? && !contributions_instead_of_website_for_anonymous ? user.website : url_for_contributions_of(user, zoom_class)
 
+    # ROB: search by user not implemented yet.
+    url = not_implemented_path()
+
     url.blank? ? display_html : link_to(display_html, url)
   end
 
@@ -891,15 +894,18 @@ module ApplicationHelper
     zoom_class = zoom_class || tag[:zoom_class]
     tag_for_url = !tag[:to_param].blank? ? tag[:to_param] : tag.to_param
     link_text = options[:link_text] || tag[:name]
-    link_to h(link_text),
-            { :controller => 'search',
-              :action => 'all',
-              :tag => tag_for_url,
-              :trailing_slash => true,
-              :controller_name_for_zoom_class => zoom_class_controller(zoom_class),
-              :urlified_name => basket.urlified_name,
-              :privacy_type => get_acceptable_privacy_type_for(nil, nil, "private") },
-            :class => tag[:css_class]
+    
+    # ROB: search by tag not implemented yet.
+    link_to h(link_text), not_implemented_path()
+    #link_to h(link_text),
+    #        { :controller => 'search',
+    #          :action => 'all',
+    #          :tag => tag_for_url,
+    #          :trailing_slash => true,
+    #          :controller_name_for_zoom_class => zoom_class_controller(zoom_class),
+    #          :urlified_name => basket.urlified_name,
+    #          :privacy_type => get_acceptable_privacy_type_for(nil, nil, "private") },
+    #        :class => tag[:css_class]
   end
   alias :link_to_tagged_in_basket :link_to_tagged
 
