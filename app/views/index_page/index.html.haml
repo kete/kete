@@ -2,10 +2,6 @@
 = render(:partial => "topics/content_wrapper_start", :locals => { :style_classes =>"notabs" })
 
 - if @topic.present?
-  - @topic_related_items_count = related_items_count_for_current_item
-
-  - if @topic_related_items_count > 0 && @topic.related_items_position == 'inset'
-    = render(:partial => "topics/related_items", :locals => { :item => @topic, :position => 'inset' })
 
   = @topic.description.html_safe if @topic.description.present?
   = pending_review(@topic)
@@ -19,8 +15,6 @@
       = extended_fields_html
     %div{:style => "clear:both;"}
 
-  - if @topic_related_items_count > 0 && @topic.related_items_position == 'below'
-    = render(:partial => "topics/related_items", :locals => { :item => @topic, :position => 'below' })
   .detail-tools
     - if !@url_to_full_topic.nil?
       %ul
@@ -67,8 +61,6 @@
     - when 'headlines'
       = render :partial => 'post_headline', :collection => @recent_topics_items
 #secondary-content-wrapper
-  - if @topic.present? && @topic_related_items_count > 0 && @topic.related_items_position == 'sidebar'
-    = render(:partial => "topics/related_items", :locals => { :item => @topic, :position => 'sidebar' }) if @topic.related_items_position == 'sidebar'
   - if @current_basket.index_page_basket_search
     = render(:partial => "topics/secondary_wrapper_start",          |
       :locals => { :div_id => "search-box", :class_suffix => nil }) |
