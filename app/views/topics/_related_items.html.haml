@@ -1,31 +1,27 @@
-- topics_only ||= false
-- position ||= ''
-- @total_item_counts = related_items_count_for_current_item
-- if @total_item_counts > 0
-  - options = { :item_classes => (topics_only ? ['Topic'] : nil), :with_counts => true, :start_record => 0, :end_record => [SystemSetting.number_of_related_images_to_display, SystemSetting.number_of_related_things_to_display_per_type].sort.last }
-  - @public_items, @public_item_counts = public_related_items_for(item, options)
-  - @private_items, @private_item_counts = private_related_items_for(item, options)
+-# ROB: This file has been heavily guted, to simplify it. Right now it only displays 
+-#      all related content.
 
-%div{ :id => "related_items", :class => related_items_class_from(position, @total_item_counts), :style => related_items_styles_from(position, @total_item_counts) }
+%div{ :id => "related_items", :class => related_items_class_from(position, @related_items.count), :style => related_items_styles_from(position, @related_items.count) }
   %div{:class => "secondary-content-section-wrapper#{class_suffix_from(position)}"}
     %div{:class => "secondary-content-section", :id => "related"}
       .secondary-content-section-content
-        - if topics_only
-          %h2.related-link
-            = link_to_related_items_of(item, 'Topic', :link_text => "#{t('topics.related_items.related_topics')} (#{@total_item_counts})")
-          = render("topics/related_items_section", :item => item, :zoom_class => 'Topic', :hide_headings => true)
-        - else
-          %h2.related-link
-            = link_to_related_items_of(item, 'Topic', :link_text => "#{t('topics.related_items.related_items')} (#{@total_item_counts})")
-          #detail-linked-toprow
-            = render("topics/related_items_section", :item => item, :zoom_class => 'StillImage')
-          - [['Topic', 'AudioRecording', 'Video'], ['Document', 'WebLink']].each do |item_set|
-            .two-col
-              - item_set.each do |item_type|
-                = render("topics/related_items_section", :item => item, :zoom_class => item_type)
-              %div{:style => "clear:both;"}
-          %div{:style => "clear:both;"}
+        %h2.related-link
+          = link_to_related_items_of(item, 'Topic', :link_text => "#{t('topics.related_items.related_topics')} (#{@related_items.count})")
+
+        %div{:id => "detail-linked-topics", :class => "related-items-section" }
+          %ul
+            - @related_item_topics.each do |related_item|
+              %li
+                = link_to related_item.title, topic_path(related_item)
+          
+        -# ROB: the old code let you print out related items for non-topics (which were devided into two sets):
+        -#        ['StillImage']
+        -#        ['Topic', 'AudioRecording', 'Video']
+        -#        ['Document', 'WebLink']
+        -#      We've removed this because it never seemed to be used.
+        -#      Most of this logic was in the _removed_ partials _related_items_section.html.haml
+
         = render('topics/related_items_tools', :item => item)
-        %div{:style => "clear:both;"}
+
     .secondary-content-section-footer-wrapper
       .secondary-content-section-footer &nbsp;

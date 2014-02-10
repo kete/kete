@@ -17,6 +17,9 @@ class ImagesController < ApplicationController
     @creator = @still_image.creator
     @last_contributor = @still_image.contributors.last || @creator
 
+    @related_items = @still_image.related_items
+    @related_item_topics = @related_items.select {|ri| ri.is_a? Topic}
+
     @view_size = params[:view_size] || "medium"
     @image_file = ImageFile.find_by_thumbnail_and_still_image_id(@view_size, params[:id])
 

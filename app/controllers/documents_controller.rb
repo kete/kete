@@ -14,6 +14,12 @@ class DocumentsController < ApplicationController
     @document = prepare_item_and_vars
     @comments = @document.non_pending_comments
 
+    @creator = @document.creator
+    @last_contributor = @document.contributors.last || @creator
+
+    @related_items = @document.related_items
+    @related_item_topics = @related_items.select {|ri| ri.is_a? Topic}
+
     respond_to do |format|
       format.html
       format.xml { render_oai_record_xml(:item => @document) }
