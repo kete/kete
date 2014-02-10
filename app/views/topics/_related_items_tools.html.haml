@@ -11,18 +11,24 @@
           %li.first
             = link_to(t('topics.related_items.create'), :controller => 'topics', :action => :new, :related_item_private => (params[:private] && params[:private] == 'true'), :elate_to_item => item, :relate_to_type => zoom_class)
 
-        = link_to_related_item_function(:link_text => t('topics.related_items.link_existing'), :function => 'add', :relate_to_item => item, :relate_to_type => zoom_class) 
+        
+        -# ROB: re-add this functions later
+        -#= link_to_related_item_function(:link_text => t('topics.related_items.link_existing'), :function => 'add', :relate_to_item => item, :relate_to_type => zoom_class) 
+        %li
+          = link_to(t('topics.related_items.link_existing'), not_implemented_path)
 
-        = link_to_related_item_function(:link_text => t('topics.related_items.remove'), :function => 'remove', :relate_to_item => item, :relate_to_type => zoom_class)
+        -# ROB: re-add this functions later
+        -#= link_to_related_item_function(:link_text => t('topics.related_items.remove'), :function => 'remove', :relate_to_item => item, :relate_to_type => zoom_class)
+        %li
+          = link_to(t('topics.related_items.remove'), not_implemented_path)
 
       - if params[:controller] == 'topics'
         - if @basket_moderator
           - cache({ :related => 'related-tools-restore', :id => @cache_id }) do
-            = link_to_related_item_function(:link_text => t('topics.related_items.restore'), :function => 'restore', |
-              :relate_to_item => item, :relate_to_type => zoom_class)                                                |
-        - if current_user_can_import_archive_sets?
-          - cache({ :related => 'related-tools-import', :id => @cache_id }) do
-            = link_to_add_set_of_related_items(:link_text => t('topics.related_items.import_set'), |
-              :relate_to_item => item, :relate_to_type => zoom_class)                              |
+            -# ROB: re-add this functions later
+            -#= link_to_related_item_function(:link_text => t('topics.related_items.restore'), :function => 'restore', |
+            -#  :relate_to_item => item, :relate_to_type => zoom_class)                                                |
+            %li
+              = link_to(t('topics.related_items.restore'), not_implemented_path)
 
   %div{:style => "clear:both;"}
