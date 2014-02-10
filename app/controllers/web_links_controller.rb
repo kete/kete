@@ -19,8 +19,7 @@ class WebLinksController < ApplicationController
     @creator = @web_link.creator
     @last_contributor = @web_link.contributors.last || @creator
 
-    @related_items = @web_link.related_items
-    @related_item_topics = @related_items.select {|ri| ri.is_a? Topic}
+    @related_item_topics = @web_link.related_items.select {|ri| ri.is_a? Topic}
 
     respond_to do |format|
       format.html

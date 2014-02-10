@@ -11,7 +11,7 @@
 
       = extras_after_title_headline
 
-      = render(:partial => "topics/related_items", :locals => { :item => @video, :position => 'inset' }) if @video.related_items_position == 'inset'
+      = render(:partial => "topics/related_items", :locals => { :item => @video, :related_items => @related_item_topics, :position => 'inset' }) if @video.related_items_position == 'inset'
 
       = render(:partial => "details", :locals => { :item => @video }) if show_attached_files_for?(@video)
 
@@ -22,12 +22,12 @@
       = render(:partial => "topics/extended_fields", :locals => { :item => @video, :embedded => true })
       %div{:style => "clear:both;"}
       = render(:partial => "topics/contributors" , :locals => { :item => @video }) if current_user_can_see_contributors?
-      = render(:partial => "topics/related_items", :locals => { :item => @video, :position => 'below' }) if @video.related_items_position == 'below'
+      = render(:partial => "topics/related_items", :locals => { :item => @video, :related_items => @related_item_topics, :position => 'below' }) if @video.related_items_position == 'below'
       = render(:partial => "topics/discussion" , :locals => { :item => @video }) if current_user_can_see_discussion?
 
   #secondary-content-wrapper
     = render(:partial => "topics/tags_div" , :locals => { :item => @video })
-    = render(:partial => "topics/related_items", :locals => { :item => @video, :position => 'sidebar' }) if @video.related_items_position == 'sidebar'
+    = render(:partial => "topics/related_items", :locals => { :item => @video, :related_items => @related_item_topics, :position => 'sidebar' }) if @video.related_items_position == 'sidebar'
     = render(:partial => "topics/extended_fields" , :locals => { :item => @video, :embedded => false })
     = display_search_sources_for(@video)
     = render(:partial => "topics/license" , :locals => { :item => @video })

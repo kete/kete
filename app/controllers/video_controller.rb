@@ -17,8 +17,7 @@ class VideoController < ApplicationController
     @creator = @video.creator
     @last_contributor = @video.contributors.last || @creator
 
-    @related_items = @video.related_items
-    @related_item_topics = @related_items.select {|ri| ri.is_a? Topic}
+    @related_item_topics = @video.related_items.select {|ri| ri.is_a? Topic}
 
     respond_to do |format|
       format.html

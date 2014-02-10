@@ -17,8 +17,7 @@ class DocumentsController < ApplicationController
     @creator = @document.creator
     @last_contributor = @document.contributors.last || @creator
 
-    @related_items = @document.related_items
-    @related_item_topics = @related_items.select {|ri| ri.is_a? Topic}
+    @related_item_topics = @document.related_items.select {|ri| ri.is_a? Topic}
 
     respond_to do |format|
       format.html

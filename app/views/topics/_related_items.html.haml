@@ -1,16 +1,16 @@
 -# ROB: This file has been heavily guted, to simplify it. Right now it only displays 
 -#      all related content.
 
-%div{ :id => "related_items", :class => related_items_class_from(position, @related_items.count), :style => related_items_styles_from(position, @related_items.count) }
+%div{ :id => "related_items", :class => related_items_class_from(position, related_items.count), :style => related_items_styles_from(position, related_items.count) }
   %div{:class => "secondary-content-section-wrapper#{class_suffix_from(position)}"}
     %div{:class => "secondary-content-section", :id => "related"}
       .secondary-content-section-content
         %h2.related-link
-          = link_to_related_items_of(item, 'Topic', :link_text => "#{t('topics.related_items.related_topics')} (#{@related_items.count})")
+          = link_to_related_items_of(item, 'Topic', :link_text => "#{t('topics.related_items.related_topics')} (#{related_items.count})")
 
         %div{:id => "detail-linked-topics", :class => "related-items-section" }
           %ul
-            - @related_item_topics.each do |related_item|
+            - related_items.each do |related_item|
               %li
                 = link_to related_item.title, topic_path(related_item)
           

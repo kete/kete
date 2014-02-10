@@ -10,7 +10,7 @@
         %h2= h(@still_image.title)
       = extras_after_title_headline
 
-      = render(:partial => "topics/related_items", :locals => { :item => @still_image, :position => 'inset' }) if @still_image.related_items_position == 'inset'
+      = render(:partial => "topics/related_items", :locals => { :item => @still_image, :related_items => @related_item_topics, :position => 'inset' }) if @still_image.related_items_position == 'inset'
 
       - if show_attached_files_for?(@still_image)
         = render(:partial => "details", :locals => { :item => @still_image })
@@ -30,13 +30,13 @@
       = render(:partial => "topics/extended_fields", :locals => { :item => @still_image, :embedded => true })
       %div{:style => "clear:both;"}
       = render(:partial => "topics/contributors" , :locals => { :item => @still_image }) if current_user_can_see_contributors?
-      = render(:partial => "topics/related_items", :locals => { :item => @still_image, :position => 'below' }) if @still_image.related_items_position == 'below'
+      = render(:partial => "topics/related_items", :locals => { :item => @still_image, :related_items => @related_item_topics, :position => 'below' }) if @still_image.related_items_position == 'below'
       = render(:partial => "topics/discussion" , :locals => { :item => @still_image }) if current_user_can_see_discussion?
 
 
   #secondary-content-wrapper
     = render(:partial => "topics/tags_div", :locals => { :item => @still_image })
-    = render(:partial => "topics/related_items", :locals => { :item => @still_image, :position => 'sidebar' }) if @still_image.related_items_position == 'sidebar'
+    = render(:partial => "topics/related_items", :locals => { :item => @still_image, :related_items => @related_item_topics, :position => 'sidebar' }) if @still_image.related_items_position == 'sidebar'
     = render(:partial => "topics/extended_fields", :locals => { :item => @still_image, :embedded => false })
     = render(:partial => "portrait_controls", :locals => { :item => @still_image })
     = display_search_sources_for(@still_image)

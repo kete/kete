@@ -11,6 +11,7 @@ class CommentsController < ApplicationController
 
   def show
     @comment = Comment.find(params[:id])
+    commented_item = @comment.commmentable
 
     if params[:format] == 'xml'
       @comment = @current_basket.comments.find(params[:id])
@@ -23,7 +24,8 @@ class CommentsController < ApplicationController
     end
 
     respond_to do |format|
-      format.html
+      #format.html { redirect_to(@comment.commmentable, {commenty: 'things'})  }
+      format.html { redirect_to(commented_item) }
       format.xml { render_oai_record_xml(:item => @comment) }
     end
   end

@@ -17,8 +17,7 @@ class AudioController < ApplicationController
     @creator = @audio_recording.creator
     @last_contributor = @audio_recording.contributors.last || @creator
 
-    @related_items = @audio_recording.related_items
-    @related_item_topics = @related_items.select {|ri| ri.is_a? Topic}
+    @related_item_topics = @audio_recording.related_items.select {|ri| ri.is_a? Topic}
 
     respond_to do |format|
       format.html
