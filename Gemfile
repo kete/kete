@@ -164,8 +164,7 @@ gem 'will_paginate', '~> 3.0.5'
 # RABID: should be removed:
 gem 'validates_xml',                '1.0.3' # >> 2007-06-06 
 
-# was [ :assets, :development ], but caused problems with Heroku:
-group :assets do
+group :assets, :development, :horowhenua do
   gem 'sass-rails'
   gem 'compass-rails'
 end
