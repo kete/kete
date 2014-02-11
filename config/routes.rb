@@ -27,27 +27,27 @@
 
   match '/oai_pmh_repository' => 'oai_pmh_repository#index', :as => :oai
 
-  # EOIN: rabid temp test route
+  # EOIN/ROB: rabid temp test and "feature not done" routes.
   get '/cruft/ping' => 'cruft#index'
   get '/cruft/not_implemented' => 'cruft#not_implemented', :as => :not_implemented
 
-  ####################################################
-  ### monitoring tools ###############################
-
-  # to make sure the rails process is answering
-  match 'uptime.txt' => 'index_page#uptime'
-  # to make sure that the db is answering
-  match 'db_uptime.txt' => 'index_page#db_uptime'
-  # to make sure that the zebra is answering
-  match 'zebra_uptime.txt' => 'index_page#zebra_uptime'
-  # to make sure that the backgroundrb is answering
-  match 'bdrb_uptime.txt' => 'index_page#bdrb_uptime'
-  # to make sure that registration is valid
-  match 'validate_kete_net_link.xml' => 'index_page#validate_kete_net_link'
-  # for search engines, ask them not to go to certain places
-  match 'robots.txt' => 'index_page#robots'
-  # for opensearch compatible clients
-  match 'opensearchdescription.xml' => 'index_page#opensearchdescription'
+  #####################################################
+  #### monitoring tools ###############################
+  #
+  ## to make sure the rails process is answering
+  #match 'uptime.txt' => 'index_page#uptime'
+  ## to make sure that the db is answering
+  #match 'db_uptime.txt' => 'index_page#db_uptime'
+  ## to make sure that the zebra is answering
+  #match 'zebra_uptime.txt' => 'index_page#zebra_uptime'
+  ## to make sure that the backgroundrb is answering
+  #match 'bdrb_uptime.txt' => 'index_page#bdrb_uptime'
+  ## to make sure that registration is valid
+  #match 'validate_kete_net_link.xml' => 'index_page#validate_kete_net_link'
+  ## for search engines, ask them not to go to certain places
+  #match 'robots.txt' => 'index_page#robots'
+  ## for opensearch compatible clients
+  #match 'opensearchdescription.xml' => 'index_page#opensearchdescription'
 
   ####################################################
   ####################################################
@@ -91,7 +91,7 @@
   get 'web_links/:id'        => 'web_links#show', as: 'web_link'
   get 'documents/:id'        => 'documents#show', as: 'document'
 
-  resource 'comments'
+  resources 'comments' 
 
   get 'topics/:id/history'      => 'topics#history', as: 'history_topic'
   get 'audio/:id/history'       => 'audio#history', as: 'history_audio_recording'

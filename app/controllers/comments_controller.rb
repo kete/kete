@@ -11,7 +11,6 @@ class CommentsController < ApplicationController
 
   def show
     @comment = Comment.find(params[:id])
-    commented_item = @comment.commmentable
 
     if params[:format] == 'xml'
       @comment = @current_basket.comments.find(params[:id])
@@ -25,7 +24,7 @@ class CommentsController < ApplicationController
 
     respond_to do |format|
       #format.html { redirect_to(@comment.commmentable, {commenty: 'things'})  }
-      format.html { redirect_to(commented_item) }
+      format.html { redirect_to(comment_inplace_url(@comment)) }
       format.xml { render_oai_record_xml(:item => @comment) }
     end
   end
@@ -170,4 +169,11 @@ class CommentsController < ApplicationController
       end
     end
 
+  def comment_inplace_url(comment)
+    # Link to the comment on the page it's displayed on.
+    commented_item = comment.commentable
+    inplace_comment_url = url_for(commented_item)
+
+    "#{inplace_comment_url}##{comment.to_anchor}"
+  end
 end
