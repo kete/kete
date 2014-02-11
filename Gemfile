@@ -164,6 +164,7 @@ gem 'will_paginate', '~> 3.0.5'
 # RABID: should be removed:
 gem 'validates_xml',                '1.0.3' # >> 2007-06-06 
 
+# This group-block should probably be here, but stops Heroku compiling.
 #group :assets, :development, :horowhenua do
   gem 'sass-rails', '~> 3.2.5'
   gem 'compass'
