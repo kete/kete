@@ -321,6 +321,11 @@ class SystemSetting
       [1]
     end
 
+    # ROB: this is actually a new one I've added.
+    def default_basket
+      'site'
+    end
+
     def no_public_version_title
       "no public version"
     end
