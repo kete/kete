@@ -6,9 +6,11 @@
       - @items[:public] = count_public_items_for(zoom_class)
       - @items[:private] = count_private_items_for(zoom_class)
       %li
-        = link_to zoom_class_plural_humanize(zoom_class), basket_all_url(location)
+        -#= link_to zoom_class_plural_humanize(zoom_class), basket_all_url(location)
+        = link_to zoom_class_plural_humanize(zoom_class), not_implemented_path()
         - links = Array.new
-        - links << link_to(content_type_count_for('public', zoom_class), basket_all_url(location)) if @items[:public] > 0
+        -#- links << link_to(content_type_count_for('public', zoom_class), basket_all_url(location)) if @items[:public] > 0
+        - links << link_to(content_type_count_for('public', zoom_class), not_implemented_path()) if @items[:public] > 0
         - if @items[:private] > 0
           - links << privacy_image + link_to(content_type_count_for('private', zoom_class),
           - basket_all_private_url(location.merge({:privacy_type => 'private'})))

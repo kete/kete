@@ -13,12 +13,16 @@
         - extended_fields_html = display_xml_attributes(@topic)
 
         - if !extended_fields_html.blank?
-          = render(:partial => "topics/secondary_wrapper_start", :locals => { :div_id => "detail-extended-box", :class_suffix => '-blue' })
-          #detail-extended
-            %h4#detail-extended-heading= h(@topic.title)
-            %br/
-            = extended_fields_html
-          %div{:style => "clear:both;"}
+          %div{:class => "secondary-content-section-wrapper-blue"}
+            %div{:class => "secondary-content-section", :id => "detail-extended-box"}
+              .secondary-content-section-content
+                #detail-extended
+                  %h4#detail-extended-heading= h(@topic.title)
+                  %br/
+                  = extended_fields_html
+                %div{:style => "clear:both;"}
+              .secondary-content-section-footer-wrapper
+                .secondary-content-section-footer &nbsp;
 
         .detail-tools
           - if !@url_to_full_topic.nil?
@@ -51,6 +55,7 @@
                   :index_for_basket => @current_basket.id,         |
                   :return_to_homepage => true                      |
             %div{:style => "clear:both;"}
+
       - if @recent_topics_limit > 0 && @recent_topics_items.size > 0 && !@current_basket.index_page_recent_topics_as.blank?
         .home-feature-wrapper
           %h3
@@ -68,73 +73,118 @@
 
   #secondary-content-wrapper
     - if @current_basket.index_page_basket_search
-      = render(:partial => "topics/secondary_wrapper_start",          |
-        :locals => { :div_id => "search-box", :class_suffix => nil }) |
-      #right-search-box
-        - @headline = t('.keyword_search')
-        - @headline += (' ' + @title) if @current_basket != @site_basket
-        = render 'search/search_field', :title => @headline
-      %div{:style => "clear:both;"}
+      %div{:class => "secondary-content-section-wrapper"}
+        %div{:class => "secondary-content-section", :id => "search-box"}
+          .secondary-content-section-content
+            #right-search-box
+              - @headline = t('.keyword_search')
+              - @headline += (' ' + @title) if @current_basket != @site_basket
+              = render 'search/search_field', :title => @headline
+            %div{:style => "clear:both;"}
+          .secondary-content-section-footer-wrapper
+            .secondary-content-section-footer &nbsp;
+
     - if @current_basket.allows_contact_with_inheritance?
-      = render(:partial => "topics/secondary_wrapper_start",              |
-        :locals => { :div_id => "basket-contact", :class_suffix => nil }) |
-      %ul
-        %li= link_to_basket_contact_for(@current_basket)
-      %div{:style => "clear:both;"}
+      %div{:class => "secondary-content-section-wrapper"}
+        %div{:class => "secondary-content-section", :id => "basket-contact"}
+          .secondary-content-section-content
+            %ul
+              %li= link_to_basket_contact_for(@current_basket)
+            %div{:style => "clear:both;"}
+          .secondary-content-section-footer-wrapper
+            .secondary-content-section-footer &nbsp;
+
     - links = link_to_membership_request_of(@current_basket)
     - links += link_to_members_of(@current_basket)
     - unless links.blank?
-      = render(:partial => "topics/secondary_wrapper_start",              |
-        :locals => { :div_id => "basket-options", :class_suffix => nil }) |
-      %ul= links
-      %div{:style => "clear:both;"}
+      %div{:class => "secondary-content-section-wrapper"}
+        %div{:class => "secondary-content-section", :id => "basket-options"}
+          .secondary-content-section-content
+            %ul
+            %ul= links
+            %div{:style => "clear:both;"}
+          .secondary-content-section-footer-wrapper
+            .secondary-content-section-footer &nbsp;
+
     - if !@current_basket.index_page_extra_side_bar_html.blank?
-      = render(:partial => "topics/secondary_wrapper_start",              |
-        :locals => { :div_id => "homepage-extra", :class_suffix => nil }) |
-      = @current_basket.index_page_extra_side_bar_html
-      %div{:style => "clear:both;"}
+      %div{:class => "secondary-content-section-wrapper#"}
+        %div{:class => "secondary-content-section", :id => "homepage-extra"}
+          .secondary-content-section-content
+            %ul
+            = @current_basket.index_page_extra_side_bar_html.html_safe
+            %div{:style => "clear:both;"}
+          .secondary-content-section-footer-wrapper
+            .secondary-content-section-footer &nbsp;
+
+
     - if !@current_basket.index_page_archives_as.blank? && @current_basket.index_page_archives_as == 'by type'
-      = render(:partial => "topics/secondary_wrapper_start",                |
-        :locals => { :div_id => "contents-by-type", :class_suffix => nil }) |
-      %h3= t '.contents_by_type'
-      %div{:style => "clear:both;"}
+      %div{:class => "secondary-content-section-wrapper"}
+        %div{:class => "secondary-content-section", :id => "contents-by-type"}
+          .secondary-content-section-content
+            %h3= t '.contents_by_type'
+            = render(:partial => 'archive_by_type')
+            %div{:style => "clear:both;"}
+          .secondary-content-section-footer-wrapper
+            .secondary-content-section-footer &nbsp;
+
     - if @current_basket.feeds.size > 0
-      = render(:partial => "topics/secondary_wrapper_start", :locals => { :div_id => "homepage-rss-feeds", :class_suffix => nil }) 
-      - @current_basket.feeds(true).each do |feed|
-        %h4= h feed.title
-        %ul
-          - feed.entries.each do |entry|
-            - begin
-              = content_tag("li", link_to(h(entry.title), h(entry.url)))
-            - rescue
-              - logger.info("ERROR: This feed entry is invalid. Probably because an error occurred in the deserialization of the feed.")
-              - logger.info("Check the source feed and make sure it is serializes/deserializes correctly.")
-      %div{:style => "clear:both;"}
+      %div{:class => "secondary-content-section-wrapper"}
+        %div{:class => "secondary-content-section", :id => "homepage-rss-feeds"}
+          .secondary-content-section-content
+            %ul
+            - @current_basket.feeds(true).each do |feed|
+              %h4= h feed.title
+              %ul
+                - feed.entries.each do |entry|
+                  - begin
+                    = content_tag("li", link_to(h(entry.title), h(entry.url)))
+                  - rescue
+                    - logger.info("ERROR: This feed entry is invalid. Probably because an error occurred in the deserialization of the feed.")
+                    - logger.info("Check the source feed and make sure it is serializes/deserializes correctly.")
+            %div{:style => "clear:both;"}
+          .secondary-content-section-footer-wrapper
+            .secondary-content-section-footer &nbsp;
+
     - if !@current_basket.index_page_image_as.blank? and !@selected_image_file.nil?
-      = render(:partial => "topics/secondary_wrapper_start",                  |
-        :locals => { :div_id => "selected-image-box", :class_suffix => nil }) |
-      #selected-image-headline
-        %h3
-          = t "basket_model.image_#{@current_basket.index_page_image_as}"
-          = t '.image_from_archive'
-      = slideshow_div
-      %div{:style => "clear:both;"}
+      %div{:class => "secondary-content-section-wrapper"}
+        %div{:class => "secondary-content-section", :id => "selected-image-box"}
+          .secondary-content-section-content
+            %ul
+            #selected-image-headline
+              %h3
+                = t "basket_model.image_#{@current_basket.index_page_image_as}"
+                = t '.image_from_archive'
+            = slideshow_div
+            %div{:style => "clear:both;"}
+          .secondary-content-section-footer-wrapper
+            .secondary-content-section-footer &nbsp;
+
     - if @current_basket.index_page_number_of_tags && @current_basket.index_page_number_of_tags > 0 && @tag_counts_array.size > 0
-      = render(:partial => "topics/secondary_wrapper_start", :locals => { :div_id => "tags-box", :class_suffix => nil }) 
-      - tag_counts = @tag_counts_total > @tag_counts_array.size ?  "( #{t('.show_x_of_x', :count => @tag_counts_array.size, :total => @tag_counts_total)} | " + link_to(t('.all_tags'), :controller => 'tags', :action => 'list') + " )" : ''
-      - if @current_basket.index_page_tags_as == 'tag cloud'
-        #tags-headline
-          %h3{:style => "display:inline;"}= t '.tags_title'
-          %span= tag_counts
-        = render :partial => 'tags/tags_by_tag_cloud', :locals => { :tags => @tag_counts_array }
-      - else
-        #tags-headline
-          %h3{:style => "display:inline;"}= t '.categories_title'
-          %span= tag_counts
-        = render :partial => 'tags/tags_by_categories', :locals => { :tags => @tag_counts_array }
-      %div{:style => "clear:both;"}
+      %div{:class => "secondary-content-section-wrapper"}
+        %div{:class => "secondary-content-section", :id => "tags-box"}
+          .secondary-content-section-content
+            %ul
+            - tag_counts = @tag_counts_total > @tag_counts_array.size ?  "( #{t('.show_x_of_x', :count => @tag_counts_array.size, :total => @tag_counts_total)} | " + link_to(t('.all_tags'), :controller => 'tags', :action => 'list') + " )" : ''
+            - if @current_basket.index_page_tags_as == 'tag cloud'
+              #tags-headline
+                %h3{:style => "display:inline;"}= t '.tags_title'
+                %span= tag_counts
+              = render :partial => 'tags/tags_by_tag_cloud', :locals => { :tags => @tag_counts_array }
+            - else
+              #tags-headline
+                %h3{:style => "display:inline;"}= t '.categories_title'
+                %span= tag_counts
+              = render :partial => 'tags/tags_by_categories', :locals => { :tags => @tag_counts_array }
+            %div{:style => "clear:both;"}
+          .secondary-content-section-footer-wrapper
+            .secondary-content-section-footer &nbsp;
 
     - unless @topic.nil? || @topic.license_metadata.nil?
-      = render(:partial => "topics/secondary_wrapper_start", :locals => { :div_id => "license-box", :class_suffix => nil })
-      .license= @topic.license_metadata.html_safe
-      %div{:style => "clear:both;"}
+      %div{:class => "secondary-content-section-wrapper"}
+        %div{:class => "secondary-content-section", :id => "license-box"}
+          .secondary-content-section-content
+            %ul
+            .license= @topic.license_metadata.html_safe
+            %div{:style => "clear:both;"}
+          .secondary-content-section-footer-wrapper
+            .secondary-content-section-footer &nbsp;
