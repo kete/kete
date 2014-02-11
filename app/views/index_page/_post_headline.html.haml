@@ -1,16 +1,15 @@
 - post_url = url_for(:urlified_name => post_headline.basket.urlified_name, :controller => 'topics', :action => 'show', :id => post_headline, :private => (post_headline.private?) ? 'true' : nil)
 - post_excerpt = !post_headline.short_summary.blank? ? strip_tags(post_headline.short_summary) : strip_tags(post_headline.description)
-= p local_assigns
-/ .generic-result-wrapper{:id => "item_#{post_headline.id}_wrapper"}
-/   - unless post_headline.first_related_image.blank?
-/     .image-result-thumb
-/       = related_image_link_for(post_headline.first_related_image)
-/   .generic-result-header
-/     %h4
-/       = privacy_image_for(post_headline)
-/       = link_to h(post_headline.title), post_url
-/   .generic-result-description
-/     = prepare_short_summary(post_excerpt, 20)
-/     .generic-result-more
-/       = link_to(t('index_page.post_headline.read_more'), post_url, { :title => t('index_page.post_headline.read_more_about', :post_title => post_headline.title) })
-/ .recent-topic-divider
+.generic-result-wrapper{:id => "item_#{post_headline.id}_wrapper"}
+  - unless post_headline.first_related_image.blank?
+    .image-result-thumb
+      = related_image_link_for(post_headline.first_related_image)
+  .generic-result-header
+    %h4
+      = privacy_image_for(post_headline)
+      = link_to h(post_headline.title), post_url
+  .generic-result-description
+    = prepare_short_summary(post_excerpt, 20).html_safe
+    .generic-result-more
+      = link_to(t('index_page.post_headline.read_more').html_safe, post_url, { :title => t('index_page.post_headline.read_more_about', :post_title => post_headline.title) })
+.recent-topic-divider
