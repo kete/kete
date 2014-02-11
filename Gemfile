@@ -166,6 +166,7 @@ gem 'validates_xml',                '1.0.3' # >> 2007-06-06
 
 group :assets, :development, :horowhenua do
   gem 'sass-rails'
+  gem 'compass'
   gem 'compass-rails'
 end
 
