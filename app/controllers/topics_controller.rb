@@ -15,6 +15,12 @@ class TopicsController < ApplicationController
     @topic = prepare_item_and_vars
     @comments = @topic.non_pending_comments
 
+    @creator = @topic.creator
+    @last_contributor = @topic.contributors.last || @creator
+
+    #@related_item_topics = @topic.related_items.select {|ri| ri.is_a? Topic}
+    @related_item_topics = []
+
     respond_to do |format|
       format.html
       format.xml { render_oai_record_xml(:item => @topic) }
