@@ -47,37 +47,45 @@ class Topic < ActiveRecord::Base
   has_many :child_content_item_relations, :class_name => "ContentItemRelation", :as => :related_item, :dependent => :delete_all
   has_many :parent_related_topics, :through => :child_content_item_relations, :source => :topic
 
-  # by using has_many :through associations we gain some bidirectional flexibility
-  # with our polymorphic join model
-  # basicaly specifically name the classes on the other side of the relationship here
-  # see http://blog.hasmanythrough.com/articles/2006/04/03/polymorphic-through
-  # ZOOM_CLASSES.each do |zoom_class|
-  #   if zoom_class == 'Topic'
-  #     # special case
-  #     # topics related to a topic
-  #     has_many :child_related_topics, :through => :content_item_relations,
-  #     :source => :child_related_topic,
-  #     :conditions => "content_item_relations.related_item_type = 'Topic'",
-  #     :include => :basket,
-  #     :order => 'position'
-  #   else
-  #     unless zoom_class == 'Comment'
-  #       has_many zoom_class.tableize.to_sym, :through => :content_item_relations,
-  #       :source => zoom_class.tableize.singularize.to_sym,
-  #       :conditions => ["content_item_relations.related_item_type = ?", zoom_class],
-  #       :include => :basket,
-  #       :order => 'position'
-  #     end
-  #   end
-  # end
   def child_topic_content_relations
     content_item_relations.where(related_item_type: 'Topic').order(:position)
   end
+
   def child_related_topics
     join_as_related_item = 'JOIN content_item_relations ON content_item_relations.related_item_id = topics.id'
-    Topic.joins(join_as_related_item).merge(child_topic_content_relations)
+    Topic.joins(join_as_related_item).merge(child_topic_content_relations).includes(:basket)
   end
 
+  # ZOOM_CLASSES:
+
+  # ROB: I'd rather do these assocations as has_many() but I can't get this assocation working:
+  #   has_many :audio_recording_relations, -> { where(related_item_type: "AudioRecording").order(:position) }, class_name: 'content_item_relations'
+  # It'll probably be fixed in a later Rails.
+
+  def still_images
+    still_image_content_relations = content_item_relations.where(related_item_type: "StillImage").order(:position)
+    StillImage.joins(:content_item_relations).merge(still_image_content_relations).includes(:basket)
+  end
+
+  def audio_recordings
+    audio_recording_content_relations = content_item_relations.where(related_item_type: "AudioRecording").order(:position)
+    AudioRecording.joins(:content_item_relations).merge(audio_recording_content_relations).includes(:basket)
+  end
+
+  def videos
+    video_content_relations = content_item_relations.where(related_item_type: "Video").order(:position)
+    Video.joins(:content_item_relations).merge(video_content_relations).includes(:basket)
+  end
+
+  def web_links
+    web_link_content_relations = content_item_relations.where(related_item_type: "WebLink").order(:position)
+    WebLink.joins(:content_item_relations).merge(web_link_content_relations).includes(:basket)
+  end
+
+  def documents
+    document_content_relations = content_item_relations.where(related_item_type: "Document").order(:position)
+    Document.joins(:content_item_relations).merge(document_content_relations).includes(:basket)
+  end
 
   # this allows us to turn on/off email notification per item
   attr_accessor :skip_email_notification
