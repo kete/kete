@@ -84,7 +84,7 @@ class Topic < ActiveRecord::Base
 
   def documents
     document_content_relations = content_item_relations.where(related_item_type: "Document").order(:position)
-    Document.joins(:content_item_relations).merge(document_content_relations).includes(:basket)
+    ::Document.joins(:content_item_relations).merge(document_content_relations).includes(:basket)
   end
 
   # this allows us to turn on/off email notification per item
