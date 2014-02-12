@@ -40,8 +40,7 @@ class Topic < ActiveRecord::Base
   include KeteCommentable
 
   # this is where we handled "related to"
-  has_many :content_item_relations,
-  :order => 'position', :dependent => :delete_all
+  has_many :content_item_relations, :order => 'position', :dependent => :delete_all
 
   # Content Item Relationships when the topic is on the related_item end
   # of the relationship, and another topic occupies topic_id.
@@ -71,6 +70,14 @@ class Topic < ActiveRecord::Base
   #     end
   #   end
   # end
+  def child_topic_content_relations
+    content_item_relations.where(related_item_type: 'Topic').order(:position)
+  end
+  def child_related_topics
+    join_as_related_item = 'JOIN content_item_relations ON content_item_relations.related_item_id = topics.id'
+    Topic.joins(join_as_related_item).merge(child_topic_content_relations)
+  end
+
 
   # this allows us to turn on/off email notification per item
   attr_accessor :skip_email_notification
