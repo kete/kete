@@ -331,7 +331,7 @@ class SystemSetting
     end
 
     def blank_title
-      "blank title"
+      "Pending Moderation"
     end
 
     def available_syntax_highlighters
