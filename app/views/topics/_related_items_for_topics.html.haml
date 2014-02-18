@@ -1,0 +1,94 @@
+#detail-linked-toprow
+
+  -#  ['StillImage']
+  #detail-linked-images.related-items-section
+    %h4
+      %a.small{:href => "/en/site/all/images/related_to/topic/196-levin-pottery-club"}
+        Images (13)
+        %img.expand_collapse_image{:alt => "Related_items_collapsed", :src => "/assets/related_items_expanded.gif"}/
+    %hr/
+
+    #related_still_image_container
+      %ul.results-list.images-list
+        %li.first
+          %a{:href => "http://horowhenua.kete.net.nz/site/images/show/16919-the-pizza-oven"}
+            %img{:alt => "The pizza oven. ", :height => "50", :src => "http://horowhenua.kete.net.nz/image_files/0000/0008/8227/The_pizza_oven_small_sq.JPG", :width => "50"}/
+        %li
+          %a{:href => "http://horowhenua.kete.net.nz/site/images/show/16922-building-the-raku-kiln"}
+            %img{:alt => "Building the raku kiln. ", :height => "50", :src => "http://horowhenua.kete.net.nz/image_files/0000/0008/8242/Building_the_raku_kiln_small_sq.JPG", :width => "50"}/
+        %li
+          %a{:href => "http://horowhenua.kete.net.nz/site/images/show/16924-raku-kiln-2"}
+            %img{:alt => "Raku kiln 2. ", :height => "50", :src => "http://horowhenua.kete.net.nz/image_files/0000/0008/8252/raku_kiln_2_small_sq.JPG", :width => "50"}/
+        %li
+          %a{:href => "http://horowhenua.kete.net.nz/site/images/show/16923-raku-kiln-1"}
+            %img{:alt => "Raku kiln 1. ", :height => "50", :src => "http://horowhenua.kete.net.nz/image_files/0000/0008/8247/raku_kiln_1_small_sq.JPG", :width => "50"}/
+        %li
+          %a{:href => "http://horowhenua.kete.net.nz/site/images/show/16925-raku-kiln-3"}
+            %img{:alt => "raku kiln 3. ", :height => "50", :src => "http://horowhenua.kete.net.nz/image_files/0000/0008/8257/raku_kiln_3_small_sq.JPG", :width => "50"}/
+        %li.more
+          %a.small{:href => "/en/site/all/images/related_to/topic/196-levin-pottery-club"} 4 more like this &gt;&gt;
+    #related_items_slideshow.slideshow_div
+    :javascript
+      //
+      new PeriodicalExecuter(function() {if (!$('selected-image-display') || $('selected-image-display-paused')) { return false; }; new Ajax.Updater('related_items_slideshow', '/en/site/topics/selected_image?topic_id=196', {asynchronous:true, evalScripts:true, method:'get', parameters:'authenticity_token=' + encodeURIComponent('Ps6IbOcjoFffSLYTQnToaM/KyNgMlGZwS/TVIRNVLzY=')})}, 15)
+      //
+    #related_items_slideshow_controls.slideshow_div
+      %p.buttons.one_button
+        %a#play_slideshow{:href => ""}
+          %img{:alt => "Play Slideshow. ", :src => "/assets/slideshow_play.gif?1323654851", :title => "Play Slideshow. "}/
+    :javascript
+      //
+      setupRelatedImagesSlideshowPlayButton('/en/site/topics/selected_image?topic_id=196');
+      //
+
+
+-#        ['Topic', 'AudioRecording', 'Video']
+.two-col
+  #detail-linked-topics.related-items-section
+    %h4
+      %a.small{:href => "/en/site/all/topics/related_to/topic/196-levin-pottery-club"}
+        Topics (4)
+        %img.expand_collapse_image{:alt => "Related_items_collapsed", :src => "/assets/related_items_expanded.gif"}/
+    %hr/
+    %ul
+      %li.first
+        %a{:href => "http://horowhenua.kete.net.nz/site/topics/show/2430-yolanda-watson"} Yolanda Watson
+      %li
+        %a{:href => "http://horowhenua.kete.net.nz/site/topics/show/2431-rosalie-blake"} Rosalie Blake
+      %li
+        %a{:href => "http://horowhenua.kete.net.nz/site/topics/show/1826-mini-exhibition-november-2007"} Mini-Exhibition November 2007
+      %li
+        %a{:href => "http://horowhenua.kete.net.nz/site/topics/show/1827-levin-pottery-club-rules"} Levin Pottery Club rules
+
+
+  #detail-linked-audio.no-items
+    %h4
+      %a.small{:href => "/en/site/all/audio/related_to/topic/196-levin-pottery-club"}
+        Audio (0)
+        %img.expand_collapse_image{:alt => "Related_items_collapsed", :src => "/assets/related_items_collapsed.gif?1323654851"}/
+    %hr/
+
+  #detail-linked-video.no-items
+    %h4
+      %a.small{:href => "/en/site/all/video/related_to/topic/196-levin-pottery-club"}
+        Video (0)
+        %img.expand_collapse_image{:alt => "Related_items_collapsed", :src => "/assets/related_items_collapsed.gif?1323654851"}/
+    %hr/
+  %div{:style => "clear:both;"}
+
+-#        ['Document', 'WebLink']
+.two-col
+
+  #detail-linked-documents.no-items
+    %h4
+      %a.small{:href => "/en/site/all/documents/related_to/topic/196-levin-pottery-club"}
+        Documents (0)
+        %img.expand_collapse_image{:alt => "Related_items_collapsed", :src => "/assets/related_items_collapsed.gif?1323654851"}/
+    %hr/
+
+  #detail-linked-web_links.no-items
+    %h4
+      %a.small{:href => "/en/site/all/web_links/related_to/topic/196-levin-pottery-club"}
+        Web links (0)
+        %img.expand_collapse_image{:alt => "Related_items_collapsed", :src => "/assets/related_items_collapsed.gif?1323654851"}/
+    %hr/
