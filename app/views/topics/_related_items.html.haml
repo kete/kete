@@ -8,12 +8,12 @@
         -if item.is_a? Topic
           %h2.related-link
             = link_to_related_items_of(item, 'Topic', :link_text => "#{t('topics.related_items.related_items')} (#{related_items.count})")
-          = render 'topics/related_items_for_topics'
+          = render 'topics/related_items_for_topics', { :related_items => related_items }
 
         -else 
           %h2.related-link
             = link_to_related_items_of(item, 'Topic', :link_text => "#{t('topics.related_items.related_topics')} (#{related_items.count})")
-          = render 'topics/related_items_for_content_items'
+          = render 'topics/related_items_for_content_items', { :related_items => related_items }
 
 
         %div(style="clear:both;")
