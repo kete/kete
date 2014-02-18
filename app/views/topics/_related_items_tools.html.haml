@@ -6,7 +6,7 @@
         - if zoom_class == 'Topic'
           = header_add_links(:link_text => t('topics.related_items.create'), :class => 'first', |
             :related_item_private => (params[:private] && params[:private] == 'true'),          |
-            :relate_to_item => item, :relate_to_type => zoom_class)                             |
+            :relate_to_item => item, :relate_to_type => zoom_class).html_safe                   |
         - else
           %li.first
             = link_to(t('topics.related_items.create'), :controller => 'topics', :action => :new, :related_item_private => (params[:private] && params[:private] == 'true'), :elate_to_item => item, :relate_to_type => zoom_class)

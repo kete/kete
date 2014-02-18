@@ -119,10 +119,10 @@ function setupRelatedCollapsableSections() {
   // For each related items section, hide it, and add an hover event
   $$('.related-items-section').each(function(section) {
     $(section).down('a').observe('click', function(event) {
-      if ($(section).down('img.expand_collapse_image').src.match('/images/related_items_expanded.gif')) {
-        $(section).down('img.expand_collapse_image').src = '/images/related_items_collapsed.gif';
+      if ($(section).down('img.expand_collapse_image').src.match(image_path('related_items_expanded.gif'))) {
+        $(section).down('img.expand_collapse_image').src = image_path('related_items_collapsed.gif');
       } else {
-        $(section).down('img.expand_collapse_image').src = '/images/related_items_expanded.gif';
+        $(section).down('img.expand_collapse_image').src = image_path('related_items_expanded.gif');
       }
       $(section).down('ul').toggle();
       if ($(section).id == 'detail-linked-images') {
@@ -136,14 +136,14 @@ function setupRelatedCollapsableSections() {
   });
   // Show the contents of the first section in the related items inset
   if ($$('.related-items-section')[0]) {
-    $$('.related-items-section')[0].down('img.expand_collapse_image').src = '/images/related_items_expanded.gif';
+    $$('.related-items-section')[0].down('img.expand_collapse_image').src = image_path('related_items_expanded.gif');
     $$('.related-items-section')[0].down('ul').show();
   }
 }
 
 function hideAllRelatedSections() {
   $$('.related-items-section').each(function(section) {
-    $(section).down('img.expand_collapse_image').src = '/images/related_items_collapsed.gif';
+    $(section).down('img.expand_collapse_image').src = image_path('related_items_collapsed.gif');
     $(section).down('ul').hide();
   });
 }
@@ -174,15 +174,15 @@ function setupRelatedImagesSlideshowStopButton() {
 
 function setupRelatedImagesSlideshowPauseButton() {
   if ($('selected-image-display-paused')) {
-    $('play_pause_slideshow').down('img').src = '/images/slideshow_play.gif';
+    $('play_pause_slideshow').down('img').src = image_path('slideshow_play.gif');
   }
   $('play_pause_slideshow').observe('click', function(event) {
     if ($('selected-image-display-paused')) {
       $('selected-image-display-paused').remove();
-      $('play_pause_slideshow').down('img').src = '/images/slideshow_pause.gif';
+      $('play_pause_slideshow').down('img').src = image_path('slideshow_pause.gif');
     } else {
       $('body-outer-wrapper').insert("<div id='selected-image-display-paused'></div>");
-      $('play_pause_slideshow').down('img').src = '/images/slideshow_play.gif';
+      $('play_pause_slideshow').down('img').src = asset_path('slideshow_play.gif');
     }
     event.stop();
   });
