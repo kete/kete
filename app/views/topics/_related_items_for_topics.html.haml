@@ -1,9 +1,11 @@
 #detail-linked-toprow
 
   - related_still_images = related_items.select {|related_item| related_item.is_a? StillImage }
-  - last_five_related_still_images = related_still_images[-5..-1]
+  - last_five_related_still_images = related_still_images.last(5).reverse
 
-  #detail-linked-images.related-items-section
+  - view_class= "related-items-section"
+  - view_class= "no-items" if related_still_images.empty?
+  #detail-linked-images{:class => view_class}
     %h4
       %a.small{:href => not_implemented_path}
         = "Images (#{related_still_images.count})"
@@ -14,14 +16,14 @@
       %ul.results-list.images-list
         - last_five_related_still_images.each do |related_item|
           - small_sq_image_file = related_item.image_files.where(thumbnail: 'small_sq').first
-
           %li
             %a{:href => url_for(related_item)}
-              /%img{:alt => related_item.title, :src => "http://horowhenua.kete.net.nz/image_files/0000/0008/8227/The_pizza_oven_small_sq.JPG", :width => "50", :height => "50" }/
               %img{:alt => related_item.title, :src => small_sq_image_file.public_filename, :size => small_sq_image_file.image_size }/
-              /image_tag image_file.public_filename, :size => image_file.image_size, :alt => "#{still_image.title}. "
-        %li.more
-          %a.small{:href => not_implemented_path} 4 more like this &gt;&gt;
+
+        - if  related_still_images.count > 5
+          - overflow = related_still_images.count - 5
+          %li.more
+            %a.small{:href => not_implemented_path}=  "#{overflow} more like this &gt;&gt;".html_safe
 
     #related_items_slideshow.slideshow_div
     :javascript
@@ -29,17 +31,20 @@
 
     #related_items_slideshow_controls.slideshow_div
       %p.buttons.one_button
-        %a#play_slideshow{:href => ""}
+        %a#play_slideshow{:href => not_implemented_path}
           %img{:alt => "Play Slideshow. ", :src => "/assets/slideshow_play.gif?1323654851", :title => "Play Slideshow. "}/
-    :javascript
-      setupRelatedImagesSlideshowPlayButton('/en/site/topics/selected_image?topic_id=196');
+    /:javascript
+    /  setupRelatedImagesSlideshowPlayButton('/en/site/topics/selected_image?topic_id=196');
 
 
 .two-col
   
   - related_topics = related_items.select {|related_item| related_item.is_a? Topic }
+  - last_five_related_topics = related_topics.last(5).reverse
 
-  #detail-linked-topics{:class => "related-items-section" }
+  - view_class= "related-items-section"
+  - view_class= "no-items" if related_topics.empty?
+  #detail-linked-topics{:class => view_class}
     %h4
       %a.small{:href => not_implemented_path}
         = "Topics (#{related_topics.count})"
@@ -47,50 +52,112 @@
     %hr/
 
     %ul
-      - related_topics.each do |related_item|
+      - last_five_related_topics.each do |related_item|
         %li
           %a{:href => url_for(related_item)}
             = related_item.title
 
+      - if  related_topics.count > 5
+        - overflow = related_topics.count - 5
+        %li.more
+          %a.small{:href => not_implemented_path}=  "#{overflow} more like this &gt;&gt;".html_safe
+
 
   - related_audio_recordings = related_items.select {|related_item| related_item.is_a? AudioRecording }
+  - last_five_related_audio_recordings = related_audio_recordings.last(5).reverse
 
-  #detail-linked-audio.no-items
+  - view_class= "related-items-section"
+  - view_class= "no-items" if related_audio_recordings.empty?
+  #detail-linked-audio{:class => view_class}
     %h4
       %a.small{:href => not_implemented_path}
         = "Audio (#{related_audio_recordings.count})"
         %img.expand_collapse_image{:alt => "Related_items_collapsed", :src => "/assets/related_items_collapsed.gif?1323654851"}/
     %hr/
 
+    %ul
+      - last_five_related_audio_recordings.each do |related_item|
+        %li
+          %a{:href => url_for(related_item)}
+            = related_item.title
 
-  - related_audio_recordings = related_items.select {|related_item| related_item.is_a? Video }
+      - if  related_audio_recordings.count > 5
+        - overflow = related_audio_recordings.count - 5
+        %li.more
+          %a.small{:href => not_implemented_path}=  "#{overflow} more like this &gt;&gt;".html_safe
 
-  #detail-linked-video.no-items
+
+  - related_video = related_items.select {|related_item| related_item.is_a? Video }
+  - last_five_related_video = related_video.last(5).reverse
+
+  - view_class= "related-items-section"
+  - view_class= "no-items" if related_video.empty?
+  #detail-linked-video{:class => view_class}
     %h4
       %a.small{:href => not_implemented_path}
-        = "Video (#{related_audio_recordings.count})"
+        = "Video (#{related_video.count})"
         %img.expand_collapse_image{:alt => "Related_items_collapsed", :src => "/assets/related_items_collapsed.gif?1323654851"}/
     %hr/
+
+    %ul
+      - last_five_related_video.each do |related_item|
+        %li
+          %a{:href => url_for(related_item)}
+            = related_item.title
+
+      - if  related_video.count > 5
+        - overflow = related_video.count - 5
+        %li.more
+          %a.small{:href => not_implemented_path}=  "#{overflow} more like this &gt;&gt;".html_safe
+
   %div{:style => "clear:both;"}
 
 
 .two-col
 
   - related_documents = related_items.select {|related_item| related_item.is_a? Document }
+  - last_five_related_documents = related_documents.last(5).reverse
   
-  #detail-linked-documents.no-items
+  - view_class= "related-items-section"
+  - view_class= "no-items" if related_documents.empty?    
+  #detail-linked-documents{:class => view_class}
     %h4
       %a.small{:href => not_implemented_path}
-        Documents (0)
+        = "Documents (#{related_documents.count})"
         %img.expand_collapse_image{:alt => "Related_items_collapsed", :src => "/assets/related_items_collapsed.gif?1323654851"}/
     %hr/
+    
+    %ul
+      - last_five_related_documents.each do |related_item|
+        %li
+          %a{:href => url_for(related_item)}
+            = related_item.title
+
+      - if  related_documents.count > 5
+        - overflow = related_documents.count - 5
+        %li.more
+          %a.small{:href => not_implemented_path}=  "#{overflow} more like this &gt;&gt;".html_safe
 
 
   - related_web_links = related_items.select {|related_item| related_item.is_a? WebLink }
+  - last_five_related_web_links = related_web_links.last(5).reverse
 
-  #detail-linked-web_links.no-items
+  - view_class= "related-items-section"
+  - view_class= "no-items" if related_web_links.empty?
+  #detail-linked-web_links{:class => view_class}
     %h4
       %a.small{:href => not_implemented_path}
-        Web links (0)
+        = "Web links (#{related_web_links.count})"
         %img.expand_collapse_image{:alt => "Related_items_collapsed", :src => "/assets/related_items_collapsed.gif?1323654851"}/
     %hr/
+
+    %ul
+      - last_five_related_web_links.each do |related_item|
+        %li
+          %a{:href => url_for(related_item)}
+            = related_item.title
+
+      - if  related_web_links.count > 5
+        - overflow = related_web_links.count - 5
+        %li.more
+          %a.small{:href => not_implemented_path}=  "#{overflow} more like this &gt;&gt;".html_safe
