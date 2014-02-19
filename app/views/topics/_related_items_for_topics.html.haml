@@ -14,13 +14,13 @@
 
 .two-col
 
-  = render 'topics/related_items_for_topics/topics', { :related_topics => related_topics }
-  = render 'topics/related_items_for_topics/audio_recordings', { :related_audio_recordings => related_audio_recordings }
-  = render 'topics/related_items_for_topics/videos', { :related_video => related_video }
-  
+  = render 'topics/related_items_for_topics/generic_items', { :related_items => related_topics, :item_type => "topics" }
+  = render 'topics/related_items_for_topics/generic_items', { :related_items => related_audio_recordings, :item_type => "audio" }
+  = render 'topics/related_items_for_topics/generic_items', { :related_items => related_video, :item_type => "video" }
+
   %div{:style => "clear:both;"}
 
 .two-col
 
-  = render 'topics/related_items_for_topics/documents', { :related_documents => related_documents }
-  = render 'topics/related_items_for_topics/web_links', { :related_web_links => related_web_links }
+  = render 'topics/related_items_for_topics/generic_items', { :related_items => related_documents, :item_type => "documents" }
+  = render 'topics/related_items_for_topics/generic_items', { :related_items => related_web_links, :item_type => "web_links" }
