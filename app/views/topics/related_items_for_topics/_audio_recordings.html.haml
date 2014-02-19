@@ -1,9 +1,9 @@
-- related_audio_recordings = related_items.select {|related_item| related_item.is_a? AudioRecording }
-- last_five_related_audio_recordings = related_audio_recordings.last(5).reverse
+-if related_audio_recordings.empty?
+  - visible_class = "no-items"
+-else
+  - visible_class = "related-items-section"
 
-- view_class= "related-items-section"
-- view_class= "no-items" if related_audio_recordings.empty?
-#detail-linked-audio{:class => view_class}
+#detail-linked-audio{:class => visible_class}
   %h4
     %a.small{:href => not_implemented_path}
       = "Audio (#{related_audio_recordings.count})"
@@ -11,6 +11,8 @@
   %hr/
 
   %ul
+    - last_five_related_audio_recordings = related_audio_recordings.last(5).reverse
+
     - last_five_related_audio_recordings.each do |related_item|
       %li
         %a{:href => url_for(related_item)}

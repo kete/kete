@@ -1,9 +1,9 @@
-- related_documents = related_items.select {|related_item| related_item.is_a? Document }
-- last_five_related_documents = related_documents.last(5).reverse
+-if related_documents.empty?
+  - visible_class = "no-items"
+-else
+  - visible_class = "related-items-section"
 
-- view_class= "related-items-section"
-- view_class= "no-items" if related_documents.empty?    
-#detail-linked-documents{:class => view_class}
+#detail-linked-documents{:class => visible_class}
   %h4
     %a.small{:href => not_implemented_path}
       = "Documents (#{related_documents.count})"
@@ -11,6 +11,8 @@
   %hr/
   
   %ul
+    - last_five_related_documents = related_documents.last(5).reverse
+
     - last_five_related_documents.each do |related_item|
       %li
         %a{:href => url_for(related_item)}

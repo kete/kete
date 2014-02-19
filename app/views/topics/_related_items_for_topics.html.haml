@@ -1,16 +1,26 @@
+- related_still_images =      related_items.select {|related_item| related_item.is_a? StillImage }
+
+- related_topics =            related_items.select {|related_item| related_item.is_a? Topic }
+- related_audio_recordings =  related_items.select {|related_item| related_item.is_a? AudioRecording }
+- related_video =             related_items.select {|related_item| related_item.is_a? Video }
+
+- related_documents =         related_items.select {|related_item| related_item.is_a? Document }
+- related_web_links =         related_items.select {|related_item| related_item.is_a? WebLink }
+
+
 #detail-linked-toprow
 
-  = render 'topics/related_items_for_topics/still_images', { :related_items => related_items }
+  = render 'topics/related_items_for_topics/still_images', { :related_still_images => related_still_images }
 
 .two-col
 
-  = render 'topics/related_items_for_topics/topics', { :related_items => related_items }
-  = render 'topics/related_items_for_topics/audio_recordings', { :related_items => related_items }
-  = render 'topics/related_items_for_topics/videos', { :related_items => related_items }
+  = render 'topics/related_items_for_topics/topics', { :related_topics => related_topics }
+  = render 'topics/related_items_for_topics/audio_recordings', { :related_audio_recordings => related_audio_recordings }
+  = render 'topics/related_items_for_topics/videos', { :related_video => related_video }
   
   %div{:style => "clear:both;"}
 
 .two-col
 
-  = render 'topics/related_items_for_topics/documents', { :related_items => related_items }
-  = render 'topics/related_items_for_topics/web_links', { :related_items => related_items }
+  = render 'topics/related_items_for_topics/documents', { :related_documents => related_documents }
+  = render 'topics/related_items_for_topics/web_links', { :related_web_links => related_web_links }

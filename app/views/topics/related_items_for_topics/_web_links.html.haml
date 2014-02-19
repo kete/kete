@@ -1,9 +1,9 @@
-- related_web_links = related_items.select {|related_item| related_item.is_a? WebLink }
-- last_five_related_web_links = related_web_links.last(5).reverse
+-if related_web_links.empty?
+  - visible_class = "no-items"
+-else
+  - visible_class = "related-items-section"
 
-- view_class= "related-items-section"
-- view_class= "no-items" if related_web_links.empty?
-#detail-linked-web_links{:class => view_class}
+#detail-linked-web_links{:class => visible_class}
   %h4
     %a.small{:href => not_implemented_path}
       = "Web links (#{related_web_links.count})"
@@ -11,6 +11,8 @@
   %hr/
 
   %ul
+    - last_five_related_web_links = related_web_links.last(5).reverse
+
     - last_five_related_web_links.each do |related_item|
       %li
         %a{:href => url_for(related_item)}
