@@ -2,4 +2,5 @@
   %ul
     - related_items.each do |related_item|
       %li
-        = link_to related_item.title, topic_path(related_item)
+        %a{:href => url_for(related_item)}
+          = related_item.title
