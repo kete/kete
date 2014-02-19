@@ -1,0 +1,35 @@
+- related_still_images = related_items.select {|related_item| related_item.is_a? StillImage }
+- last_five_related_still_images = related_still_images.last(5).reverse
+
+- view_class= "related-items-section"
+- view_class= "no-items" if related_still_images.empty?
+#detail-linked-images{:class => view_class}
+  %h4
+    %a.small{:href => not_implemented_path}
+      = "Images (#{related_still_images.count})"
+      %img.expand_collapse_image{:alt => "Related_items_collapsed", :src => "/assets/related_items_expanded.gif"}/
+  %hr/
+
+  #related_still_image_container
+    %ul.results-list.images-list
+      - last_five_related_still_images.each do |related_item|
+        - small_sq_image_file = related_item.image_files.where(thumbnail: 'small_sq').first
+        %li
+          %a{:href => url_for(related_item)}
+            %img{:alt => related_item.title, :src => small_sq_image_file.public_filename, :size => small_sq_image_file.image_size }/
+
+      - if  related_still_images.count > 5
+        - overflow = related_still_images.count - 5
+        %li.more
+          %a.small{:href => not_implemented_path}=  "#{overflow} more like this &gt;&gt;".html_safe
+
+  #related_items_slideshow.slideshow_div
+  :javascript
+    new PeriodicalExecuter(function() {if (!$('selected-image-display') || $('selected-image-display-paused')) { return false; }; new Ajax.Updater('related_items_slideshow', '/en/site/topics/selected_image?topic_id=196', {asynchronous:true, evalScripts:true, method:'get', parameters:'authenticity_token=' + encodeURIComponent('Ps6IbOcjoFffSLYTQnToaM/KyNgMlGZwS/TVIRNVLzY=')})}, 15)
+
+  #related_items_slideshow_controls.slideshow_div
+    %p.buttons.one_button
+      %a#play_slideshow{:href => not_implemented_path}
+        %img{:alt => "Play Slideshow. ", :src => "/assets/slideshow_play.gif?1323654851", :title => "Play Slideshow. "}/
+  /:javascript
+  /  setupRelatedImagesSlideshowPlayButton('/en/site/topics/selected_image?topic_id=196');

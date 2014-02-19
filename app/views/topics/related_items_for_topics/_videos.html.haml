@@ -1,0 +1,22 @@
+- related_video = related_items.select {|related_item| related_item.is_a? Video }
+- last_five_related_video = related_video.last(5).reverse
+
+- view_class= "related-items-section"
+- view_class= "no-items" if related_video.empty?
+#detail-linked-video{:class => view_class}
+  %h4
+    %a.small{:href => not_implemented_path}
+      = "Video (#{related_video.count})"
+      %img.expand_collapse_image{:alt => "Related_items_collapsed", :src => "/assets/related_items_collapsed.gif?1323654851"}/
+  %hr/
+
+  %ul
+    - last_five_related_video.each do |related_item|
+      %li
+        %a{:href => url_for(related_item)}
+          = related_item.title
+
+    - if  related_video.count > 5
+      - overflow = related_video.count - 5
+      %li.more
+        %a.small{:href => not_implemented_path}=  "#{overflow} more like this &gt;&gt;".html_safe

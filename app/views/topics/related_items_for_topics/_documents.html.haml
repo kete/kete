@@ -1,0 +1,22 @@
+- related_documents = related_items.select {|related_item| related_item.is_a? Document }
+- last_five_related_documents = related_documents.last(5).reverse
+
+- view_class= "related-items-section"
+- view_class= "no-items" if related_documents.empty?    
+#detail-linked-documents{:class => view_class}
+  %h4
+    %a.small{:href => not_implemented_path}
+      = "Documents (#{related_documents.count})"
+      %img.expand_collapse_image{:alt => "Related_items_collapsed", :src => "/assets/related_items_collapsed.gif?1323654851"}/
+  %hr/
+  
+  %ul
+    - last_five_related_documents.each do |related_item|
+      %li
+        %a{:href => url_for(related_item)}
+          = related_item.title
+
+    - if  related_documents.count > 5
+      - overflow = related_documents.count - 5
+      %li.more
+        %a.small{:href => not_implemented_path}=  "#{overflow} more like this &gt;&gt;".html_safe
