@@ -22,13 +22,13 @@
       .secondary-content-section-footer &nbsp;
 
 :javascript
-  $(document).ready(function(){
+  window.onload = function(){
     $(document).on('ajax:before', '#add_tag_form', function(){
       Element.show('data_spinner')
-    );
+    });
 
     $(document).on('ajax:complete', '#add_tag_form', function(){
       Element.hide('data_spinner')
-    );
-  });
+    });
+  };
 
