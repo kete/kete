@@ -1,6 +1,13 @@
 #detail-linked-topics{:class => "related-items-section" }
   %ul
-    - related_items.each do |related_item|
+    - last_five_related_items = related_items.last(5).reverse
+
+    - last_five_related_items.each do |related_item|
       %li
         %a{:href => url_for(related_item)}
           = related_item.title
+
+    - if  related_items.count > 5
+      - overflow = related_items.count - 5
+      %li.more
+        %a.small{:href => not_implemented_path}=  "#{overflow} more like this &gt;&gt;".html_safe
