@@ -32,3 +32,4 @@ zebradb/conf/kete-zebra-servers.xml
 zebradb/keteaccess
 selenium-rc-server.pid
 selenium-web-server.pid
+bin/*
