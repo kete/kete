@@ -20,18 +20,16 @@ set :path_to_apps, "/home/kete/apps"
 # Where on the server should this application reside?
 set :deploy_to, "#{path_to_apps}/#{application}"
 
-# If you aren't using Git to manage your source code
-# change :git to the prefered SCM system (:subversion)
-# Example
-# set :scm, :subversion
+# version control settings
 set :scm, :git
 set :branch, "master"
-set :scm_username, "username"
-set :scm_password, "password"
 
 # Which user/group on the server will be running the application?
 set :user, "kete"
 set :group, "kete"
+# use ssh agent and forwarding rather than password
+# see https://help.github.com/articles/using-ssh-agent-forwarding
+set :ssh_options, { :forward_agent => true }
 
 # Which server should we deploy to?
 role :app, "your app-server here"
@@ -43,16 +41,3 @@ set :config_files, []
 # keeps a checked out/cloned copy of the site on the deployed server so next time
 # it updates the codebase, instead of redownloading the whole app (faster this way)
 set :deploy_via, :remote_cache
-
-# Uncomment and configure the rest if you use Mongrel, otherwise, if you use Apache
-# these settings won't apply to you
-
-# ======================================================================
-# Mongrel Settings (assumes Linux distribution for config file location)
-# ======================================================================
-#set :mongrel_servers, 1
-#set :mongrel_port, 8000
-#set :mongrel_environment, 'production'
-#set :mongrel_address, '127.0.0.1'
-#set :mongrel_conf, "/etc/mongrel_cluster/#{application}.yml"
-
