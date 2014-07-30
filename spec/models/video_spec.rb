@@ -10,7 +10,7 @@ describe Video do
   it "can be validated" do
     expect( FactoryGirl.build(:validatable_video) ).to be_valid
     expect { FactoryGirl.create(:validatable_video) }.to raise_error
-  end 
+  end
 
   it "can be saved to the database with minimal data filled in" do
     expect( FactoryGirl.create(:saveable_video) ).to be_a(Video)
@@ -38,4 +38,4 @@ describe Video do
       end
     end
   end
-end 
+end
