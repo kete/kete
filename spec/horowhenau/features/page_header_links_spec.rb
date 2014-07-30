@@ -32,11 +32,16 @@ end
 
 
 feature "Links are not rendered as escaped html" do
-  it "for basket Trevor Heath Photography" do
+  it "for basket Trevor Heath Photography basket" do
     visit "/"
     click_link "Trevor Heath Photography"
     expect(page).not_to have_content('<li ')
-    expect(page).not_to have_content('\<a ')
+    expect(page).not_to have_content('<a ')
+  end
+
+  it "for home page" do
+    visit "/"
+    expect(page).not_to have_content('<a ')
   end
 end
 
