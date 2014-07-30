@@ -24,5 +24,5 @@ KeteApp::Application.configure do # Settings specified here will take precedence
   #}
 
   # Attachments (images/audio) link files on the local disk.
-  config.attachments_overide_url = nil
+  config.attachments_overide_url = 'http://horowhenua.kete.net.nz'
 end
