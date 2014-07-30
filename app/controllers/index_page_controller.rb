@@ -100,7 +100,7 @@ class IndexPageController < ApplicationController
                                       exclude_baskets_and_id(disabled_recent_topics_baskets, @topic)
               end
 
-              recent_topics_items = recent_topics_items.public unless @allow_private 
+              recent_topics_items = recent_topics_items.public unless @allow_private
 
               # Cycle through the 5 recent topics, and get the latest unflagged
               # version with the privacy that the current user is able to see
@@ -149,6 +149,9 @@ class IndexPageController < ApplicationController
         end
 
       end
+
+      # Don't bother with recent topics
+      @recent_topics_limit = 0
     end
   end
 
@@ -197,7 +200,7 @@ class IndexPageController < ApplicationController
   include BackgroundrbHelpers
   def bdrb_uptime
     raise "Backgroundrb not running!" unless backgroundrb_started?
-    render(:text => "success") 
+    render(:text => "success")
   end
 
   def validate_kete_net_link
