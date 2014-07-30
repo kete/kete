@@ -52,7 +52,6 @@ feature "Page header navigation Links" do
     expect(page.status_code).to be(200)
     expect(current_url).to end_with("/en/about")
     expect(page).to have_content("About Kete Horowhenua")
-    expect(page).not_to have_content("CONTENT_WRAPPER_END SHOULD BE REMOVED")
   end
 
   it "Help can be followed" do
@@ -61,8 +60,6 @@ feature "Page header navigation Links" do
     expect(page.status_code).to be(200)
     expect(current_url).to end_with("/en/help")
     expect(page).to have_content("IntroductionKete Horowhenua is a community built digital library of arts")
-    expect(page).not_to have_content("CONTENT_WRAPPER_END SHOULD BE REMOVED")
-
   end
 
   it "Contact opens an email" do
