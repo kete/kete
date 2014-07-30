@@ -27,12 +27,12 @@
         .detail-tools
           - if !@url_to_full_topic.nil?
             %ul
-              = li_with_correct_class(tool_count) + link_to(t('.continue_to_topic'), @url_to_full_topic)
+              = (li_with_correct_class(tool_count) + link_to(t('.continue_to_topic'), @url_to_full_topic) ).html_safe
             - tool_count += 1
           - if !@url_to_comments.nil?
             - if @comments && @comments.size > 0
               %ul
-                = li_with_correct_class(tool_count) + t('.view') + link_to( t('.comments', :count => @comments.size), @url_to_comments)
+                = (li_with_correct_class(tool_count) + t('.view') + link_to( t('.comments', :count => @comments.size), @url_to_comments)).html_safe
               - tool_count += 1
         - if logged_in? && (permitted_to_edit_basket_homepage_topic? || (@current_basket.show_privacy_controls_with_inheritance? && permitted_to_view_private_items?))
           #moderator-tools
