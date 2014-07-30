@@ -67,9 +67,9 @@ gem 'rmagick', "2.12.2", :require => 'RMagick'
 
 group :development, :test do
   gem "sqlite3", "~> 1.3.7"
-  gem "rspec-rails", "~> 2.14.0"
+  gem "rspec-rails", "~> 3.0.0"
   gem "factory_girl_rails", "~> 4.3.0"
-  gem "capybara"
+  gem "capybara", "~> 2.4.1"
   gem "database_cleaner"
   gem "pry-rails"
   gem "debugger", :platforms => [:mingw_19, :ruby_19]
