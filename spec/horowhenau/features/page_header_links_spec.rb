@@ -30,6 +30,16 @@ feature "Page Header Basket-Links" do
   end
 end
 
+
+feature "Links are not rendered as escaped html" do
+  it "for basket Trevor Heath Photography" do
+    visit "/"
+    click_link "Trevor Heath Photography"
+    expect(page).not_to have_content('<li ')
+    expect(page).not_to have_content('\<a ')
+  end
+end
+
 feature "Page header navigation Links" do
   it "Home can be followed" do
     visit "/"
