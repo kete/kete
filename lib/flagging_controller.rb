@@ -212,7 +212,13 @@ module FlaggingController
       # rather than getting them each iteration (which can result in 100's of queries)
 
       select = 'contributions.version, contributions.created_at as version_created_at, users.id, users.resolved_name, users.email, users.login'
-      @item_contributors = @item.contributors.all(:select => select, :order => 'contributions.version ASC', :group => 'contributions.version')
+
+      if @item.contributors.empty?
+        @item_contributors = []
+      else
+        @item_contributors = @item.contributors.all(:select => select, :order => 'contributions.version ASC', :group => 'contributions.version')
+      end
+
       @contributor_index = 0
 
       @item_taggings = Hash.new

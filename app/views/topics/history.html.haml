@@ -38,7 +38,7 @@
           - else
             - private_condition = (version.respond_to?(:private?) && version.private?)
           = private_condition ? "<strong>#{t('topics.history.private')}</strong>" : t('topics.history.public')
-        %td
+        %td.contributor
           - if version.version.nil? || version.version == 1
             - @item.creators.each do |creator|
               = link_to_contributions_of(creator, @item.class.name, :with_avatar => true)
