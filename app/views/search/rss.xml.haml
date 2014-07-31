@@ -9,7 +9,7 @@
       xml.channel {                                                                                                                                         |
         will_paginate_atom(@results, xml)                                                                                                                   |
         xml.title @title                                                                                                                                    |
-        xml.link (request.protocol + request.host + request.request_uri)                                                                                    |
+        xml.link (request.protocol + request.host + request.original_url)                                                                                    |
         xml.description t('search.rss.showing_x-y_of_z',                                                                                                    |
                           :start => @start,                                                                                                                 |
                           :end => @end_record,                                                                                                              |

@@ -12,4 +12,9 @@ feature "Page footer Links" do
     click_on 'Accessibility'
     expect(page).to have_text 'Accessibility features of this website'
   end
+  it "Site map link works" do
+    visit "/"
+    click_on 'Sitemap'
+    expect(page).to have_text 'Chinese Remembered'
+  end
 end

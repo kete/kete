@@ -13,9 +13,9 @@ module OaiDcHelpers
 
     def oai_dc_xml_request(xml, passed_request = nil)
       if !passed_request.nil?
-        request_uri = passed_request[:request_uri]
+        request_uri = passed_request[:original_url]
       else
-        request_uri = simulated_request[:request_uri]
+        request_uri = simulated_request[:original_url]
       end
 
       xml.request(request_uri, :verb => "GetRecord", :identifier => "#{ZoomDb.zoom_id_stub}#{basket_urlified_name}:#{self.class.name}:#{self.id}", :metadataPrefix => "oai_dc")
@@ -42,11 +42,11 @@ module OaiDcHelpers
 
         # we only need the last from normal content relations and child content relations
         # to compare, not all of each
-        if content_item_relations.count > 0 
+        if content_item_relations.count > 0
           all_relations << content_item_relations.last
         end
 
-        if child_content_item_relations.count > 0 
+        if child_content_item_relations.count > 0
           all_relations << child_content_item_relations.last
         end
 
@@ -147,7 +147,7 @@ module OaiDcHelpers
         }
       else
         # if description is blank, we should do all descriptions for this zoom_class
-        
+
         # topic/document specific
         # order is important, first description will be used as blurb
         # in result list
