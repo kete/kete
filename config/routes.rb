@@ -242,8 +242,8 @@
   match '/:type/:a/:b/:c/:filename.*formats' => 'private_files#show', :as => :private_file
 
   # Catch everything else
-  match ':urlified_name/:controller/:action/:id.:format' => '#index', :as => :basket_with_format
-  match ':urlified_name/:controller/:action/:id' => '#index', :as => :basket
+  match ':urlified_name/:controller/:action/:id.:format' => ':controller#:action', :as => :basket_with_format
+  match ':urlified_name/:controller/:action/:id'         => ':controller#:action', :as => :basket
 
 
   # Walter McGinnis, 2007-07-13
