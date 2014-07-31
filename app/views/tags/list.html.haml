@@ -1,14 +1,15 @@
 - if @type != 'categories'
-- @title = t('tags.list.title')
+  - @title = t('tags.list.title')
 - else
-- @title = @type.capitalize
-- end
+  - @title = @type.capitalize
+
 #content-tabs
   = render :partial => "tags/tag_order_buttons"
+
 = render :partial => "topics/content_wrapper_start"
 %h2
   = @title
-  %img#data_spinner{:alt => t 'tags.list.retrieving_tags', :height => "16", :src => "/images/indicator.gif", :style => "display:none;", :width => "16"}/
+  %img#data_spinner{:alt => t('tags.list.retrieving_tags'), :height => "16", :src => "/images/indicator.gif", :style => "display:none;", :width => "16"}
 #tags_list
   = render :partial => 'tags/tags_list', :locals => { :tags => @tags }
 

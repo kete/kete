@@ -278,7 +278,7 @@ module ApplicationHelper
     # RABID: ROB: ContentItem to search by default when a users browses a basket.
     # (is used in _main_nav view to generate URLs so needs to be upper case singular)
     "Topic"
-  end 
+  end
 
   # def header_browse_links
   #   html = '<li id="header_browse">'
@@ -894,7 +894,7 @@ module ApplicationHelper
     zoom_class = zoom_class || tag[:zoom_class]
     tag_for_url = !tag[:to_param].blank? ? tag[:to_param] : tag.to_param
     link_text = options[:link_text] || tag[:name]
-    
+
     # ROB: search by tag not implemented yet.
     link_to h(link_text), not_implemented_path()
     #link_to h(link_text),
@@ -1698,9 +1698,10 @@ module ApplicationHelper
     # create the link with text, current direction image (if needed), and pointing to opposite direction (if needed)
     if remote_link
       # create a remote to link
-      link_to_remote link_to_text, { :url => location_hash,
+      link_to link_to_text, { :url => location_hash,
                                      :before => "Element.show('data_spinner')",
                                      :complete => "Element.hide('data_spinner')" },
+                                      :remote => true,
                                    :href => url_for(location_hash)
     else
       # create a plain link
