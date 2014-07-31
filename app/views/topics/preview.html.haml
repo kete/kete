@@ -13,18 +13,17 @@
     - @flag_messages.each do |msg|
       %p= h(msg)
   %h2= "#{zoom_class_humanize(@item.class.name)}: #{h(@item.title)}"
-- # TODO: move class specific display into partials
-- # (shared by show template?)
-- # and call the appropriate one based on class
+  - # TODO: move class specific display into partials
+  - # (shared by show template?)
+  - # and call the appropriate one based on class
   - if @item.class.name == 'Topic'
     %h4
       = t 'topics.preview.topic_type'
       = h(@item.topic_type.name)
   %p
     %b= @item.short_summary if @item.can_have_short_summary?
-  = @item.description
-  - if ['AudioRecording', 'StillImage',
-  - 'Video', 'Document', 'WebLink'].include?(@item.class.name)
+  = @item.description.html_safe
+  - if ['AudioRecording', 'StillImage', 'Video', 'Document', 'WebLink'].include?(@item.class.name)
     = render(:partial => "#{zoom_class_controller(@item.class.name)}/details", :locals => { :item => @item })
   - if @item.class.name == 'StillImage'
     - image_file = ImageFile.find_by_thumbnail_and_still_image_id('medium', @item.id)
@@ -32,8 +31,10 @@
       :locals => { :still_image => @item,              |
       :image_file => image_file,                       |
       :without_controls => true }) if !image_file.nil? |
+
   - can_moderate = true if logged_in? and @at_least_a_moderator
   = render(:partial => "topics/preview_actions" , :locals => { :item => @item, :can_moderate => can_moderate })
+
   / /main-content-container
   / /main-content-wrapper
   #secondary-content-wrapper
