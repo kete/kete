@@ -192,7 +192,7 @@ class ApplicationController < ActionController::Base
     end
   end
 
-  # ROB:  item_from_controller_and_id() should probably be gotten-rid-of/clarrified along with 
+  # ROB:  item_from_controller_and_id() should probably be gotten-rid-of/clarrified along with
   #       prepare_item_and_vars(). #get_item
 
   # Walter McGinnis, 2008-09-29
@@ -334,7 +334,7 @@ class ApplicationController < ActionController::Base
 
         if params[:append_show_url].present? &&
             params[:append_show_url] == 'true'
-        
+
           service_target += url_for_dc_identifier(item).sub('://', '%3A%2F%2F').gsub('/', '%2F')
         end
         redirect_to service_target
@@ -647,7 +647,7 @@ class ApplicationController < ActionController::Base
     url += request.host_with_port
 
     # split everything before the query string and the query string
-    url_parts = request.request_uri.split('?')
+    url_parts = request.original_url.split('?')
 
     # now split the path up and add rss to it
     path_elements = url_parts[0].split('/')
@@ -708,7 +708,7 @@ class ApplicationController < ActionController::Base
   end
 
   cattr_accessor :add_ons_full_width_content_wrapper_controllers, :add_ons_content_wrapper_end_controllers
-  
+
   def self.add_ons_full_width_content_wrapper_controllers
     @@add_ons_full_width_content_wrapper_controllers || Array.new
   end
@@ -727,7 +727,7 @@ class ApplicationController < ActionController::Base
   def add_ons_content_wrapper_end_controllers
     self.class.add_ons_content_wrapper_end_controllers
   end
-  
+
   def render_full_width_content_wrapper?
     if @displaying_error
       return false
@@ -797,9 +797,9 @@ class ApplicationController < ActionController::Base
     url + append_operator + options
   end
 
-  # ROB: I would like to get-rid-of/clarrify prepare_item_and_vars(). It feels like it should 
+  # ROB: I would like to get-rid-of/clarrify prepare_item_and_vars(). It feels like it should
   #      be something simpler in a controller. #get_item
-  
+
   # setup a few variables that will be used on topic/audio/etc items
   def prepare_item_and_vars
     zoom_class = zoom_class_from_controller(params[:controller])
@@ -857,7 +857,7 @@ class ApplicationController < ActionController::Base
     render :template => "errors/#{template}", :layout => "application", :status => "500"
   end
 
-  # ROB:  current_item() should probably be gotten-rid-of/clarrified along with 
+  # ROB:  current_item() should probably be gotten-rid-of/clarrified along with
   #       prepare_item_and_vars(). #get_item
   def current_item
     @current_item ||= @audio_recording || @document || @still_image || @topic || @video || @web_link || nil
@@ -872,7 +872,7 @@ class ApplicationController < ActionController::Base
   def logout_anonymous
     if logged_in? &&
         current_user.anonymous?
-      
+
       session[:anonymous_user] = nil
 
       current_user.reload

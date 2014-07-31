@@ -3,7 +3,7 @@
       xml.channel {                                                                                     |
         xml.title t('members.rss.title', :site_name => SITE_NAME, :basket_name => @current_basket.name) |
         xml.description t('members.rss.description', :basket_name => @current_basket.name)              |
-        xml.link (request.protocol + request.host + request.request_uri)                                |
+        xml.link (request.protocol + request.host + request.original_url)                                |
         xml.language 'en-nz'                                                                            |
         for member in @members                                                                          |
           xml.item {                                                                                    |

@@ -30,7 +30,7 @@
   = stylesheet_link_tag 'application'
   = stylesheet_link_tag('left-hand-column') if show_basket_list_naviation_menu?
 
-  /[if IE] 
+  /[if IE]
     = stylesheet_link_tag 'kete-ie'
 
 
@@ -41,7 +41,7 @@
 
   = yield :add_on_scripts_and_links
 
-  = javascript_include_tag "application" 
+  = javascript_include_tag "application"
 
   = javascript_include_tag 'redbox'
   = javascript_include_tag 'kete'
@@ -77,10 +77,10 @@
   -### Feeds ###
   -#############
 
-  -# EOIN: this needs to be re-enabled when search is more understood:  
+  -# EOIN: this needs to be re-enabled when search is more understood:
   - combined_rss_url = nil
   -# combined_rss_url = basket_all_rss_url( :urlified_name => @site_basket.urlified_name, :controller_name_for_zoom_class => 'combined' )
   - rss_tag_autos.each do |rss_tag_auto|
-    = rss_tag_auto.sub("title=\"RSS\"", "title=\"RSS #{stripped_title}\"")
+    = rss_tag_auto.sub("title=\"RSS\"", "title=\"RSS #{stripped_title}\"").html_safe
 
-  %link{href: combined_rss_url, rel: "alternate", title: t('layouts.application.combined_rss'), type: "application/rss+xml"} 
+  %link{href: combined_rss_url, rel: "alternate", title: t('layouts.application.combined_rss'), type: "application/rss+xml"}
