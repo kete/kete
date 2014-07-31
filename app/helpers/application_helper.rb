@@ -608,10 +608,10 @@ module ApplicationHelper
     if options[:with_avatar]
       display_html = avatar_for(user, { :class => 'user_contribution_link_avatar' })
       display_html += h(user.user_name)
-      display_html += '<div class="clear"></div>'
     else
       display_html = h(user.user_name)
     end
+
 
     contributions_instead_of_website_for_anonymous = options[:show_anonymous_contribs].present? ? options[:show_anonymous_contribs] : false
 

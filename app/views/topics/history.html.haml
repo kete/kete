@@ -39,22 +39,14 @@
             - private_condition = (version.respond_to?(:private?) && version.private?)
           = private_condition ? "<strong>#{t('topics.history.private')}</strong>" : t('topics.history.public')
         %td
-          CONTRIBUTOR/S !!
-          /- begin
-          /  - if version.version.nil? || version.version == 1
-          /    - @item.creators.each do |creator|
-          /      = link_to_contributions_of(creator, @item.class.name, :with_avatar => true)
-          /  - else
-          /    - # reuse the same user objects so that avatars are cached
-          /    - contributor = (@users[@item_contributors[@contributor_index].id] ||= @item_contributors[@contributor_index])
-          /    = link_to_contributions_of(contributor, @item.class.name, :with_avatar => true) if @item_contributors.size > 0
-          /    - @contributor_index += 1
-          /- rescue => exception
-          /  - Rails.logger.info("history error: " + exception.message)
-          /  - # catch the ugly error message and display something nicer
-          /  - message = "It looks like there is no contributor associated with version #{version.version.to_s} of #{@item.class.name} #{@item.id}.\n"
-          /  - message += "Possible data corruption. You should consider running 'rake kete:repair:all'."
-          /  - raise message
+          - if version.version.nil? || version.version == 1
+            - @item.creators.each do |creator|
+              = link_to_contributions_of(creator, @item.class.name, :with_avatar => true)
+          - else
+            - contributor = @item_contributors[@contributor_index]
+            = link_to_contributions_of(contributor, @item.class.name, :with_avatar => true) if @item_contributors.size > 0
+            - @contributor_index += 1
+
         %td= kete_time_ago_in_words(version.updated_at)
         %td
           - if !version.version_comment.blank?
