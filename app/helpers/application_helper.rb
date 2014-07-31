@@ -889,12 +889,19 @@ module ApplicationHelper
   #
 
 
-  # tag related helpers
-  def link_to_tagged(tag, zoom_class = nil, basket = @site_basket, options = {})
-    zoom_class = zoom_class || tag[:zoom_class]
-    tag_for_url = !tag[:to_param].blank? ? tag[:to_param] : tag.to_param
+  # Tag helpers
+  # ###########
+  #
+
+  def link_to_tagged(tag, basket = @site_basket, options = {})
+    # tag = { name: ..., id: ... , to_param: ..., css_class: ... }
+
+    tag_for_url = tag[:to_param].blank? ? tag.to_param : tag[:to_param]
     link_text = options[:link_text] || tag[:name]
 
+    # EOIN: zoom_class used to be an arg but I removed it
+
+    # EOIN: TODO: waiting for tag search to be merged before I fix this.
     # ROB: search by tag not implemented yet.
     link_to h(link_text), not_implemented_path()
     #link_to h(link_text),

@@ -1,6 +1,0 @@
-tags
-doc/
-*.mysql
-*.psql
-*.pgsql
-public/assets
