@@ -86,9 +86,11 @@
             - if @tech_admin
               |
               = link_to_unless_current t('layouts.application.import'), { :controller => 'importers', :action => 'list' }, :tabindex => '2'
-            - if @current_basket != @site_basket
-              |
-              = link_to_unless_current t('layouts.application.delete'), { :controller => 'baskets', :action => 'destroy', :id => @current_basket, }, :confirm => t('layouts.application.delete_confirmation'), :method => 'post', :tabindex => '2'
+            -# --- This isn't shown on the screens, and I don't see why a logged out user
+            -# --- should have a link to remove baskets.
+            -#- if @current_basket != @site_basket
+            -#  |
+            -#  = link_to_unless_current t('layouts.application.delete'), { :controller => 'baskets', :action => 'destroy', :id => @current_basket, }, :confirm => t('layouts.application.delete_confirmation'), :method => 'post', :tabindex => '2'
 
         - if logged_in? && @site_admin && !@displaying_error
           #adminToolbox

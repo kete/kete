@@ -3,14 +3,14 @@ class SystemSetting
   module Defaults
     # RABID:
     #
-    # Defaults, mostly taken from the system_setting table on an existing 
+    # Defaults, mostly taken from the system_setting table on an existing
     # Kete2 system's database.
-    # 
+    #
     # we are unsure what the final use-case of these system settings will be so
     # we feel it is too early to do persistance for them. When it becomes
     # clearer, we can (if required) add the ability to load settings from
-    # YAML/DB/whatever. 
- 
+    # YAML/DB/whatever.
+
 
     def contact_email
       "kete@example.com"
@@ -23,7 +23,7 @@ class SystemSetting
     def flagging_tags
       ['inaccurate', 'duplicate', 'inappropriate', 'entered by mistake', 'has typos']
     end
-    
+
     def about_basket
       3
     end
@@ -51,11 +51,11 @@ class SystemSetting
     #def setup_sections
     #  ['Server', 'System', 'Accounts', 'Warnings', 'Flagging', 'Results Display', 'Related Items Display', 'Extended Fields']
     #end
-    
+
     #def documentation_basket
     #  4
     #end
-    
+
     def default_policy_is_full_moderation
       false
     end
@@ -185,7 +185,7 @@ class SystemSetting
     end
 
     def uses_basket_list_navigation_menu_on_every_page
-     false 
+     false
     end
 
     def enable_user_portraits
@@ -231,7 +231,7 @@ class SystemSetting
     def display_choices_field
       "menu"
     end
-      
+
     def search_select_current_basket
       false
     end
@@ -245,11 +245,11 @@ class SystemSetting
     end
 
     def contact_url
-      "mailto:eoin@rabidtech.co.nz"
+      "mailto:kete@library.org.nz"
     end
 
     def default_search_class
-      "" 
+      ""
     end
 
     def site_name
@@ -274,15 +274,15 @@ class SystemSetting
     end
 
     def is_configured
-      true 
+      true
     end
 
     def maximum_uploaded_file_size
-      50.megabyte 
+      50.megabyte
     end
 
-    def image_sizes 
-      {:small_sq => '50x50!', :small => '50', :medium => '200>', :large => '400>'} 
+    def image_sizes
+      {:small_sq => '50x50!', :small => '50', :medium => '200>', :large => '400>'}
     end
 
     def audio_content_types
@@ -381,7 +381,7 @@ class SystemSetting
     end
 
     def default_records_per_page
-      5 
+      5
     end
 
     def administrator_activates
@@ -416,14 +416,14 @@ class SystemSetting
       "Are you sure you want to proceed?"
     end
   end
-end 
+end
 
 
 class SystemSetting
   # EOIN:
   # This class manages system settings in Kete. Currently it is a bit of a mess
   # internally but we don't care as long as it provides a nice clean external
-  # interface for the rest of the app to use. 
+  # interface for the rest of the app to use.
 
   extend SystemSetting::Defaults
 
@@ -446,4 +446,4 @@ class SystemSetting
   def self.full_site_url
     "http://#{self.site_url}"
   end
-end 
+end
