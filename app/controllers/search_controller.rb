@@ -23,6 +23,10 @@ class SearchController < ApplicationController
   after_filter :store_results_for_slideshow, :only => [:for, :all]
 
   def for
+    if params[:advanced_search_terms].present?
+      params[:search_terms] += params[:advanced_search_terms]
+    end
+
     query = SearchQuery.new(params)
 
     if query.missing_search_terms?
@@ -34,7 +38,7 @@ class SearchController < ApplicationController
     relation = Searcher.new(query: query).run
     @scope = SearchPresenter.new(query: query, results: relation)
   end
-  
+
   def all
     query = SearchQuery.new(params)
     relation = Searcher.new(query: query).all
@@ -129,7 +133,7 @@ class SearchController < ApplicationController
     end
   end
 
-  # EOIN: does this method need to be public? 
+  # EOIN: does this method need to be public?
   def search
     @search = Search.new
 
