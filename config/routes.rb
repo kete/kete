@@ -57,7 +57,6 @@
   # Various RSS feeds not associated with search #####
 
   match ':urlified_name/baskets/rss.:format' => 'baskets#rss', :as => :basket_list_rss
-  match ':urlified_name/tags/rss.:format' => 'tags#rss', :as => :tags_list_rss
   match ':urlified_name/moderate/rss.:format' => 'moderate#rss', :as => :basket_moderate_rss
   match ':urlified_name/members/rss.:format' => 'members#rss', :as => :basket_moderate_rss
 
@@ -78,7 +77,18 @@
   match 'site/account/show_captcha' => 'account#show_captcha'
   match 'site/account/disclaimer/:id' => 'account#disclaimer'
   match 'topics/new' => 'topics#new'
-  match 'tags/list' => 'tags#list'
+
+
+
+  # TagsController
+  # ##############
+  #
+  get ':urlified_name/tags/list(.:format)' => 'tags#list'
+  get ':urlified_name/tags/show' => 'tags#show'
+  get ':urlified_name/tags/rss.:format' => 'tags#rss', as: :tags_list_rss
+  get ':urlified_name/tags/index' => 'tags#index'
+
+
 
   # TODO: In future these should be coalesced into the resources routing - we
   # are doing them individually because we don't want routes for actions that

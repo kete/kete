@@ -1,8 +1,7 @@
 #tag-cloud
   - tag_cloud tags, %w(tag_cloud1 tag_cloud2 tag_cloud3 tag_cloud4 tag_cloud5 tag_cloud6) do |id, name, css_class, to_param|
-    = link_to_tagged_in_basket({ :name => name, |
-        :id => id,                              |
-        :to_param => to_param,                  |
-        :zoom_class => 'Topic',                 |
-        :css_class => css_class },              |
-      nil, @current_basket)                     |
+    = link_to_tagged_in_basket({ name: name,
+                                 id: id,
+                                 to_param: to_param,
+                                 css_class: css_class },
+                               @current_basket)
