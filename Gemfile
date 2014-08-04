@@ -1,6 +1,11 @@
 source "https://rubygems.org"
 
+ruby '2.0.0'
+
 gem "rails", "3.2.16"
+
+# Heroku needs this
+gem 'rails_12factor', group: :production
 
 # EOIN: TODO: I suspect there are gems mentioned in here that rails pulls in implicitly - we should remove them from here if so.
 gem 'prototype-rails'
