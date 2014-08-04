@@ -22,7 +22,7 @@ class SearchQuery
     @action = params[:action]
 
     # the string that the user typed into the search box
-    @search_terms = (params[:search_terms] || "") + params[:advanced_search_terms]
+    @search_terms = "#{params[:search_terms]} #{params[:advanced_search_terms]}"
 
     # ?exactly what date in DB does this constrain?
     # ? wording in UI copy implies that user can enter a date and/or time here
@@ -60,7 +60,7 @@ class SearchQuery
   end
 
   def missing_search_terms?
-    @search_terms.nil?
+    @search_terms.blank?
   end
 
   def pagination_link_params
