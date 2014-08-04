@@ -11,10 +11,10 @@
     - if display_search_field_for?(type, SystemSetting.display_search_terms_field)
       %tr
         %td.header{colspan: "3"}
-          %label{for: "search_terms"}= t('search.mini_controls.search_terms')
+          %label{for: "advanced_search_terms"}= t('search.mini_controls.search_terms')
       %tr
         %td.fields{colspan: "3"}
-          = text_field_tag 'search_terms', (h(scope.search_terms.to_s) unless clear_values), size: 30, tabindex: '1'
+          = text_field_tag 'advanced_search_terms', (h(scope.search_terms.to_s) unless clear_values), size: 30, tabindex: '1'
     - if display_search_field_for?(type, SystemSetting.display_date_range_fields)
       %tr
         %td.header{colspan: "3"}
@@ -34,7 +34,7 @@
         %td.label= t('search.mini_controls.show')
         %td.fields{colspan: "2"}
           - options = scope.content_item_types.collect do |zoom_class|
-            - [zoom_class_plural_humanize(zoom_class), zoom_class_controller(zoom_class)]
+            - [zoom_class_plural_humanize(zoom_class), zoom_class]
 
           != select_tag('controller_name_for_zoom_class', options_for_select(options, scope.selected_content_item_type))
 

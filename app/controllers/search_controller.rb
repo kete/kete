@@ -34,7 +34,7 @@ class SearchController < ApplicationController
     relation = Searcher.new(query: query).run
     @scope = SearchPresenter.new(query: query, results: relation)
   end
-  
+
   def all
     query = SearchQuery.new(params)
     relation = Searcher.new(query: query).all
@@ -129,7 +129,7 @@ class SearchController < ApplicationController
     end
   end
 
-  # EOIN: does this method need to be public? 
+  # EOIN: does this method need to be public?
   def search
     @search = Search.new
 

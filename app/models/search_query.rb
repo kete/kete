@@ -2,11 +2,11 @@ class SearchQuery
 
   # Responsibilities
   # * encapsulate the user's question to us (their search)
-  # * be an opaque barrier between 
+  # * be an opaque barrier between
   #     1. HTML form & params hash
   #     2. rest of the system
 
-  attr_reader :search_terms, 
+  attr_reader :search_terms,
               :date_since,
               :date_until,
               # :privacy_type,
@@ -22,7 +22,7 @@ class SearchQuery
     @action = params[:action]
 
     # the string that the user typed into the search box
-    @search_terms = params[:search_terms] || ""
+    @search_terms = (params[:search_terms] || "") + params[:advanced_search_terms]
 
     # ?exactly what date in DB does this constrain?
     # ? wording in UI copy implies that user can enter a date and/or time here
@@ -63,7 +63,7 @@ class SearchQuery
     @search_terms.nil?
   end
 
-  def pagination_link_params 
+  def pagination_link_params
     to_hash
   end
 
