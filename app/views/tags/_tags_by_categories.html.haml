@@ -1,8 +1,7 @@
 #categories
   %ul
     - tags.each do |tag|
-      %li= link_to_tagged_in_basket({ :name => tag[:name] + " (#{tag[:total_taggings_count]})", |
-            :id => tag[:id],                                                                   |
-            :to_param => tag[:to_param],                                                       |
-            :zoom_class => 'Topic' },                                                          |
-          nil, @current_basket)                                                                |
+      %li= link_to_tagged_in_basket({ name: tag[:name] + " (#{tag[:total_taggings_count]})",
+                                      id: tag[:id],
+                                      to_param: tag[:to_param] },
+                                    @current_basket)

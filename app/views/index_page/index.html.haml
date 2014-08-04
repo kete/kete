@@ -164,7 +164,13 @@
         %div{:class => "secondary-content-section", :id => "tags-box"}
           .secondary-content-section-content
             %ul
-            - tag_counts = @tag_counts_total > @tag_counts_array.size ?  ("( #{t('.show_x_of_x', :count => @tag_counts_array.size, :total => @tag_counts_total)} | " + link_to(t('.all_tags'), :controller => 'tags', :action => 'list') + " )" ).html_safe : ''
+
+            - tag_counts = '' # default
+            - if @tag_counts_total > @tag_counts_array.size
+              - all_tags_path = link_to t('.all_tags'), { urlified_name: 'site', controller: 'tags', action: 'list' }
+              - tag_count_summary = t('.show_x_of_x', count: @tag_counts_array.size, total: @tag_counts_total)
+              - tag_counts = "( #{tag_count_summary} ) | #{all_tags_path}".html_safe
+
             - if @current_basket.index_page_tags_as == 'tag cloud'
               #tags-headline
                 %h3{:style => "display:inline;"}= t '.tags_title'

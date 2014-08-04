@@ -1,4 +1,5 @@
 class TagsController < ApplicationController
+
   def index
     redirect_to :action => 'list'
   end

@@ -2,7 +2,7 @@
 
   ####################################################
   ####################################################
-  # prepend locale to all routes 
+  # prepend locale to all routes
   # * see routing-filter gem for details
   # * it prepends the :locale to all routes e.g. /de/ping
 
@@ -55,9 +55,8 @@
 
   ####################################################
   # Various RSS feeds not associated with search #####
-  
+
   match ':urlified_name/baskets/rss.:format' => 'baskets#rss', :as => :basket_list_rss
-  match ':urlified_name/tags/rss.:format' => 'tags#rss', :as => :tags_list_rss
   match ':urlified_name/moderate/rss.:format' => 'moderate#rss', :as => :basket_moderate_rss
   match ':urlified_name/members/rss.:format' => 'members#rss', :as => :basket_moderate_rss
 
@@ -78,7 +77,18 @@
   match 'site/account/show_captcha' => 'account#show_captcha'
   match 'site/account/disclaimer/:id' => 'account#disclaimer'
   match 'topics/new' => 'topics#new'
-  match 'tags/list' => 'tags#list'
+
+
+
+  # TagsController
+  # ##############
+  #
+  get ':urlified_name/tags/list(.:format)' => 'tags#list'
+  get ':urlified_name/tags/show' => 'tags#show'
+  get ':urlified_name/tags/rss.:format' => 'tags#rss', as: :tags_list_rss
+  get ':urlified_name/tags/index' => 'tags#index'
+
+
 
   # TODO: In future these should be coalesced into the resources routing - we
   # are doing them individually because we don't want routes for actions that
@@ -91,7 +101,7 @@
   get 'web_links/:id'        => 'web_links#show', as: 'web_link'
   get 'documents/:id'        => 'documents#show', as: 'document'
 
-  resources 'comments' 
+  resources 'comments'
 
   get 'topics/:id/history'      => 'topics#history', as: 'history_topic'
   get 'audio/:id/history'       => 'audio#history', as: 'history_audio_recording'
@@ -147,7 +157,7 @@
 #   match ':urlified_name/all/:privacy_type/:controller_name_for_zoom_class/since/:date_since' => 'search#all', :as => :basket_all_private_date_since
 #   match ':urlified_name/all/:controller_name_for_zoom_class/since/:date_since/until/:date_until' => 'search#all', :as => :basket_all_date_since_and_until
 #   match ':urlified_name/all/:privacy_type/:controller_name_for_zoom_class/since/:date_since/until/:date_until' => 'search#all', :as => :basket_all_private_date_since_and_until
-# 
+#
 #   match ':urlified_name/all/:controller_name_for_zoom_class/rss.xml' => 'search#rss', :as => :basket_all_rss
 #   match ':urlified_name/all/:privacy_type/:controller_name_for_zoom_class/rss.xml' => 'search#rss', :as => :basket_all_private_rss
 #   match ':urlified_name/all/:controller_name_for_zoom_class/of/:topic_type/rss.xml' => 'search#rss', :as => :basket_all_topic_type_rss
@@ -184,7 +194,7 @@
 #   match ':urlified_name/search/:privacy_type/:controller_name_for_zoom_class/since/:date_since/for/:search_terms_slug/rss.xml' => 'search#rss', :as => :basket_search_private_date_since_rss
 #   match ':urlified_name/search/:controller_name_for_zoom_class/since/:date_since/until/:date_until/for/:search_terms_slug/rss.xml' => 'search#rss', :as => :basket_search_date_since_and_until_rss
 #   match ':urlified_name/search/:privacy_type/:controller_name_for_zoom_class/since/:date_since/until/:date_until/for/:search_terms_slug/rss.xml' => 'search#rss', :as => :basket_search_private_date_since_and_until_rss
-# 
+#
 #   match ':urlified_name/search/:controller_name_for_zoom_class/contributed_by/user/:contributor/for/:search_terms_slug' => 'search#for', :as => :basket_search_contributed_by
 #   match ':urlified_name/search/:privacy_type/:controller_name_for_zoom_class/contributed_by/user/:contributor/for/:search_terms_slug' => 'search#for', :as => :basket_search_private_contributed_by
 #   match ':urlified_name/search/:controller_name_for_zoom_class/related_to/:source_controller_singular/:source_item/for/:search_terms_slug' => 'search#for', :as => :basket_search_related_to
@@ -203,7 +213,7 @@
 #   match ':urlified_name/search/:privacy_type/:controller_name_for_zoom_class/since/:date_since/for/:search_terms_slug' => 'search#for', :as => :basket_search_private_date_since
 #   match ':urlified_name/search/:controller_name_for_zoom_class/since/:date_since/until/:date_until/for/:search_terms_slug' => 'search#for', :as => :basket_search_date_since_and_until
 #   match ':urlified_name/search/:privacy_type/:controller_name_for_zoom_class/since/:date_since/until/:date_until/for/:search_terms_slug' => 'search#for', :as => :basket_search_private_date_since_and_until
-# 
+#
 #   # There were duplicate routes (i.e. redundant) with a ":search_terms => nil" option,
 #   match ':urlified_name/search/:controller_name_for_zoom_class/contributed_by/user/:contributor/for/:search_terms_slug' => 'search#for', :as => :basket_search_contributed_by_empty, :search_terms => nil
 #   match ':urlified_name/search/:privacy_type/:controller_name_for_zoom_class/contributed_by/user/:contributor/for/:search_terms_slug' => 'search#for', :as => :basket_search_private_contributed_by_empty, :search_terms => nil
@@ -242,8 +252,8 @@
   match '/:type/:a/:b/:c/:filename.*formats' => 'private_files#show', :as => :private_file
 
   # Catch everything else
-  match ':urlified_name/:controller/:action/:id.:format' => '#index', :as => :basket_with_format
-  match ':urlified_name/:controller/:action/:id' => '#index', :as => :basket
+  match ':urlified_name/:controller/:action/:id.:format' => ':controller#:action', :as => :basket_with_format
+  match ':urlified_name/:controller/:action/:id'         => ':controller#:action', :as => :basket
 
 
   # Walter McGinnis, 2007-07-13
@@ -267,12 +277,10 @@
   #   root :to => 'configure#index', :urlified_name => 'site'
   # end
 
-  # EOIN: hard-code the site basket's urlified name to 'site'
-  site_urlified_name = 'site'
-  root :to => 'index_page#index', :urlified_name => site_urlified_name
+  root :to => 'index_page#index', :urlified_name => 'site'
 
-  # EOIN: this route matches everything and sends the browser to the #rescue_404 action in ApplicationController 
-  match '*path' => 'application#rescue_404' unless Rails.application.config.consider_all_requests_local
+  # If none of the above routes match, send the browser to application#rescue_404
+  match '*path' => 'application#rescue_404' unless Rails.env.development?
 end
 
 

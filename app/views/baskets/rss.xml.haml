@@ -3,7 +3,7 @@
       xml.channel {                                                                                 |
         xml.title t('baskets.rss.title', :site_name => SITE_NAME, :amount => @number_per_page.to_s) |
         xml.description t('baskets.rss.description')                                                |
-        xml.link (request.protocol + request.host + request.request_uri)                            |
+        xml.link (request.protocol + request.host + request.original_url)                            |
         xml.language 'en-nz'                                                                        |
         for basket in @baskets                                                                      |
           xml.item {                                                                                |

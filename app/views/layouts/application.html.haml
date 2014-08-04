@@ -1,8 +1,10 @@
 !!!
 %html{:lang => "en", :xmlns => "http://www.w3.org/1999/xhtml"}
-  - rss_tag_links = @rss_tag_link.blank? ? Array.new : @rss_tag_link.to_a
-  - rss_tag_autos = @rss_tag_auto.blank? ? Array.new : @rss_tag_auto.to_a
 
+  = stylesheet_link_tag 'http://fonts.googleapis.com/css?family=Open+Sans:400italic,700italic,400,700'
+
+  - rss_tag_links = @rss_tag_link.blank? ? Array.new : [@rss_tag_link]
+  - rss_tag_autos = @rss_tag_auto.blank? ? Array.new : [@rss_tag_auto]
   = render partial: "layouts/head", locals: { rss_tag_links: rss_tag_links, rss_tag_autos: rss_tag_autos }
 
   %body{:id => @current_basket.urlified_name}
@@ -63,9 +65,11 @@
         #linkToRSS.footer_div
           %ul
             - rss_tag_links.each do |rss_tag_link|
-              %li= link_for_rss(:link_html => rss_tag_link, :preface => t('layouts.application.rss'), :title => stripped_title)                 |
+              %li= link_for_rss(:link_html => rss_tag_link, :preface => t('layouts.application.rss'), :title => stripped_title).html_safe
 
-            %li= link_to(t('layouts.application.combined_rss'), combined_rss_url, :tabindex => '1')                              |
+            -# EOIN: this needs to be re-enabled when search is more understood:
+            - combined_rss_url = nil
+            %li= link_to(t('layouts.application.combined_rss'), combined_rss_url, :tabindex => '1')
 
         #footer.footer_div
           - if logged_in? && @basket_admin && !@displaying_error
@@ -138,10 +142,10 @@
               - accessibility_topic = @help_basket.topics.find_by_title('Accessibility')
               = content_tag('li',
                             link_to(t('layouts.application.accessibility'),
-                                    { :urlified_name => @help_basket.urlified_name, :controller => 'topics', :action => 'show', :id => accessibility_topic },
+                                    basket_path({ :urlified_name => @help_basket.urlified_name, :controller => 'topics', :action => 'show', :id => accessibility_topic }),
                                     { :accesskey => '0', :tabindex => '2' })) if accessibility_topic
               %li.last
-                = link_to t('layouts.application.sitemap'), { :urlified_name => @site_basket.urlified_name, :controller => 'baskets', :action => 'list' }
+                = link_to t('layouts.application.sitemap'), basket_path({ :urlified_name => @site_basket.urlified_name, :controller => 'baskets', :action => 'list', :id => '' })
 
           = render 'index_page/credits'
           = render 'account/locale_selection', :classes => ['footer'] if SystemSetting.language_choices_position == 'footer'

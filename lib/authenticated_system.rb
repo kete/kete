@@ -144,7 +144,7 @@ module AuthenticatedSystem
     #
     # We can return to this location by calling #redirect_back_or_default.
     def store_location
-      session[:return_to] = request.request_uri
+      session[:return_to] = request.original_url
     end
 
     # Strip the locale out of the URL

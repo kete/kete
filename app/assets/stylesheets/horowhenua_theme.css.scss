@@ -1,4 +1,4 @@
-/* --------- /themes/horowhenua/stylesheets/rounded_corners.css --------- */ 
+/* --------- /themes/horowhenua/stylesheets/rounded_corners.css --------- */
 .notabs #main-content-wrapper {
         background-image: url(image-path('content-tab-sel-lf.gif'));
         background-position: top left;
@@ -100,7 +100,7 @@
 .comment-wrapper .comment-wrapper-footer {
         background: transparent url(image-path('comment_btrt.gif')) no-repeat bottom right;
 }
-/* --------- /themes/horowhenua/stylesheets/general.css --------- */ 
+/* --------- /themes/horowhenua/stylesheets/general.css --------- */
 #body-outer-wrapper {
   width: 90%;
   margin: 0 auto;
@@ -129,7 +129,7 @@ a img {
 }
 #main-nav {
 	clear: left;
-	padding-top: 1em !important; 
+	padding-top: 1em !important;
 }
 
 a {
@@ -138,8 +138,8 @@ a {
 
 /* --- comments  -- */
 
-.comment-wrapper .comment-content a { 
-  color: #BF470A; 
+.comment-wrapper .comment-content a {
+  color: #BF470A;
 }
 
 .comment-wrapper{
@@ -152,7 +152,7 @@ a {
 .comment-wrapper h5 {
 	font-size: 1.2em;
 }
-/* --------- /themes/horowhenua/stylesheets/home_page.css --------- */ 
+/* --------- /themes/horowhenua/stylesheets/home_page.css --------- */
 /* --- HOMEPAGE --- */
 #home-right {
         background: #FFEEDD;
@@ -203,7 +203,7 @@ a {
 .home-feature-right img {
         padding: 0 10px 0 10px;
 }
-/* --------- /themes/horowhenua/stylesheets/header.css --------- */ 
+/* --------- /themes/horowhenua/stylesheets/header.css --------- */
 #header h1, #header ul{
         position: relative;
         z-index: 50;
@@ -212,7 +212,8 @@ a {
         position: relative;
         height: 125px;
         padding-top: 15px;
-        background: #ffeede url(image-path('themes/horowhenua/header_background.jpg')) top left no-repeat;
+        // background: #ffeede url(image-path('themes/horowhenua/header_background.jpg')) top left no-repeat;
+        background: #bada55;
         zindex: 100;
 }
 #header #description{
