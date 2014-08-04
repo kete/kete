@@ -208,15 +208,10 @@ module FlaggingController
         @current_private_version = @item.version
       end if @item.respond_to?(:private_version)
 
-      # lets do some queries here and store values in an array/hash for access later
-      # rather than getting them each iteration (which can result in 100's of queries)
-
-      select = 'contributions.version, contributions.created_at as version_created_at, users.id, users.resolved_name, users.email, users.login'
-
       if @item.contributors.empty?
         @item_contributors = []
       else
-        @item_contributors = @item.contributors.all(:select => select, :order => 'contributions.version ASC', :group => 'contributions.version')
+        @item_contributors = @item.contributors.all
       end
 
       @contributor_index = 0
