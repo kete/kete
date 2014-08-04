@@ -1,6 +1,6 @@
 # Kete 2.0 work in progress
 
-This branch is a partially complete modernisation of the Kete codebase 
+This branch is a partially complete modernisation of the Kete codebase
 
 * upgrade to Rails 3
 * move dependencies to gems that are currently being maintained.
@@ -8,8 +8,6 @@ This branch is a partially complete modernisation of the Kete codebase
 This work is not yet complete so this branch is not ready for production use.
 You can view existing content in the Kete but creating or editing content is not
 working yet.
-
-Take a look at kete2.herokuapp.com for a demo of the application
 
 ##Development Milestones
 
@@ -25,4 +23,4 @@ final milestone of this development phase
 
 # Credits
 
-Kete is Copyright (C) 2006-2012 Horowhenua Library Trust and Others under the GPL version 2 license.  See license.txt for details.  
+Kete is Copyright (C) 2006-2012 Horowhenua Library Trust and Others under the GPL version 2 license.  See license.txt for details.
