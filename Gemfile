@@ -17,7 +17,7 @@ gem "pg_search", "~> 0.7.2"
 gem 'acts_as_versioned', github: "jwhitehorn/acts_as_versioned"
 
 # RABID: the old plugin version of acts-as-taggable-on was 1.0.0
-gem "acts-as-taggable-on", "~> 2.4.1"
+gem 'acts-as-taggable-on', '~> 3.3.0'
 
 # # Somebody else upgraded attachment_fu for rails 3 so we didn't have to :-)
 gem 'pothoven-attachment_fu'

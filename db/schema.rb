@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20131210031623) do
+ActiveRecord::Schema.define(:version => 20140803220837) do
 
   create_table "audio_recording_versions", :force => true do |t|
     t.integer  "audio_recording_id"
@@ -514,10 +514,12 @@ ActiveRecord::Schema.define(:version => 20131210031623) do
   end
 
   add_index "taggings", ["basket_id"], :name => "taggings_basket_id_idx"
-  add_index "taggings", ["tag_id"], :name => "taggings_tag_id_idx"
+  add_index "taggings", ["tag_id", "taggable_id", "taggable_type", "context", "tagger_id", "tagger_type"], :name => "taggings_idx", :unique => true
+  add_index "taggings", ["taggable_id", "taggable_type", "context"], :name => "index_taggings_on_taggable_id_and_taggable_type_and_context"
 
   create_table "tags", :force => true do |t|
-    t.string "name", :limit => 510, :null => false
+    t.string  "name",           :limit => 510,                :null => false
+    t.integer "taggings_count",                :default => 0
   end
 
   create_table "topic_type_to_field_mappings", :force => true do |t|

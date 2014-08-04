@@ -16,7 +16,7 @@ feature "History" do
     expect(find('.history-table').find('.contributor', match: :first).text.length).to be > 0
   end
 
-  it "Topic history works" do
+  it "Image history works" do
     visit "/en/images/20237-the-levin-orchid-society-show-august-2012-0241" # an image
 
     click_on('History')
