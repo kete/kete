@@ -23,10 +23,6 @@ class SearchController < ApplicationController
   after_filter :store_results_for_slideshow, :only => [:for, :all]
 
   def for
-    if params[:advanced_search_terms].present?
-      params[:search_terms] += params[:advanced_search_terms]
-    end
-
     query = SearchQuery.new(params)
 
     if query.missing_search_terms?
