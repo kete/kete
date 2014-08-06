@@ -15,7 +15,8 @@ class SearchQuery
               :basket,
               :page,
               :controller,
-              :action
+              :action,
+              :tag
 
   def initialize(params)
     @controller = params[:controller]
@@ -57,6 +58,8 @@ class SearchQuery
     # * defaults to the first page
     # * params[:page] is set by the will_paginate gem
     @page = params[:page] || 1
+
+    @tag = params[:tag]
   end
 
   def missing_search_terms?
@@ -78,11 +81,15 @@ class SearchQuery
   private
 
   def to_hash
-    {
-      search_terms: search_terms,
+    hash = {
       target_basket: basket,
       controller_name_for_zoom_class: content_item_type
     }
+
+    hash[:tag] = tag if tag.present?
+    hash[:search_terms] = search_terms if search_terms.present?
+
+    hash
   end
 
   def default_content_item_type

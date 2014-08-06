@@ -5,7 +5,13 @@ class SearchResult
   attr_reader :model
 
   def initialize(model)
-    @model = model
+    if model.class == PgSearch::Document
+      # all/for searches
+      @model = model.searchable
+    else
+      # tagged/etc searches
+      @model = model
+    end
   end
 
   def id

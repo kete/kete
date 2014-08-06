@@ -127,9 +127,10 @@
   ####################################################
   # rails 3+ search routes ###########################
 
-  match 'site/search/for' => 'search#for', :as => 'search_for'
-  match 'site/search/all' => 'search#all', :as => 'search_all'
-  match 'site/search/rss' => 'search#rss', :as => 'search_rss'
+  match 'site/search/for'    => 'search#for',    :as => 'search_for'
+  match 'site/search/all'    => 'search#all',    :as => 'search_all'
+  match 'site/search/rss'    => 'search#rss',    :as => 'search_rss'
+  match 'site/search/tagged' => 'search#tagged', :as => 'search_tagged'
 
   # EOIN: I think we should change :urlified_name to :basket for all routes as it is clearer
 

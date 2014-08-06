@@ -5,7 +5,7 @@ class SearchPresenter
 
   private
 
-  attr_reader :params, :query, :search_relation
+  attr_reader :params, :query
 
   public
 
@@ -16,8 +16,8 @@ class SearchPresenter
       @query = SearchQuery.new(params)
     end
 
-    @search_relation = results # ActiveRecord::Relation
     @params = params
+    @results_by_class = results
   end
 
   def paginated_results
@@ -25,13 +25,13 @@ class SearchPresenter
   end
 
   def results
-    paginated_results_for(query.content_item_type).map do |pg_search_doc|
-      SearchResult.new(pg_search_doc.searchable)
+    paginated_results_for(query.content_item_type).map do |model|
+      SearchResult.new(model)
     end
   end
 
   def results_for(content_item_type)
-    search_relation.where(searchable_type: content_item_type) # => ActiveRecord::Relation
+    @results_by_class[content_item_type] # => ActiveRecord::Relation
   end
 
   def paginated_results_for(content_item_type)
@@ -39,7 +39,7 @@ class SearchPresenter
   end
 
   def count_for(content_item_type)
-    search_relation.where(searchable_type: content_item_type).count # => Fixnum
+    @results_by_class[content_item_type].count # => Fixnum
   end
 
   def link_path_params_for(content_item_type)

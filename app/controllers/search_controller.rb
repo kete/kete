@@ -41,6 +41,11 @@ class SearchController < ApplicationController
     @scope = SearchPresenter.new(query: query, results: relation)
   end
 
+  def tagged
+    query = SearchQuery.new(params)
+    relation = Searcher.new(query: query).tagged
+    @scope = SearchPresenter.new(query: query, results: relation)
+  end
 
   def index
   end
