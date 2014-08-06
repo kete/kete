@@ -5,8 +5,7 @@
     %title= h(@title)
     = stylesheet_link_tag 'kete-print', media: 'print'
     = stylesheet_link_tag 'popup_dialog'
-    = javascript_include_tag :defaults
-    /[if IE] 
+    /[if IE]
       = stylesheet_link_tag 'kete-ie'
   %body{id: @current_basket.urlified_name}
     - if flash[:notice]

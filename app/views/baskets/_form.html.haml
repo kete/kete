@@ -229,22 +229,4 @@
   = setupEnableDisableFunctions(true)
   = toggle_elements_applicable('settings_fully_moderated', |
     '==', 'true', 'settings_moderated_except')             |
-  -#
-  = javascript_tag "if ($('private_item_notification')) {                         |
-      $('basket_show_privacy_controls_true').observe('change', function(event) {  |
-        $('private_item_notification').show();                                    |
-      });                                                                         |
-      $('basket_show_privacy_controls_false').observe('change', function(event) { |
-        $('private_item_notification').hide();                                    |
-      });                                                                         |
-      if ($('basket_show_privacy_controls_')) {                                   |
-        #{@site_basket.show_privacy_controls? ?                                   |
-        "$('basket_show_privacy_controls_').observe('change', function(event) {   |
-          $('private_item_notification').show();                                  |
-        });" :                                                                    |
-        "$('basket_show_privacy_controls_').observe('change', function(event) {   |
-          $('private_item_notification').hide();                                  |
-        });"}                                                                     |
-      }                                                                           |
-    }"                                                                            |
   %strong= basket_preferences_inheritance_message

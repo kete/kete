@@ -1,9 +1,5 @@
 class IndexPageController < ApplicationController
 
-  # Kieran Pilkington, 2008/11/26
-  # Instantiation of Google Map code for location settings
-  include GoogleMap::Mapper
-
   include ImageSlideshow
 
   def index

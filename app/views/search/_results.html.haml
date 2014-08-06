@@ -26,8 +26,8 @@
 
       - search_source_result = ''
       - if scope.search_sources_amount > 0
-        - search_source_result = display_search_sources(scope.search_terms, { :target => [:all, :search], :do_not_cache => true, 
-          :limit => (scope.number_per_page.to_f / scope.search_sources_amount.to_f).ceil, 
+        - search_source_result = display_search_sources(scope.search_terms, { :target => [:all, :search], :do_not_cache => true,
+          :limit => (scope.number_per_page.to_f / scope.search_sources_amount.to_f).ceil,
           :title => t('search.results.search_source_title') })
         - unless search_source_result.blank?
           #search_page_search_sources
@@ -49,7 +49,7 @@
               - marker_options['width'] = 50
               - marker_options['height'] = 50
 
-            - related_items = render('related', 
+            - related_items = render('related',
                                       :related => result[:related],
                                       :source_url => result[:url],
                                       :locally_hosted => result[:locally_hosted],
@@ -79,19 +79,17 @@
           #refine_search_dropdown_trigger
             = render partial: 'search/refine_results', locals: {scope: scope}
 
-      - if scope.view_as_map? 
+      - if scope.view_as_map?
         - if markers.present?
           = gmaps("markers" => { 'data' => markers.to_json, 'options' => { 'randomize' => true, 'do_clustering' => true, 'clusterer_maxZoom' => 20 } } )                                                      |
-          - if scope.search_sources_amount.present? && scope.search_sources_amount > 0
-            = javascript_tag("jQuery('.map_container').css('width', '600px'); jQuery('.gmaps4rails_map').css('width', '600px');")
         - else
           = t 'search.results.no_results_of_this_type_found', :zoom_class => zoom_class_humanize(scope.current_content_item_type).downcase
 
       %div{:style => "clear:both;"}
 
       .prev-next.after-results
-        = will_paginate scope.paginated_results, 
-                        next_label:     t('slideshows_helper.next'), 
+        = will_paginate scope.paginated_results,
+                        next_label:     t('slideshows_helper.next'),
                         previous_label: t('slideshows_helper.previous'),
                         params:         scope.pagination_link_params
       #bottomlinks

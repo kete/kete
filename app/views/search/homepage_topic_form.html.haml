@@ -44,11 +44,4 @@
             :target => '_blank'                                                   |
     = submit_tag t('search.homepage_topic_form.change_homepage_topic')
 - new_link = (@current_homepage.nil?) ? '' : link_to(h(@current_homepage.title), :controller => 'topics', :action => 'show', :id => @current_homepage.id, :urlified_name => @current_homepage.basket.urlified_name)
-= javascript_tag "function updateOpener() {                                                         |
-    if (opener.document.getElementsByClassName('current_homepage_link')[0]) {                       |
-      opener.document.getElementsByClassName('current_homepage_link')[0].innerHTML = '#{new_link}'; |
-    } else {                                                                                        |
-      opener.location.reload();                                                                     |
-    }                                                                                               |
-  }"                                                                                                |
 = link_to_function t('search.homepage_topic_form.close'), "updateOpener();window.close()"

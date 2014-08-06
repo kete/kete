@@ -40,7 +40,6 @@
     #close_help
       = link_to t('.close_portrait_help'), :action => 'show'
   - if !params[:whats_this]
-    = javascript_tag "$('portrait_help_div').hide();"
     %noscript/
     :css
       #portrait_help_div { display:none; }

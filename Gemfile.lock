@@ -154,6 +154,9 @@ GEM
       addressable
     i18n (0.6.8)
     journey (1.0.4)
+    jquery-rails (3.1.1)
+      railties (>= 3.0, < 5.0)
+      thor (>= 0.14, < 2.0)
     json (1.8.1)
     libxml-ruby (2.7.0)
     loofah (1.2.1)
@@ -185,8 +188,6 @@ GEM
       arel
     polyglot (0.3.3)
     pothoven-attachment_fu (3.2.10)
-    prototype-rails (3.2.1)
-      rails (~> 3.2)
     pry (0.9.12.3)
       coderay (~> 1.0)
       method_source (~> 0.8)
@@ -196,6 +197,8 @@ GEM
       pry (~> 0.9.12)
     pry-rails (0.3.2)
       pry (>= 0.9.10)
+    quiet_assets (1.0.2)
+      railties (>= 3.1, < 5.0)
     rack (1.4.5)
     rack-cache (1.2)
       rack (>= 0.4)
@@ -265,7 +268,6 @@ GEM
       multi_json (~> 1.0)
       rack (~> 1.0)
       tilt (~> 1.1, != 1.3.0)
-    sqlite3 (1.3.8)
     thor (0.18.1)
     tilt (1.4.1)
     treetop (1.4.15)
@@ -318,6 +320,7 @@ DEPENDENCIES
   hpricot
   htmlentities
   http_url_validation_improved
+  jquery-rails (~> 3.1.1)
   kete-feedzirra!
   libxml-ruby
   mime-types
@@ -329,9 +332,9 @@ DEPENDENCIES
   pg
   pg_search (~> 0.7.2)
   pothoven-attachment_fu
-  prototype-rails
   pry-byebug
   pry-rails
+  quiet_assets
   railroady
   rails (= 3.2.16)
   rails-erd
@@ -342,7 +345,6 @@ DEPENDENCIES
   routing-filter (~> 0.3.1)
   rspec-rails (~> 3.0.0)
   sass-rails (~> 3.2.5)
-  sqlite3 (~> 1.3.7)
   uglifier (>= 1.0.3)
   unicode
   validates_xml (= 1.0.3)

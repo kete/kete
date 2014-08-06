@@ -10,10 +10,6 @@ module ExtendedContentController
       # Autocomplete methods for tag adder on item pages
       klass.send :include, TaggingController
 
-      # Kieran Pilkington, 2008/11/26
-      # Instantiation of Google Map code for location settings
-      klass.send :include, GoogleMap::Mapper
-
       klass.send :include, AnonymousFinishedAfterFilter
 
       if klass.name == 'CommentsController'

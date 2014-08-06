@@ -10,5 +10,4 @@
   %noscript= blank_rss_feed
 #basket_rss_feeds_add
 - add_feed_link = link_to_function(t('baskets.basket_feeds_fields.add_another_feed'), "Element.insert(\"basket_rss_feeds\", { bottom: #{::ActiveSupport::JSON.encode(blank_rss_feed)} })")
-= javascript_tag("Element.insert(\"basket_rss_feeds_add\", { bottom: #{::ActiveSupport::JSON.encode(add_feed_link)} })")
-%noscript= t('baskets.basket_feeds_fields.how_to_remove_feed')
+= t('baskets.basket_feeds_fields.how_to_remove_feed')
