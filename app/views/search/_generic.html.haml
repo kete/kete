@@ -10,7 +10,12 @@
     .generic-result-more
       = link_to(t('search.generic.more').html_safe, basket_aware_url_for(result.model), { :title => t('search.generic.more_on', :title => result.title), :tabindex => '1' })
 
-  = render('related', :related => result.related, :locally_hosted => result.locally_hosted, :source_url => basket_aware_url_for(result.model), :title => result.title) if result.related
+  = render('related', related: result.related,
+                      related_items_summary: result.related_items_summary,
+                      locally_hosted: result.locally_hosted,
+                      source_url: basket_aware_url_for(result.model),
+                      title: result.title) if result.related
+
   = dc_date_display_of(result.dc_dates)
 
   %div{:style => "clear:left;"}

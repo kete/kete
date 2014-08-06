@@ -1,12 +1,13 @@
 .generic-result-related
   = t('search.related.title')
-  - totals_array = related[:counts].keys.collect { |key| zoom_class_humanize_after(related[:counts][key], key.to_s.classify) }
-  = totals_array.to_sentence
+
+  = related_items_summary
+
   - if related && !related[:still_images].blank?
     .topic-result-related-images
-      = topic_related_thumbs_from(related[:still_images], 
+      = topic_related_thumbs_from(related[:still_images],
                                   :link_to => source_url,
-                                  :locally_hosted => locally_hosted, 
+                                  :locally_hosted => locally_hosted,
                                   :title => t('search.related.more_on', :title => title),
                                   :tabindex => '1' )
 %div{:style => "clear:left;"}
