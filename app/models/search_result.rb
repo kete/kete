@@ -4,10 +4,13 @@ class SearchResult
 
   attr_reader :model
 
-  def initialize(model)
+  def initialize(model, searched_topic_id)
     if model.class == PgSearch::Document
       # all/for searches
       @model = model.searchable
+    elsif model.class == ContentItemRelation
+      # related_to searches
+      @model = dereference_content_item_relation(model, searched_topic_id)
     else
       # tagged/etc searches
       @model = model
@@ -48,5 +51,17 @@ class SearchResult
 
   def thumbnail
     (model.respond_to? :thumbnail) ? model.thumbnail : ""
+  end
+
+  private
+
+  def dereference_content_item_relation(model, searched_topic_id)
+    # Only lookup the topic if the related_item was
+    # the thing searched for.
+    if model.topic_id.to_s == searched_topic_id
+      model.related_item
+    else
+      model.topic
+    end
   end
 end

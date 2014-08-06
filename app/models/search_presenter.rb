@@ -26,7 +26,7 @@ class SearchPresenter
 
   def results
     paginated_results_for(query.content_item_type).map do |model|
-      SearchResult.new(model)
+      SearchResult.new(model, query.searched_topic_id)
     end
   end
 
