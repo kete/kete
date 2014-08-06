@@ -69,13 +69,6 @@ module ExtendedFieldsHelper
     end
   end
 
-  # Create a Javascript array of hashes containing attributes for the construction of the TreeView.
-  # This is necessary because YUI's TreeView doesn't probably interpret checkboxes in XHTML when
-  # constructing a TreeView from existing content (ala progressive enhancement).
-  def build_node_array_for(choice, record)
-    raise "BOOM"
-  end
-
   # More ActiveScaffold overloading..
 
   # Same as above, but for ftype.

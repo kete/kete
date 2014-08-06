@@ -12,14 +12,6 @@ module BasketsHelper
     link_to options[:phrase], {:controller => 'topics', :action => :new, :index_for_basket => options[:index_for_basket]}, :tabindex => '1'
   end
 
-  def toggle_elements_applicable(listenToThisElementID, whenElementValueCondition, whenElementValueThis, toggleThisElementID, listenToElementIsCheckbox=false, clearFields=true)
-    raise "BOOM"
-  end
-
-  def setupEnableDisableFunctions(clearValues=false)
-    raise "BOOM"
-  end
-
   def basket_preferences_inheritance_message
     return if @basket != @site_basket # for now, we dont need to tell them,
                                       # it's obvious with the inherit option

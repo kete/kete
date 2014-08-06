@@ -90,14 +90,6 @@ module SearchHelper
     !@existing_ids.nil? && @existing_ids.member?(item.id)
   end
 
-  def enable_start_unless_all_types_js_helper
-    raise "BOOM"
-  end
-
-  def enable_end_unless_all_types_js_helper
-    raise "BOOM"
-  end
-
   def topic_related_thumbs_from(still_images_hash, options = { })
     image_tag_string = String.new
     image_tag_string += "<ul class=\"images-list\">" if options[:as_image_list]

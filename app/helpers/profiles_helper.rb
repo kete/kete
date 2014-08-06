@@ -153,11 +153,4 @@ module ProfilesHelper
   def rules_fieldset_tag(name)
     "<fieldset id='#{rules_label_id(name)}_fieldset'#{" style='display:none;'" unless allowed_value?(name)}>"
   end
-
-  # Using the @profile_sections set for each allowed checkbox, run through and
-  # add javascript to expand/collapse the fieldset that it relates to
-  def rules_section_javascript
-    raise "BOOM"
-  end
-
 end

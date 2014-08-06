@@ -190,14 +190,6 @@ module ApplicationHelper
     t("layouts.application.#{search_text_key}", :search_location_name => search_location_name)
   end
 
-  def default_search_terms_for_js
-    raise "BOOM"
-  end
-
-  def add_search_icon_and_default_text_to_search_box(id, trigger_id)
-    raise "BOOM"
-  end
-
   # Clear any values that shouldn't be there when we make a new search or refine a search
   def overwritten_search_params
     {

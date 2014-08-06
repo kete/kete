@@ -226,7 +226,4 @@
       .form-element
         = check_box 'settings', 'private_item_notification_show_short_summary', {:checked => current_value_of('private_item_notification_show_short_summary').to_s == 'true', :tabindex => '1'}, 'true', 'false'
         %label.inline{:for => "settings_private_item_notification_show_short_summary"}= t 'baskets.form.private_item_notification_show_short_summary'
-  = setupEnableDisableFunctions(true)
-  = toggle_elements_applicable('settings_fully_moderated', |
-    '==', 'true', 'settings_moderated_except')             |
   %strong= basket_preferences_inheritance_message

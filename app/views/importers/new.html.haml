@@ -67,10 +67,6 @@
             %label{:for => "import_extended_field_that_contains_related_topics_reference_id"}= t 'importers.new.extended_field_that_contains_related_topics_reference'
             #import_extended_field_that_contains_related_topics_reference_select= render 'extended_field_selection', :id => 'extended_field_that_contains_related_topics_reference_id'
             .form_example= t 'importers.new.extended_field_that_contains_related_topics_reference_description'
-    = xml_type_js_observer
-    = zoom_class_js_observer
-    = record_identifier_js_observer
-    = related_topics_js_observer
     = render 'common_import_fields', :form => form
     .form-element
       = submit_tag t('importers.new.import_button')
