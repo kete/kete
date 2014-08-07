@@ -42,7 +42,7 @@ class AccountController < ApplicationController
           if simple_captcha_valid?
             @security_code = params[:security_code]
           end
-          
+
           if simple_captcha_confirm_valid?
             @res = Captcha.find(session[:captcha_id])
             @security_code_confirmation = @res.text
@@ -66,7 +66,7 @@ class AccountController < ApplicationController
 
           session[:anonymous_user] = { :name => anonymous_name,
             :email => params[:email]}
-          
+
           # see if the submitted website is valid
           # append protocol if they have left it off
           website = params[:website]
@@ -87,7 +87,7 @@ class AccountController < ApplicationController
           cookies[:auth_token] = { :value => self.current_user.remember_token , :expires => self.current_user.remember_token_expires_at }
         end
         unless @anonymous_user
-          move_session_searches_to_current_user 
+          move_session_searches_to_current_user
           flash[:notice] = t('account_controller.login.logged_in')
         end
         redirect_back_or_default({ :locale => current_user.locale,
@@ -125,7 +125,7 @@ class AccountController < ApplicationController
     load_content_type
 
     @user = User.new
-    
+
     set_captcha_type
 
     create_brain_buster if @captcha_type == 'question'
@@ -226,7 +226,7 @@ class AccountController < ApplicationController
   include ExtendedContentController
   include EmailController
 
- 
+
 
   def simple_return_tos
       ['find_related']
@@ -271,9 +271,9 @@ class AccountController < ApplicationController
 
   def simple_captcha_confirm_valid?
     return false unless simple_captcha_valid?
-    
+
     @res = Captcha.find(session[:captcha_id])
-    
+
     (params[:user].present? &&
      @res.text == params[:user][:security_code]) ||
       (params[:security_code].present? &&
@@ -513,7 +513,7 @@ class AccountController < ApplicationController
 
   def simple_or_application
     return 'application' if session[:return_to].blank?
-    
+
     simple_return_tos_regexp = Regexp.new(simple_return_tos.join('|'))
 
     if session[:return_to] =~ simple_return_tos_regexp ||

@@ -20,7 +20,6 @@ module AccountHelper
     # text.rotation = (rand(2)==1 ? 5 : -5)
 
     # #Provide the text
-    # binding.pry
     # metric = text.get_type_metrics(captchatext)
 
     # #Define image list
@@ -59,7 +58,7 @@ module AccountHelper
     # captcha.save()
     # return captcha.id
 
-    # EOIN: 
+    # EOIN:
     # * this method seems to crash somewhere in ImageMagick - this might take a while to track down so
     #   I commented this method out until we can figure out a better way of making captchas (if they are required at all)
     return 1

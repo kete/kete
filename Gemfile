@@ -102,7 +102,7 @@ gem 'avatar'
 gem 'chronic'
 gem 'ya2yaml'
 gem 'libxml-ruby'
-gem 'gmaps4rails', '1.4.2'
+# gem 'gmaps4rails', '1.4.2'
 
 gem 'unicode'
 gem 'xml-simple'
@@ -147,11 +147,17 @@ gem 'http_url_validation_improved'
 
 gem 'active_scaffold', '~> 3.3.3'
 
-gem "acts_as_authenticated", "2.0", :git => "git://github.com/gundestrup/acts_as_authenticated.git" # 2007-06-06
+# EOIN: From my reading of acts_as_authenticated source it seems that is just a
+# generator that adds stuff to the user model, applicaiton controller etc. so I
+# don't think we need it in this Gemfile
+# gem "acts_as_authenticated", "2.0", :git => "git://github.com/gundestrup/acts_as_authenticated.git" # 2007-06-06
+
+gem 'authorization', '~> 1.0.12'
+
+
 #gem "acts_as_licensed", "#.#.#", :git => "git://github.com/shuber/sortable.git" # 2008-07-10
 gem "acts_as_soft_deletable", :git => "git://github.com/says/acts_as_soft_deletable.git" # 2009-02-16
 ## gem 'acts_as_zoom'
-gem 'authorization',                '1.0.11' # >> 2008-10-01
 #gem 'auto_complete',                '0.0.1' # >> 2008-10-23
 #gem 'backgroundrb-rails3',          '1.1.0' # >> 2008-10-15, replaces 'backgroundrb'
 #gem 'better_nested_set',            '0.1.1' # >> 2008-08-04    

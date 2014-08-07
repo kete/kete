@@ -15,6 +15,7 @@ module KeteAuthorization
     # on the site basket?
     def site_admin?
       @site = @site_basket
+      puts "YYYYYYYYYYYYYY in site_admin?"
       logged_in? && permit?("site_admin or admin on :site") || nil
     end
 
