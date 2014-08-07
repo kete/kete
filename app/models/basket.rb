@@ -17,6 +17,10 @@ class Basket < ActiveRecord::Base
     BasketSettings.get(name, *args)
   end
 
+  def to_param
+    self.urlified_name
+  end
+
   # we use these for who can see what
   def self.member_level_options
     [[I18n.t('basket_model.basket_member'), 'at least member'],
@@ -83,49 +87,49 @@ class Basket < ActiveRecord::Base
   # Note: NOT to be used outside this class! Used only when the application is loaded
   all_baskets = all
 
-  def self.documentation_basket 
-    b = Basket.where(name: 'Documentation').first 
+  def self.documentation_basket
+    b = Basket.where(name: 'Documentation').first
     b or raise("Failed to find the required Documentation basket")
   end
 
-  def self.about_basket 
+  def self.about_basket
     b = Basket.where(name: 'About').first
     b or raise("Failed to find the required About basket")
   end
 
-  def self.help_basket 
+  def self.help_basket
     b = Basket.where(name: 'Help').first
     b or raise("Failed to find the required Help basket")
   end
 
-  def self.site_basket 
+  def self.site_basket
     b = Basket.where(name: 'Site').first
     b or raise("Failed to find the required Site basket")
   end
 
   # EOIN: possible future refactoring: make this return the actual baskets ???
-  def self.standard_basket_ids 
+  def self.standard_basket_ids
     [site_basket.id, help_basket.id, about_basket.id, documentation_basket.id]
   end
 
   def documentation_basket
-    Basket.documentation_basket 
+    Basket.documentation_basket
   end
 
   def about_basket
-    Basket.about_basket 
+    Basket.about_basket
   end
 
   def help_basket
-    Basket.help_basket 
+    Basket.help_basket
   end
 
   def site_basket
-    Basket.site_basket 
+    Basket.site_basket
   end
 
   def standard_basket_ids
-    Basket.standard_basket_ids 
+    Basket.standard_basket_ids
   end
 
   # Kieran Pilkington, 2008/08/18

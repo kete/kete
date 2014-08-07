@@ -67,21 +67,6 @@ module ApplicationHelper
     return ''
   end
 
-  # Adds the necessary javascript to update a div with the id of user_avat
-  def avatar_updater_js(options = {})
-    options = options.merge({ :email_id => 'user_email', :avatar_id => 'user_avatar_img', :spinner_id => 'user_avatar_spinner' })
-    javascript_tag("
-      $('#{options[:email_id]}').observe('blur', function(event) {
-        new Ajax.Request('#{url_for(:controller => 'account', :action => 'fetch_gravatar')}', {
-          method: 'get',
-          parameters: { email: $('#{options[:email_id]}').value, avatar_id: '#{options[:avatar_id]}' },
-          onLoading: function(loading) { $('#{options[:spinner_id]}').show(); },
-          onComplete: function(complete) { $('#{options[:spinner_id]}').hide(); }
-        });
-      });
-    ")
-  end
-
   def page_keywords
     return SystemSetting.default_page_keywords if current_item.nil? || current_item.tags.blank?
     current_item.tags.join(",").gsub(" ", "_").gsub("\"", "")
@@ -153,16 +138,6 @@ module ApplicationHelper
     meta_tag(:name => "itemsPerPage", :content => @number_per_page)
   end
 
-  def initialize_gmap_headers?
-    (params[:controller] == 'search' &&
-     %w{all for}.include?(params[:action]) &&
-     (!params[:view_as].blank? && params[:view_as] == 'map')) ||
-      (params[:controller] == 'index_page' && params[:action] == 'index')||
-      (CACHES_CONTROLLERS.include?(params[:controller]) &&
-       GoogleMap::Mapper::ITEM_ACTIONS.include?(params[:action])) ||
-      (params[:controller] == 'baskets' && params[:action] == "choose_type")
-  end
-
   def header_links_to_baskets
     baskets_limit = SystemSetting.list_baskets_number
     return unless baskets_limit > 0
@@ -173,8 +148,6 @@ module ApplicationHelper
     baskets += [@current_basket] if @current_basket != @site_basket
 
     total_baskets_count = Basket.except_certain_baskets(baskets).count
-
-    baskets_limit
 
     basket_count = 0
     Basket.except_certain_baskets(baskets).limit(baskets_limit).all.each do |basket|
@@ -215,20 +188,6 @@ module ApplicationHelper
 
     search_text_key = "new_#{search_text_key}" if params[:controller] == 'search'
     t("layouts.application.#{search_text_key}", :search_location_name => search_location_name)
-  end
-
-  def default_search_terms_for_js
-    escape_javascript(default_search_terms)
-  end
-
-  def add_search_icon_and_default_text_to_search_box(id, trigger_id)
-    search_dropdown_link = link_to(image_tag('search.png', :width => 20, :height => 13), '#',
-                                   :onclick => "$('#{id}').toggle();
-                                                if($('search_terms').value == '#{default_search_terms_for_js}') {
-                                                  $('search_terms').value = '';
-                                                }", :title => t('application_helper.add_search_icon_and_default_text_to_search_box.more_search_options'))
-    javascript_tag("$('#{trigger_id}').insert('#{escape_javascript(search_dropdown_link)}');") +
-    javascript_tag("addDefaultValueToSearchTerms('#{default_search_terms_for_js}');")
   end
 
   # Clear any values that shouldn't be there when we make a new search or refine a search
@@ -961,23 +920,6 @@ module ApplicationHelper
     display_search_field_for?(type, SystemSetting.display_topic_type_field) || params[:controller_name_for_zoom_class] == 'topics'
   end
 
-  def toggle_topic_types_field_js_helper_for(parent_id)
-    javascript_tag "
-    if ($$('##{parent_id} #controller_name_for_zoom_class').first() && $$('##{parent_id} #topic_type').first().up('tr')) {
-      if ($$('##{parent_id} #controller_name_for_zoom_class').first().value != 'topics') {
-        $$('##{parent_id} #topic_type').first().up('tr').hide();
-      }
-      $$('##{parent_id} #controller_name_for_zoom_class').first().observe('change', function(event) {
-        if (this.value == 'topics') {
-          $$('##{parent_id} #topic_type').first().up('tr').show();
-        } else {
-          $$('##{parent_id} #topic_type').first().up('tr').hide();
-        }
-      });
-    }
-    "
-  end
-
   def current_sort_type
     if params[:sort_type].present?
       params[:sort_type]
@@ -994,53 +936,6 @@ module ApplicationHelper
     end
   end
 
-  def toggle_relevance_field_js_helper_for(parent_id)
-    js = "
-    function #{parent_id}_any_fields_provided() {
-      if ($$('##{parent_id} #search_terms').first() && $$('##{parent_id} #search_terms').first().value != '') { return true; }
-      if ($$('##{parent_id} #date_since').first() && $$('##{parent_id} #date_since').first().value != '') { return true; }
-      if ($$('##{parent_id} #date_until').first() && $$('##{parent_id} #date_until').first().value != '') { return true; }
-      return false;
-    }
-    function #{parent_id}_reset_relevance(force) {
-      if (!force && (#{parent_id}_any_fields_provided() || !$$('##{parent_id} #sort_type').first())) { return; }
-      if ($$('##{parent_id} #sort_type').first().down('.title')) { $$('##{parent_id} #sort_type').first().down('.title').selected = true; }
-      if ($$('##{parent_id} #sort_direction_field').first()) { $$('##{parent_id} #sort_direction_field').first().show(); }
-      if ($$('##{parent_id} #sort_type').first().down('.none')) { $$('##{parent_id} #sort_type').first().down('.none').hide(); }
-    }
-    function #{parent_id}_show_relevance(force) {
-      if (!force && (!#{parent_id}_any_fields_provided() || !$$('##{parent_id} #sort_type').first())) { return; }
-      if ($$('##{parent_id} #sort_type').first().down('.none')) { $$('##{parent_id} #sort_type').first().down('.none').show(); }
-    }
-    #{parent_id}_reset_relevance();
-    "
-    %w{ search_terms date_since date_until }.each do |field|
-      js += "
-      if ($$('##{parent_id} ##{field}').first()) { $$('##{parent_id} ##{field}').first().observe('change', function(event) {
-        if (this.value == '') { #{parent_id}_reset_relevance(); } else { #{parent_id}_show_relevance(); }
-      }); }
-      "
-    end
-    javascript_tag(js)
-  end
-
-  def toggle_in_reverse_field_js_helper_for(parent_id)
-    javascript_tag "
-    if ($$('##{parent_id} #sort_type').first() && $$('##{parent_id} #sort_direction_field').first()) {
-      if ($$('##{parent_id} #sort_type').first().value == 'none') {
-        $$('##{parent_id} #sort_direction_field').first().hide();
-      }
-      $$('##{parent_id} #sort_type').first().observe('change', function(event) {
-        if (this.value == 'none') {
-          $$('##{parent_id} #sort_direction_field').first().hide();
-        } else {
-          $$('##{parent_id} #sort_direction_field').first().show();
-        }
-      });
-    }
-    "
-  end
-
   def basket_option_for(basket, options = {})
     content_tag(:option, (options[:label] || basket.name), {
       :value => (options[:value] || basket.urlified_name),
@@ -1048,32 +943,6 @@ module ApplicationHelper
       :selected => ('selected' if options[:selected] && basket.urlified_name.to_sym == options[:selected].to_sym)
     })
   end
-
-  # def adjust_target_basket_options_for_privacy(privacy)
-  #   return unless privacy
-  #   html = javascript_tag("
-  #     function show_all_target_baskets() {
-  #       $$('#target_basket option').each(function(element) { element.show(); });
-  #     }
-
-  #     function hide_all_non_member_target_baskets() {
-  #       $$('#target_basket option.not_member').each(function(element) { element.hide(); });
-  #       var current_selection = $('target_basket').options[$('target_basket').selectedIndex];
-  #       // TODO: take this IE specific code out when it is no longer needed
-  #       var agent = navigator.userAgent.toLowerCase ();
-  #       if (agent.search ('msie') > -1) {
-  #         if (!current_selection.style.visibility == 'hidden') { $('target_basket').options[0].selected = true; }
-  #       } else {
-  #         if (!current_selection.visible()) { $('target_basket').options[0].selected = true; }
-  #       }
-  #     }
-
-  #     $('privacy_type_public').observe('click', function() { show_all_target_baskets(); });
-  #     $('privacy_type_private').observe('click', function() { hide_all_non_member_target_baskets(); });
-  #   ")
-  #   html += javascript_tag("hide_all_non_member_target_baskets();") if privacy.to_sym == :private
-  #   html
-  # end
 
   #
   # End Search Control Dropdown Helpers
@@ -1821,7 +1690,6 @@ module ApplicationHelper
     end
 
     html += "<div style='clear:both;'></div>"
-    #html += javascript_tag("enableCategoryListUpdater('#{params[:controller_name_for_zoom_class]}');")
 
     html
 

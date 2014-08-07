@@ -4,13 +4,19 @@
     .generic-result-topic-type
       = result.topic_types.last
   .generic-result-header
-    %h4= link_to h(result.title), url_for(result.model), :tabindex => '1'
+    %h4= link_to h(result.title), basket_aware_url_for(result.model), :tabindex => '1'
   .generic-result-description
     = strip_tags(result.short_summary)
     .generic-result-more
-      = link_to(t('search.generic.more').html_safe, url_for(result.model), { :title => t('search.generic.more_on', :title => result.title), :tabindex => '1' })
+      = link_to(t('search.generic.more').html_safe, basket_aware_url_for(result.model), { :title => t('search.generic.more_on', :title => result.title), :tabindex => '1' })
 
-  = render('related', :related => result.related, :locally_hosted => result.locally_hosted, :source_url => url_for(result.model), :title => result.title) if result.related
+  - if result.has_related_items?
+    = render 'related', related: result.related,
+                        related_items_summary: result.related_items_summary,
+                        locally_hosted: result.locally_hosted,
+                        source_url: basket_aware_url_for(result.model),
+                        title: result.title
+
   = dc_date_display_of(result.dc_dates)
 
   %div{:style => "clear:left;"}

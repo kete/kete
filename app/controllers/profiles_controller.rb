@@ -8,10 +8,6 @@ class ProfilesController < ApplicationController
 
   permit "site_admin"
 
-  # we use the toggle_elements_applicable method in basket helpers
-  # within our profile views so we need to make it available for use
-  helper :baskets
-
   ### TinyMCE WYSIWYG editor stuff
   # uses_tiny_mce :only => VALID_TINYMCE_ACTIONS
   ### end TinyMCE WYSIWYG editor stuff

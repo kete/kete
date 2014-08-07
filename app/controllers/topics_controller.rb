@@ -7,9 +7,9 @@ class TopicsController < ApplicationController
     redirect_to_search_for('Topic')
   end
 
-  def list
-    index
-  end
+  # def list
+  #   index
+  # end
 
   def show
     @topic = prepare_item_and_vars

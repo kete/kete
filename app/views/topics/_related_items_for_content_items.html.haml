@@ -8,7 +8,7 @@
 
     - last_five_related_items.each do |related_item|
       %li
-        %a{:href => url_for(related_item)}
+        %a{:href => basket_aware_url_for(related_item)}
           = related_item.title
 
     - if  related_items.count > 5

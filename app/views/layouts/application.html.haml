@@ -26,17 +26,6 @@
 
                   = render partial: 'search/mini_controls', locals: {id: 'advanced_search_dropdown', scope: SearchPresenter.new, type: 'menu' }
 
-                = add_search_icon_and_default_text_to_search_box('advanced_search_dropdown', 'advanced_search_dropdown_trigger')
-
-                = javascript_tag("$('search_terms').observe('change', function(event) {                 |
-                    if (this.value == '') {                                                             |
-                      advanced_search_dropdown_reset_relevance(true);                                   |
-                    } else {                                                                            |
-                      advanced_search_dropdown_show_relevance(true);                                    |
-                      $$('#advanced_search_dropdown #sort_type').first().down('.none').selected = true; |
-                      $$('#advanced_search_dropdown #sort_direction_field').first().hide();             |
-                    }                                                                                   |
-                  });")                                                                                 |
             = header_links_to_baskets.html_safe
 
         #top-menu
@@ -62,14 +51,14 @@
           = render partial: "licenses/install" if params[:controller] == 'licenses' && %w{ index list }.include?(params[:action])
           = yield
 
-        #linkToRSS.footer_div
-          %ul
-            - rss_tag_links.each do |rss_tag_link|
-              %li= link_for_rss(:link_html => rss_tag_link, :preface => t('layouts.application.rss'), :title => stripped_title).html_safe
-
-            -# EOIN: this needs to be re-enabled when search is more understood:
-            - combined_rss_url = nil
-            %li= link_to(t('layouts.application.combined_rss'), combined_rss_url, :tabindex => '1')
+        -# Disable RSS for the moment
+        -# #linkToRSS.footer_div
+        -#   %ul
+        -#     - rss_tag_links.each do |rss_tag_link|
+        -#       %li= link_for_rss(:link_html => rss_tag_link, :preface => t('layouts.application.rss'), :title => stripped_title).html_safe
+        -#
+        -#     - combined_rss_url = nil # EOIN: this needs to be re-enabled when search is more understood:
+        -#     %li= link_to(t('layouts.application.combined_rss'), combined_rss_url, :tabindex => '1')
 
         #footer.footer_div
           - if logged_in? && @basket_admin && !@displaying_error

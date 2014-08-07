@@ -5,9 +5,9 @@ class CommentsController < ApplicationController
     redirect_to_search_for('Comment')
   end
 
-  def list
-    index
-  end
+  # def list
+  #   index
+  # end
 
   def show
     @comment = Comment.find(params[:id])
@@ -74,7 +74,6 @@ class CommentsController < ApplicationController
 
       # make sure that we wipe comments cache for thing we are commenting on
       commented_item = zoom_class.find(params[:comment][:commentable_id])
-      commented_privacy = @comment.commentable_private
 
       # although we shouldn't be using the related_topic aspect here
       # i.e. there is never going to be params[:related_topic_id]
@@ -97,7 +96,7 @@ class CommentsController < ApplicationController
     version_after_update = @comment.max_version + 1
 
     @comment.attributes = params[:comment]
-    @successful = @comment.save 
+    @successful = @comment.save
 
     if @successful
 
@@ -110,7 +109,6 @@ class CommentsController < ApplicationController
 
       # make sure that we wipe comments cache for thing we are commenting on
       commented_item = @comment.commentable
-      commented_privacy = @comment.commentable_private
 
       # @comment.prepare_and_save_to_zoom
       # switched to async backgroundrb worker for search record set up
@@ -136,7 +134,6 @@ class CommentsController < ApplicationController
 
     # make sure that we wipe comments cache for thing we are commenting on
     commented_item = @comment.commentable
-    commented_privacy = @comment.commentable_private
 
     @successful = @comment.destroy
 
@@ -172,8 +169,7 @@ class CommentsController < ApplicationController
   def comment_inplace_url(comment)
     # Link to the comment on the page it's displayed on.
     commented_item = comment.commentable
-    inplace_comment_url = url_for(commented_item)
-
+    inplace_comment_url = url_for([commented_item.basket, commented_item])
     "#{inplace_comment_url}##{comment.to_anchor}"
   end
 end

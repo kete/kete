@@ -40,50 +40,16 @@
   -### javascript ###
   -##################
 
-  = render partial: "layouts/jquery"
-
-  = yield :add_on_scripts_and_links
-
-  = javascript_include_tag "application"
-
-  = javascript_include_tag 'redbox'
-  = javascript_include_tag 'kete'
-  - if SystemSetting.enable_maps? && initialize_gmap_headers?
-
-    - if CACHES_CONTROLLERS.include?(params[:controller]) || params[:controller] == 'index_page'
-      = stylesheet_link_tag '/stylesheets/gmaps4rails'
-    - else
-      = yield :gmap4rails_head
-
-    - if params[:action] == 'choose_type'
-      = load_maps_javascript_files
-    - else
-      - if CACHES_CONTROLLERS.include?(params[:controller]) || params[:controller] == 'index_page'
-        = load_maps_javascript_files
-      - else
-        = yield :gmap4rails_scripts
-      = javascript_tag("window.onload = Gmaps.loadMaps;")
-
-    = javascript_tag("keteMaps = new Object();")
-
-  - if ACTIVE_SCAFFOLD_CONTROLLERS.include?(params[:controller])
-    = active_scaffold_includes
-
-  - if ['extended_fields', 'choices'].include?(params[:controller])
-    = javascript_include_tag "yui/yahoo/yahoo", "yui/event/event-min", "yui/animation/animation-min", "yui/dom/dom-min", "yui/treeview/treeview-min"
-    = stylesheet_link_tag 'yui/treeview'
-
-  - if ['audio', 'video'].include?(params[:controller]) && params[:action] == 'show'
-    = javascript_include_tag "anarchy_media/anarchy.js"
+  = javascript_include_tag 'application'
 
 
   -### Feeds ###
   -#############
 
-  -# EOIN: this needs to be re-enabled when search is more understood:
-  - combined_rss_url = nil
-  -# combined_rss_url = basket_all_rss_url( :urlified_name => @site_basket.urlified_name, :controller_name_for_zoom_class => 'combined' )
-  - rss_tag_autos.each do |rss_tag_auto|
-    = rss_tag_auto.sub("title=\"RSS\"", "title=\"RSS #{stripped_title}\"").html_safe
-
-  %link{href: combined_rss_url, rel: "alternate", title: t('layouts.application.combined_rss'), type: "application/rss+xml"}
+  -# Disable RSS feed for the moment
+  -# - combined_rss_url = nil
+  -# -# combined_rss_url = basket_all_rss_url( :urlified_name => @site_basket.urlified_name, :controller_name_for_zoom_class => 'combined' )
+  -# - rss_tag_autos.each do |rss_tag_auto|
+  -#   = rss_tag_auto.sub("title=\"RSS\"", "title=\"RSS #{stripped_title}\"").html_safe
+  -#
+  -# %link{href: combined_rss_url, rel: "alternate", title: t('layouts.application.combined_rss'), type: "application/rss+xml"}

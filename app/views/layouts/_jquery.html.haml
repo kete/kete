@@ -1,5 +1,0 @@
--# * Kete JS is still mostly PrototypeJS so we let Prototype own the '$'
--# * New JS will be written using jQuery e.g. jQuery('#foo').css('color', 'red');
--# * Including both is obviously not ideal but converting Prototype to jQuery is not worthwhile at this time.
-%script{src: "http://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"}
-= javascript_tag('jQuery.noConflict();')

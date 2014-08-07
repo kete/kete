@@ -26,14 +26,14 @@
                                                               :controller_name_for_zoom_class => default_controller,
                                                               :trailing_slash => true,
                                                               :view_as => @site_basket.browse_type_with_inheritance }, {:tabindex => '2'} )
-                                                              
+
     = " #{t('application_helper.header_browse_links.browse_or')} " if not_in_site_basket
 
   %li#header_about
     = link_to_unless_current h(@about_basket.name), basket_index_url(urlified_name: @about_basket.urlified_name), tabindex: '2'
   %li#header_help
     = link_to_unless_current h(@help_basket.name), basket_index_url(urlified_name: @help_basket.urlified_name), tabindex:'2'
-    
+
   %li#header_contact
     - if SystemSetting.contact_url.present?
       = link_to(t('layouts.application.contact'), SystemSetting.contact_url, accesskey: '9', tabindex: '2')
@@ -41,5 +41,5 @@
       = mail_to(SystemSetting.contact_email, t('layouts.application.contact'), encode: "hex", accesskey: '9', tabindex: '2')
 
   = header_add_links.html_safe
-  - if !header_add_basket_link.blank?  
-    %li#header_add_basket= header_add_basket_link 
+  - if !header_add_basket_link.blank?
+    %li#header_add_basket= header_add_basket_link

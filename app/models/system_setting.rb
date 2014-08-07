@@ -270,7 +270,7 @@ class SystemSetting
     end
 
     def pretty_site_name
-      "A working Kete"
+      "Kete Horowhenua"
     end
 
     def is_configured
@@ -310,7 +310,7 @@ class SystemSetting
     end
 
     def site_url
-      "kete.net.nz/"
+      "horowhenua.kete.net.nz/"
     end
 
     def notifier_email
@@ -373,7 +373,7 @@ class SystemSetting
     end
 
     def number_of_related_images_to_display
-      0
+      5
     end
 
     def number_of_related_things_to_display_per_type

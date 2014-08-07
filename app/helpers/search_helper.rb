@@ -90,84 +90,29 @@ module SearchHelper
     !@existing_ids.nil? && @existing_ids.member?(item.id)
   end
 
-  def enable_start_unless_all_types_js_helper
-    javascript_tag "
-    function toggleDisabledStart(event) {
-      var element = Event.element(event);
+  def topic_related_thumbs_from(images, options = { })
+    num_images_to_show = options[:num_images_to_show] ? options[:num_images_to_show] : SystemSetting.number_of_related_images_to_display
+    num_images_to_show = [images.length, num_images_to_show].min
 
-      if ( element.options[element.selectedIndex].value != \"all\" ) {
-        $('start').disabled = false;
-      } else {
-        $('start').value = 'first';
-        $('start').disabled = true;
-      }
-    }
+    output = "<ul class=\"images-list\">"
 
-    $('zoom_class').observe('change', toggleDisabledStart);"
-  end
-
-  def enable_end_unless_all_types_js_helper
-    javascript_tag "
-    function toggleDisabledStart(event) {
-      var element = Event.element(event);
-
-      if ( element.options[element.selectedIndex].value != \"all\" ) {
-        $('end').disabled = false;
-      } else {
-        $('end').value = 'last';
-        $('end').disabled = true;
-      }
-    }
-
-    $('zoom_class').observe('change', toggleDisabledStart);"
-  end
-
-  def topic_related_thumbs_from(still_images_hash, options = { })
-    image_tag_string = String.new
-    image_tag_string += "<ul class=\"images-list\">" if options[:as_image_list]
-
-    number_of_all_images = still_images_hash.size
-    number_to_display = options[:number_to_display] ? options[:number_to_display] : SystemSetting.number_of_related_images_to_display
-    number_to_display = number_of_all_images > number_to_display ? number_to_display : number_of_all_images
-
-    # even if we know that locally_hosted is almost always true
-    # assume false if not specified in case search is opened up to non-local results in future
-    locally_hosted = options[:locally_hosted].present? ? options[:locally_hosted] : false
-
-    1.upto(number_to_display) do |key|
-      key = key.to_s
-
-      image_hash = still_images_hash[key][:thumbnail]
-      image_hash[:alt] = altify(still_images_hash[key][:title])
-      src = image_hash[:src]
-      image_hash.delete(:size)
-      image_hash.delete(:src)
-
-      image_tag_string += "<li>" if options[:as_image_list]
+    images[0, num_images_to_show].each do |image|
+      output += "<li>"
+      img_html_tag = image_tag image.thumbnail_file.public_filename, alt: altify(image.title)
+      tabindex_attr = options[:tabindex] ? options[:tabindex] : 1
 
       if options[:link_to]
-        tabindex = options[:tabindex] ? options[:tabindex] : 1
-        image_tag_string += link_to(image_tag(src, image_hash), options[:link_to], :tabindex => tabindex)
+        output += link_to(img_html_tag, options[:link_to], tabindex: tabindex_attr)
       else
-        image_tag_string += image_tag(src, image_hash)
+        output += img_html_tag
       end
 
-      image_tag_string += "</li>" if options[:as_image_list]
+      output += "</li>"
     end
 
-    # should we indicate there are more images
-    unless number_to_display == number_of_all_images
-      if options[:more]
-        image_tag_string += "<li>" if options[:as_image_list]
-
-        image_tag_string += options[:more]
-
-        image_tag_string += "</li>" if options[:as_image_list]
-      end
-    end
-
-    image_tag_string += "</ul>" if options[:as_image_list]
-    image_tag_string
+    output += "<li>...</li>" if num_images_to_show < images.length
+    output += "</ul>"
+    output.html_safe
   end
 
   def will_paginate_atom(collection, xml)
@@ -199,7 +144,7 @@ module SearchHelper
 
   # Methods to replace the old and complex search routes. These should now pass
   # variables as query params.
-  def basket_all_topic_type_path(*args) 
-    search_all_path(*args) 
-  end 
+  def basket_all_topic_type_path(*args)
+    search_all_path(*args)
+  end
 end
