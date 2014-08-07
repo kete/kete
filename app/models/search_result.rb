@@ -18,7 +18,7 @@ class SearchResult
     (model.respond_to? :id) ? model.id : ""
   end
 
-  def class 
+  def class
     (model.respond_to? :class) ? model.class : ""
   end
 
@@ -27,11 +27,38 @@ class SearchResult
   end
 
   def short_summary
-    (model.respond_to? :short_summary) ? model.short_summary : ""
+    summary = ""
+
+    if model.respond_to? :description
+      summary = model.description
+    elsif model.respond_to? :short_summary
+      summary =  model.short_summary
+    end
+
+    summary.sanitize.truncate(180, omission: '...')
   end
 
+  def has_related_items?
+    return false if model.is_a? Comment
+    model.respond_to? :related_items_hash
+  end
+
+  # This method mimics the return value of the Zoom controller code that built
+  # the related items structure in the old Kete.
   def related
-    (model.respond_to? :related) ? model.related : { counts: {} }
+    related = {}
+
+    if model.respond_to? :related_items_hash
+      model.related_items_hash.each { |k, v| related[k.underscore.pluralize.to_sym] = v }
+    end
+
+    related
+  end
+
+  def related_items_summary
+    related.map { |content_type, models|
+      (models.count > 0) ? "#{models.count} #{content_type.to_s.humanize}" : nil
+    }.compact.to_sentence
   end
 
   def locally_hosted

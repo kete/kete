@@ -187,7 +187,7 @@ GEM
       activesupport (>= 3.1)
       arel
     polyglot (0.3.3)
-    pothoven-attachment_fu (3.2.10)
+    pothoven-attachment_fu (3.2.13)
     pry (0.9.12.3)
       coderay (~> 1.0)
       method_source (~> 0.8)
@@ -331,7 +331,7 @@ DEPENDENCIES
   packet
   pg
   pg_search (~> 0.7.2)
-  pothoven-attachment_fu
+  pothoven-attachment_fu (~> 3.2.13)
   pry-byebug
   pry-rails
   quiet_assets
