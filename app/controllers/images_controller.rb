@@ -6,10 +6,10 @@ class ImagesController < ApplicationController
     redirect_to_search_for('StillImage')
   end
 
-  def list
-    index
-  end
-
+  # def list
+  #   index
+  # end
+  #
   def show
     @still_image = prepare_item_and_vars
     @comments = @still_image.non_pending_comments

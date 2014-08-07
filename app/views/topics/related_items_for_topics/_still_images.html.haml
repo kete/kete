@@ -17,7 +17,7 @@
       - last_five_related_still_images.each do |related_item|
         - small_sq_image_file = related_item.image_files.where(thumbnail: 'small_sq').first
         %li
-          %a{:href => url_for(related_item)}
+          %a{:href => basket_aware_url_for(related_item)}
             %img{:alt => related_item.title, :src => small_sq_image_file.public_filename, :size => small_sq_image_file.image_size }/
 
       - if  related_still_images.count > 5

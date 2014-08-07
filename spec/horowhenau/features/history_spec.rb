@@ -3,12 +3,12 @@ require 'spec_helper'
 feature "History" do
 
   examples = {
-    audio: '/en/audio/2-anzac-speech-by-dominique-cooreman',
-    video: '/en/videos/57-daft-young-folk-band-perform',
-    topic: '/en/topics/196-levin-pottery-club',
-    image: '/en/images/20237-the-levin-orchid-society-show-august-2012-0241',
-    document: '/en/documents/194-page-8-50th-jubilee-commemoration-supplement',
-    web_link: '/en/web_links/23-organic-river-festival'
+    audio:    '/en/site/audio/2-anzac-speech-by-dominique-cooreman',
+    video:    '/en/site/video/58-mayors-duffys-speech-it-ended-with-a-bang',
+    topic:    '/en/site/topics/196-levin-pottery-club',
+    image:    '/en/site/images/20237-the-levin-orchid-society-show-august-2012-0241',
+    document: '/en/site/documents/194-page-8-50th-jubilee-commemoration-supplement',
+    web_link: '/en/site/web_links/25-see-page-14-of-this-pdf-for-more-information-on-james-bennie'
   }
 
   examples.each do |type, url|
