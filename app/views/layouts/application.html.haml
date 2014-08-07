@@ -51,14 +51,14 @@
           = render partial: "licenses/install" if params[:controller] == 'licenses' && %w{ index list }.include?(params[:action])
           = yield
 
-        #linkToRSS.footer_div
-          %ul
-            - rss_tag_links.each do |rss_tag_link|
-              %li= link_for_rss(:link_html => rss_tag_link, :preface => t('layouts.application.rss'), :title => stripped_title).html_safe
-
-            -# EOIN: this needs to be re-enabled when search is more understood:
-            - combined_rss_url = nil
-            %li= link_to(t('layouts.application.combined_rss'), combined_rss_url, :tabindex => '1')
+        -# Disable RSS for the moment
+        -# #linkToRSS.footer_div
+        -#   %ul
+        -#     - rss_tag_links.each do |rss_tag_link|
+        -#       %li= link_for_rss(:link_html => rss_tag_link, :preface => t('layouts.application.rss'), :title => stripped_title).html_safe
+        -#
+        -#     - combined_rss_url = nil # EOIN: this needs to be re-enabled when search is more understood:
+        -#     %li= link_to(t('layouts.application.combined_rss'), combined_rss_url, :tabindex => '1')
 
         #footer.footer_div
           - if logged_in? && @basket_admin && !@displaying_error
