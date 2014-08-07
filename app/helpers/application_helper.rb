@@ -612,13 +612,13 @@ module ApplicationHelper
       display_html = h(user.user_name)
     end
 
-
-    contributions_instead_of_website_for_anonymous = options[:show_anonymous_contribs].present? ? options[:show_anonymous_contribs] : false
-
-    url = user.anonymous? && !contributions_instead_of_website_for_anonymous ? user.website : url_for_contributions_of(user, zoom_class)
-
-    # ROB: search by user not implemented yet.
-    url = not_implemented_path()
+    options = {
+      :controller => 'search',
+      :action => 'contributed_by',
+      :user_id => user.id,
+      :controller_name_for_zoom_class => zoom_class,
+    }
+    url = search_contributed_by_path(options)
 
     url.blank? ? display_html : link_to(display_html, url)
   end
@@ -904,8 +904,8 @@ module ApplicationHelper
       :action => 'tagged',
       :tag => tag_for_url,
       :trailing_slash => true, # ?
-      :controller_name_for_zoom_class => zoom_class,
-      :urlified_name => basket.urlified_name,
+      #:controller_name_for_zoom_class => zoom_class,
+      :urlified_name => basket,
     }
     link_to h(link_text), search_tagged_path(options), :class => tag[:css_class]    
   end

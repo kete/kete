@@ -132,6 +132,7 @@
   match 'site/search/rss'    => 'search#rss',    :as => 'search_rss'
   match 'site/search/tagged' => 'search#tagged', :as => 'search_tagged'
   match 'site/search/related_to' => 'search#related_to', :as => 'search_related_to'
+  match 'site/search/contributed_by' => 'search#contributed_by', :as => 'search_contributed_by'
 
   # EOIN: I think we should change :urlified_name to :basket for all routes as it is clearer
 

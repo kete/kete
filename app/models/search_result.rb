@@ -11,6 +11,8 @@ class SearchResult
     elsif model.class == ContentItemRelation
       # related_to searches
       @model = dereference_content_item_relation(model, searched_topic_id)
+    elsif model.class == Contribution
+      @model = model.contributed_item
     else
       # tagged/etc searches
       @model = model

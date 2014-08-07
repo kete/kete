@@ -18,7 +18,8 @@ class SearchQuery
               :action,
               :tag,
               :related_item_id,
-              :related_item_type
+              :related_item_type,
+              :user_id
 
   def initialize(params)
     @controller = params[:controller]
@@ -62,8 +63,11 @@ class SearchQuery
     @page = params[:page] || 1
 
     @tag = params[:tag]
+
     @related_item_id = params[:related_item_id ]
     @related_item_type = params[:related_item_type]
+
+    @user_id = params[:user_id]
   end
 
   def missing_search_terms?
@@ -108,6 +112,7 @@ class SearchQuery
     hash[:search_terms]      = search_terms if search_terms.present?
     hash[:related_item_id]   = related_item_id if related_item_id.present?
     hash[:related_item_type] = related_item_type if related_item_type.present?
+    hash[:user_id]           = user_id if user_id.present?
 
     hash
   end

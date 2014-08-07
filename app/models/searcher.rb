@@ -42,6 +42,22 @@ class Searcher
     }
   end
 
+  def contributed_by
+    # This could also be scopped by contributor_role: "contributor"/"creator"
+    distinct_contributions = Contribution.select("DISTINCT user_id, contributed_item_type, contributed_item_id").
+                                          order(:contributed_item_type, :contributed_item_id).
+                                          where(user_id: query.user_id)
+    {
+      "Topic"          => distinct_contributions.where(contributed_item_type: "Topic"),
+      "StillImage"     => distinct_contributions.where(contributed_item_type: "StillImage"),
+      "AudioRecording" => distinct_contributions.where(contributed_item_type: "AudioRecording"),
+      "Video"          => distinct_contributions.where(contributed_item_type: "Video"),
+      "WebLink"        => distinct_contributions.where(contributed_item_type: "WebLink"),
+      "Document"       => distinct_contributions.where(contributed_item_type: "Document"),
+      "Comment"        => distinct_contributions.where(contributed_item_type: "Comment"),
+    } 
+  end
+
   def related
     if related_to_class == "Topic"
       related_to_topics_hash

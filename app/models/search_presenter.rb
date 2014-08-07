@@ -39,7 +39,12 @@ class SearchPresenter
   end
 
   def count_for(content_item_type)
-    @results_by_class[content_item_type].count # => Fixnum
+    if query.action == "contributed_by"
+      # distinct statments in Content's SQL break arel's count.
+      @results_by_class[content_item_type].size # => Fixnum
+    else
+      @results_by_class[content_item_type].count # => Fixnum
+    end
   end
 
   def link_path_params_for(content_item_type)
