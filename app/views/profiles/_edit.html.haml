@@ -10,7 +10,6 @@
     %fieldset
       - ZOOM_CLASSES.each do |zoom_class|
         = rules_check_box_tag('moderated_except', zoom_class, zoom_class_plural_humanize(zoom_class), true)
-= toggle_elements_applicable(rules_label_id('fully_moderated'), '==', 'true', 'moderated_except', false, false)
 .form-element
   = rules_allowed_check_box('show_privacy_controls')
   %label= t 'profiles.edit.privacy_controls'
@@ -98,4 +97,3 @@
     t('profiles.edit.private_item_notification_example'))                                                                                       |
   = rules_check_box_tag('private_item_notification_show_title', '1', t('profiles.edit.private_item_notification_show_title'))
   = rules_check_box_tag('private_item_notification_show_short_summary', '1', t('profiles.edit.private_item_notification_show_short_summary'))
-= rules_section_javascript

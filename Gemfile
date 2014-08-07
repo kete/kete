@@ -4,11 +4,12 @@ ruby '2.0.0'
 
 gem "rails", "3.2.16"
 
+# EOIN: TODO: I suspect there are gems mentioned in here that rails pulls in implicitly - we should remove them from here if so.
+
 # Heroku needs this
 gem 'rails_12factor', group: :production
 
-# EOIN: TODO: I suspect there are gems mentioned in here that rails pulls in implicitly - we should remove them from here if so.
-gem 'prototype-rails'
+gem 'jquery-rails', '~> 3.1.1'
 gem 'rails-erd'
 gem 'haml'
 gem 'acts_as_licensed', github: 'kete/acts_as_licensed', branch: 'rails3-gem'
@@ -70,8 +71,12 @@ gem 'mini_exiftool', '< 2.0.0'
 
 gem 'rmagick', "2.12.2", :require => 'RMagick'
 
+group :development do
+  gem 'quiet_assets'
+end
+
 group :development, :test do
-  gem "sqlite3", "~> 1.3.7"
+  # gem "sqlite3", "~> 1.3.7"
   gem "rspec-rails", "~> 3.0.0"
   gem "factory_girl_rails", "~> 4.3.0"
   gem "capybara", "~> 2.4.1"
@@ -180,4 +185,3 @@ group :assets do
   gem 'coffee-rails', '~> 3.2.1'
   gem 'uglifier', '>= 1.0.3'
 end
-

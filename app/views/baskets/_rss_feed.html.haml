@@ -7,11 +7,6 @@
         = text_field_tag "#{field_name_prefix}[][title]", (rss_feed.title if rss_feed), :size => 45
         %span.remove_feed_link_span
         - remove_feed_link = link_to(t('baskets.rss_feed.remove_feed'), '#', :class => 'remove_feed_link')
-        = javascript_tag("                                                                               |
-          $$('.remove_feed_link_span').last().update(#{::ActiveSupport::JSON.encode(remove_feed_link)}); |
-          $$('.remove_feed_link').last().observe('click', function(event) {                              |
-            this.up('div.basket_rss_feed').remove(); event.stop();                                       |
-          });")                                                                                          |
     %tr
       %th{:title => t('baskets.rss_feed.url_description')}= t('baskets.rss_feed.url')
       %td{:colspan => "3"}= text_field_tag "#{field_name_prefix}[][url]", (rss_feed.url if rss_feed), :size => 45

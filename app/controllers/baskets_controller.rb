@@ -18,10 +18,6 @@ class BasketsController < ApplicationController
 
   include WorkerControllerHelpers
 
-  # Kieran Pilkington, 2008/11/26
-  # Instantiation of Google Map code for location settings
-  include GoogleMap::Mapper
-
   # include TaggingController
 
   include AnonymousFinishedAfterFilter
@@ -49,7 +45,7 @@ class BasketsController < ApplicationController
     @number_per_page = 100
     @cache_key_hash = { :rss => "basket_list" }
     @baskets = Basket.all(:limit => @number_per_page, :order => 'id DESC')
-    
+
     respond_to do |format|
       format.xml
     end

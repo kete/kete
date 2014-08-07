@@ -126,12 +126,6 @@
           file_private_radio_options(@item).merge({ :tabindex => '1',                                                 |
           :label => t('topics.form.file_privacy'),                                                                    |
           :example => t('topics.form.file_privacy_example') })                                                        |
-        = javascript_tag "                                                                                                                      |
-            if ($('#{@item_type.to_s}_private_true') && $('#{@item_type.to_s}_private_false')) {                                                |
-              $('#{@item_type.to_s}_private_true').observe('click', function(){ $('#{@item_type.to_s}_file_private_true').checked = true; });   |
-              $('#{@item_type.to_s}_private_false').observe('click', function(){ $('#{@item_type.to_s}_file_private_false').checked = true; }); |
-            }                                                                                                                                   |
-          "                                                                                                                                     |
       - else
         = form.hidden_field :file_private, :value => file_private
     - if show_notification_controls?(@basket)
@@ -144,14 +138,6 @@
                     :role_type => Basket.level_value_from(@basket.setting(:private_item_notification)).downcase.pluralize), |
         :checked => skip }                                                                                                  |
       - if show_privacy_controls_for?(@item, @basket)
-        = javascript_tag "                                                            |
-            $('#{@item_type.to_s}_private_true').observe('change', function(event) {  |
-              $('skip_email_notification_div').show();                                |
-            });                                                                       |
-            $('#{@item_type.to_s}_private_false').observe('change', function(event) { |
-              $('skip_email_notification_div').hide();                                |
-            });                                                                       |
-          "                                                                           |
     - if @item_type == :web_link && (show_privacy_controls_for?(@item, @basket) || !@editing)
       = form.text_field :url, { :tabindex => '1', :label => t('topics.form.url'), :required => true }
       - if @force_url
@@ -198,17 +184,7 @@
         :item_key => @item_type.to_s })                              |
   - if SystemSetting.enable_maps? && @maps_callbacks.present?
     - @maps_callbacks.each do |map_callback|
-      = javascript_tag(map_callback)
-    = javascript_tag("Gmaps.loadMaps();") if params[:action] == 'render_item_form'
   - if show_privacy_controls_for?(@item, @basket)
-    = javascript_tag "                                                            |
-        $('#{@item_type.to_s}_private_true').observe('change', function(event) {  |
-          $$('.private_only').each(function(field) { field.show(); });            |
-        });                                                                       |
-        $('#{@item_type.to_s}_private_false').observe('change', function(event) { |
-          $$('.private_only').each(function(field) { field.hide(); });            |
-        });                                                                       |
-      "                                                                           |
   - if @editing
     = form.text_field :version_comment, { :tabindex => '1',                               |
       :value => (!params[@item_type].blank? ? params[@item_type][:version_comment] : ''), |

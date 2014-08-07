@@ -109,7 +109,6 @@ require 'xmlsimple'
 
     include ExtendedContentHelpers
 
-    include GoogleMap::ExtendedContent
 
     # DEPRECATED
     # Provide an instance of Nokogiri::XML::Builder.new for creating the XML representation
@@ -254,7 +253,7 @@ require 'xmlsimple'
           elsif ['map', 'map_address'].member?(extended_field.ftype)
             values = field.first # pull the hash out of the array it's been put into
           else
-            
+
             # For singular values we expect something like:
             # ['field_name', 'value'] (in normal cases), or [['field_name', 'value']] (in the case of hierarchical choices)
             # So, we need to adjust the format to be consistent with the expected output..
@@ -986,18 +985,18 @@ require 'xmlsimple'
     end
 
     # XML does not allow tag names to begin with numbers so '<1></1>' is not
-    # valid XML. The old Kete uses this format (somehow!) so we filter <1> to 
+    # valid XML. The old Kete uses this format (somehow!) so we filter <1> to
     # <position_1> for XML conversion.
     def add_xml_fix(xml_ish)
       return nil if xml_ish.nil?
       xml_ish.gsub(/<(\/?)(\d+)>/, '<\1position_\2>')
     end
 
-    def remove_xml_fix(in_hash) 
+    def remove_xml_fix(in_hash)
       out_hash = Hash.new
 
-      in_hash.each do |k,v| 
-        new_k = tweaked_key(k) 
+      in_hash.each do |k,v|
+        new_k = tweaked_key(k)
         new_v = v.dup
 
         if new_v.kind_of?(Hash)
@@ -1006,12 +1005,12 @@ require 'xmlsimple'
           out_hash[new_k] = new_v
         end
       end
-      
+
       out_hash
     end
 
-    def tweaked_key(k) 
-      if k =~ /\Aposition_(\d)+\z/ 
+    def tweaked_key(k)
+      if k =~ /\Aposition_(\d)+\z/
         $1   # special case: "position_1" -> "1"
       else
         k

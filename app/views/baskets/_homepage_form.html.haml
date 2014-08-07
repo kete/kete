@@ -78,21 +78,3 @@
     %label= t 'baskets.homepage_form.rss_feeds'
     %fieldset
       = render 'basket_feeds_fields', :feeds => @basket.feeds
-= setupEnableDisableFunctions
-= toggle_elements_applicable('basket_index_page_redirect_to_all', |
-  '==', '', 'depth1')                                             |
--#
-= toggle_elements_applicable('basket_index_page_topic_is_entire_page', |
-  '!', '', 'depth2', true)                                             |
--#
-= toggle_elements_applicable('basket_index_page_topic_is_entire_page', |
-  '!', '', 'depth3', true)                                             |
-- # checkboxes are different in that they
-- # dont have a changing value, they are either checked or not so
-- # the true param tells it this element
-- # is a checkbox, and the ! says we want to show the depth2 if its not checked
-  = toggle_elements_applicable('basket_index_page_number_of_recent_topics', |
-    '>', '0', 'depth4')                                                     |
-  -#
-  = toggle_elements_applicable('basket_index_page_number_of_tags', |
-    '>', '0', 'depth5')                                            |

@@ -226,25 +226,4 @@
       .form-element
         = check_box 'settings', 'private_item_notification_show_short_summary', {:checked => current_value_of('private_item_notification_show_short_summary').to_s == 'true', :tabindex => '1'}, 'true', 'false'
         %label.inline{:for => "settings_private_item_notification_show_short_summary"}= t 'baskets.form.private_item_notification_show_short_summary'
-  = setupEnableDisableFunctions(true)
-  = toggle_elements_applicable('settings_fully_moderated', |
-    '==', 'true', 'settings_moderated_except')             |
-  -#
-  = javascript_tag "if ($('private_item_notification')) {                         |
-      $('basket_show_privacy_controls_true').observe('change', function(event) {  |
-        $('private_item_notification').show();                                    |
-      });                                                                         |
-      $('basket_show_privacy_controls_false').observe('change', function(event) { |
-        $('private_item_notification').hide();                                    |
-      });                                                                         |
-      if ($('basket_show_privacy_controls_')) {                                   |
-        #{@site_basket.show_privacy_controls? ?                                   |
-        "$('basket_show_privacy_controls_').observe('change', function(event) {   |
-          $('private_item_notification').show();                                  |
-        });" :                                                                    |
-        "$('basket_show_privacy_controls_').observe('change', function(event) {   |
-          $('private_item_notification').hide();                                  |
-        });"}                                                                     |
-      }                                                                           |
-    }"                                                                            |
   %strong= basket_preferences_inheritance_message

@@ -28,13 +28,11 @@
                      :alt => t('index_page.selected_image.return_to_grid'),   |
                      :class => 'slideshow_grid'),                             |
       :id => 'stop_slideshow', :href => '')                                   |
-    = javascript_tag("setupRelatedImagesSlideshowStopButton();")
   = content_tag('a', image_tag('slideshow_pause.gif',                             |
                    :alt => t('index_page.selected_image.play_pause_slideshow'),   |
                    :title => t('index_page.selected_image.play_pause_slideshow'), |
                    :class => 'slideshow_pause'),                                  |
     :id => 'play_pause_slideshow', :href => '')                                   |
-  = javascript_tag("setupRelatedImagesSlideshowPauseButton();")
   - if next_url.blank?
     = image_tag('blank.png', :class => 'slideshow_next')
   - else

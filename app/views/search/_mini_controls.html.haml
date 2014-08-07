@@ -45,7 +45,6 @@
           != topic_type_select_with_indent('topic_type', nil, TopicType.find(1).full_set,
             :name, :name, (clear_values ? SystemSetting.search_selected_topic_type : scope.topic_type), {},
             [[t('search.mini_controls.any_topic_type'), '']])
-          = toggle_topic_types_field_js_helper_for(id)
 
     - if display_search_field_for?(type, SystemSetting.display_basket_field)
       %tr

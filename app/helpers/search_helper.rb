@@ -90,38 +90,6 @@ module SearchHelper
     !@existing_ids.nil? && @existing_ids.member?(item.id)
   end
 
-  def enable_start_unless_all_types_js_helper
-    javascript_tag "
-    function toggleDisabledStart(event) {
-      var element = Event.element(event);
-
-      if ( element.options[element.selectedIndex].value != \"all\" ) {
-        $('start').disabled = false;
-      } else {
-        $('start').value = 'first';
-        $('start').disabled = true;
-      }
-    }
-
-    $('zoom_class').observe('change', toggleDisabledStart);"
-  end
-
-  def enable_end_unless_all_types_js_helper
-    javascript_tag "
-    function toggleDisabledStart(event) {
-      var element = Event.element(event);
-
-      if ( element.options[element.selectedIndex].value != \"all\" ) {
-        $('end').disabled = false;
-      } else {
-        $('end').value = 'last';
-        $('end').disabled = true;
-      }
-    }
-
-    $('zoom_class').observe('change', toggleDisabledStart);"
-  end
-
   def topic_related_thumbs_from(still_images_hash, options = { })
     image_tag_string = String.new
     image_tag_string += "<ul class=\"images-list\">" if options[:as_image_list]
@@ -199,7 +167,7 @@ module SearchHelper
 
   # Methods to replace the old and complex search routes. These should now pass
   # variables as query params.
-  def basket_all_topic_type_path(*args) 
-    search_all_path(*args) 
-  end 
+  def basket_all_topic_type_path(*args)
+    search_all_path(*args)
+  end
 end

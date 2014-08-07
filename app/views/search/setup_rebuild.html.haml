@@ -3,7 +3,7 @@
 %h2= h(@title)
 /
   <h3>Some things to keep in mind:</h3>
-  
+
   <ul>
   <li><p></p><p></p></li>
   <li><p></p><p></p></li>
@@ -35,13 +35,11 @@
         %label{:for => "start"}= t 'search.setup_rebuild.start_rebuild_at'
         = text_field_tag 'start', 'first', :size => '6', :disabled => true
         .form-example= t 'search.setup_rebuild.start_rebuild_at_description'
-    = enable_start_unless_all_types_js_helper
     #end_field
       .form-element
         %label{:for => "end"}= t 'search.setup_rebuild.end_rebuild_at'
         = text_field_tag 'end', 'last', :size => '6', :disabled => true
         .form-example= t 'search.setup_rebuild.end_rebuild_at_description'
-    = enable_end_unless_all_types_js_helper
     .form-element
       = submit_tag t('search.setup_rebuild.start_rebuild')
 

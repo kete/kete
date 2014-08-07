@@ -55,9 +55,3 @@
   %label= t 'profiles.homepage_options.rss_or_atom_feeds'
   = rules_fieldset_tag('feeds_attributes')
   = render 'baskets/basket_feeds_fields', :field_name_prefix => "#{@rule_locals[:values_field_prefix]}[feeds_attributes]"
-= toggle_elements_applicable('record_rules_homepage_options_values_index_page_redirect_to_all', '==', '', 'depth1', false, false)
-= toggle_elements_applicable('record_rules_homepage_options_values_index_page_topic_is_entire_page', '!', '', 'depth2', true, false)
-= toggle_elements_applicable('record_rules_homepage_options_values_index_page_topic_is_entire_page', '!', '', 'depth3', true, false)
-= toggle_elements_applicable('record_rules_homepage_options_values_index_page_number_of_recent_topics', '>', '0', 'depth4', false, false)
-= toggle_elements_applicable('record_rules_homepage_options_values_index_page_number_of_tags', '>', '0', 'depth5', false, false)
-= rules_section_javascript
