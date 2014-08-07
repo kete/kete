@@ -3,7 +3,7 @@
 
   = related_items_summary
 
-  - if related && !related[:still_images].blank?
+  - if related && related[:still_images].present?
     .topic-result-related-images
       = topic_related_thumbs_from(related[:still_images],
                                   :link_to => source_url,

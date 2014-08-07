@@ -27,9 +27,24 @@ class SearchResult
   end
 
   def short_summary
-    (model.respond_to? :short_summary) ? model.short_summary : ""
+    summary = ""
+
+    if model.respond_to? :description
+      summary = model.description
+    elsif model.respond_to? :short_summary
+      summary =  model.short_summary
+    end
+
+    summary.sanitize.truncate(180, omission: '...')
   end
 
+  def has_related_items?
+    return false if model.is_a? Comment
+    model.respond_to? :related_items_hash
+  end
+
+  # This method mimics the return value of the Zoom controller code that built
+  # the related items structure in the old Kete.
   def related
     related = {}
 
