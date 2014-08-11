@@ -17,7 +17,7 @@ feature "Contributed By Searching" do
     visit "/en/site/topics/196-levin-pottery-club"
     within_contributor_area.click_link "Rosalie"
 
-    expect(page).to have content "Topics (83)"
+    expect(page).to have_content "Topics (83)"
     expect(first_result_text).to have_content "The Petersen Estate"
 
     click_on "Images (258)"
@@ -35,5 +35,6 @@ feature "Contributed By Searching" do
     click_on "Documents (4)"
     expect(first_result_text).to have_content "June Gillies"
 
-    expect(page).to have content "Discussions (0)"
+    expect(page).to have_content "Discussions (0)"
+  end
 end
