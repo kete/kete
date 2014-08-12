@@ -16,8 +16,6 @@ feature "Related Items" do
       end
 
       within find("#detail-linked-topics") do
-        click_on("Related_items_collapsed")
-
         sub_page = page
         expect(sub_page).to have_content "Topics (2)"
         expect(sub_page).to have_content "Volunteers Demolition Team at Work"
@@ -25,8 +23,6 @@ feature "Related Items" do
       end
 
       within find("#detail-linked-video") do
-        click_on "Related_items_collapsed"
-        
         sub_page = page
         expect(sub_page).to have_content "Video (3)"
         expect(sub_page).to have_content "Salute to Fund Raisers"

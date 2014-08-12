@@ -1,7 +1,19 @@
-%ul.nav-list
-  - html = String.new
-  - Basket.order_tags_by_options.each_with_index do |tag_order, index|
-    - sort_direction = search_sorting_controls_for(tag_order[0], tag_order[1], (tag_order[1] == @default_order), (tag_order[1] == 'alphabetical' ? 'asc' : 'desc'), true)
-    - html += content_tag('li', sort_direction, :class => "#{'first' if index == 0}#{' selected' if @order == tag_order[1]}") + "\n"
+-number_class = "first"
+-if @order == "number"
+  - number_class = "first selected"
+-elsif @order == "alphabetical"
+  - alphabetical_class = "selected"
+-elsif @order == "latest"
+  - latest_class = "selected"
+-elsif @order == "random"
+  - random_class = "selected"
 
-  = html.html_safe
+%ul.nav-list
+  %li{class: number_class}
+    %a(href="/en/site/tags/list?direction=desc&order=number&page=#{@current_page}") Most Popular #{@order}
+  %li{class: alphabetical_class}
+    %a(href="/en/site/tags/list?direction=desc&order=alphabetical&page=#{@current_page}") By Name 
+  %li{class: latest_class}
+    %a(href="/en/site/tags/list?direction=desc&order=latest&page=#{@current_page}") Latest 
+  %li{class: random_class}
+    %a(href="/en/site/tags/list?direction=asc&order=random&page=#{@current_page}") Random
