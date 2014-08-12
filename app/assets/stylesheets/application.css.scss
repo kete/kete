@@ -1,10 +1,10 @@
-//= require kete-print
-//= require base
-//= require comment
-//NO require redbox
-//= require horowhenua_theme
-
+//= require active_scaffold
 @import "compass";
+
+@import "base";
+@import "comment";
+@import "theme";
+@import "print";
 
 // Make a clearfix helper
 .clearfix {
