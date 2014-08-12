@@ -14,7 +14,6 @@ module AuthenticatedSystem
     # Returns true or false if the user is logged in.
     # Preloads @current_user with the user model if they're logged in.
     def logged_in?
-      puts "YYYYYYYYYYYYYY in logged_in?"
       current_user != :false
     end
 
@@ -26,9 +25,6 @@ module AuthenticatedSystem
         maybe_user = User.find_by_id(session[:user])
         @current_user = (maybe_user.nil? ? :false : maybe_user)
       end
-      puts "XXXXXXXXXXXXXXXXXXXXXXXXX"
-      puts @current_user
-      puts "XXXXXXXXXXXXXXXXXXXXXXXXX"
 
       if @current_user != :false && @current_user.anonymous? && session[:anonymous_user].present?
         if session[:anonymous_user][:email].present?

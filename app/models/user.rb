@@ -6,6 +6,13 @@ class User < ActiveRecord::Base
   # that they are importing
   has_many :imports, :dependent => :destroy
 
+  ###################################
+  # from acts_as_authorized_user
+  # has_many :roles_users, roles_relationship_opts.merge(:dependent => :delete_all)
+  # has_many :roles, :through => :roles_users
+  ###################################
+
+
   # Walter McGinnis, 2007-03-23
   # added activation supporting code
   # it's use it set by REQUIRE_ACTIVATION in config/environment.rb
@@ -255,9 +262,12 @@ class User < ActiveRecord::Base
   end
 
   def basket_permissions
-    permissions = roles.find_all_by_authorizable_type('Basket').
+    permissions = roles.where(authorizable_type: 'Basket').
                         select("roles.id AS role_id, roles.name AS role_name, baskets.id AS basket_id, baskets.urlified_name AS basket_urlified_name, baskets.name AS basket_name").
                         joins("INNER JOIN baskets on roles.authorizable_id = baskets.id")
+
+    # EOIN: example of the SQL this query generates
+    # "SELECT roles.id AS role_id, roles.name AS role_name, baskets.id AS basket_id, baskets.urlified_name AS basket_urlified_name, baskets.name AS basket_name FROM \"roles\" INNER JOIN \"roles_users\" ON \"roles\".\"id\" = \"roles_users\".\"role_id\" INNER JOIN baskets on roles.authorizable_id = baskets.id WHERE \"roles_users\".\"user_id\" = 956 AND \"roles\".\"authorizable_type\" = 'Basket'"
 
     permissions_hash = Hash.new
     permissions.each do |permission|
@@ -295,7 +305,7 @@ class User < ActiveRecord::Base
     value = nil unless anonymous?
     @website ||= value
   end
-  
+
   protected
 
   # supporting activation

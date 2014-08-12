@@ -8,9 +8,9 @@ class WebLinksController < ApplicationController
     redirect_to_search_for('WebLink')
   end
 
-  def list
-    index
-  end
+  # def list
+  #   index
+  # end
 
   def show
     @web_link = prepare_item_and_vars
@@ -54,7 +54,7 @@ class WebLinksController < ApplicationController
     version_after_update = @web_link.max_version + 1
 
     @web_link.attributes = params[:web_link]
-    @successful = @web_link.save 
+    @successful = @web_link.save
 
     if @successful
 

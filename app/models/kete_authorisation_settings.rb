@@ -3,7 +3,7 @@ module KeteAuthorisationSettings
 
   # ROB:  We're going to switch from Kete's custom login system to devise.
   #
-  #       Here's a nice place to dump code in the existing system that might 
+  #       Here's a nice place to dump code in the existing system that might
   #       be needed.
   #
   #       Probably these will be from app/controllers/application_controller.rb

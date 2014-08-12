@@ -90,7 +90,7 @@ class MembersController < ApplicationController
         else
           @members = @role.users.order('roles_users.created_at desc').limit(50)
         end
-          
+
       else
         options = { :include => :contributions, :order => order, :page => params[:page], :per_page => 20 }
         options[:conditions] = not_anonymous_condition unless site_admin?
@@ -98,7 +98,7 @@ class MembersController < ApplicationController
         @members = @role.users.paginate(options)
       end
 
-      @all_roles = UserRole.all(:conditions => ["role_id = ? AND user_id IN (?)", @role, @members])
+      @all_roles = RolesUser.all(:conditions => ["role_id = ? AND user_id IN (?)", @role, @members])
       @role_creations = Hash.new
       @members.each do |member|
         @role_creations[member.id] = @all_roles.reject { |r| r.user_id != member.id }.first.created_at
@@ -313,7 +313,7 @@ class MembersController < ApplicationController
   def rss
     @cache_key_hash = { :rss => "#{@current_basket.urlified_name}_members_list" }
     list_members_in('member')
-    
+
     respond_to do |format|
       format.xml
     end

@@ -1,5 +1,5 @@
 class BasketSettings
-  # ROB:  This class is here to remove settings stored in the acts_as_configurable 
+  # ROB:  This class is here to remove settings stored in the acts_as_configurable
   #       table.
   #       This would be per-object settings with targetable_type = "basket"
 
@@ -29,7 +29,19 @@ class BasketSettings
       show_add_links: false,
       replace_existing_footer: false,
       additional_footer_content: "",
+
+      # Possible values of memberlist_policy:
+      #     'all users'
+      #     'logged in'
+      #     'at least member'
+      #     'logged in'
+      #     'at least member'
+      #     'all users'
+      memberlist_policy: "all users",
+
       show_action_menu: "all users"  # ROB: all users can see "Item Details"/"Edit"/... menu for items in a basket.
     }
   end
 end
+
+

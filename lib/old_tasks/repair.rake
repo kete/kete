@@ -278,7 +278,7 @@ namespace :kete do
         user_roles = member_role.user_roles.all(:include => :user)
         user_roles.each do |role|
           next if role.created_at == role.user.created_at
-          UserRole.update_all({:created_at => role.user.created_at}, {:user_id => role.user, :role_id => member_role})
+          RolesUser.update_all({:created_at => role.user.created_at}, {:user_id => role.user, :role_id => member_role})
           puts "Updated role creation date for #{role.user.user_name}"
         end
         puts "Synced basket role creation dates"
@@ -384,7 +384,7 @@ namespace :kete do
             db.host = '127.0.0.1' if db.host == 'localhost'
             db.save!
           end
-            
+
           p "changed zoom db hosts updated to 127.0.0.1"
         else
           p "no change to zoom db host necessary"

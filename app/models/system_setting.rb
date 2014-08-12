@@ -108,9 +108,9 @@ class SystemSetting
     #  false
     #end
 
-    #def basket_creation_policy
-    #  "closed"
-    #end
+    def basket_creation_policy
+     "closed"
+    end
 
     def related_items_position_default
       "inset"
