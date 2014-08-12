@@ -64,7 +64,7 @@
   ####################################################
 
   get   ':urlified_name/account/index' => 'account#index'
-  post  ':urlified_name/account/sign_up' => 'account#signup'
+  match ':urlified_name/account/signup' => 'account#signup', via: [:get, :post]
   match ':urlified_name/account/login' => 'account#login', via: [:get, :post]
   get   ':urlified_name/account/disclaimer/:id' => 'account#disclaimer'
 

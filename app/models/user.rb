@@ -6,13 +6,6 @@ class User < ActiveRecord::Base
   # that they are importing
   has_many :imports, :dependent => :destroy
 
-  ###################################
-  # from acts_as_authorized_user
-  # has_many :roles_users, roles_relationship_opts.merge(:dependent => :delete_all)
-  # has_many :roles, :through => :roles_users
-  ###################################
-
-
   # Walter McGinnis, 2007-03-23
   # added activation supporting code
   # it's use it set by REQUIRE_ACTIVATION in config/environment.rb
@@ -167,7 +160,7 @@ class User < ActiveRecord::Base
 
     self.remember_token_expires_at = 2.weeks.from_now.utc
     self.remember_token            = encrypt("#{email}--#{remember_token_expires_at}")
-    save(false)
+    save(validate: false)
   end
 
   def forget_me
@@ -176,7 +169,7 @@ class User < ActiveRecord::Base
 
     self.remember_token_expires_at = nil
     self.remember_token            = nil
-    save(false)
+    save(validate: false)
   end
 
   # make ids look like this for urls

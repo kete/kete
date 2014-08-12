@@ -26,6 +26,12 @@ GIT
       sax-machine (>= 0.0.12)
 
 GIT
+  remote: git://github.com/kete/rails-authorization-plugin.git
+  revision: ab7259d323e35d16321121566d71689648c2bf2a
+  specs:
+    authorization (1.0.12)
+
+GIT
   remote: git://github.com/says/acts_as_soft_deletable.git
   revision: 17b5ca72307be459c70cad6e7f9990be055e8d3a
   specs:
@@ -72,7 +78,6 @@ GEM
       activerecord (>= 3.0)
     addressable (2.3.5)
     arel (3.0.3)
-    authorization (1.0.12)
     avatar (0.2.0)
     awesome_nested_set (2.1.6)
       activerecord (>= 3.0.0)
@@ -290,7 +295,7 @@ DEPENDENCIES
   acts_as_list (~> 0.3.0)
   acts_as_soft_deletable!
   acts_as_versioned!
-  authorization (~> 1.0.12)
+  authorization!
   avatar
   awesome_nested_set (~> 2.1.6)
   awesome_print
@@ -299,7 +304,6 @@ DEPENDENCIES
   capybara (~> 2.4.1)
   chronic
   coffee-rails (~> 3.2.1)
-  compass
   compass-rails
   database_cleaner
   debugger
@@ -334,7 +338,7 @@ DEPENDENCIES
   rmagick (= 2.12.2)
   routing-filter (~> 0.3.1)
   rspec-rails (~> 3.0.0)
-  sass-rails (~> 3.2.5)
+  sass-rails
   uglifier (>= 1.0.3)
   unicode
   validates_xml (= 1.0.3)

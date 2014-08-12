@@ -1,6 +1,12 @@
 //= require kete-print
 //= require base
-//= require comment 
-//= require redbox 
+//= require comment
+//NO require redbox
 //= require horowhenua_theme
 
+@import "compass";
+
+// Make a clearfix helper
+.clearfix {
+  @include clearfix;
+}

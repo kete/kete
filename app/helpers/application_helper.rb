@@ -152,7 +152,7 @@ module ApplicationHelper
     basket_count = 0
     Basket.except_certain_baskets(baskets).limit(baskets_limit).all.each do |basket|
       basket_count += 1
-      html += li_with_correct_class(basket_count) + link_to_index_for(basket) + '</li>'
+      html += li_with_correct_class(basket_count) + link_to_index_for(basket)
     end
 
     if baskets_limit < total_baskets_count
@@ -312,10 +312,10 @@ module ApplicationHelper
       link += " - #{role[:role_name].humanize}" if options[:show_roles] && !role.blank?
       basket_options = options[:show_options] ? link_to_actions_available_for(basket, options) : ''
       basket_options = '<div class="profile_basket_options">[<ul>' + basket_options + '</ul>]</div>' unless basket_options.blank?
-      html += content_tag('li', basket_options + link, :class => css_class)
+      html += content_tag('li', basket_options.html_safe + link.html_safe, :class => css_class)
       css_class = css_class == row1 ? row2 : row1
     end
-    html
+    html.html_safe
   end
 
   def header_add_basket_link
@@ -736,17 +736,17 @@ module ApplicationHelper
 
   # Link to the related items of a certain item
   def link_to_related_items_of(item, zoom_class, options={}, location={})
-    options = { 
-      :link_text => t('application_helper.link_to_related_items_of.link_text', :item_title => item.title) 
+    options = {
+      :link_text => t('application_helper.link_to_related_items_of.link_text', :item_title => item.title)
     }.merge(options)
 
     path_options =  {
-      :related_item_id => item.id, 
-      :related_item_type => item.class.name, 
+      :related_item_id => item.id,
+      :related_item_type => item.class.name,
       :urlified_name => @site_basket.urlified_name,
       :controller_name_for_zoom_class => zoom_class,
     }.merge(location)
-    
+
     related_item_url = search_related_to_path(path_options)
 
     link_to options[:link_text], related_item_url, { :class => 'small' }
@@ -866,7 +866,7 @@ module ApplicationHelper
       #:controller_name_for_zoom_class => zoom_class,
       :urlified_name => basket,
     }
-    link_to h(link_text), search_tagged_path(options), :class => tag[:css_class]    
+    link_to h(link_text), search_tagged_path(options), :class => tag[:css_class]
   end
   alias :link_to_tagged_in_basket :link_to_tagged
 
@@ -1392,6 +1392,7 @@ module ApplicationHelper
       html_string += ' class="first"'
     end
     html_string += ">"
+    html_string.html_safe
   end
 
   def link_to_original_of(item, phrase=t('application_helper.link_to_original_of.phrase'), skip_warning=false)

@@ -74,7 +74,6 @@ group :development do
 end
 
 group :development, :test do
-  # gem "sqlite3", "~> 1.3.7"
   gem "rspec-rails", "~> 3.0.0"
   gem "factory_girl_rails", "~> 4.3.0"
   gem "capybara", "~> 2.4.1"
@@ -147,13 +146,6 @@ gem 'http_url_validation_improved'
 
 gem 'active_scaffold', '~> 3.3.3'
 
-# EOIN: From my reading of acts_as_authenticated source it seems that is just a
-# generator that adds stuff to the user model, applicaiton controller etc. so I
-# don't think we need it in this Gemfile
-# gem "acts_as_authenticated", "2.0", :git => "git://github.com/gundestrup/acts_as_authenticated.git" # 2007-06-06
-
-gem 'authorization', '~> 1.0.12'
-
 
 #gem "acts_as_licensed", "#.#.#", :git => "git://github.com/shuber/sortable.git" # 2008-07-10
 gem "acts_as_soft_deletable", :git => "git://github.com/says/acts_as_soft_deletable.git" # 2009-02-16
@@ -178,12 +170,34 @@ gem 'will_paginate', '~> 3.0.5'
 # RABID: should be removed:
 gem 'validates_xml',                '1.0.3' # >> 2007-06-06 
 
-# This group-block should probably be here, but stops Heroku compiling.
-#group :assets, :development, :horowhenua do
-  gem 'sass-rails', '~> 3.2.5'
-  gem 'compass'
-  gem 'compass-rails'
-#end
+# ##############
+# Authentication
+# ##############
+
+# Use auth in the old Kete included `acts_as_authenticated` gem which just
+# provided some scaffolds that added code to your User model (and others).
+# Since it does not contain any code itself we don't need to load it here but
+# you might want to read its source to figure out how auth works:
+# http://github.com/gundestrup/acts_as_authenticated
+
+# The authorization gem has not been updated in years. We took this fork from a
+# fork that had some fixes applied to make it work with Ruby 2.0. We are using
+# our own fork to be sure that the repo will not be deleted in future.
+gem 'authorization', github: 'kete/rails-authorization-plugin'
+
+
+# ######
+# Assets
+# ######
+
+# * These are usually in the :assets group in Rails 3.x projects but Heroku needs
+#   them so we put them in the default (:production) group.
+# * The only down-side to having them in production is that if you forget to
+#   precompile your assets then Rails 3.x will compile them on the fly in
+#   production. Rails 4 no longer does this.
+
+gem 'sass-rails'
+gem 'compass-rails'
 
 group :assets do
   gem 'coffee-rails', '~> 3.2.1'
