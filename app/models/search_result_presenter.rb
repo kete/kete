@@ -1,4 +1,4 @@
-class SearchResult
+class SearchResultPresenter
 
   include ActionView::Helpers::UrlHelper
 

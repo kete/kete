@@ -26,7 +26,7 @@ class SearchPresenter
 
   def results
     paginated_results_for(query.content_item_type).map do |model|
-      SearchResult.new(model, query.searched_topic_id)
+      SearchResultPresenter.new(model, query.searched_topic_id)
     end
   end
 
@@ -49,8 +49,8 @@ class SearchPresenter
 
   def link_path_params_for(content_item_type)
     {
-      controller: @query.controller, 
-      action: @query.action, 
+      controller: @query.controller,
+      action: @query.action,
       params: query_params_for(content_item_type)
     }
   end
@@ -262,7 +262,7 @@ class SearchPresenter
   end
 
   def link_text_for(content_item_type)
-    count = count_for(content_item_type) 
+    count = count_for(content_item_type)
     text = content_item_type_to_tab_nav_name(content_item_type)
     "#{text} (#{number_with_delimiter(count)})"
   end
