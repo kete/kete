@@ -3,9 +3,12 @@
 -else
   - visible_class = "related-items-section"
 
+- item_class = item_type.singularize.camelize
+- related_to_path = search_related_to_path({related_item_id: @topic.id, related_item_type: 'Topic', controller_name_for_zoom_class: item_class, urlified_name: @topic.basket.urlified_name})
+
 %div{:id => "detail-linked-#{item_type}", :class => visible_class}
   %h4
-    %a.small{:href => not_implemented_path}
+    %a.small{:href => related_to_path }
       = "#{item_type.titleize} (#{related_items.count})"
       %img.expand_collapse_image{:alt => "Related_items_collapsed", :src => "/assets/related_items_collapsed.gif?1323654851"}/
   %hr/
@@ -21,4 +24,4 @@
     - if  related_items.count > 5
       - overflow = related_items.count - 5
       %li.more
-        %a.small{:href => not_implemented_path}=  "#{overflow} more like this &gt;&gt;".html_safe
+        %a.small{:href => related_to_path}=  "#{overflow} more like this &gt;&gt;".html_safe

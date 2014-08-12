@@ -571,13 +571,13 @@ module ApplicationHelper
       display_html = h(user.user_name)
     end
 
-
-    contributions_instead_of_website_for_anonymous = options[:show_anonymous_contribs].present? ? options[:show_anonymous_contribs] : false
-
-    url = user.anonymous? && !contributions_instead_of_website_for_anonymous ? user.website : url_for_contributions_of(user, zoom_class)
-
-    # ROB: search by user not implemented yet.
-    url = not_implemented_path()
+    options = {
+      :controller => 'search',
+      :action => 'contributed_by',
+      :user_id => user.id,
+      :controller_name_for_zoom_class => zoom_class,
+    }
+    url = search_contributed_by_path(options)
 
     url.blank? ? display_html : link_to(display_html, url)
   end
@@ -736,18 +736,18 @@ module ApplicationHelper
 
   # Link to the related items of a certain item
   def link_to_related_items_of(item, zoom_class, options={}, location={})
-    # EOIN: currently related items are implemented as a search (presumably because zoom was considered faster than MySQL
-    # should related items be implemented as a scope on the model?
+    options = { 
+      :link_text => t('application_helper.link_to_related_items_of.link_text', :item_title => item.title) 
+    }.merge(options)
 
-    # EOIN: commenting this out until the time comes to re-implement it
-    # options = { :link_text => t('application_helper.link_to_related_items_of.link_text',
-    #                             :item_title => item.title) }.merge(options)
-    # location = { :urlified_name => @site_basket.urlified_name,
-    #              :controller_name_for_zoom_class => zoom_class_controller(zoom_class),
-    #              :source_controller_singular => zoom_class_controller(item.class.name).singularize,
-    #              :source_item => item }.merge(location)
-    # related_item_url = (location[:privacy_type] == 'private') ? basket_all_private_related_to_path(location) : basket_all_related_to_path(location)
-    related_item_url = not_implemented_path()
+    path_options =  {
+      :related_item_id => item.id, 
+      :related_item_type => item.class.name, 
+      :urlified_name => @site_basket.urlified_name,
+      :controller_name_for_zoom_class => zoom_class,
+    }.merge(location)
+    
+    related_item_url = search_related_to_path(path_options)
 
     link_to options[:link_text], related_item_url, { :class => 'small' }
   end
@@ -858,20 +858,15 @@ module ApplicationHelper
     tag_for_url = tag[:to_param].blank? ? tag.to_param : tag[:to_param]
     link_text = options[:link_text] || tag[:name]
 
-    # EOIN: zoom_class used to be an arg but I removed it
-
-    # EOIN: TODO: waiting for tag search to be merged before I fix this.
-    # ROB: search by tag not implemented yet.
-    link_to h(link_text), not_implemented_path()
-    #link_to h(link_text),
-    #        { :controller => 'search',
-    #          :action => 'all',
-    #          :tag => tag_for_url,
-    #          :trailing_slash => true,
-    #          :controller_name_for_zoom_class => zoom_class_controller(zoom_class),
-    #          :urlified_name => basket.urlified_name,
-    #          :privacy_type => get_acceptable_privacy_type_for(nil, nil, "private") },
-    #        :class => tag[:css_class]
+    options = {
+      :controller => 'search',
+      :action => 'tagged',
+      :tag => tag_for_url,
+      :trailing_slash => true, # ?
+      #:controller_name_for_zoom_class => zoom_class,
+      :urlified_name => basket,
+    }
+    link_to h(link_text), search_tagged_path(options), :class => tag[:css_class]    
   end
   alias :link_to_tagged_in_basket :link_to_tagged
 
