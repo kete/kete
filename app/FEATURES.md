@@ -10,7 +10,7 @@ Things we would like to remove
 
 # Changed
 
-* Replace commenting feature wiht a feedback email address
+* Replace commenting feature with a feedback email address
 
 # Not implementing/hidden features
 
@@ -23,9 +23,13 @@ Things we would like to remove
     * The whole kete install now uses one licence for all items
 * Related items slideshows
 * Search result slideshows (at the top of an individual search result page)
-* Any related items functionality that is not just displaying clickabl links to
+* Any related items functionality that is not just displaying clickable links to
   them
 * Remove all old JS
 * Comments will be read only - we will show existing comments but not allow
   users to create new ones
 * There will be not interface for editing the XML schemas that go with items.
+* Public/private flagging---from now on everything is public.
+* OEmbed (embed in external pages)
+* OAI (data format used by Digital NZ for tracking Kete content)
+
