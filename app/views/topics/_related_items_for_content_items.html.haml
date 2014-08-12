@@ -1,3 +1,5 @@
+- related_to_path = search_related_to_path({related_item_id: item.id, related_item_type: item.class.name, controller_name_for_zoom_class: 'Topic', urlified_name: item.basket.urlified_name})
+  
 #detail-linked-topics{:class => "related-items-section" }
   %ul
     - last_five_related_items = related_items.last(5).reverse
@@ -10,4 +12,4 @@
     - if  related_items.count > 5
       - overflow = related_items.count - 5
       %li.more
-        %a.small{:href => not_implemented_path}=  "#{overflow} more like this &gt;&gt;".html_safe
+        %a.small{:href => related_to_path}=  "#{overflow} more like this &gt;&gt;".html_safe

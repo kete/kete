@@ -3,9 +3,11 @@
 -else
   - visible_class = "related-items-section"
 
+- related_to_path = search_related_to_path({related_item_id: @topic.id, related_item_type: 'Topic', controller_name_for_zoom_class: 'StillImage', urlified_name: @topic.basket.urlified_name})
+
 #detail-linked-images{:class => visible_class}
   %h4
-    %a.small{:href => not_implemented_path}
+    %a.small{:href => related_to_path}
       = "Images (#{related_still_images.count})"
       %img.expand_collapse_image{:alt => "Related_items_collapsed", :src => "/assets/related_items_collapsed.gif"}/
   %hr/
@@ -23,7 +25,7 @@
       - if  related_still_images.count > 5
         - overflow = related_still_images.count - 5
         %li.more
-          %a.small{:href => not_implemented_path}=  "#{overflow} more like this &gt;&gt;".html_safe
+          %a.small{:href => related_to_path}=  "#{overflow} more like this &gt;&gt;".html_safe
 
   #related_items_slideshow.slideshow_div
 

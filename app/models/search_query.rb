@@ -16,7 +16,10 @@ class SearchQuery
               :page,
               :controller,
               :action,
-              :tag
+              :tag,
+              :related_item_id,
+              :related_item_type,
+              :user_id
 
   def initialize(params)
     @controller = params[:controller]
@@ -60,6 +63,11 @@ class SearchQuery
     @page = params[:page] || 1
 
     @tag = params[:tag]
+
+    @related_item_id = params[:related_item_id ]
+    @related_item_type = params[:related_item_type]
+
+    @user_id = params[:user_id]
   end
 
   def missing_search_terms?
@@ -78,6 +86,20 @@ class SearchQuery
     "All results in #{content_item_type.pluralize.humanize} for '#{search_terms}' ...other query info here..."
   end
 
+  def related_item_topic_query?
+    @action == 'related_to' && related_item_type == 'Topic'
+  end
+
+  def searched_topic_id
+    # Give the topic's id if items related to that topic where searched for.
+    if related_item_topic_query?
+      related_item_id
+    else
+      nil
+    end
+  end
+
+
   private
 
   def to_hash
@@ -86,8 +108,11 @@ class SearchQuery
       controller_name_for_zoom_class: content_item_type
     }
 
-    hash[:tag] = tag if tag.present?
-    hash[:search_terms] = search_terms if search_terms.present?
+    hash[:tag]               = tag if tag.present?
+    hash[:search_terms]      = search_terms if search_terms.present?
+    hash[:related_item_id]   = related_item_id if related_item_id.present?
+    hash[:related_item_type] = related_item_type if related_item_type.present?
+    hash[:user_id]           = user_id if user_id.present?
 
     hash
   end
