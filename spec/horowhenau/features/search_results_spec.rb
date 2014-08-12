@@ -20,41 +20,41 @@ feature "Browse search results" do
   it "Searching works" do
     expect(page.status_code).to be(200)
     first_result = find('.generic-result-wrapper', match: :first)
-    expect(first_result.find('.generic-result-header')).to have_text('Levin Pottery Club')
+    expect(first_result.find('.generic-result-header')).to have_text('Manakau School 125th Jubilee 2013 and Dedication Ceremony at the completion of the Jubilee')
   end
 
   it "Related items summary is displayed" do
     first_result = find('.generic-result-wrapper', match: :first)
-    expect(first_result.find('.generic-result-related')).to have_text('Related: 4 Topics and 13 Still images')
-    expect(first_result.find('.topic-result-related-images')).to have_css('img', count: 5)
+    expect(first_result.find('.generic-result-related')).to have_text('Related: 28 Topics and 3 Still images')
+    expect(first_result.find('.topic-result-related-images')).to have_css('img', count: 3)
   end
 
   it "Related items images load" do
     first_result = find('.generic-result-wrapper', match: :first)
-    expect(first_result.find('.topic-result-related-images')).to have_css('img', count: 5)
+    expect(first_result.find('.topic-result-related-images')).to have_css('img', count: 3)
   end
 
   it "Searching by type works" do
     expect(page).to have_content "Topics (2,203)"
-    expect(first_result_text).to have_content "Levin Pottery Club"
+    expect(first_result_text).to have_content "Manakau School 125th Jubilee 2013 and Dedication Ceremony at the completion of the Jubilee"
 
     click_on "Images (21,792)"
-    expect(first_result_text).to have_content "Shannon School 2010"
+    expect(first_result_text).to have_content "Manakau School 125th Jubilee Rev Kahira Rau blessing the totem poles"
 
     click_on "Audio (106)"
-    expect(first_result_text).to have_content "Horowhenua song"
+    expect(first_result_text).to have_content "Paraparaumu, 1942 by Bernard Smith 22 April 2012"
 
     click_on "Video (92)"
-    expect(first_result_text).to have_content "Daft Young Folk band perform"
+    expect(first_result_text).to have_content "Behind the Hedges 2013 - Garden 5 Music for Lunch smaller file"
 
     click_on "Web links (244)"
-    expect(first_result_text).to have_content "Opiki Suspendion Bridge - web link"
+    expect(first_result_text).to have_content "'Loveable rogue' as colourful as his forgeries"
 
     click_on "Documents (2,677)"
-    expect(first_result_text).to have_content "Horowhenua County Council 100 years - Page 35"
+    expect(first_result_text).to have_content "Scrapbook 6 Page 42"
 
     click_on "Discussions (386)"
-    expect(first_result_text).to have_content "Thanks Jo!"
+    expect(first_result_text).to have_content "Pending Moderation"
   end
 end
 

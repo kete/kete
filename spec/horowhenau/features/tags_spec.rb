@@ -48,16 +48,16 @@ feature "Content-Item list" do
     end
 
     expect(page).to have_content "Topics (6)"
-    expect(page).to have_content "Te Takere begins ... with an open day in the old Countdown building"
+    expect(page).to have_content "Te Takere"
 
     click_on "Images (37)"
-    expect(page).to have_content "The beginning of Te Takere - the old Countdown 1"
+    expect(page).to have_content "Replacing the roof gutter"
 
     click_on "Video (5)"
-    expect(page).to have_content "Mayors Duffy's speech - It ended with a bang!"
+    expect(page).to have_content "Final blessing of rock in hole at Te Takere"
 
     click_on "Documents (3)"
-    expect(page).to have_content "Levin Library centenary"
+    expect(page).to have_content "Stone man rescued"
 
     expect(page).to have_content "Audio (0)"
     expect(page).to have_content "Web links (0)"
