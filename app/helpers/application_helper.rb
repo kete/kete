@@ -854,8 +854,7 @@ module ApplicationHelper
 
   def link_to_tagged(tag, basket = @site_basket, options = {})
     # tag = { name: ..., id: ... , to_param: ..., css_class: ... }
-
-    tag_for_url = tag[:to_param].blank? ? tag.to_param : tag[:to_param]
+    tag_for_url = tag[:name]
     link_text = options[:link_text] || tag[:name]
 
     options = {
@@ -895,7 +894,7 @@ module ApplicationHelper
     item_tags = item.tags
     logger.debug("what are item_tags: " + item_tags.inspect)
     item_tags.each_with_index do |tag,index|
-      html_string += link_to_tagged(tag, item.class.name)
+      html_string += link_to_tagged(tag, item.basket)
       html_string += ", " unless item_tags.size == (index + 1)
     end
     html_string += "</p>"

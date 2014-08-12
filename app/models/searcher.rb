@@ -18,27 +18,26 @@ class Searcher
   end
 
   def all
-    all_results = PgSearch::Document.where('1=1') 
     {
-      "Topic"          => all_results.where(searchable_type: "Topic"),
-      "StillImage"     => all_results.where(searchable_type: "StillImage"),
-      "AudioRecording" => all_results.where(searchable_type: "AudioRecording"),
-      "Video"          => all_results.where(searchable_type: "Video"),
-      "WebLink"        => all_results.where(searchable_type: "WebLink"),
-      "Document"       => all_results.where(searchable_type: "Document"),
-      "Comment"        => all_results.where(searchable_type: "Comment")
+      "Topic"          => Topic.order("updated_at DESC"),
+      "StillImage"     => StillImage.order("updated_at DESC"),
+      "AudioRecording" => AudioRecording.order("updated_at DESC"),
+      "Video"          => Video.order("updated_at DESC"),
+      "WebLink"        => WebLink.order("updated_at DESC"),
+      "Document"       => Document.order("updated_at DESC"),
+      "Comment"        => Comment.order("updated_at DESC"),
     }
   end
 
   def tagged
     {
-      "Topic"          => Topic.tagged_with(query.tag),
-      "StillImage"     => StillImage.tagged_with(query.tag),
-      "AudioRecording" => AudioRecording.tagged_with(query.tag),
-      "Video"          => Video.tagged_with(query.tag),
-      "WebLink"        => WebLink.tagged_with(query.tag),
-      "Document"       => Document.tagged_with(query.tag),
-      "Comment"        => Comment.tagged_with(query.tag)
+      "Topic"          => Topic.tagged_with(query.tag).order("updated_at DESC"),
+      "StillImage"     => StillImage.tagged_with(query.tag).order("updated_at DESC"),
+      "AudioRecording" => AudioRecording.tagged_with(query.tag).order("updated_at DESC"),
+      "Video"          => Video.tagged_with(query.tag).order("updated_at DESC"),
+      "WebLink"        => WebLink.tagged_with(query.tag).order("updated_at DESC"),
+      "Document"       => Document.tagged_with(query.tag).order("updated_at DESC"),
+      "Comment"        => Comment.tagged_with(query.tag).order("updated_at DESC"),
     }
   end
 

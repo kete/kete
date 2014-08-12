@@ -241,7 +241,7 @@ class Basket < ActiveRecord::Base
 
     tags = ActsAsTaggableOn::Tag.select('tags.id, tags.name, count(taggings.id) AS taggings_count')
       .where(conditions)
-      .group('taggings.tag_id, tags.id, tags.name')
+      .group('taggings.tag_id, tags.id, tags.name, taggings.created_at')
       .joins(:taggings)
       .order(find_tag_order)
       .offset(tag_offset)
