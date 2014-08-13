@@ -61,7 +61,7 @@ module ApplicationHelper
     end
 
     if SystemSetting.enable_gravatar_support?
-      return avatar_tag(user, { :size => 50, :rating => 'G', :gravatar_default_url => "/images/no-avatar.png" }, options)
+      return avatar_tag(user, { size: 50, rating: 'G', gravatar_default_url: "#{request.protocol}#{request.host_with_port}#{asset_path("no-avatar.png")}" }, options)
     end
 
     return ''
@@ -327,10 +327,11 @@ module ApplicationHelper
       basket_text = t('application_helper.header_add_basket_link.add_basket')
     end
 
-    link_to_unless_current( basket_text,
-                            :controller => 'baskets',
-                            :action => 'new',
-                            :urlified_name => @site_basket.urlified_name)
+    html = link_to_unless_current( basket_text,
+                                   :controller => 'baskets',
+                                   :action => 'new',
+                                   :urlified_name => @site_basket.urlified_name)
+    html.html_safe
   end
 
   def render_baskets_as_menu

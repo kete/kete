@@ -56,7 +56,6 @@
   ####################################################
   # Various RSS feeds not associated with search #####
 
-  match ':urlified_name/baskets/rss.:format' => 'baskets#rss', :as => :basket_list_rss
   match ':urlified_name/moderate/rss.:format' => 'moderate#rss', :as => :basket_moderate_rss
   match ':urlified_name/members/rss.:format' => 'members#rss', :as => :basket_moderate_rss
 
@@ -74,10 +73,22 @@
   ####################################################
   # terrible hacks ###################################
 
-  match 'site/baskets/choose_type' => 'baskets#choose_type'
-  match 'site/baskets/list' => 'baskets#list'
 
   match 'site/index_page/selected_image' => 'index_page#selected_image'
+  get 'site/moderate/list' => 'moderate#list'
+  get 'site/members/list' => 'members#list'
+  get 'site/importers/list' => 'importers#list'
+
+  # Baskets
+  # #######
+
+  get ':urlified_name/baskets/edit' => 'baskets#edit'
+  get ':urlified_name/baskets/list' => 'baskets#list'
+  # match ':urlified_name/baskets/rss.:format' => 'baskets#rss', :as => :basket_list_rss
+  # match ':urlified_name/baskets/choose_type' => 'baskets#choose_type'
+  # post  ':urlified_name/baskets/create' => 'baskets#create'
+  # post  ':urlified_name/baskets/update' => 'baskets#update'
+  # post  ':urlified_name/baskets/destory' => 'baskets#destory'
 
 
   # Link Helpers

@@ -241,7 +241,7 @@ class SystemSetting
     end
 
     def enable_gravatar_support
-      false
+      true
     end
 
     def contact_url
