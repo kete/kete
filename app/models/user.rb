@@ -160,7 +160,7 @@ class User < ActiveRecord::Base
 
     self.remember_token_expires_at = 2.weeks.from_now.utc
     self.remember_token            = encrypt("#{email}--#{remember_token_expires_at}")
-    save(false)
+    save(validate: false)
   end
 
   def forget_me
@@ -169,7 +169,7 @@ class User < ActiveRecord::Base
 
     self.remember_token_expires_at = nil
     self.remember_token            = nil
-    save(false)
+    save(validate: false)
   end
 
   # make ids look like this for urls
@@ -255,9 +255,12 @@ class User < ActiveRecord::Base
   end
 
   def basket_permissions
-    permissions = roles.find_all_by_authorizable_type('Basket').
+    permissions = roles.where(authorizable_type: 'Basket').
                         select("roles.id AS role_id, roles.name AS role_name, baskets.id AS basket_id, baskets.urlified_name AS basket_urlified_name, baskets.name AS basket_name").
                         joins("INNER JOIN baskets on roles.authorizable_id = baskets.id")
+
+    # EOIN: example of the SQL this query generates
+    # "SELECT roles.id AS role_id, roles.name AS role_name, baskets.id AS basket_id, baskets.urlified_name AS basket_urlified_name, baskets.name AS basket_name FROM \"roles\" INNER JOIN \"roles_users\" ON \"roles\".\"id\" = \"roles_users\".\"role_id\" INNER JOIN baskets on roles.authorizable_id = baskets.id WHERE \"roles_users\".\"user_id\" = 956 AND \"roles\".\"authorizable_type\" = 'Basket'"
 
     permissions_hash = Hash.new
     permissions.each do |permission|
@@ -295,7 +298,7 @@ class User < ActiveRecord::Base
     value = nil unless anonymous?
     @website ||= value
   end
-  
+
   protected
 
   # supporting activation

@@ -63,19 +63,21 @@
   ####################################################
   ####################################################
 
+  get   ':urlified_name/account/index' => 'account#index'
+  match ':urlified_name/account/signup' => 'account#signup', via: [:get, :post]
+  match ':urlified_name/account/login' => 'account#login', via: [:get, :post]
+  get   ':urlified_name/account/disclaimer/:id' => 'account#disclaimer'
+
+  match ':urlified_name/account/show_captcha' => 'account#show_captcha'
+  match ':urlified_name/account/forgot_password' => 'account#forgot_password'
 
   ####################################################
   # terrible hacks ###################################
 
-  match 'account/sign_up' => 'account#signup'
-  match 'account/login' => 'account#login'
   match 'site/baskets/choose_type' => 'baskets#choose_type'
   match 'site/baskets/list' => 'baskets#list'
-  match 'site/account/forgot_password' => 'account#forgot_password'
 
   match 'site/index_page/selected_image' => 'index_page#selected_image'
-  match 'site/account/show_captcha' => 'account#show_captcha'
-  match 'site/account/disclaimer/:id' => 'account#disclaimer'
 
 
   # Link Helpers

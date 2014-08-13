@@ -1,10 +1,4 @@
 GIT
-  remote: git://github.com/gundestrup/acts_as_authenticated.git
-  revision: ec1b24708054bc340539994f1553c06e97f50dcf
-  specs:
-    acts_as_authenticated (2.0)
-
-GIT
   remote: git://github.com/jwhitehorn/acts_as_versioned.git
   revision: 44dfe632ba8c97c786cbc172a2da18a41b17f668
   specs:
@@ -30,6 +24,12 @@ GIT
       loofah (>= 0.3.1)
       nokogiri (> 0.0.0)
       sax-machine (>= 0.0.12)
+
+GIT
+  remote: git://github.com/kete/rails-authorization-plugin.git
+  revision: ab7259d323e35d16321121566d71689648c2bf2a
+  specs:
+    authorization (1.0.12)
 
 GIT
   remote: git://github.com/says/acts_as_soft_deletable.git
@@ -78,7 +78,6 @@ GEM
       activerecord (>= 3.0)
     addressable (2.3.5)
     arel (3.0.3)
-    authorization (1.0.11)
     avatar (0.2.0)
     awesome_nested_set (2.1.6)
       activerecord (>= 3.0.0)
@@ -143,8 +142,6 @@ GEM
       bundler (~> 1.0)
       rails (>= 3, < 5)
     fssm (0.2.10)
-    gmaps4rails (1.4.2)
-      json
     haml (4.1.0.alpha.2)
       tilt
     hike (1.2.3)
@@ -293,13 +290,12 @@ DEPENDENCIES
   RedCloth
   active_scaffold (~> 3.3.3)
   acts-as-taggable-on (~> 3.3.0)
-  acts_as_authenticated (= 2.0)!
   acts_as_configurable (= 0.0.8)
   acts_as_licensed!
   acts_as_list (~> 0.3.0)
   acts_as_soft_deletable!
   acts_as_versioned!
-  authorization (= 1.0.11)
+  authorization!
   avatar
   awesome_nested_set (~> 2.1.6)
   awesome_print
@@ -308,14 +304,12 @@ DEPENDENCIES
   capybara (~> 2.4.1)
   chronic
   coffee-rails (~> 3.2.1)
-  compass
   compass-rails
   database_cleaner
   debugger
   debugger-xml
   factory_girl_rails (~> 4.3.0)
   figaro (~> 0.7.0)
-  gmaps4rails (= 1.4.2)
   haml
   hpricot
   htmlentities
@@ -344,7 +338,7 @@ DEPENDENCIES
   rmagick (= 2.12.2)
   routing-filter (~> 0.3.1)
   rspec-rails (~> 3.0.0)
-  sass-rails (~> 3.2.5)
+  sass-rails
   uglifier (>= 1.0.3)
   unicode
   validates_xml (= 1.0.3)

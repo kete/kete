@@ -35,7 +35,7 @@
                 = (li_with_correct_class(tool_count) + t('.view') + link_to( t('.comments', :count => @comments.size), @url_to_comments)).html_safe
               - tool_count += 1
         - if logged_in? && (permitted_to_edit_basket_homepage_topic? || (@current_basket.show_privacy_controls_with_inheritance? && permitted_to_view_private_items?))
-          #moderator-tools
+          #moderator-tools.clearfix
             %ul
               - if permitted_to_edit_basket_homepage_topic?
                 = li_with_correct_class(tool_count) + link_to(t('.edit'), :action => 'edit', :urlified_name => @topic.basket.urlified_name, :controller => 'topics', :id => @topic, :private => @topic.private? )
@@ -43,10 +43,9 @@
                 %li= link_to t('.history'), :action => 'history', :urlified_name => @topic.basket.urlified_name, :controller => 'topics', :id => @topic, :private => @topic.private?
               - if @current_basket.show_privacy_controls_with_inheritance? && permitted_to_view_private_items?
                 = render :partial => 'topics/privacy_chooser', :locals => { :item => @topic }
-            %div{:style => "clear:both;"}
       - else
         - if @basket_admin
-          #moderator-tools
+          #moderator-tools.clearfix
             %ul
               %li= link_to t('.create_homepage_topic'),            |
                   :urlified_name => @current_basket.urlified_name, |
@@ -54,7 +53,6 @@
                   :action => 'new',                                |
                   :index_for_basket => @current_basket.id,         |
                   :return_to_homepage => true                      |
-            %div{:style => "clear:both;"}
 
       - if @recent_topics_limit > 0 && @recent_topics_items.size > 0 && !@current_basket.index_page_recent_topics_as.blank?
         .home-feature-wrapper
@@ -100,9 +98,7 @@
       %div{:class => "secondary-content-section-wrapper"}
         %div{:class => "secondary-content-section", :id => "basket-options"}
           .secondary-content-section-content
-            %ul
-            %ul= links
-            %div{:style => "clear:both;"}
+            %ul= links.html_safe
           .secondary-content-section-footer-wrapper
             .secondary-content-section-footer &nbsp;
 

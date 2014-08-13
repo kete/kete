@@ -19,7 +19,12 @@ module AuthenticatedSystem
 
     # Accesses the current user from the session.
     def current_user
-      @current_user ||= (session[:user] && User.find_by_id(session[:user])) || :false
+      # @current_user ||= (session[:user] && User.find_by_id(session[:user])) || :false
+      unless @current_user
+        # maybe_user will be nil if session[:user] does not exist or we fail to find the User in the DB
+        maybe_user = User.find_by_id(session[:user])
+        @current_user = (maybe_user.nil? ? :false : maybe_user)
+      end
 
       if @current_user != :false && @current_user.anonymous? && session[:anonymous_user].present?
         if session[:anonymous_user][:email].present?
