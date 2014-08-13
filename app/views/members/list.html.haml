@@ -1,9 +1,8 @@
 - @title = t('members.list.title', :basket_name => @current_basket.name)
-= render(:partial => "baskets/actions_menu",                |
-  :locals => { :item => @current_basket }) if @basket_admin |
--#
-= render(:partial => "topics/content_wrapper_start", |
-  :locals => {:style_classes => 'full-width' })      |
+
+= render(:partial => "baskets/actions_menu", :locals => { :item => @current_basket }) if @basket_admin
+= render(:partial => "topics/content_wrapper_start", :locals => {:style_classes => 'full-width' })
+
 %p
   %h2{:style => "display:inline;"}= @title
   [ #{link_to_membership_request_of(@current_basket, :plus_divider => ' | ', :as_list_element => false)}  #{link_to_unless_current pluralize(@members_count, t('members.list.member'), t('members.list.members')), :type => 'member'}

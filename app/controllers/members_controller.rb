@@ -78,7 +78,7 @@ class MembersController < ApplicationController
     # members are paginated
     # since we are paginating we need to break a part
     # what the @current_basket.has_members method would do
-    @role = Role.where(:name => role_name, :authorizable_type => 'Basket', :authorizable_id => @current_basket)
+    @role = Role.where(:name => role_name, :authorizable_type => 'Basket', :authorizable_id => @current_basket).first
     if @role.nil?
       # no members
       @members = User.paginate_by_id(0, :page => 1)

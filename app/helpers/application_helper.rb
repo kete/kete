@@ -519,6 +519,7 @@ module ApplicationHelper
 
     html = "<li class='#{options[:class]}'>#{html}</li>" if !html.blank? && options[:as_list_element]
     html += options[:plus_divider]
+    html.html_safe
   end
 
   def link_to_basket_contact_for(basket, include_name = true)
@@ -537,7 +538,7 @@ module ApplicationHelper
     options[:class] = nil unless html.blank?
     html += link_to_members_of(basket, options)
     html += "<li>" + link_to_basket_contact_for(basket, false) + "</li>" if @current_basket.allows_contact_with_inheritance?
-    html
+    html.html_safe
   end
 
   def link_to_cancel(from_form = "")
@@ -1566,6 +1567,8 @@ module ApplicationHelper
     else
       link_to_text = "#{sort_text}"
     end
+
+    link_to_text = link_to_text.html_safe
 
     # create the link with text, current direction image (if needed), and pointing to opposite direction (if needed)
     if remote_link

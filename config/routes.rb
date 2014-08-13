@@ -76,7 +76,7 @@
 
   match 'site/index_page/selected_image' => 'index_page#selected_image'
   get 'site/moderate/list' => 'moderate#list'
-  get 'site/members/list' => 'members#list'
+  get ':urlified_name/members/list' => 'members#list'
   get 'site/importers/list' => 'importers#list'
 
   # Baskets
