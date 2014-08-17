@@ -18,10 +18,12 @@
         %li{:class => tab_classes.join(" ")}
       - else
         %li
-      = link_to "<span class=\"#{tab_action}-link\">#{tab_label}</span>", |
-        {:action => tab_action,                                           |
-        :controller => tab_controller,                                    |
-        :id => item}, :tabindex => '1'                                    |
+      = link_to "<span class=\"#{tab_action}-link\">#{tab_label}</span>".html_safe,
+                { :action => tab_action,
+                  :controller => tab_controller,
+                  :id => item},
+                :tabindex => '1'
+
       - tab_count += 1
     - if @tech_admin
       %li{:class => ((params[:controller] == 'importers') ? 'selected' : '')}

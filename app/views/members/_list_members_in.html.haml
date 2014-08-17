@@ -7,41 +7,41 @@
       %td.member_avatar= avatar_for user
       %td.member_username
         = link_to_contributions_of(user,'Topic', :show_anonymous_contribs => true)
-        = "<br />(#{user.login})" if @site_admin && user.user_name != user.login
+        != "<br />(#{user.login})" if @site_admin && user.user_name != user.login
       %td.member_joined
         = @role_creations[user.id].to_s(:long)
-      - if @site_admin
-        %td= mail_to h(user.email)
-      - else
-        %td
+
+      %td
+        = @site_admin ? mail_to(h(user.email)) : ""
+
       - if @basket_admin
+
         - users_possible_roles = possible_roles
         - users_admin_actions = admin_actions
+
         - unless @listing_type == 'admin'
-        - if ['site_admin', 'tech_admin'].include?(@listing_type) && @current_basket == @site_basket
-        - users_possible_roles.delete('tech_admin') if user.has_role?('tech_admin')
-        - users_possible_roles.delete('site_admin') if user.has_role?('site_admin')
-        - end
+          - if ['site_admin', 'tech_admin'].include?(@listing_type) && @current_basket == @site_basket #c
+            - users_possible_roles.delete('tech_admin') if user.has_role?('tech_admin')
+            - users_possible_roles.delete('site_admin') if user.has_role?('site_admin')
         - else
-        - # we don't want to allow admins to change roles if they are the only one
-        - if @current_basket != @site_basket && !@current_basket.more_than_one_basket_admin?
-        - users_possible_roles = Hash.new
-        - end
-        - end
+          - # we don't want to allow admins to change roles if they are the only one
+          - if @current_basket != @site_basket && !@current_basket.more_than_one_basket_admin? # d
+            - users_possible_roles = Hash.new
+
         - if user.anonymous?
-        - # we also don't want anonymous users to be able to have more than member role
-        - users_possible_roles = Hash.new
-        - users_admin_actions = Hash.new
-        - end
-        = render :partial =>'possible_roles',       |
-          :locals => { :user => user,               |
-          :role_key => @listing_type,               |
-          :possible_roles => users_possible_roles } |
-        -#
-        = render :partial =>'admin_actions',      |
-          :locals => { :user => user,             |
-          :role_key => @listing_type,             |
-          :admin_actions => users_admin_actions } |
+          - # we also don't want anonymous users to be able to have more than member role
+          - users_possible_roles = Hash.new
+          - users_admin_actions = Hash.new
+
+        = render :partial =>'possible_roles',
+                 :locals => { :user => user,
+                 :role_key => @listing_type,
+                 :possible_roles => users_possible_roles }
+
+        = render :partial =>'admin_actions',
+                 :locals => { :user => user,
+                 :role_key => @listing_type,
+                 :admin_actions => users_admin_actions }
       - else
         %td
         %td

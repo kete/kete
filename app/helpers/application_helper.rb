@@ -61,7 +61,7 @@ module ApplicationHelper
     end
 
     if SystemSetting.enable_gravatar_support?
-      return avatar_tag(user, { :size => 50, :rating => 'G', :gravatar_default_url => "/images/no-avatar.png" }, options)
+      return avatar_tag(user, { size: 50, rating: 'G', gravatar_default_url: "#{request.protocol}#{request.host_with_port}#{asset_path("no-avatar.png")}" }, options)
     end
 
     return ''
@@ -327,10 +327,11 @@ module ApplicationHelper
       basket_text = t('application_helper.header_add_basket_link.add_basket')
     end
 
-    link_to_unless_current( basket_text,
-                            :controller => 'baskets',
-                            :action => 'new',
-                            :urlified_name => @site_basket.urlified_name)
+    html = link_to_unless_current( basket_text,
+                                   :controller => 'baskets',
+                                   :action => 'new',
+                                   :urlified_name => @site_basket.urlified_name)
+    html.html_safe
   end
 
   def render_baskets_as_menu
@@ -518,6 +519,7 @@ module ApplicationHelper
 
     html = "<li class='#{options[:class]}'>#{html}</li>" if !html.blank? && options[:as_list_element]
     html += options[:plus_divider]
+    html.html_safe
   end
 
   def link_to_basket_contact_for(basket, include_name = true)
@@ -536,7 +538,7 @@ module ApplicationHelper
     options[:class] = nil unless html.blank?
     html += link_to_members_of(basket, options)
     html += "<li>" + link_to_basket_contact_for(basket, false) + "</li>" if @current_basket.allows_contact_with_inheritance?
-    html
+    html.html_safe
   end
 
   def link_to_cancel(from_form = "")
@@ -1565,6 +1567,8 @@ module ApplicationHelper
     else
       link_to_text = "#{sort_text}"
     end
+
+    link_to_text = link_to_text.html_safe
 
     # create the link with text, current direction image (if needed), and pointing to opposite direction (if needed)
     if remote_link
