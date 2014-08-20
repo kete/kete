@@ -65,7 +65,7 @@
             #basket-toolbox
               %h4= t 'layouts.application.basket_label', :basket => h(@current_basket.name)
               %p
-                = link_to_unless_current t('layouts.application.members'), { :controller => 'members', :action => 'list' }, :tabindex => '2'
+                = link_to_unless_current t('layouts.application.members'), { :controller => 'members', :action => 'list', urlified_name: @current_basket.urlified_name }, :tabindex => '2'
                 = add_ons_basket_admin_list if respond_to?(:add_ons_basket_admin_list)
           - else
             - if @tech_admin
