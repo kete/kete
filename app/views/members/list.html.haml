@@ -1,40 +1,41 @@
-- @title = t('members.list.title', :basket_name => @current_basket.name)
+.white_wrapper
+  - @title = t('members.list.title', :basket_name => @current_basket.name)
 
-= render(:partial => "baskets/actions_menu", :locals => { :item => @current_basket }) if @basket_admin
-= render(:partial => "topics/content_wrapper_start", :locals => {:style_classes => 'full-width' })
+  = render(:partial => "baskets/actions_menu", :locals => { :item => @current_basket }) if @basket_admin
+  = render(:partial => "topics/content_wrapper_start", :locals => {:style_classes => 'full-width' })
 
-%p
-  %h2{:style => "display:inline;"}= @title
-  [ #{link_to_membership_request_of(@current_basket, :plus_divider => ' | ', :as_list_element => false)}  #{link_to_unless_current pluralize(@members_count, t('members.list.member'), t('members.list.members')), :type => 'member'}
-  - if @admins_count && @admins_count > 0
-    | #{link_to_unless_current pluralize(@admins_count, t('members.list.admin'), t('members.list.admins')), :type => 'admin'}
-  - if @moderators_count && @moderators_count > 0
-    | #{link_to_unless_current pluralize(@moderators_count, t('members.list.moderator'), t('members.list.moderators')), :type => 'moderator'}
-  - if @site_admin && @current_basket == @site_basket
-    | #{link_to_unless_current pluralize(@site_admins_count, t('members.list.site_admin'), t('members.list.site_admins')), :type => 'site_admin'}
-    | #{link_to_unless_current pluralize(@tech_admins_count, t('members.list.tech_admin'), t('members.list.tech_admins')), :type => 'tech_admin'}
-  - if @basket_admin && @membership_requesteds_count && @membership_requesteds_count > 0
-    | #{link_to_unless_current pluralize(@membership_requesteds_count, t('members.list.request')), :type => 'membership_requested'}
-  - if @basket_admin && @membership_rejecteds_count && @membership_rejecteds_count > 0
-    | #{link_to_unless_current t('members.list.rejected', :count => @membership_rejecteds_count), :type => 'membership_rejected'}
-  ]
-%p
-  %table.members-list-table
-    %tr{:valign => "top"}
-      %th.member_login{:abbr => "Login", :colspan => "2"}
-        = search_sorting_controls_for(t('members.list.user_name'), 'users.resolved_name', false)
+  %p
+    %h2{:style => "display:inline;"}= @title
+    [ #{link_to_membership_request_of(@current_basket, :plus_divider => ' | ', :as_list_element => false)}  #{link_to_unless_current pluralize(@members_count, t('members.list.member'), t('members.list.members')), :type => 'member'}
+    - if @admins_count && @admins_count > 0
+      | #{link_to_unless_current pluralize(@admins_count, t('members.list.admin'), t('members.list.admins')), :type => 'admin'}
+    - if @moderators_count && @moderators_count > 0
+      | #{link_to_unless_current pluralize(@moderators_count, t('members.list.moderator'), t('members.list.moderators')), :type => 'moderator'}
+    - if @site_admin && @current_basket == @site_basket
+      | #{link_to_unless_current pluralize(@site_admins_count, t('members.list.site_admin'), t('members.list.site_admins')), :type => 'site_admin'}
+      | #{link_to_unless_current pluralize(@tech_admins_count, t('members.list.tech_admin'), t('members.list.tech_admins')), :type => 'tech_admin'}
+    - if @basket_admin && @membership_requesteds_count && @membership_requesteds_count > 0
+      | #{link_to_unless_current pluralize(@membership_requesteds_count, t('members.list.request')), :type => 'membership_requested'}
+    - if @basket_admin && @membership_rejecteds_count && @membership_rejecteds_count > 0
+      | #{link_to_unless_current t('members.list.rejected', :count => @membership_rejecteds_count), :type => 'membership_rejected'}
+    ]
+  %p
+    %table.members-list-table
+      %tr{:valign => "top"}
+        %th.member_login{:abbr => "Login", :colspan => "2"}
+          = search_sorting_controls_for(t('members.list.user_name'), 'users.resolved_name', false)
+          - if @site_admin
+            = t 'members.list.or'
+            = search_sorting_controls_for(t('members.list.login'), 'users.login', false)
+        %th.member_joined{:abbr => "Joined"}= search_sorting_controls_for(t('members.list.joined'), 'roles_users.created_at', true, 'desc')
         - if @site_admin
-          = t 'members.list.or'
-          = search_sorting_controls_for(t('members.list.login'), 'users.login', false)
-      %th.member_joined{:abbr => "Joined"}= search_sorting_controls_for(t('members.list.joined'), 'roles_users.created_at', true, 'desc')
-      - if @site_admin
-        %th.member_email{:abbr => "Email"}= search_sorting_controls_for(t('members.list.email'), 'users.email', false, 'asc')
-      - if @basket_admin
-        %th.member_change_to{:abbr => "Switch"}= t 'members.list.change_to'
-        - if !@admin_actions.blank?
-          %th.member_administrate{:abbr => "Administrate"}= t 'members.list.admin_actions'
-    = render(:partial =>'list_members_in', |
-      :locals => { :members => @members,   |
-      :possible_roles => @possible_roles,  |
-      :admin_actions => @admin_actions })  |
+          %th.member_email{:abbr => "Email"}= search_sorting_controls_for(t('members.list.email'), 'users.email', false, 'asc')
+        - if @basket_admin
+          %th.member_change_to{:abbr => "Switch"}= t 'members.list.change_to'
+          - if !@admin_actions.blank?
+            %th.member_administrate{:abbr => "Administrate"}= t 'members.list.admin_actions'
+      = render(:partial =>'list_members_in', |
+        :locals => { :members => @members,   |
+        :possible_roles => @possible_roles,  |
+        :admin_actions => @admin_actions })  |
 
