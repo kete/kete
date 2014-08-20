@@ -29,13 +29,7 @@ otherwise text butts up against sidebar */
     float: right;
 }
 /* #################################### Header #################################### */
-#header {
-    background: #7a0203 url(asset-path('/images/ketebanner.png', image)) bottom repeat-x;
-    color: white;
-    padding-top: 2em;
-    float: left;
-    width: 100%;
-}
+
 #header h1 ,
 #header p{
     display: inline;
@@ -43,8 +37,10 @@ otherwise text butts up against sidebar */
     color: white;
 }
 #header h1 a{
+    font-family: 'Contrail One', 'Open Sans', Helvetica, Arial, sans-serif;
     color: white;
-    font-size: 1em;
+    font-size: 2em;
+    font-weight: 300;
 }
 #header h1 a.basket{
     color: white;
@@ -404,6 +400,7 @@ div.two-col {
 h1,h2{
     color: #667733;
     margin: .2em;
+    font-weight: 600;
 }
 h4 {
     margin-bottom: 0;
