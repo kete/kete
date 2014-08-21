@@ -112,9 +112,9 @@
                   |
                   = link_to_unless_current t('layouts.application.rebuild'), { :urlified_name => @site_basket.urlified_name, :controller => 'search', :action => 'setup_rebuild' }, :tabindex => '2'
 
-            %p
-              = t 'layouts.application.support'
-              = link_to_unless_current t('layouts.application.documentation'), basket_index_url(:urlified_name => @documentation_basket.urlified_name), :tabindex => '2'
+              %p
+                = t 'layouts.application.support'
+                = link_to_unless_current t('layouts.application.documentation'), basket_index_url(:urlified_name => @documentation_basket.urlified_name), :tabindex => '2'
 
         #footer_custom.footer_div
         - unless @current_basket.additional_footer_content_with_inheritance.nil? || @current_basket.additional_footer_content_with_inheritance.squish.blank?
