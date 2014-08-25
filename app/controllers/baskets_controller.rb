@@ -355,15 +355,7 @@ class BasketsController < ApplicationController
 
     respond_to do |format|
       format.html { render :partial => 'topics/form', :layout => 'application' }
-      format.js do
-        render :update do |page|
-          page.replace_html 'item_form', :partial => 'topics/form'
-          page << "#{raw_tiny_mce_init}"
-          page << "tinyMCE.execCommand('mceRemoveControl', false, 'mceEditor');"
-          page << "tinyMCE.execCommand('mceAddControl', false, 'mceEditor');"
-          page << google_map_initializers if defined?(google_map_initializers)
-        end
-      end
+      format.js
     end
   end
 
