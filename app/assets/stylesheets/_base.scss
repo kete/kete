@@ -3,7 +3,7 @@ body {
     padding:0;
     font-family: 'Open Sans', Helvetica, Arial, sans-serif;
     font-size: 80%;
-    background-color: #dcdcdc;
+    background-color: #E8E8E7;
 }
 /* #################################### Content Structural Items #################################### */
 #main-content-wrapper {
@@ -79,7 +79,7 @@ ul.nav-list li{
 }
 
 ul.nav-list a{
-    color: #333;
+    color: #E8E8E7;
     font-weight: bold;
     text-decoration: none;
 }
@@ -196,7 +196,7 @@ ul#main-nav {
 }
 #content-tabs ul li.selected{
     display: inline;
-    padding: .75em 0 0.5em 1em;
+    padding: .75em 1em 0.5em 1em;
     background-color: white;
 }
 #content-tabs ul li.selected a{
@@ -402,7 +402,7 @@ div.two-col {
 }
 /* #################################### General Content Elements #################################### */
 h1,h2{
-    color: #670001;
+    color: #667733;
     margin: .2em;
 }
 h4 {
