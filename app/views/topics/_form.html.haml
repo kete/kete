@@ -45,10 +45,12 @@
         %p message
     %p.required
       %em= t 'topics.form.required_fields'
+
     - if @as_service
       = hidden_field_tag 'as_service', @as_service
       = hidden_field_tag 'service_target', @service_target
       = hidden_field_tag 'append_show_url', @append_show_url
+
     - if @item_type == :still_image
       = error_messages_for 'image_file'
       - if @editing
@@ -64,17 +66,20 @@
         = hidden_field_tag 'portrait', (params[:portrait] || params[:selected_portrait])
       - if params[:selected_portrait]
         = hidden_field_tag 'selected_portrait', params[:selected_portrait]
+
     - unless @relate_to_item.nil?
       = hidden_field_tag "relate_to_item", @relate_to_item
       = hidden_field_tag "relate_to_type", @relate_to_type
-      - unless @related_item_private.nil?
-        = hidden_field_tag "related_item_private", @related_item_private
+
     - if @item_type == :document && !params[:is_theme].nil? && @site_admin
       = hidden_field_tag "is_theme", params[:is_theme]
+
     - if @editing && @site_admin
-      = form.select 'basket_id', @baskets, {}, { :tabindex => '1', :label => t('topics.form.move_baskets') }
+      = label_tag 'basket_id', t('topics.form.move_baskets') 
+      = form.select 'basket_id', @baskets, {}, { :tabindex => '1' }
     - else
       = form.hidden_field :basket_id, :value => @basket.id
+
     - if @item_type == :topic
       - unless params[:index_for_basket].nil?
         = hidden_field_tag "index_for_basket", params[:index_for_basket]
@@ -84,75 +89,50 @@
         = render :partial => 'topic_types', :locals => { :topic_types => @topic_types }
       - else
         = form.hidden_field :topic_type_id, :value => params[:topic][:topic_type_id]
+
     = embedded_enabled_message("<p class='help'>#{t('topics.form.note')} ", " #{t('topics.form.embedded_note')}</p>") if ATTACHABLE_CLASSES.include?(zoom_class) && !@editing
-    - item_private = adding_or_editing_private_item?
-    - if show_privacy_controls_for_basket?(@basket)
-      = form.radio_button :private,
-        [ [t('topics.form.public'), false, { :label_for => "#{@item_type.to_s}_private_false",
-                              :note => t('topics.form.public_description'),
-                              :checked => (item_private ? '' : 'checked') }],
-          [t('topics.form.private'), true, { :label_for => "#{@item_type.to_s}_private_true",
-                              :note => t('topics.form.private_description'),
-                              :checked => (item_private ? 'checked' : '') }] ],
-        { :tabindex => '1', :label => t('topics.form.privacy'), :example => privacy_controls_description }
-    - else
-      = form.hidden_field :private, :value => item_private
+
     = add_ons_item_form_beginning(form)
-    = form.text_field :title, { :tabindex => '1', :label => t('topics.form.title'), :required => true }
+
+    = label_tag :title, t('topics.form.title')
+    = form.text_field :title, { :tabindex => '1', :required => true }
     - if [:document, :topic].include?(@item_type)
-      = form.text_area :short_summary, { :class => "text-area", :cols => 120, :rows => 2, :tabindex => '1',
-        :label => t('topics.form.short_summary') }
+      = label_tag :short_summary, t('topics.form.short_summary')
+      = form.text_area :short_summary, { :class => "text-area", :cols => 120, :rows => 2, :tabindex => '1' }
+
+    = label_tag :description, t('topics.form.description'), :class => 'cleared-right'
     = form.text_area :description, { :class => "mceEditor", :cols => 120, :tabindex => '1',
-      :label => t('topics.form.description'), :label_class => 'cleared-right',
       :example => "#{t('topics.form.description_example')} #{t('topics.form.description_example_exception') if @site_admin}." }
+
     - if @site_admin
-      = check_box_tag :do_not_sanitize, { :tabindex => '1',
-        :label => t('topics.form.allow_insecure_elements') }
-    - unless [:topic, :web_link].include?(@item_type)
-      - if params[@item_type] && params[@item_type][:file_private]
-        - file_private = params[@item_type][:file_private] == 'true' ? true : false
-      - elsif @editing
-        - file_private = @item.file_private?
-      - else
-        - file_private = @basket.file_private_default_with_inheritance?
-      - if show_privacy_controls_for?(@item, @basket)
-        = form.radio_button :file_private,
-          [ [t('topics.form.downloaded_by_everyone'), false,
-          { :label_for => "#{@item_type.to_s}_file_private_false",
-          :checked => (file_private ? '' : 'checked') }],
-          [t('topics.form.downloaded_by_role', :role_name => @basket.private_file_visibility_with_inheritance), true,
-          { :label_for => "#{@item_type.to_s}_file_private_true",
-          :checked => (file_private ? 'checked' : '') }] ],
-          file_private_radio_options(@item).merge({ :tabindex => '1',
-          :label => t('topics.form.file_privacy'),
-          :example => t('topics.form.file_privacy_example') })
-      - else
-        = form.hidden_field :file_private, :value => file_private
+      = label_tag :do_not_sanitize, t('topics.form.allow_insecure_elements')
+      = check_box_tag :do_not_sanitize, { :tabindex => '1' }
+
     - if show_notification_controls?(@basket)
-      <div id="skip_email_notification_div"#{"style='display:none;'" unless item_private}>
+      <div id="skip_email_notification_div"#{"style='display:none;'"}>
       - if params[@item_type] && params[@item_type][:skip_email_notification]
         - skip = (params[@item_type][:skip_email_notification] == '1' ? true : false)
       - elsif @editing
         - skip = @item.skip_email_notification
       - else
         - skip = false
-      = form.check_box :skip_email_notification, { :tabindex => '1',
-        :label => t('topics.form.skip_email_notification',
-                    :role_type => Basket.level_value_from(@basket.setting(:private_item_notification)).downcase.pluralize),
-        :checked => skip }
-      - if show_privacy_controls_for?(@item, @basket)
+      = label_tag :skip_email_notification, t('topics.form.skip_email_notification', :role_type => Basket.level_value_from(@basket.setting(:private_item_notification)).downcase.pluralize)
+      = form.check_box :skip_email_notification, { :tabindex => '1', :checked => skip }
+
     - if @item_type == :web_link && (show_privacy_controls_for?(@item, @basket) || !@editing)
-      = form.text_field :url, { :tabindex => '1', :label => t('topics.form.url'), :required => true }
+      = label :url, t('topics.form.url')
+      = form.text_field :url, { :tabindex => '1', :required => true }
       - if @force_url
         - Rails.logger.debug("what are errors: " + @item.errors.inspect)
         = form.hidden_field :force_url, :value => @force_true
+
     .form-element
       %label{:for => "#{@item_type}_tag_list"}= t 'topics.form.tags'
-      = text_field_with_auto_complete(@item_type, :tag_list, { :tabindex => '1' },
-        { :tokens => ',', :indicator => 'data_spinner_tags' })
-      <img src='/images/indicator.gif' width='16' height='16' alt='#{t 'topics.form.getting_tags'}' id='data_spinner_tags' style='display:none;' />
-- # disabling overwriting of original file for the timebeing
-- # when we support versioning of files, we'll likely re-enable this
+      = text_field(@item_type, :tag_list, { :tabindex => '1', :tokens => ',', :indicator => 'data_spinner_tags' })
+      <img src='/assets/indicator.gif' width='16' height='16' alt='#{t 'topics.form.getting_tags'}' id='data_spinner_tags' style='display:none;' />
+
+  - # disabling overwriting of original file for the timebeing
+  - # when we support versioning of files, we'll likely re-enable this
   - unless [:topic, :web_link].include?(@item_type) || @editing
     - if @item_type == :still_image
       .form-element
@@ -161,8 +141,11 @@
           %em *
         = file_field_tag 'image_file[uploaded_data]', { :id => 'image_file_uploaded_data', :tabindex => '1' }
     - else
-      = form.file_field :uploaded_data, { :tabindex => '1', :label => "#{t('topics.form.upload')} #{@item_name}", :required => true }
+      = label_tag :uploaded_data, "#{t('topics.form.upload')} #{@item_name}"
+      = form.file_field :uploaded_data, { :tabindex => '1', :required => true }
+
   = add_ons_item_form_mid(form)
+
   - if @item_type == :topic
     - @self_topic_type_and_ancestors = @editing ? @item.topic_type.self_and_ancestors :
     - TopicType.find(params[:topic][:topic_type_id]).self_and_ancestors
@@ -184,16 +167,19 @@
         :edit => @editing,
         :extended_item => @item,
         :item_key => @item_type.to_s })
+
   -# --- ROB: I don't think these were even producing any output, but they break the HAML parser.
   -#- if SystemSetting.enable_maps? && @maps_callbacks.present?
   -#  - @maps_callbacks.each do |map_callback|
   -#- if show_privacy_controls_for?(@item, @basket)
   - if @editing
+    = label_tag :version_comment, t('topics.form.comment_on_edit')
     = form.text_field :version_comment, { :tabindex => '1',
-      :value => (!params[@item_type].blank? ? params[@item_type][:version_comment] : ''),
-      :label => t('topics.form.comment_on_edit') }
+      :value => (!params[@item_type].blank? ? params[@item_type][:version_comment] : '') }
+
   = render :partial => 'topics/license_chooser_or_agreement',
     :locals => { :item => @item }
+
   - if SystemSetting.hide_related_items_position_field
     = form.hidden_field :related_items_position, :value => SystemSetting.related_items_position_default
   - else
@@ -203,12 +189,15 @@
       - position = @item.related_items_position
     - else
       - position = SystemSetting.related_items_position_default
+    = label_tag :related_items_position, t('topics.form.related_items_position')
     = form.select :related_items_position, related_items_positions,
       { :selected => position },
-      { :tabindex => '1', :label => t('topics.form.related_items_position') }
+      { :tabindex => '1' }
+
   = add_ons_item_form_end(form)
   .wrap
     = form.submit @submit_text, { :class => "save-button", :tabindex => '1' }
+
 = link_to_cancel.html_safe
 |
 \#{link_to(t('topics.form.help'), { :controller => 'index_page', :action => :help_file }, :popup => ['help', 'height=500,width=780,scrollbars=yes,top=100,left=100'], :tabindex => '1')}
