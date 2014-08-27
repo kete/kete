@@ -29,10 +29,14 @@ module ApplicationHelper
 
   # Get the integer of any given image size
   def image_size_of(string)
-    size = SystemSetting.image_sizes[string.to_sym].is_a?(String) ? \
-             SystemSetting.image_sizes[string.to_sym].split('x').first : \
-             SystemSetting.image_sizes[string.to_sym].first
-    size.gsub(/(!|>|<)/, '').to_i
+    if string.is_a? Numeric
+      string.to_i
+    else
+      size = SystemSetting.image_sizes[string.to_sym].is_a?(String) ? \
+               SystemSetting.image_sizes[string.to_sym].split('x').first : \
+               SystemSetting.image_sizes[string.to_sym].first
+      size.gsub(/(!|>|<)/, '').to_i
+    end
   end
 
   # Controls needed for Gravatar support throughout the site
