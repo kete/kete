@@ -94,19 +94,23 @@
 
     = add_ons_item_form_beginning(form)
 
-    = label_tag :title, t('topics.form.title')
-    = form.text_field :title, { :tabindex => '1', :required => true }
+    .form-element
+      = label_tag :title, t('topics.form.title')
+      = form.text_field :title, { :tabindex => '1', :required => true }
     - if [:document, :topic].include?(@item_type)
-      = label_tag :short_summary, t('topics.form.short_summary')
-      = form.text_area :short_summary, { :class => "text-area", :cols => 120, :rows => 2, :tabindex => '1' }
+      .form-element
+        = label_tag :short_summary, t('topics.form.short_summary')
+        = form.text_area :short_summary, { :class => "text-area", :cols => 120, :rows => 2, :tabindex => '1' }
 
-    = label_tag :description, t('topics.form.description'), :class => 'cleared-right'
-    = form.text_area :description, { :class => "mceEditor", :cols => 120, :tabindex => '1',
-      :example => "#{t('topics.form.description_example')} #{t('topics.form.description_example_exception') if @site_admin}." }
+    .form-element
+      = label_tag :description, t('topics.form.description'), :class => 'cleared-right'
+      = form.text_area :description, { :class => "mceEditor", :cols => 120, :tabindex => '1',
+        :example => "#{t('topics.form.description_example')} #{t('topics.form.description_example_exception') if @site_admin}." }
 
     - if @site_admin
-      = label_tag :do_not_sanitize, t('topics.form.allow_insecure_elements')
-      = check_box_tag :do_not_sanitize, { :tabindex => '1' }
+      .form-element
+        = label_tag :do_not_sanitize, t('topics.form.allow_insecure_elements')
+        = check_box_tag :do_not_sanitize, { :tabindex => '1' }
 
     - if show_notification_controls?(@basket)
       <div id="skip_email_notification_div"#{"style='display:none;'"}>
@@ -131,68 +135,68 @@
       = text_field(@item_type, :tag_list, { :tabindex => '1', :tokens => ',', :indicator => 'data_spinner_tags' })
       <img src='/assets/indicator.gif' width='16' height='16' alt='#{t 'topics.form.getting_tags'}' id='data_spinner_tags' style='display:none;' />
 
-  - # disabling overwriting of original file for the timebeing
-  - # when we support versioning of files, we'll likely re-enable this
-  - unless [:topic, :web_link].include?(@item_type) || @editing
-    - if @item_type == :still_image
-      .form-element
-        %label.required{:for => "image_file_uploaded_data"}
-          = t 'topics.form.upload_image'
-          %em *
-        = file_field_tag 'image_file[uploaded_data]', { :id => 'image_file_uploaded_data', :tabindex => '1' }
+    - # disabling overwriting of original file for the timebeing
+    - # when we support versioning of files, we'll likely re-enable this
+    - unless [:topic, :web_link].include?(@item_type) || @editing
+      - if @item_type == :still_image
+        .form-element
+          %label.required{:for => "image_file_uploaded_data"}
+            = t 'topics.form.upload_image'
+            %em *
+          = file_field_tag 'image_file[uploaded_data]', { :id => 'image_file_uploaded_data', :tabindex => '1' }
+      - else
+        = label_tag :uploaded_data, "#{t('topics.form.upload')} #{@item_name}"
+        = form.file_field :uploaded_data, { :tabindex => '1', :required => true }
+
+    = add_ons_item_form_mid(form)
+
+    - if @item_type == :topic
+      - @self_topic_type_and_ancestors = @editing ? @item.topic_type.self_and_ancestors :
+      - TopicType.find(params[:topic][:topic_type_id]).self_and_ancestors
+      - @self_topic_type_and_ancestors.each do |topic_type|
+        - form_fields = topic_type.topic_type_to_field_mappings
+        - if form_fields.size > 0
+          = render(:partial => 'extended_fields/extended_field_mapping',
+            :collection => form_fields,
+            :locals => { :form_fields => form_fields,
+            :edit => @editing,
+            :extended_item => @item,
+            :item_key => @item_type.to_s})
     - else
-      = label_tag :uploaded_data, "#{t('topics.form.upload')} #{@item_name}"
-      = form.file_field :uploaded_data, { :tabindex => '1', :required => true }
-
-  = add_ons_item_form_mid(form)
-
-  - if @item_type == :topic
-    - @self_topic_type_and_ancestors = @editing ? @item.topic_type.self_and_ancestors :
-    - TopicType.find(params[:topic][:topic_type_id]).self_and_ancestors
-    - @self_topic_type_and_ancestors.each do |topic_type|
-      - form_fields = topic_type.topic_type_to_field_mappings
+      - form_fields = @content_type.content_type_to_field_mappings
       - if form_fields.size > 0
         = render(:partial => 'extended_fields/extended_field_mapping',
           :collection => form_fields,
           :locals => { :form_fields => form_fields,
           :edit => @editing,
           :extended_item => @item,
-          :item_key => @item_type.to_s})
-  - else
-    - form_fields = @content_type.content_type_to_field_mappings
-    - if form_fields.size > 0
-      = render(:partial => 'extended_fields/extended_field_mapping',
-        :collection => form_fields,
-        :locals => { :form_fields => form_fields,
-        :edit => @editing,
-        :extended_item => @item,
-        :item_key => @item_type.to_s })
+          :item_key => @item_type.to_s })
 
-  -# --- ROB: I don't think these were even producing any output, but they break the HAML parser.
-  -#- if SystemSetting.enable_maps? && @maps_callbacks.present?
-  -#  - @maps_callbacks.each do |map_callback|
-  -#- if show_privacy_controls_for?(@item, @basket)
-  - if @editing
-    = label_tag :version_comment, t('topics.form.comment_on_edit')
-    = form.text_field :version_comment, { :tabindex => '1',
-      :value => (!params[@item_type].blank? ? params[@item_type][:version_comment] : '') }
+    -# --- ROB: I don't think these were even producing any output, but they break the HAML parser.
+    -#- if SystemSetting.enable_maps? && @maps_callbacks.present?
+    -#  - @maps_callbacks.each do |map_callback|
+    -#- if show_privacy_controls_for?(@item, @basket)
+    - if @editing
+      = label_tag :version_comment, t('topics.form.comment_on_edit')
+      = form.text_field :version_comment, { :tabindex => '1',
+        :value => (!params[@item_type].blank? ? params[@item_type][:version_comment] : '') }
 
-  = render :partial => 'topics/license_chooser_or_agreement',
-    :locals => { :item => @item }
+    = render :partial => 'topics/license_chooser_or_agreement',
+      :locals => { :item => @item }
 
-  - if SystemSetting.hide_related_items_position_field
-    = form.hidden_field :related_items_position, :value => SystemSetting.related_items_position_default
-  - else
-    - if params[@item_type] && params[@item_type][:related_items_position]
-      - position = params[@item_type][:related_items_position]
-    - elsif @editing && !@item.related_items_position.nil?
-      - position = @item.related_items_position
+    - if SystemSetting.hide_related_items_position_field
+      = form.hidden_field :related_items_position, :value => SystemSetting.related_items_position_default
     - else
-      - position = SystemSetting.related_items_position_default
-    = label_tag :related_items_position, t('topics.form.related_items_position')
-    = form.select :related_items_position, related_items_positions,
-      { :selected => position },
-      { :tabindex => '1' }
+      - if params[@item_type] && params[@item_type][:related_items_position]
+        - position = params[@item_type][:related_items_position]
+      - elsif @editing && !@item.related_items_position.nil?
+        - position = @item.related_items_position
+      - else
+        - position = SystemSetting.related_items_position_default
+      = label_tag :related_items_position, t('topics.form.related_items_position')
+      = form.select :related_items_position, related_items_positions,
+        { :selected => position },
+        { :tabindex => '1' }
 
   = add_ons_item_form_end(form)
   .wrap

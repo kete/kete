@@ -13,11 +13,12 @@
     - # EOIN: simplify this as we will be removing licence choosing and that above line is crazy
     - if licenses_are_available?
       %ul.option-list
-        - available_licenses do |license|
-          %li= radio_button_for_license_selection(item.class.table_name.singularize, |
-              license,                                                              |
-              { :checked => (license.id == item.license_id),                        |
-              :tabindex => '1' })                                                   |
+        - # ROB: We've decided to set just one license for the site, so new content has this default.
+        - license = SystemSetting.default_content_license
+        %li= radio_button_for_license_selection(item.class.table_name.singularize, |
+            license,                                                               |
+            { :checked => true,                                                    |
+            :tabindex => '1' })                                                    |
       - if params[:controller] != 'account'
         %p= t 'topics.license_chooser_or_agreement.how_to_set_license'
     - else

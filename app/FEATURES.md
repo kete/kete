@@ -21,6 +21,7 @@ Things we would like to remove
     * the ability for any users to flag items
 * Multiple licences
     * The whole kete install now uses one licence for all items
+    * this is "Creative Commons Attribution-Noncommercial-Share Alike 3.0 New Zealand License"---the vast majority of objects are this.
 * Related items slideshows
 * Search result slideshows (at the top of an individual search result page)
 * Any related items functionality that is not just displaying clickable links to
