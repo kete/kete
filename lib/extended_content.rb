@@ -715,8 +715,12 @@ require 'xmlsimple'
             )
           end
 
-        # TODO: For some reason a bunch of duplicate extended fields are created. Work out why.
-        end.flatten.uniq.join("\n")
+        end
+        # ROB: The following code has been remove, because flatten causes
+        # a to_a call when there is no to_a method:
+        #
+        # # TODO: For some reason a bunch of duplicate extended fields are created. Work out why.
+        # end.flatten.uniq.join("\n")
 
       end
 
