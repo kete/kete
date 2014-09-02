@@ -319,6 +319,9 @@ module ApplicationHelper
   end
 
   def header_add_basket_link
+    # ROB: we're not going to let people create baskets, so we hide the link.
+    return
+
     return unless current_user_can_add_or_request_basket?
 
     if basket_policy_request_with_permissions?

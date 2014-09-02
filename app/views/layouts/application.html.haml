@@ -52,25 +52,21 @@
           = render partial: "licenses/install" if params[:controller] == 'licenses' && %w{ index list }.include?(params[:action])
           = yield
 
-        -# Disable RSS for the moment
-        -# #linkToRSS.footer_div
-        -#   %ul
-        -#     - rss_tag_links.each do |rss_tag_link|
-        -#       %li= link_for_rss(:link_html => rss_tag_link, :preface => t('layouts.application.rss'), :title => stripped_title).html_safe
-        -#
-        -#     - combined_rss_url = nil # EOIN: this needs to be re-enabled when search is more understood:
-        -#     %li= link_to(t('layouts.application.combined_rss'), combined_rss_url, :tabindex => '1')
+          -# Disable RSS for the moment
+          -# #linkToRSS.footer_div
+          -#   %ul
+          -#     - rss_tag_links.each do |rss_tag_link|
+          -#       %li= link_for_rss(:link_html => rss_tag_link, :preface => t('layouts.application.rss'), :title => stripped_title).html_safe
+          -#
+          -#     - combined_rss_url = nil # EOIN: this needs to be re-enabled when search is more understood:
+          -#     %li= link_to(t('layouts.application.combined_rss'), combined_rss_url, :tabindex => '1')
 
         #footer.footer_div
           - if logged_in? && @basket_admin && !@displaying_error
             #basket-toolbox
               %h4= t 'layouts.application.basket_label', :basket => h(@current_basket.name)
               %p
-                = link_to_unless_current t('layouts.application.preferences'), { :controller => 'baskets', :action => 'edit', :id => @current_basket }, :tabindex => '2'
-                |
-                = link_to_unless_current t('layouts.application.moderate'), { :controller => 'moderate', :action => 'list' }, :tabindex => '2'
-                |
-                = link_to_unless_current t('layouts.application.members'), { :controller => 'members', :action => 'list' }, :tabindex => '2'
+                = link_to_unless_current t('layouts.application.members'), { :controller => 'members', :action => 'list', urlified_name: @current_basket.urlified_name }, :tabindex => '2'
                 = add_ons_basket_admin_list if respond_to?(:add_ons_basket_admin_list)
           - else
             - if @tech_admin
@@ -82,43 +78,44 @@
             -#  |
             -#  = link_to_unless_current t('layouts.application.delete'), { :controller => 'baskets', :action => 'destroy', :id => @current_basket, }, :confirm => t('layouts.application.delete_confirmation'), :method => 'post', :tabindex => '2'
 
-        - if logged_in? && @site_admin && !@displaying_error
-          #adminToolbox
-            %h4= t 'layouts.application.toolbox_label'
+          - if logged_in? && @site_admin && !@displaying_error
+            #adminToolbox
+
+              %h4= t 'layouts.application.toolbox_label'
+              %p
+                = t 'layouts.application.toolbox_controls'
+                = link_to_unless_current t('layouts.application.basket_profiles'), { :urlified_name => @site_basket.urlified_name, :controller => 'profiles', :action => 'list' }, :tabindex => '2'
+                |
+                = link_to_unless_current t('layouts.application.topic_types'), { :urlified_name => @site_basket.urlified_name, :controller => 'topic_types', :action => 'list' }, :tabindex => '2'
+                |
+                = link_to_unless_current t('layouts.application.content_types'), { :urlified_name => @site_basket.urlified_name, :controller => 'content_types', :action => 'list' }, :tabindex => '2'
+                |
+                = link_to_unless_current t('layouts.application.extended_fields'), { :urlified_name => @site_basket.urlified_name, :controller => 'extended_fields', :action => 'list' }, :tabindex => '2'
+                |
+                = link_to_unless_current t('layouts.application.choices'), { :urlified_name => @site_basket.urlified_name, :controller => 'choices', :action => 'list'}, :tabindex => '2'
+                |
+                = link_to_unless_current t('layouts.application.search_sources'), { :urlified_name => @site_basket.urlified_name, :controller => 'search_sources', :action => 'list'}, :tabindex => '2'
+                |
+                = link_to_unless_current t('layouts.application.site_members'), { :urlified_name => @site_basket.urlified_name, :controller => 'members', :action => 'list' }, :tabindex => '2'
+                |
+                = link_to_unless_current t('layouts.application.licenses'), { :urlified_name => @site_basket.urlified_name, :controller => 'licenses', :action => 'index' }, :tabindex => '2'
+                |
+                = link_to_unless_current t('layouts.application.add_link'), { :urlified_name => @site_basket.urlified_name, :controller => 'configure', :action => 'add_link_to_kete_net' }, :tabindex => '2'
+                = add_ons_site_admin_list if respond_to?(:add_ons_site_admin_list)
+
+                - if @tech_admin
+                  |
+                  \#{link_to_unless_current t('layouts.application.configure'), { :urlified_name => @site_basket.urlified_name, :controller => 'configure', :action => 'index' }, :tabindex => '2'}
+                  |
+                  = link_to_unless_current t('layouts.application.oai_pmh'), { :urlified_name => @site_basket.urlified_name, :controller => 'oai_pmh_repository_sets', :action => 'index' }, :tabindex => '2'
+                  |
+                  = link_to_unless_current t('layouts.application.zoom_dbs'), { :urlified_name => @site_basket.urlified_name, :controller => 'zoom_dbs', :action => 'list' }, :tabindex => '2'
+                  |
+                  = link_to_unless_current t('layouts.application.rebuild'), { :urlified_name => @site_basket.urlified_name, :controller => 'search', :action => 'setup_rebuild' }, :tabindex => '2'
+
             %p
-              = t 'layouts.application.toolbox_controls'
-              = link_to_unless_current t('layouts.application.basket_profiles'), { :urlified_name => @site_basket.urlified_name, :controller => 'profiles', :action => 'list' }, :tabindex => '2'
-              |
-              = link_to_unless_current t('layouts.application.topic_types'), { :urlified_name => @site_basket.urlified_name, :controller => 'topic_types', :action => 'list' }, :tabindex => '2'
-              |
-              = link_to_unless_current t('layouts.application.content_types'), { :urlified_name => @site_basket.urlified_name, :controller => 'content_types', :action => 'list' }, :tabindex => '2'
-              |
-              = link_to_unless_current t('layouts.application.extended_fields'), { :urlified_name => @site_basket.urlified_name, :controller => 'extended_fields', :action => 'list' }, :tabindex => '2'
-              |
-              = link_to_unless_current t('layouts.application.choices'), { :urlified_name => @site_basket.urlified_name, :controller => 'choices', :action => 'list'}, :tabindex => '2'
-              |
-              = link_to_unless_current t('layouts.application.search_sources'), { :urlified_name => @site_basket.urlified_name, :controller => 'search_sources', :action => 'list'}, :tabindex => '2'
-              |
-              = link_to_unless_current t('layouts.application.site_members'), { :urlified_name => @site_basket.urlified_name, :controller => 'members', :action => 'list' }, :tabindex => '2'
-              |
-              = link_to_unless_current t('layouts.application.licenses'), { :urlified_name => @site_basket.urlified_name, :controller => 'licenses', :action => 'index' }, :tabindex => '2'
-              |
-              = link_to_unless_current t('layouts.application.add_link'), { :urlified_name => @site_basket.urlified_name, :controller => 'configure', :action => 'add_link_to_kete_net' }, :tabindex => '2'
-              = add_ons_site_admin_list if respond_to?(:add_ons_site_admin_list)
-
-              - if @tech_admin
-                |
-                \#{link_to_unless_current t('layouts.application.configure'), { :urlified_name => @site_basket.urlified_name, :controller => 'configure', :action => 'index' }, :tabindex => '2'}
-                |
-                = link_to_unless_current t('layouts.application.oai_pmh'), { :urlified_name => @site_basket.urlified_name, :controller => 'oai_pmh_repository_sets', :action => 'index' }, :tabindex => '2'
-                |
-                = link_to_unless_current t('layouts.application.zoom_dbs'), { :urlified_name => @site_basket.urlified_name, :controller => 'zoom_dbs', :action => 'list' }, :tabindex => '2'
-                |
-                = link_to_unless_current t('layouts.application.rebuild'), { :urlified_name => @site_basket.urlified_name, :controller => 'search', :action => 'setup_rebuild' }, :tabindex => '2'
-
-          %p
-            = t 'layouts.application.support'
-            = link_to_unless_current t('layouts.application.documentation'), basket_index_url(:urlified_name => @documentation_basket.urlified_name), :tabindex => '2'
+              = t 'layouts.application.support'
+              = link_to_unless_current t('layouts.application.documentation'), basket_index_url(:urlified_name => @documentation_basket.urlified_name), :tabindex => '2'
 
         #footer_custom.footer_div
         - unless @current_basket.additional_footer_content_with_inheritance.nil? || @current_basket.additional_footer_content_with_inheritance.squish.blank?

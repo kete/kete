@@ -1,6 +1,4 @@
-- location_hash = { :controller => params[:controller],
-- :action => ((params[:controller] == 'index_page') ? 'index' : 'show'),
-- :id => params[:id] }
+- location_hash = { :controller => params[:controller], :action => ((params[:controller] == 'index_page') ? 'index' : 'show'), :id => params[:id] }
 - cache_with_privacy(item, {:part => 'privacy_chooser'}) do
   - if item.respond_to?(:private?)
     - if item.private?
