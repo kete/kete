@@ -72,7 +72,6 @@ class TopicType < ActiveRecord::Base
   end
 
   def full_set
-    # ROB: this is a reimplementation of something the awesome_nested_set gem does.
-    TopicType.where("lft >= ?", lft).where("rgt <= ?", rgt).order(:lft).to_a
+    self_and_descendants
   end
 end
