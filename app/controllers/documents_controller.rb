@@ -6,12 +6,18 @@ class DocumentsController < ApplicationController
     redirect_to_search_for('Document')
   end
 
-  def list
-    index
-  end
+  # def list
+  #   index
+  # end
 
   def show
     @document = prepare_item_and_vars
+    @comments = @document.non_pending_comments
+
+    @creator = @document.creator
+    @last_contributor = @document.contributors.last || @creator
+
+    @related_item_topics = @document.related_items.select {|ri| ri.is_a? Topic}
 
     respond_to do |format|
       format.html
@@ -49,9 +55,8 @@ class DocumentsController < ApplicationController
 
     version_after_update = @document.max_version + 1
 
-    @successful = ensure_no_new_insecure_elements_in('document')
     @document.attributes = params[:document]
-    @successful = @document.save if @successful
+    @successful = @document.save
 
     if @successful
 

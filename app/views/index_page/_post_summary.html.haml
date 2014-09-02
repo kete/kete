@@ -1,0 +1,15 @@
+- post_url = url_for(:urlified_name => post_summary.basket.urlified_name, :controller => 'topics', :action => 'show', :id => post_summary, :private => (post_summary.private?) ? 'true' : nil)
+- post_excerpt = !post_summary.description.blank? ? post_summary.description : post_summary.short_summary
+.generic-result-wrapper{:id => "item_#{post_summary.id}_wrapper"}
+  .generic-result-header
+    %h4
+      = privacy_image_for(post_summary)
+      = link_to h(post_summary.title), post_url
+  - unless post_summary.first_related_image.blank?
+    .image-result-thumb
+      = related_image_link_for(post_summary.first_related_image)
+  .generic-result-description
+    = prepare_short_summary(post_excerpt, 100)
+    .generic-result-more
+      = link_to(t('index_page.post_summary.read_more'), post_url, { :title => t('index_page.post_summary.read_more_about', :post_title => post_summary.title) })
+.recent-topic-divider

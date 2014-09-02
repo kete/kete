@@ -183,7 +183,7 @@ module OaiZoom
           related_items.each do |related|
             xml.send("dc:subject") {
               xml.cdata related.title
-            } unless [Kete.blank_title, Kete.no_public_version_title].include?(related.title)
+            } unless [SystemSetting.blank_title, SystemSetting.no_public_version_title].include?(related.title)
             xml.send("dc:relation", importer_item_url({:host => host, :controller => zoom_class_controller(zoom_class), :item => related, :urlified_name => related.basket.urlified_name, :locale => false}, true))
           end
         end
@@ -192,13 +192,13 @@ module OaiZoom
         commented_on_item = item.commentable
         xml.send("dc:subject") {
           xml.cdata commented_on_item.title
-        } unless [Kete.blank_title, Kete.no_public_version_title].include?(commented_on_item.title)
+        } unless [SystemSetting.blank_title, SystemSetting.no_public_version_title].include?(commented_on_item.title)
         xml.send("dc:relation", importer_item_url({:host => host, :controller => zoom_class_controller(commented_on_item.class.name), :item => commented_on_item, :urlified_name => commented_on_item.basket.urlified_name, :locale => false}, true))
       else
         item.topics.each do |related|
           xml.send("dc:subject") {
             xml.cdata related.title
-          } unless [Kete.blank_title, Kete.no_public_version_title].include?(related.title)
+          } unless [SystemSetting.blank_title, SystemSetting.no_public_version_title].include?(related.title)
           xml.send("dc:relation", importer_item_url({:host => host, :controller => :topics, :item => related, :urlified_name => related.basket.urlified_name, :locale => false}, true))
         end
       end
@@ -215,7 +215,7 @@ module OaiZoom
       if item.respond_to?(:license) && !item.license.blank?
         rights = item.license.url
       else
-        rights = importer_item_url({:host => host, :controller => 'topics', :item => item, :urlified_name => Basket.find(Kete.about_basket).urlified_name, :id => 4, :locale => false})
+        rights = importer_item_url({:host => host, :controller => 'topics', :item => item, :urlified_name => Basket.find(SystemSetting.about_basket).urlified_name, :id => 4, :locale => false})
       end
 
       xml.send("dc:rights", rights)

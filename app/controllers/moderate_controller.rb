@@ -25,7 +25,7 @@ class ModerateController < ApplicationController
 
   def rss
     @cache_key_hash = { :rss => "#{@current_basket.urlified_name}_moderate_list" }
-    fetch_revisions unless has_all_rss_fragments?(@cache_key_hash)
+    fetch_revisions
     respond_to do |format|
       format.xml
     end

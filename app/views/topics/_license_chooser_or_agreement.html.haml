@@ -1,0 +1,25 @@
+.form-element
+  - if params[:controller] != "account"
+    %label= t 'topics.license_chooser_or_agreement.title'
+  - if item.has_license?
+    #license-agreement
+      = t 'topics.license_chooser_or_agreement.license_description', :item_type => item.class.name.humanize.singularize.downcase, :license_title => item.license.title
+      (
+      %a{:href => item.license.url, :tabindex => "1", :target => "_new"}>= t 'topics.license_chooser_or_agreement.view_license'
+      ).
+  - else
+    - # item.license_id = logged_in? && !@current_user.license_id.blank? ? @current_user.license_id : configured_default_license || nil
+    - item.license_id = nil
+    - # EOIN: simplify this as we will be removing licence choosing and that above line is crazy
+    - if licenses_are_available?
+      %ul.option-list
+        - # ROB: We've decided to set just one license for the site, so new content has this default.
+        - license = SystemSetting.default_content_license
+        %li= radio_button_for_license_selection(item.class.table_name.singularize, |
+            license,                                                               |
+            { :checked => true,                                                    |
+            :tabindex => '1' })                                                    |
+      - if params[:controller] != 'account'
+        %p= t 'topics.license_chooser_or_agreement.how_to_set_license'
+    - else
+      %p= t 'topics.license_chooser_or_agreement.see_terms', :tac_link => link_to(t('topics.license_chooser_or_agreement.tac_link'), { :urlified_name => @about_basket.urlified_name, :controller => "topics", :action => "show", :id => 4 }, { :tabindex => '1' })

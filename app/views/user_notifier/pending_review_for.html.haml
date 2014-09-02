@@ -1,0 +1,6 @@
+= @user.user_name
+,
+
+\#{t 'user_notifier.pending_review_for.pending_review', :revision => @revision, :flag => SystemSetting.pending_flag}
+
+\#{render 'email_footer'}

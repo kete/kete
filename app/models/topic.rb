@@ -1,5 +1,16 @@
 class Topic < ActiveRecord::Base
 
+  include PgSearch
+  include PgSearchCustomisations
+  multisearchable against: [
+    :title,
+    :short_summary,
+    :description,
+    :raw_tag_list,
+    :extended_content_values
+  ]
+
+
   # this is where the actual content lives
   # using the extended_fields associated with this topic's topic_type
   # generate a form
@@ -13,7 +24,7 @@ class Topic < ActiveRecord::Base
   # , :counter_cache => true
   belongs_to :basket
 
-  named_scope :in_basket, lambda { |basket| { :conditions => { :basket_id => basket } } }
+  scope :in_basket, lambda { |basket| { :conditions => { :basket_id => basket } } }
 
   # a topic may be the designated index page for it's basket
   belongs_to :index_for_basket, :class_name => 'Basket', :foreign_key => 'index_for_basket_id'
@@ -22,51 +33,59 @@ class Topic < ActiveRecord::Base
   include HasContributors
 
   # all our ZOOM_CLASSES need this to be searchable by zebra
-  include ConfigureActsAsZoomForKete
+  # include ConfigureActsAsZoomForKete
 
   # we can't use object.comments, because that is used by related content stuff
   # has_many :comments, :as => :commentable, :dependent => :destroy, :order => 'position'
   include KeteCommentable
 
   # this is where we handled "related to"
-  has_many :content_item_relations,
-  :order => 'position', :dependent => :delete_all
+  has_many :content_item_relations, :order => 'position', :dependent => :delete_all
 
   # Content Item Relationships when the topic is on the related_item end
   # of the relationship, and another topic occupies topic_id.
   has_many :child_content_item_relations, :class_name => "ContentItemRelation", :as => :related_item, :dependent => :delete_all
   has_many :parent_related_topics, :through => :child_content_item_relations, :source => :topic
 
-  # by using has_many :through associations we gain some bidirectional flexibility
-  # with our polymorphic join model
-  # basicaly specifically name the classes on the other side of the relationship here
-  # see http://blog.hasmanythrough.com/articles/2006/04/03/polymorphic-through
-  ZOOM_CLASSES.each do |zoom_class|
-    if zoom_class == 'Topic'
-      # special case
-      # topics related to a topic
-      has_many :child_related_topics, :through => :content_item_relations,
-      :source => :child_related_topic,
-      :conditions => "content_item_relations.related_item_type = 'Topic'",
-      :include => :basket,
-      :order => 'position'
-    else
-      unless zoom_class == 'Comment'
-        has_many zoom_class.tableize.to_sym, :through => :content_item_relations,
-        :source => zoom_class.tableize.singularize.to_sym,
-        :conditions => ["content_item_relations.related_item_type = ?", zoom_class],
-        :include => :basket,
-        :order => 'position'
-      end
-    end
+  def child_topic_content_relations
+    content_item_relations.where(related_item_type: 'Topic').order(:position)
   end
 
-  # this allows for turning off sanitizing before save
-  # and validates_as_sanitized_html
-  # such as the case that a sysadmin wants to include a form
-  attr_accessor :do_not_sanitize
-  # sanitize our descriptions for security
-  acts_as_sanitized :fields => [:description]
+  def child_related_topics
+    join_as_related_item = 'JOIN content_item_relations ON content_item_relations.related_item_id = topics.id'
+    Topic.joins(join_as_related_item).merge(child_topic_content_relations).includes(:basket)
+  end
+
+  # ZOOM_CLASSES:
+
+  # ROB: I'd rather do these assocations as has_many() but I can't get this assocation working:
+  #   has_many :audio_recording_relations, -> { where(related_item_type: "AudioRecording").order(:position) }, class_name: 'content_item_relations'
+  # It'll probably be fixed in a later Rails.
+
+  def still_images
+    still_image_content_relations = content_item_relations.where(related_item_type: "StillImage").order(:position)
+    StillImage.joins(:content_item_relations).merge(still_image_content_relations).includes(:basket)
+  end
+
+  def audio_recordings
+    audio_recording_content_relations = content_item_relations.where(related_item_type: "AudioRecording").order(:position)
+    AudioRecording.joins(:content_item_relations).merge(audio_recording_content_relations).includes(:basket)
+  end
+
+  def videos
+    video_content_relations = content_item_relations.where(related_item_type: "Video").order(:position)
+    Video.joins(:content_item_relations).merge(video_content_relations).includes(:basket)
+  end
+
+  def web_links
+    web_link_content_relations = content_item_relations.where(related_item_type: "WebLink").order(:position)
+    WebLink.joins(:content_item_relations).merge(web_link_content_relations).includes(:basket)
+  end
+
+  def documents
+    document_content_relations = content_item_relations.where(related_item_type: "Document").order(:position)
+    ::Document.joins(:content_item_relations).merge(document_content_relations).includes(:basket)
+  end
 
   # this allows us to turn on/off email notification per item
   attr_accessor :skip_email_notification
@@ -111,7 +130,7 @@ class Topic < ActiveRecord::Base
       latest_version.first_related_image
     end
     def disputed_or_not_available?
-      (title == Kete.no_public_version_title) || (title == Kete.blank_title)
+      (title == SystemSetting.no_public_version_title) || (title == SystemSetting.blank_title)
     end
     include FriendlyUrls
     def to_param; format_for_friendly_urls(true); end
@@ -119,8 +138,6 @@ class Topic < ActiveRecord::Base
 
   validates_xml :extended_content
   validates_presence_of :title
-
-  validates_as_sanitized_html :description, :extended_content
 
   # TODO: add validation that prevents markup in short_summary
   # globalize stuff, uncomment later
@@ -146,17 +163,11 @@ class Topic < ActiveRecord::Base
 
   after_save :store_correct_versions_after_save
 
-  # James - 2008-09-08
-  # Ensure basket cache is cleared if this is a standard basket home-page topic
-  after_save :clear_basket_homepage_cache
-
   # Kieran Pilkington - 2008/10/21
   # Named scopes used in the index page controller for recent topics
-  named_scope :recent, lambda { |*args|
-    args = (args.first || {})
-    { :order => 'created_at desc', :limit => 5 }.merge(args)
-  }
-  named_scope :public, :conditions => ['title != ?', Kete.no_public_version_title]
+  scope :recent, lambda { where('1 = 1').order('created_at DESC').limit(5) }
+  scope :public, lambda { where('title != ?', SystemSetting.no_public_version_title) }
+  scope :exclude_baskets_and_id, lambda {|basket_ids, id| where("basket_id NOT IN (?) AND id != ?", basket_ids, id) }
 
   after_save :update_taggings_basket_id
 
@@ -166,15 +177,13 @@ class Topic < ActiveRecord::Base
     end
   end
 
-  def clear_basket_homepage_cache
-    self.basket.send(:reset_basket_class_variables) if self.basket.index_topic == self
-  end
-
   # Walter McGinnis, 2011-02-15
   # oEmbed Functionality
-  include OembedProvidable
-  oembed_providable_as :link
-  include KeteCommonOembedSupport
+
+  # EOIN: disable Oembed for the moment. Is there a use case for it?
+  # include OembedProvidable
+  # oembed_providable_as :link
+  # include KeteCommonOembedSupport
 
   # perhaps in the future we will store thumbnails for links (i.e. webpage previews)
   # for topics, but not at the moment
@@ -185,8 +194,6 @@ class Topic < ActiveRecord::Base
     end
   end
 
-  private :clear_basket_homepage_cache
-
   def related_topics(only_non_pending = false)
     if only_non_pending
       parent_related_topics.find_all_public_non_pending +
@@ -196,8 +203,12 @@ class Topic < ActiveRecord::Base
     end
   end
 
+  def still_images
+    content_item_relations.where(:related_item_type => "StillImage").map(&:related_item)
+  end
+
   def first_related_image
-    still_images.find_non_pending(:first) || {}
+    still_images.first || {}
   end
 
   def title_for_license

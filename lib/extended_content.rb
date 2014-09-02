@@ -102,14 +102,13 @@ require 'xmlsimple'
 #   in a dc:description tag as mentioned in the point above in some cases. Where hierarchical selections are present, the
 #   values are presented as follows <dc:description>:first choice:child of first choice:</dc:description>.
 
-module ExtendedContent
+  module ExtendedContent
   CLASSES_WITH_SUMMARIES = ['Topic', 'Document']
 
   unless included_modules.include? ExtendedContent
 
     include ExtendedContentHelpers
 
-    include GoogleMap::ExtendedContent
 
     # DEPRECATED
     # Provide an instance of Nokogiri::XML::Builder.new for creating the XML representation
@@ -157,11 +156,12 @@ module ExtendedContent
       self.extended_content = convert_extended_content_to_xml(content_as_array)
     end
 
+
     # Pulls xml attributes in extended_content column out into a hash wrapped in a key that corresponds to the fields position
     # Example output:
     # => { "1" => { "first_names" => "Joe" }, "2" => { "last_name" => "Bloggs" }, "3" => { "place_of_birth" => { "xml_element_name" => "dc:subject" } } }
     def xml_attributes
-      extended_content_hash = XmlSimple.xml_in("<dummy>#{extended_content}</dummy>", "contentkey" => "value", "forcearray" => false)
+      extended_content_hash = xml_attributes_without_position
 
       ordered_hash = Hash.new
       position = 1
@@ -209,15 +209,8 @@ module ExtendedContent
     #   }
     # }
     def xml_attributes_without_position
-      # we use rexml for better handling of the order of the hash
-
-      XmlSimple.xml_in("<dummy>#{extended_content}</dummy>", "contentkey" => "value", "forcearray" => false)
-
-      # TODO: Clean this up
-
-      # OLD METHOD
-      # extended_content_hash = Hash.from_xml("<dummy_root>#{self.extended_content}</dummy_root>")
-      # return extended_content_hash["dummy_root"]
+      hash = XmlSimple.xml_in("<dummy>#{add_xml_fix(extended_content)}</dummy>", "contentkey" => "value", "forcearray" => false)
+      remove_xml_fix(hash)
     end
 
     # Checks whether the current class (Topic, AudioRecording, etc) can have a short summary
@@ -260,7 +253,7 @@ module ExtendedContent
           elsif ['map', 'map_address'].member?(extended_field.ftype)
             values = field.first # pull the hash out of the array it's been put into
           else
-            
+
             # For singular values we expect something like:
             # ['field_name', 'value'] (in normal cases), or [['field_name', 'value']] (in the case of hierarchical choices)
             # So, we need to adjust the format to be consistent with the expected output..
@@ -722,8 +715,12 @@ module ExtendedContent
             )
           end
 
-        # TODO: For some reason a bunch of duplicate extended fields are created. Work out why.
-        end.flatten.uniq.join("\n")
+        end
+        # ROB: The following code has been remove, because flatten causes
+        # a to_a call when there is no to_a method:
+        #
+        # # TODO: For some reason a bunch of duplicate extended fields are created. Work out why.
+        # end.flatten.uniq.join("\n")
 
       end
 
@@ -741,7 +738,7 @@ module ExtendedContent
         "noattr"      => false
       }
 
-      XmlSimple.xml_in("<dummy>#{extended_content}</dummy>", options).map do |key, value|
+      XmlSimple.xml_in("<dummy>#{add_xml_fix(extended_content)}</dummy>", options).map do |key, value|
         recursively_convert_values(key, value)
       end
     end
@@ -990,6 +987,41 @@ module ExtendedContent
                :topic_type => parent_topic_type.name)
       end
     end
+
+    # XML does not allow tag names to begin with numbers so '<1></1>' is not
+    # valid XML. The old Kete uses this format (somehow!) so we filter <1> to
+    # <position_1> for XML conversion.
+    def add_xml_fix(xml_ish)
+      return nil if xml_ish.nil?
+      xml_ish.gsub(/<(\/?)(\d+)>/, '<\1position_\2>')
+    end
+
+    def remove_xml_fix(in_hash)
+      out_hash = Hash.new
+
+      in_hash.each do |k,v|
+        new_k = tweaked_key(k)
+        new_v = v.dup
+
+        if new_v.kind_of?(Hash)
+          out_hash[new_k] = remove_xml_fix(new_v)
+        else
+          out_hash[new_k] = new_v
+        end
+      end
+
+      out_hash
+    end
+
+    def tweaked_key(k)
+      if k =~ /\Aposition_(\d)+\z/
+        $1   # special case: "position_1" -> "1"
+      else
+        k
+      end
+    end
+
+
 
   end
 end

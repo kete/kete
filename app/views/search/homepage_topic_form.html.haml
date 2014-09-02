@@ -1,0 +1,47 @@
+- @title = t('search.homepage_topic_form.title')
+%fieldset
+  %legend= t 'search.homepage_topic_form.search_for_topic'
+  = form_tag(                                         |
+    :controller => 'search',                          |
+    :action => 'find_index',                          |
+    :related_class => 'Topic',                        |
+    :current_basket_id => params[:current_basket_id], |
+    :function => 'find'                               |
+    )                                                 |
+  = content_tag "label", t('search.homepage_topic_form.search_for_topics'), "for" => "search_terms"
+  = text_field_tag "search_terms", params[:search_terms]
+  = submit_tag t('search.homepage_topic_form.search_for_topics')
+  / End search form
+  - if @results.blank? && !params[:search_terms].blank?
+    %p.alone
+      %strong= t 'search.homepage_topic_form.no_topics_found'
+  - elsif !@results.blank?
+    %p.alone= t 'search.homepage_topic_form.select_homepage_topic'
+    = form_tag(                                         |
+      :controller => 'search',                          |
+      :action => 'find_index',                          |
+      :related_class => 'Topic',                        |
+      :current_basket_id => params[:current_basket_id], |
+      :function => 'change'                             |
+      )                                                 |
+    %ul
+      - if !@current_homepage.nil?
+        %li
+          = radio_button_tag "homepage_topic_id", @current_homepage.id, true
+          %strong= link_to h(@current_homepage.title), { :urlified_name => @current_homepage.basket.urlified_name, |
+                :controller => 'topics',                                                                      |
+                :action => 'show',                                                                            |
+                :id => @current_homepage },                                                                   |
+              :target => '_blank'                                                                             |
+          = t 'search.homepage_topic_form.current_homepage_topic'
+      - for item in @results
+        %li
+          = radio_button_tag "homepage_topic_id", item.id, false
+          = link_to h(item.title), { :urlified_name => item.basket.urlified_name, |
+              :controller => 'topics',                                            |
+              :action => 'show',                                                  |
+              :id => item },                                                      |
+            :target => '_blank'                                                   |
+    = submit_tag t('search.homepage_topic_form.change_homepage_topic')
+- new_link = (@current_homepage.nil?) ? '' : link_to(h(@current_homepage.title), :controller => 'topics', :action => 'show', :id => @current_homepage.id, :urlified_name => @current_homepage.basket.urlified_name)
+= link_to_function t('search.homepage_topic_form.close'), "updateOpener();window.close()"

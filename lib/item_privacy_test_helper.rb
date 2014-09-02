@@ -313,8 +313,8 @@ module ItemPrivacyTestHelper
         assert_equal 4, d.versions.size
         assert_not_nil d
         assert_kind_of eval(@base_class), d
-        assert_equal Kete.no_public_version_title, d.title
-        assert_equal Kete.no_public_version_description, d.description
+        assert_equal SystemSetting.no_public_version_title, d.title
+        assert_equal SystemSetting.no_public_version_description, d.description
         assert_equal true, d.has_private_version?
       end
 
@@ -409,23 +409,23 @@ module ItemPrivacyTestHelper
         assert_equal true, d.versions.find_by_version(1).private?
 
         assert_equal 0, d.versions.find_by_version(2).tags.size
-        assert_equal Kete.blank_title, d.versions.find_by_version(2).title
+        assert_equal SystemSetting.blank_title, d.versions.find_by_version(2).title
         assert_equal nil, d.versions.find_by_version(2).description
         assert_equal true, d.versions.find_by_version(2).private?
 
         assert_equal 0, d.versions.find_by_version(3).tags.size
-        assert_equal Kete.no_public_version_title, d.versions.find_by_version(3).title
-        assert_equal Kete.no_public_version_description, d.versions.find_by_version(3).description
+        assert_equal SystemSetting.no_public_version_title, d.versions.find_by_version(3).title
+        assert_equal SystemSetting.no_public_version_description, d.versions.find_by_version(3).description
         assert_equal false, d.versions.find_by_version(3).private?
 
         assert_equal 3, d.version
-        assert_equal Kete.no_public_version_title, d.title
-        assert_equal Kete.no_public_version_description, d.description
+        assert_equal SystemSetting.no_public_version_title, d.title
+        assert_equal SystemSetting.no_public_version_description, d.description
 
         d.private_version!
 
         assert_equal 2, d.version
-        assert_equal Kete.blank_title, d.title
+        assert_equal SystemSetting.blank_title, d.title
         assert_equal nil, d.description
       end
 
@@ -452,18 +452,18 @@ module ItemPrivacyTestHelper
         assert_equal false, d.versions.find_by_version(1).private?
 
         assert_equal 0, d.versions.find_by_version(2).tags.size
-        assert_equal Kete.blank_title, d.versions.find_by_version(2).title
+        assert_equal SystemSetting.blank_title, d.versions.find_by_version(2).title
         assert_equal nil, d.versions.find_by_version(2).description
         assert_equal false, d.versions.find_by_version(2).private?
 
         assert_equal 2, d.version
-        assert_equal Kete.blank_title, d.title
+        assert_equal SystemSetting.blank_title, d.title
         assert_equal nil, d.description
 
         assert_nil d.private_version!
 
         assert_equal 2, d.version
-        assert_equal Kete.blank_title, d.title
+        assert_equal SystemSetting.blank_title, d.title
         assert_equal nil, d.description
 
       end
@@ -486,7 +486,7 @@ module ItemPrivacyTestHelper
 
         version2 = d.versions.find_by_version(2)
         assert_equal 0, version2.tags.size
-        assert_equal Kete.blank_title, version2.title
+        assert_equal SystemSetting.blank_title, version2.title
         assert_equal nil, version2.description
         assert_equal false, version2.private?
 
@@ -529,7 +529,7 @@ module ItemPrivacyTestHelper
         assert_equal 1, d.versions.find_by_version(4).tags.size
         assert_equal "Version 4", d.versions.find_by_version(4).description
 
-        assert_equal Kete.blank_title, d.versions.find_by_version(5).title
+        assert_equal SystemSetting.blank_title, d.versions.find_by_version(5).title
         assert_equal nil, d.versions.find_by_version(5).description
       end
 
@@ -628,7 +628,7 @@ module ItemPrivacyTestHelper
         # Check there are no tags on public version
         assert_equal false, d.private?
         assert_equal 2, d.versions.size
-        assert_equal Kete.no_public_version_title, d.title
+        assert_equal SystemSetting.no_public_version_title, d.title
         assert_equal 0, d.tags.size
 
         # Topic#raw_tag_list is set in the controllers, so cannot be tested here.
@@ -648,7 +648,7 @@ module ItemPrivacyTestHelper
 
         # Check there are no tags on public version upon restoration
         assert_equal false, d.private?
-        assert_equal Kete.no_public_version_title, d.title
+        assert_equal SystemSetting.no_public_version_title, d.title
         assert_equal 0, d.tags.size
 
         # Topic#raw_tag_list is set in the controllers, so cannot be tested here.
@@ -663,7 +663,7 @@ module ItemPrivacyTestHelper
         # Check there are no tags on public version
         assert_equal false, d.private?
         assert_equal 2, d.versions.size
-        assert_equal Kete.no_public_version_title, d.title
+        assert_equal SystemSetting.no_public_version_title, d.title
         assert_equal 0, d.tags.size
         # assert_equal nil, d.raw_tag_list
 
@@ -678,7 +678,7 @@ module ItemPrivacyTestHelper
 
         # Check there are no tags on public version upon restoration
         assert_equal false, d.private?
-        assert_equal Kete.no_public_version_title, d.title
+        assert_equal SystemSetting.no_public_version_title, d.title
         assert_equal 0, d.tags.size
         # assert_equal nil, d.raw_tag_list
       end
@@ -761,13 +761,11 @@ module ItemPrivacyTestHelper
           d.description = "Version 3"
           d.version_comment = "Content from revision # 1."
           d.do_not_moderate = true
-          d.do_not_sanitize = true
           # this will save the above as version 3
           # (and will be the current public version)
           d.save!
           d.reload
           d.do_not_moderate = false
-          d.do_not_sanitize = false
           d
         end
 

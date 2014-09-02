@@ -8,12 +8,18 @@ class WebLinksController < ApplicationController
     redirect_to_search_for('WebLink')
   end
 
-  def list
-    index
-  end
+  # def list
+  #   index
+  # end
 
   def show
     @web_link = prepare_item_and_vars
+    @comments = @web_link.non_pending_comments
+
+    @creator = @web_link.creator
+    @last_contributor = @web_link.contributors.last || @creator
+
+    @related_item_topics = @web_link.related_items.select {|ri| ri.is_a? Topic}
 
     respond_to do |format|
       format.html
@@ -47,9 +53,8 @@ class WebLinksController < ApplicationController
 
     version_after_update = @web_link.max_version + 1
 
-    @successful = ensure_no_new_insecure_elements_in('web_link')
     @web_link.attributes = params[:web_link]
-    @successful = @web_link.save if @successful
+    @successful = @web_link.save
 
     if @successful
 

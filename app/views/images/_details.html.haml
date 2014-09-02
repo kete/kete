@@ -1,0 +1,17 @@
+#item_metadata
+  - if !item.original_file.nil? && !item.already_at_blank_version? && current_user_can_see_private_files_for?(item)
+    %p
+      = t 'images.details.filename'
+      = item.original_file.filename
+      (#{link_to_original_of item, t('images.details.view'), true})
+    %p
+      = t 'images.details.size'
+      = number_to_human_size(item.original_file.size)
+    %p
+      = t 'images.details.type'
+      = item.original_file.content_type
+  - else
+    %p
+      = t 'images.details.filename'
+      = item.original_file.filename
+      ( #{t 'images.details.not_available'} )

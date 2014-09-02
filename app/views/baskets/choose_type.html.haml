@@ -1,0 +1,84 @@
+.white_wrapper
+  - if @basket_list.size > 0
+    - @title = t('baskets.choose_type.what_to_add')
+    - if params[:relate_to_item] && params[:relate_to_type]
+      - related_item = params[:relate_to_type].constantize.find(params[:relate_to_item])
+      - related_item.private_version! if params[:related_item_private] && params[:related_item_private] == 'true' && permitted_to_view_private_items?
+      - @title += " " + t('baskets.choose_type.that_relates_to', :item_title => related_item.title)
+
+    - @title += "? "
+    - @title += t('baskets.choose_type.where_to_add') if @basket_list.size > 1
+    #add_item_form
+      %h2= @title
+      = form_tag do
+        %fieldset
+          = hidden_field_tag "relate_to_item", params[:relate_to_item]
+          = hidden_field_tag "relate_to_type", params[:relate_to_type]
+          = hidden_field_tag "related_item_private", params[:related_item_private]
+          - if @basket_list.size > 1
+            .form-element
+              %label{:for => "new_item_basket"}= t 'baskets.choose_type.add_in'
+              = select_tag 'new_item_basket', options_for_select(@basket_list, @current_basket.urlified_name), :id => 'new_item_basket', :tabindex => '1'
+          - else
+            = hidden_field_tag 'new_item_basket', @basket_list.first[1]
+          .form-element
+            %label{:for => "new_item_controller"}= t 'baskets.choose_type.add_a'
+            = select_tag 'new_item_controller', options_for_select([[t('baskets.choose_type.choose_type'), '']] + @item_types), :id => 'new_item_controller', :tabindex => '1'
+          #topic_type_form{:style => "display:none;"}
+            = render :partial => 'topics/pick_form', :locals => {:pre_options => [['', '']] }
+        %noscript
+          %span#submit_button
+            = submit_tag t('baskets.choose_type.button'), { :class => "save-button", :tabindex => '1' }
+      
+      \#{link_to_cancel("choose").html_safe}
+    #item_form
+    :javascript
+      //
+      function item_form_url(topic_type) {
+        var base_url = '#{url_for(:action => "render_item_form")}'
+        var params = $.param({
+            new_item_basket: $('#new_item_basket').val(),
+            new_item_controller: $('#new_item_controller').val(),
+            new_item_topic_type: topic_type,
+            relate_to_item: $('#relate_to_item').val(),
+            relate_to_type: $('#relate_to_type').val(),
+            related_item_private: $('#related_item_private').val()
+          })
+
+        return base_url +"?"+ params
+      }
+      function request_item_form(topic_type) {
+        $.getScript( item_form_url(topic_type), function() { $('#item_form').show(); } );
+      }
+      $('#new_item_controller').on('change', function() {
+        $('#topic_type_form').hide();
+        $('#item_form').hide();
+        $('#item_form').innerHTML = '';
+        if ($(this).val() == '') { return true; }
+        if ($(this).val() == 'topics') {
+          $('#topic_type_form').show();
+        } else {
+          request_item_form('');
+        }
+      });
+      $('#topic_topic_type_id').on('change', function() {
+        $('#item_form').hide();
+        $('#item_form').innerHTML = '';
+        if ($(this).val() == '') { return true; }
+        request_item_form($('#topic_topic_type_id').val());
+      });
+      $('#new_item_basket').on('change', function() {
+        if ($('#item_form').innerHTML != '') {
+          // a form is showing, we have to reload it to reset basket settings in the form
+          $('#item_form').hide();
+          $('#item_form').innerHTML = '';
+          request_item_form($('#topic_topic_type_id').val());
+        }
+      });
+      //
+  - else
+    - @title = t('baskets.choose_type.no_baskets_available')
+    %h2= @title
+    %p= t('baskets.choose_type.no_baskets_available_description')
+    %p= t('baskets.choose_type.no_baskets_available_try_later')
+

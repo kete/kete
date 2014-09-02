@@ -22,7 +22,7 @@ module TaggingController
           zoom_class = controller.singularize
         end
         item_key = zoom_class.underscore.downcase.to_sym
-        klass.send :auto_complete_for, item_key, :tag_list, {}, { :through => { :object => 'tag', :method => 'name' } }
+        # klass.send :auto_complete_for, item_key, :tag_list, {}, { :through => { :object => 'tag', :method => 'name' } }
         auto_complete_methods << "auto_complete_for_#{item_key}_tag_list".to_sym
       end
       auto_complete_methods = ([ :add_tags ] + auto_complete_methods).flatten.compact

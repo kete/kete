@@ -1,0 +1,33 @@
+- @title = t('topic_types.list.title')
+#detail-wrapper
+  #detail-header
+    %h2= h(@title)
+%table
+  %tr
+    %th{:abbr => "Name"}= t 'topic_types.list.name'
+    %th{:abbr => "Description"}= t 'topic_types.list.description'
+    %th{:abbr => "Created"}= t 'topic_types.list.created_at'
+    %th{:abbr => "Updated"}= t 'topic_types.list.updated_at'
+    %th{:abbr => "Options"}= t 'topic_types.list.options'
+  - for topic_type in @topic_types
+    %tr
+      %td
+        %span{:style => "margin-left:#{topic_type.level}em;"}= h topic_type.name
+      %td= h topic_type.description
+      %td= h topic_type.created_at.to_s(:euro_date)
+      %td= h topic_type.updated_at.to_s(:euro_date)
+      %td
+        = link_to t('topic_types.list.edit'), :action => 'edit', :id => topic_type
+        |
+        \#{link_to t('topic_types.list.add_sub_topic'), :action => 'new', :parent_id => topic_type.id}
+        - if topic_type.id != 1
+          - if topic_type.topics.size == 0
+            |
+            \#{link_to t('topic_types.list.delete'), { :action => 'destroy', :id => topic_type, :authenticity_token => form_authenticity_token }, :confirm => t('topic_types.list.delete_confirm'), :method => :post}
+          - else
+            = t 'topic_types.list.has_topics'
+        - else
+          = t 'topic_types.list.cannot_delete'
+#prev-next= will_paginate @topic_types
+%br/
+

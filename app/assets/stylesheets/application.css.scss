@@ -1,0 +1,14 @@
+//= require active_scaffold
+@import "compass";
+
+@import "base";
+@import "comment";
+@import "theme";
+@import "print";
+@import "overrides";
+
+
+// Make a clearfix helper
+.clearfix {
+  @include clearfix;
+}

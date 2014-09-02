@@ -1,0 +1,4 @@
+#refine_search_dropdown_container
+  = form_tag(:overwrite_params => overwritten_search_params) do
+    = render partial: 'search/mini_controls', locals: { id: 'refine_search_dropdown', type: 'refine', scope: scope }
+  - refine_search_dropdown_link = link_to(t('search.refine_results.refine'), '#', :onclick =>  "$('refine_search_dropdown').toggle();")

@@ -1,4 +1,14 @@
 class Video < ActiveRecord::Base
+
+  include PgSearch
+  include PgSearchCustomisations
+  multisearchable against: [
+    :title,
+    :description,
+    :raw_tag_list,
+    :searchable_extended_content_values
+  ]
+
   # all the common configuration is handled by this module
   include ConfigureAsKeteContentItem
 
@@ -12,9 +22,11 @@ class Video < ActiveRecord::Base
   # dependencies that we don't need
   # :file_system_path => "#{BASE_PRIVATE_PATH}/#{self.table_name}",
   # will rework with when we get to public/private split
-  has_attachment :storage => :file_system, :file_system_path => "video",
-  :content_type => VIDEO_CONTENT_TYPES, :processor => :none,
-  :max_size => MAXIMUM_UPLOADED_FILE_SIZE
+  has_attachment :storage => :file_system, 
+                 :file_system_path => "video", 
+                 :content_type => SystemSetting.video_content_types, 
+                 :processor => :none, 
+                 :max_size => SystemSetting.maximum_uploaded_file_size
 
   validates_as_attachment
 
@@ -28,6 +40,7 @@ class Video < ActiveRecord::Base
   # acts as licensed but this is not versionable (cant change a license once it is applied)
   acts_as_licensed
 
+  # this callback is implemented in ItemPrivacy::All
   after_save :store_correct_versions_after_save
 
   # overriding full_filename to handle our customizations
@@ -41,17 +54,17 @@ class Video < ActiveRecord::Base
     # File.join(RAILS_ROOT, file_system_path, attachment_path_id, thumbnail_name_for(thumbnail))
   # end
 
-  include HandleLegacyAttachmentFuPaths
+  include OverrideAttachmentFuMethods
 
   def attachment_attributes_valid?
     [:size, :content_type].each do |attr_name|
       enum = attachment_options[attr_name]
       unless enum.nil? || enum.include?(send(attr_name))
         errors.add attr_name, I18n.t("video_model.not_acceptable_#{attr_name}",
-                                     :max_size => (MAXIMUM_UPLOADED_FILE_SIZE / 1.megabyte))
+                                     :max_size => (SystemSetting.maximum_uploaded_file_size / 1.megabyte))
       end
     end
   end
 
-  include Embedded if ENABLE_EMBEDDED_SUPPORT
+  include Embedded if SystemSetting.enable_embedded_support
 end

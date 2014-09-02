@@ -1,4 +1,15 @@
 class Document < ActiveRecord::Base
+
+  include PgSearch
+  include PgSearchCustomisations
+  multisearchable against: [
+    :title,
+    :description,
+    :raw_tag_list,
+    :short_summary,
+    :searchable_extended_content_values
+  ]
+
   # all the common configuration is handled by this module
   include ConfigureAsKeteContentItem
 
@@ -12,9 +23,9 @@ class Document < ActiveRecord::Base
   # dependencies that we don't need
   # TODO: needs some of the new filetypes like openoffice, pages, plenty of old ones, too
   has_attachment    :storage => :file_system,
-                    :content_type => DOCUMENT_CONTENT_TYPES,
+                    :content_type => SystemSetting.document_content_types,
                     :processor => :none,
-                    :max_size => MAXIMUM_UPLOADED_FILE_SIZE
+                    :max_size => SystemSetting.maximum_uploaded_file_size
 
   # Private Item mixin
   include ItemPrivacy::All
@@ -27,7 +38,7 @@ class Document < ActiveRecord::Base
 
   validates_as_attachment
 
-  include HandleLegacyAttachmentFuPaths
+  include OverrideAttachmentFuMethods
 
   # this supports auto populated description
   # attribute with converted pdfs, msword docs,
@@ -36,7 +47,7 @@ class Document < ActiveRecord::Base
   # to support it, so wrapping it in a system setting
   # also, we manage when the conversion happens
   # rather than having it use a callback
-  if ENABLE_CONVERTING_DOCUMENTS
+  if SystemSetting.enable_converting_documents
     convert_attachment_to :output_type => :html, :target_attribute => :description, :run_after_save => false
   end
 
@@ -51,7 +62,7 @@ class Document < ActiveRecord::Base
       end
       unless enum.nil? || enum.include?(send(attr_name))
         errors.add attr_name, I18n.t("document_model.not_acceptable_#{attr_name}",
-                                     :max_size => (MAXIMUM_UPLOADED_FILE_SIZE / 1.megabyte))
+                                     :max_size => (SystemSetting.maximum_uploaded_file_size / 1.megabyte))
       end
     end
   end
@@ -71,5 +82,5 @@ class Document < ActiveRecord::Base
     true
   end
 
-  include Embedded if ENABLE_EMBEDDED_SUPPORT
+  include Embedded if SystemSetting.enable_embedded_support
 end

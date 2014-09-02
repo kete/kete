@@ -1,0 +1,34 @@
+- name: Site
+  urlified_name: site
+  index_page_basket_search: "0"
+  index_page_archives_as: by type
+  private_default: false
+  file_private_default: false
+  allow_non_member_comments: true
+  show_privacy_controls: false
+  status: approved
+  creator_id: 1
+
+- index_page_redirect_to_all: ""
+  name: Help
+  index_page_basket_search: "1"
+  urlified_name: help
+  index_page_topic_is_entire_page: "1"
+  status: approved
+  creator_id: 1
+
+- index_page_redirect_to_all: ""
+  name: About
+  index_page_basket_search: "1"
+  urlified_name: about
+  index_page_topic_is_entire_page: "1"
+  status: approved
+  creator_id: 1
+
+- index_page_redirect_to_all: ""
+  name: Documentation
+  index_page_basket_search: "1"
+  urlified_name: documentation
+  index_page_topic_is_entire_page: "1"
+  status: approved
+  creator_id: 1

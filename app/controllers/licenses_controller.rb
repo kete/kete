@@ -1,6 +1,6 @@
 require 'rake'
-require 'rake/rdoctask'
-require 'rake/testtask'
+# require 'rake/rdoctask'
+# require 'rake/testtask'
 require 'tasks/rails'
 
 class LicensesController < ApplicationController
@@ -21,7 +21,7 @@ class LicensesController < ApplicationController
     if params[:task]
       if @available_licenses.include?(params[:task])
         old_license_count = License.count
-        ENV['RAILS_ENV'] = RAILS_ENV
+        ENV['RAILS_ENV'] = Rails.env
         rake_result = Rake::Task["acts_as_licensed:import:#{params[:task]}"].execute(ENV)
         if rake_result || License.count > old_license_count
           flash[:notice] = t('licenses_controller.install_license.imported')

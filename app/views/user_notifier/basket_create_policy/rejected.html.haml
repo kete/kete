@@ -1,0 +1,8 @@
+= @recipient.user_name
+,
+
+\#{t 'user_notifier.basket_create_policy.rejected.basket_rejected', :basket_name => @basket.name}
+
+\#{t 'user_notifier.basket_create_policy.rejected.not_suitable'}
+
+\#{render 'user_notifier/email_footer'}

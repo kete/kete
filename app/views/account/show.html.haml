@@ -1,0 +1,117 @@
+.white_wrapper
+  - @title = t('.title', :user_name => h(@user.user_name))
+  %div
+    %h2{:style => "display:inline;"}= h(@title)
+    - if @viewer_is_user
+      [
+      \#{link_to t('.edit'), :action => 'edit'} #{link_to t('.change_password'), :action => 'change_password'}
+      ]
+    - if !@view_is_user && SystemSetting.administrator_activates? && @site_admin
+      [
+      - if @user.has_been_activated?
+        = t '.activated'
+      - else
+        = t '.not_activated'
+        \: #{link_to t('.activate'), :action => 'activate', :activation_code => @user.activation_code}
+      ]
+  - if @viewer_is_user && (SystemSetting.enable_user_portraits? || (SystemSetting.enable_gravatar_support? && @viewer_portraits.nil?))
+    -# #portrait_help_div
+    -#   %p= t '.portrait_description'
+    -#   %ul
+    -#     - if SystemSetting.enable_user_portraits?
+    -#       %li
+    -#         = t '.portrait_new',                                      |
+    -#           :new_portrait_link => link_to(t('.new_portrait_link'),  |
+    -#               { :controller => 'images', :action => 'new',        |
+    -#                 :portrait => true, :selected_portrait => true }), |
+    -#           :uploaded_link => link_to(t('.uploaded_link'),          |
+    -#           url_for_contributions_of(current_user, 'StillImage'))   |
+    -#       - if !@viewer_portraits.blank?
+    -#         %li
+    -#           = t '.change_portrait'
+    -#           %ul
+    -#             %li= t '.drag_portraits'
+    -#             %li= t '.shift_portraits'
+    -#     - if SystemSetting.enable_gravatar_support? && @viewer_portraits.nil?
+    -#       %li
+    -#         = t '.gravatar',                                                         |
+    -#           :gravatar_link => link_to(t('.gravatar_link'), 'http://gravatar.com/') |
+    -#         = t('.portrait_or_gravatar') if SystemSetting.enable_user_portraits?
+    -#   #close_help
+    -#     = link_to t('.close_portrait_help'), :action => 'show'
+    -# - if !params[:whats_this]
+    -#   %noscript/
+    -#   :css
+    -#     #portrait_help_div { display:none; }
+  .profile_content_right
+    - if SystemSetting.enable_user_portraits? && !@viewer_portraits.blank?
+      #portraits
+        %div
+          %h4= t '.other_portraits'
+          - if @viewer_is_user
+            %img#data_spinner{:alt => t('.editing_portraits'), :height => "16", :src => "/images/indicator.gif", :style => "display:none;", :width => "16"}/
+        %br/
+        #portrait_images
+          = render :partial => 'portraits', :locals => { :viewer_portraits => @viewer_portraits, :viewer_is_user => @viewer_is_user }
+        %div{:style => "clear:both;"}
+    %br/
+    - user_baskets = users_baskets_list(@user, { :show_options => true,
+                                                 :show_roles => false,
+                                                 :request_text => t('.request'),
+                                                 :pending_text => t('.pending'),
+                                                 :rejected_text => t('.rejected') })
+    - unless user_baskets.blank?
+      %div
+        %div
+          %h4{:style => "display:inline;"}= t '.baskets'
+          != "[ #{header_add_basket_link.downcase} ]" if @viewer_is_user && !header_add_basket_link.blank?
+        %div
+          %ul#user_profile_baskets_list= user_baskets
+  .avatar{:style => "padding:0px;"}
+    - if SystemSetting.enable_user_portraits? || SystemSetting.enable_gravatar_support?
+      - selected_portrait = avatar_for(@user, :return_portrait => true)
+      #profile_avatar.avatar
+        - unless selected_portrait.nil?
+          = render :partial => 'portrait', :locals => { :portrait => selected_portrait }
+        - else
+          = avatar_for @user
+      - if @viewer_is_user && SystemSetting.enable_user_portraits?
+        - unless selected_portrait.nil?
+          #selected_portrait= t '.selected_portrait'
+        #portrait_help= link_to t('.whats_portraits'), :whats_this => true
+        #new_portrait= link_to t('.new_portrait'), { :controller => 'images', :action => 'new', :selected_portrait => true }
+  .profile_content_left
+    %p
+      %strong= t '.user_name'
+      = h(@user.user_name)
+      = "(#{@user.login})" if @site_admin && @user.user_name != @user.login
+    - if @user.show_email? || @viewer_is_user || @site_admin
+      %p
+        %strong= t '.email'
+        = mail_to(@user.email, @user.email, :encode => "hex")
+    - elsif @user.accepts_emails?
+      %p
+        %strong= t '.email'
+        = link_to t('.contact_user'), :action => 'contact', :id => @user
+    %p
+      %strong= t '.created'
+      = h(@user.created_at.to_s(:euro_date_time))
+    - extended_fields_html = display_xml_attributes(@user)
+    - if !extended_fields_html.blank?
+      / <div id="detail-extended">
+      = extended_fields_html
+      / </div>
+    - if @viewer_is_user and licenses_are_available?
+      %div
+        %h4= t '.current_license'
+        .license
+          - if @user.license.nil?
+            = t '.set_license'
+          - else
+            = image_tag(@user.license.image_url, :alt => t('.license_thumbnail'))
+            = @user.license.title
+            = link_to(t('.view_license'), url_for(@user.license.url))
+    %div
+      %h4= t '.contributions'
+      != t '.contributions_link', :user_link => link_to_contributions_of(@user,'Topic', :show_anonymous_contribs => true)
+
