@@ -49,7 +49,7 @@
         %div
           %h4= t '.other_portraits'
           - if @viewer_is_user
-            %img#data_spinner{:alt => t('.editing_portraits'), :height => "16", :src => "/images/indicator.gif", :style => "display:none;", :width => "16"}/
+            %img#data_spinner{:alt => t('.editing_portraits'), :height => "16", :src => image_path('indicator.gif'), :style => "display:none;", :width => "16"}/
         %br/
         #portrait_images
           = render :partial => 'portraits', :locals => { :viewer_portraits => @viewer_portraits, :viewer_is_user => @viewer_is_user }

@@ -3,8 +3,8 @@
     = render "topics/content_wrapper_start", style_classes: "full-width notabs choices"
     %h3
       = t('search.form.browse_by_category')
-      -# <img src='/images/indicator.gif' width='16' height='16' alt='#{t 'search.form.getting_categories'}' id='categories_spinner' style='display:none;' />
-      %img#categories_spinner{src: '/images/indicator.gif', width: '16', height: '16', alt: t('search.form.getting_categories'), style: 'display:none;'}
+      -# <img src='#{image_path("indicator.gif")}' width='16' height='16' alt='#{t 'search.form.getting_categories'}' id='categories_spinner' style='display:none;' />
+      %img#categories_spinner{src: image_path('indicator.gif'), width: '16', height: '16', alt: t('search.form.getting_categories'), style: 'display:none;'}
     #category_selections
       = scope.category_columns
     .main-content-footer-wrapper

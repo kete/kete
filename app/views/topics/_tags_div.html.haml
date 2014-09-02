@@ -13,8 +13,8 @@
           = form_tag( :url => { :action => 'add_tags', :id => params[:id], :private => params[:private] }, :id => 'add_tag_form', :remote => true ) do
             = text_field item_key.to_sym, :tag_list, :size => 15, :value => '' 
             = submit_tag 'add tag'
-            %img#data_spinner{:alt => t('topics.tags.sending_tags'), :height => "16", :src => "/images/indicator.gif", :style => "display:none;", :width => "16"}/
-            %img#data_spinner_tags{:alt => t('topics.tags.getting_tags'), :height => "16", :src => "/images/indicator.gif", :style => "display:none;", :width => "16"}/
+            %img#data_spinner{:alt => t('topics.tags.sending_tags'), :height => "16", :src => image_path("indicator.gif"), :style => "display:none;", :width => "16"}/
+            %img#data_spinner_tags{:alt => t('topics.tags.getting_tags'), :height => "16", :src => image_path("indicator.gif"), :style => "display:none;", :width => "16"}/
     .secondary-content-section-footer-wrapper
       .secondary-content-section-footer &nbsp;
 

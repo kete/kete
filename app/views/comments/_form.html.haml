@@ -28,7 +28,7 @@
       { :tabindex => '1' },                   |
       { :tokens => ',',                       |
       :indicator => 'data_spinner_tags' })    |
-    <img src='/images/indicator.gif' width='16' height='16' alt='#{t 'comments.form.tags_spinner'}' id='data_spinner_tags' style='display:none;' />
+    <img src='#{image_path("indicator.gif")}' width='16' height='16' alt='#{t 'comments.form.tags_spinner'}' id='data_spinner_tags' style='display:none;' />
   - form_fields = @content_type.content_type_to_field_mappings
   - if form_fields.size > 0
     = render(:partial => 'extended_fields/extended_field_mapping', |

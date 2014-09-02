@@ -133,7 +133,7 @@
     .form-element
       %label{:for => "#{@item_type}_tag_list"}= t 'topics.form.tags'
       = text_field(@item_type, :tag_list, { :tabindex => '1', :tokens => ',', :indicator => 'data_spinner_tags' })
-      <img src='/assets/indicator.gif' width='16' height='16' alt='#{t 'topics.form.getting_tags'}' id='data_spinner_tags' style='display:none;' />
+      <img src='#{image_path("indicator.gif").html_safe}' width='16' height='16' alt='#{t 'topics.form.getting_tags'}' id='data_spinner_tags' style='display:none;' />
 
     - # disabling overwriting of original file for the timebeing
     - # when we support versioning of files, we'll likely re-enable this
