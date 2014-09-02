@@ -147,19 +147,7 @@ module ZoomControllerHelpers
     # as that is synchronous and can hold up request responses significantly for items that have large zoom records
     # this moves the prepare_and_save_to_zoom process to asynchronous backgroundrb process
     def update_search_record_for(item, options = { })
-      options = options.merge({ :method_name => "worker_zoom_for",
-                                :class_key => item.class_as_key,
-                                :object => item,
-                                :zoom_items => [{ item.class.name => item.id }]})
-
-      logger.debug("what are worker options " + options.inspect)
-
-      # run the search record build in a backgroundrb worker
-      if !SystemSetting.use_backgroundrb_for_search_record_updates? ||
-          !call_generic_muted_worker_with(options)
-        # fallback to normal search engine rebuilds if worker fails
-        item.prepare_and_save_to_zoom
-      end
+      # ROB: we don't use zoom and this was causing errors so removed.
     end
 
     def worker_zoom_for(options)

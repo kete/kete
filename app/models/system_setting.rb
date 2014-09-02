@@ -92,9 +92,9 @@ class SystemSetting
     #  # ROB: not in the Kete2 system's system_settings database.
     #end
 
-    #def default_content_license
-    #  ""
-    #end
+    def default_content_license
+      License.find(1)
+    end
 
     def force_https_on_restricted_pages
       false

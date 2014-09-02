@@ -72,7 +72,6 @@ class TopicType < ActiveRecord::Base
   end
 
   def full_set
-    # RABID: TODO: implement this as it not in the awesome_nested_set gem
-    []
+    self_and_descendants
   end
 end
