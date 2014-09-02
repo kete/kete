@@ -1,7 +1,8 @@
 !!!
 %html{:lang => "en", :xmlns => "http://www.w3.org/1999/xhtml"}
 
-  = stylesheet_link_tag 'http://fonts.googleapis.com/css?family=Open+Sans:400italic,700italic,400,700'
+  = stylesheet_link_tag 'http://fonts.googleapis.com/css?family=Open+Sans:400italic,700italic,400,600'
+  = stylesheet_link_tag 'http://fonts.googleapis.com/css?family=Contrail+One'
 
   - rss_tag_links = @rss_tag_link.blank? ? Array.new : [@rss_tag_link]
   - rss_tag_autos = @rss_tag_auto.blank? ? Array.new : [@rss_tag_auto]
