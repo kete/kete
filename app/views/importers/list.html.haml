@@ -1,0 +1,35 @@
+- @title = t('importers.list.title')
+= render(:partial => "baskets/actions_menu", |
+  :locals => { :item => @current_basket })   |
+= render :partial => "topics/content_wrapper_start"
+%h2= h(@title)
+%p= t 'importers.list.description'
+- if @imports.blank?
+  %p= t 'importers.list.no_past_imports'
+- else
+  %table.history-table
+    %tr
+      %th{:abbr => "Folder"}= t 'importers.list.folder'
+      %th{:abbr => "Started"}= t 'importers.list.started'
+      %th{:abbr => "Type"}= t 'importers.list.type'
+      %th{:abbr => "User"}= t 'importers.list.user'
+      %th{:abbr => "Status"}= t 'importers.list.status'
+      %th{:abbr => "Processed"}= t 'importers.list.records_processed'
+    - for import in @imports
+      %tr
+        %td
+          = h(import.directory_name)
+        %td
+          = import.created_at.to_s(:euro_date_time)
+        %td
+          = h(import.xml_type)
+        %td= link_to_contributions_of(import.user,'Topic')
+        %td
+          = import.status
+          = t 'importers.list.as_of'
+          = import.updated_at.to_s(:euro_date_time)
+        %td
+          = import.records_processed
+%p= link_to t('importers.list.start_new'), :action => 'new'
+#prev-next= will_paginate @imports
+

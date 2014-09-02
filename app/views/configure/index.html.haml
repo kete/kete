@@ -1,0 +1,132 @@
+- @title = t('configure.index.title')
+%h2= h(@title)
+#message
+  - if SystemSetting.is_configured?
+    %p= t 'configure.index.change_settings'
+  - else
+    %p= t 'configure.index.setup_site'
+    - if !@admin_password_changed
+      %h3= t 'configure.index.security_title'
+      %p= t 'configure.index.change_password'
+      = button_to t('configure.index.change_password_button'), |
+        :controller => 'account',                              |
+        :action => 'change_password',                          |
+        :id => 1                                               |
+- if @admin_password_changed
+  #controls
+    - if !MISSING_SOFTWARE['Gems'].blank? or !MISSING_SOFTWARE['Commands'].blank?
+      #required-software
+        %h3= t 'configure.index.missing_software'
+        %ul
+          - MISSING_SOFTWARE['Gems'].each do |gem_name|
+            %li= t 'configure.index.missing_software_gem', :gem_name => gem_name
+          - MISSING_SOFTWARE['Commands'].each do |command|
+            %li= command
+    - else
+      - if !@search_engine_show
+        #settings
+      - else
+        #settings{:style => "display:none"}
+      %h3= t 'configure.index.settings_title'
+      %p
+        = t 'configure.index.settings_description'
+        - if !@advanced
+          = t 'configure.index.show', :show_link => link_to(t('configure.index.advanced_options'), :advanced => true)
+        - else
+          = t 'configure.index.show_only', :show_link => link_to(t('configure.index.regular_options'), :advanced => false)
+      %table
+        - section_count = 1
+        - @sections.each do |section|
+          %tr
+            %td
+              %div{:id => "#{section.split.join("-")}-check", :style => "display:none"}
+                %img{:alt => t 'configure.index.completed', :height => "14", :src => "/images/tick14x14.gif", :width => "14"}/
+            %td= link_to_remote_redbox(h(section), |
+                {                                 |
+                  :url => {                       |
+                  :action => 'section',           |
+                  :section => section,            |
+                  :advanced => @advanced          |
+                  }                               |
+                },                                |
+                :href => url_for(                 |
+                  :action => 'section',           |
+                  :section => section,            |
+                  :advanced => @advanced          |
+                ))                                |
+          - section_count += 1
+  - if @search_engine_show
+    #zoom
+  - else
+    #zoom{:style => "display:none"}
+  %h3= t 'configure.index.search_engine'
+  %table
+    %tr
+      %td
+        #zoom-dbs-check{:style => "display:none"}
+          %img{:alt => t 'configure.index.completed', :height => "14", :src => "/images/tick14x14.gif", :width => "14"}/
+      %td
+        = t 'configure.index.click_to'
+        = link_to_remote_redbox(t('configure.index.setup_search_engine'), |
+                :url => { :action => 'zoom_dbs_edit' },                   |
+          :href => url_for( :action => 'zoom_dbs_edit' ) )                |
+#status
+  - if !MISSING_SOFTWARE['Gems'].blank? or !MISSING_SOFTWARE['Commands'].blank?
+    %h3= t 'configure.index.install_missing_software'
+    %p= t 'configure.index.see_install_guide'
+  - else
+    #completed-message
+      - if @search_engine_show or @not_completed
+        %h3= t 'configure.index.search_engine_not_complete'
+      - else
+        = render :partial => 'settings_complete'
+  - if @finished
+    #finish
+  - else
+    #finish{:style => "display:none"}
+  %h3= t 'configure.index.finished_with_settings'
+  %p= t 'configure.index.click_finish'
+  = form_tag( { :action => 'finish' }, :remote => true) do
+    .wrap= submit_tag t('configure.index.finish_button')
+- if @ready_to_restart
+  #ready-to-restart
+- else
+  #ready-to-restart{:style => "display:none"}
+%h2= t 'configure.index.final_step'
+#restart-before-continue-message
+  %p
+    %b= t 'configure.index.must_restart'
+%table
+  %tr
+    %td
+      #prime-zebra-check{:style => "display:none"}
+        %img{:alt => t 'configure.index.completed', :height => "14", :src => "/images/tick14x14.gif", :width => "14"}/
+    %td
+      - if @search_engine_primed
+        #prime-zebra-message
+      - else
+        #prime-zebra-message{:style => "display:none"}
+      - if @search_engine_primed
+        %p= t 'configure.index.search_engine_primed'
+      - else
+        %p= t 'configure.index.search_engine_needs_bootstrapping'
+        = form_tag({ :action => 'prime_zebra' }, :remote => true, :id => 'prime_zebra_form') do
+          #prime-spinner{:style => "display:none; text-align:center"}
+            %img{:alt => t 'configure.index.completed', :height => "16", :src => "/images/indicator.gif", :width => "16"}/
+          .wrap= submit_tag t('configure.index.prime_search_engine'), :id => 'prime-button'
+  %tr
+    %td{:colspan => "2"}
+      <div id="reload-site-index"#{' style="display:none"' if !@search_engine_primed}>
+      %p= t 'configure.index.site_configured'
+      = render :partial => 'link_to_site'
+      %p= t 'configure.index.link_site_later'
+      %h3= t 'configure.index.installation_complete'
+      .wrap
+        = button_to t('configure.index.reload_site'), basket_index_url(:urlified_name => @site_basket.urlified_name)
+- if SystemSetting.is_configured?
+  .configured_site_controls
+    - if APPLICATION_SERVER == 'passenger'
+      = button_to t('configure.index.restart_server'), {:action => 'restart_server'}
+    - if Rails.env == 'production'
+      = button_to t('configure.index.clear_cache'), {:action => 'clear_cache'},     |
+        { :confirm => 'Are you sure? This can affect the performance of the site.'} |

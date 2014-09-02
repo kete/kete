@@ -1,0 +1,2 @@
+class CruftController < ApplicationController
+end

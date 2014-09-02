@@ -1,0 +1,81 @@
+- display_menu = (type == 'menu')
+- display_refine = (type == 'refine')
+- clear_values = display_menu
+- horizontal = display_refine
+
+%div{class: "search_dropdown#{' horizontal' if horizontal}", id: id, style: "display:none;"}
+  - if display_menu
+    .header= t('search.mini_controls.and')
+  %table
+    = "<tr><td valign='top'><table>" if horizontal
+    - if display_search_field_for?(type, SystemSetting.display_search_terms_field)
+      %tr
+        %td.header{colspan: "3"}
+          %label{for: "advanced_search_terms"}= t('search.mini_controls.search_terms')
+      %tr
+        %td.fields{colspan: "3"}
+          = text_field_tag 'advanced_search_terms', (h(scope.search_terms.to_s) unless clear_values), size: 30, tabindex: '1'
+    - if display_search_field_for?(type, SystemSetting.display_date_range_fields)
+      %tr
+        %td.header{colspan: "3"}
+          %label{for: "date_since"}= t('search.mini_controls.date')
+      %tr
+        %td.fields{colspan: "3"}
+          = render partial: 'search/refine_by_date', locals: { scope: scope }
+
+    = "</table></td><td valign='top'><table>" if horizontal
+
+    %tr
+      %td.header{colspan: "3"}= t('search.mini_controls.results_display')
+    - controls_permitted = display_menu || scope.current_basket.show_privacy_controls_with_inheritance?
+
+    - if display_search_field_for?(type, SystemSetting.display_item_type_field)
+      %tr
+        %td.label= t('search.mini_controls.show')
+        %td.fields{colspan: "2"}
+          - options = scope.content_item_types.collect do |zoom_class|
+            - [zoom_class_plural_humanize(zoom_class), zoom_class]
+
+          != select_tag('controller_name_for_zoom_class', options_for_select(options, scope.selected_content_item_type))
+
+    - if scope.topic_type_useful_here?(type)
+      %tr
+        %td.label= t 'search.mini_controls.about_a'
+        %td.fields{colspan: "2"}
+          != topic_type_select_with_indent('topic_type', nil, TopicType.find(1).full_set,
+            :name, :name, (clear_values ? SystemSetting.search_selected_topic_type : scope.topic_type), {},
+            [[t('search.mini_controls.any_topic_type'), '']])
+
+    - if display_search_field_for?(type, SystemSetting.display_basket_field)
+      %tr
+        %td.label= t('search.mini_controls.within')
+        %td.fields{colspan: "2"}
+          - selected = scope.urlified_basket_name
+          - selected = (SystemSetting.search_select_current_basket ? scope.current_basket.urlified_name : scope.site_basket.urlified_name) if clear_values
+          - options = basket_option_for(scope.site_basket, :label => t('search.mini_controls.all_of', :site_basket_name => scope.site_basket.name))
+          - baskets = Basket.all(:conditions => ["id NOT IN (?)", scope.standard_baskets]) +
+          - [scope.help_basket, scope.about_basket, scope.documentation_basket]
+          - baskets.each { |basket| options += basket_option_for(basket, :selected => selected) }
+          = select_tag('target_basket', options)
+
+    - if display_search_field_for?(type, SystemSetting.display_choices_field) && (scope.extended_field || categories_field)
+      %tr
+        %td.label= t('search.mini_controls.categorised')
+        %td.fields{colspan: "2"}
+          = render partial: 'search/refine_by_choice', locals: { without_label: true, clear_values: clear_values, scope: scope }
+
+    = "</table></td></tr>" if horizontal
+
+  - if display_refine
+    .submit
+      %hr/
+      %input{:type => "submit", :value => t('search.mini_controls.update')}/
+
+  - if display_menu
+    .reset
+      %input{:type => "reset", :value => t('search.mini_controls.clear')}/
+
+  .close
+    = link_to('[x]', '#', alt: t('search.mini_controls.close'), title: t('search.mini_controls.close'), onclick: "$('#{id}').hide();")                            |
+  - if display_menu
+    %div{:style => "clear:both;"}

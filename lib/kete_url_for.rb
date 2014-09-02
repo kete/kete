@@ -17,7 +17,7 @@ module KeteUrlFor
 
       location[:protocol] = 'http' if options[:force_http]
 
-      location[:host] = options[:host] || SITE_NAME
+      location[:host] = options[:host] || SystemSetting.site_url
 
       location.merge!({ :id => item.id, :private => nil }) if options[:minimal]
 
@@ -26,7 +26,7 @@ module KeteUrlFor
 
     # handles things like putting in privacy setting
     def fully_qualified_item_url(options = {}, is_relation=false)
-      host = options[:host] || SITE_NAME
+      host = options[:host] || SystemSetting.site_url
       item = options[:item]
       controller = options[:controller]
       urlified_name = options[:urlified_name]

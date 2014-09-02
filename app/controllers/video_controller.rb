@@ -6,12 +6,18 @@ class VideoController < ApplicationController
     redirect_to_search_for('Video')
   end
 
-  def list
-    index
-  end
+  # def list
+  #   index
+  # end
 
   def show
     @video = prepare_item_and_vars
+    @comments = @video.non_pending_comments
+
+    @creator = @video.creator
+    @last_contributor = @video.contributors.last || @creator
+
+    @related_item_topics = @video.related_items.select {|ri| ri.is_a? Topic}
 
     respond_to do |format|
       format.html
@@ -49,9 +55,8 @@ class VideoController < ApplicationController
 
     version_after_update = @video.max_version + 1
 
-    @successful = ensure_no_new_insecure_elements_in('video')
     @video.attributes = params[:video]
-    @successful = @video.save if @successful
+    @successful = @video.save
 
     if @successful
 

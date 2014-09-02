@@ -13,12 +13,12 @@ class ImageFile < ActiveRecord::Base
   # we also make non-web friendly image files end up with jpegs for resized versions
   # see lib/resize_as_jpeg_when_necessary
   attachment_options = { :storage => :file_system,
-    :content_type => IMAGE_CONTENT_TYPES,
-    :thumbnails => IMAGE_SIZES,
-    :max_size => MAXIMUM_UPLOADED_FILE_SIZE }
+    :content_type => SystemSetting.image_content_types,
+    :thumbnails => SystemSetting.image_sizes,
+    :max_size => SystemSetting.maximum_uploaded_file_size }
 
   # allow sites to opt-in for keeping embedded metadata from original with resized versions
-  if Object.const_defined?('KEEP_EMBEDDED_METADATA_FOR_ALL_SIZES') && KEEP_EMBEDDED_METADATA_FOR_ALL_SIZES
+  if SystemSetting.keep_embedded_metadata_for_all_sizes
     attachment_options[:keep_profile] = true
   end
 
@@ -46,7 +46,7 @@ class ImageFile < ActiveRecord::Base
 
   include ResizeAsJpegWhenNecessary
 
-  include HandleLegacyAttachmentFuPaths
+  include OverrideAttachmentFuMethods
 
   # custom error message, probably overkill
   # validates the size and content_type attributes according to the current model's options
@@ -55,7 +55,7 @@ class ImageFile < ActiveRecord::Base
       enum = attachment_options[attr_name]
       unless enum.nil? || enum.include?(send(attr_name))
         errors.add attr_name, I18n.t("image_file_model.not_acceptable_#{attr_name}",
-                                     :max_size => (MAXIMUM_UPLOADED_FILE_SIZE / 1.megabyte))
+                                     :max_size => (SystemSetting.maximum_uploaded_file_size / 1.megabyte))
       end
     end
   end

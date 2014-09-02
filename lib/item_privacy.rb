@@ -3,7 +3,11 @@
 
 # Item Privacy Modification
 
-# include ItemPrivacy::All
+# RABID:
+# to implement privacy, we need to tweak the versioning, tagging, attachment subsystems
+# all those tweaks happen in this file
+# The methods defined in this file are added to ActiveModel models
+# - it is not clean which of those methods shadow methods in the gems that provide versioning, tagging, attachments
 
 module ItemPrivacy
 
@@ -44,12 +48,14 @@ module ItemPrivacy
       #   versions.last
       # end
 
+      # EOIN: call load_private! and recover from (and ignore) any & all exceptions that it might throw
       def private_version!
         load_private!
       rescue
         nil
       end
 
+      # EOIN: call load_public! and recover from (and ignore) any & all exceptions that it might throw
       def public_version!
         load_public!
       rescue
@@ -60,9 +66,14 @@ module ItemPrivacy
       # Uses method in flagging.rb lib to determine that (if the title is the default
       # "No public version available", the only private versions exist)
       def has_public_version?
+        # EOIN: it seems this code has a dependency on the flagging code
         !self.at_placeholder_public_version?
       end
 
+      # EOIN: if the model has 'private' and 'private_version_serialized'
+      # attributes and the private_version_serialized is NOT empty, then we
+      # can infer that this model has a private version
+      # EOIN: this implies that to have a private version, you must have something in 'private_version_serialized'
       def has_private_version?
         respond_to?(:private?) && respond_to?(:private_version_serialized) && !private_version_serialized.blank?
       end
@@ -70,9 +81,15 @@ module ItemPrivacy
       def latest_version_is_private?
         # skip versions that are simply placeholders,
         # i.e. the only public version is "no public version"
+
+        # EOIN: "find the most recently created row in the versions table where the title is not 'no public version'"
+        # EOIN: there seems to be something special about the "no public version" title ???
+        # EOIN: this seems to rely on id's sequentially increasing as new rows are added to the table. Is that wise?
         last_version = versions.find(:first,
-                                     :conditions => "title != \'#{Kete.no_public_version_title}\'",
+                                     :conditions => "title != \'#{SystemSetting.no_public_version_title}\'",
                                      :order => 'id DESC')
+
+        # EOIN: if the last version has a boolean attribute named 'private' and that attribute is set to true, then return true. Otherwise return false
         last_version.respond_to?(:private?) && last_version.private?
       end
 
@@ -85,16 +102,22 @@ module ItemPrivacy
         result
       end
 
+      # * if the model has a "private" boolean attribute, rails will create a #private? method for it
+      # * method summary:
+      #   "if the model has a private attribute and that attribute is set to true, then return true, otherwise return false"
       def is_private?
         respond_to?(:private) && private?
       end
 
+
+      # "save the model to DB but skip the store_correct_versions_after_save method callback"
       def save_without_saving_private!
         without_saving_private do
           save!
         end
       end
 
+      # EOIN: what does protected mean from an included module?
       protected
 
         def latest_public_version
@@ -103,6 +126,15 @@ module ItemPrivacy
           end
         end
 
+        # ROB:  From what I can see this function:
+        #       * if is private?:  stashes the model's values, loads the last public version, 
+        #         then re-applies the old private-version's id (strangely).
+        #       * if is public but has private-version:  gets the private version and then 
+        #         updates it's id to the public-version's id
+        # EOIN: 
+        # * #save_without_saving_private! saves the model but skips this method 
+        # * this is hooked up as an after_save callback directly in the model class file
+        #   which implies that not all models that include this module will want this method as a callback
         def store_correct_versions_after_save
           if private?
             store_private!
@@ -135,6 +167,10 @@ module ItemPrivacy
         # Using Marshall as..
         # YAML is 34.65 times slower in serialization and 5.66 times slower in unserialization.
         # http://significantbits.wordpress.com/2008/01/29/yaml-vs-marshal-performance/
+        #
+        # ROB:  store_private! loops through the columns set to be versioned and creates a array 
+        #       of name-value tuples. These are converted to YAML and stashed in the a variable 
+        #       which is STORED ON THE IN-MEMORY MODEL (ie not in the database).
         def store_private!(save_after_serialization = false)
 
           prepared_array = self.class.versioned_columns.inject(Array.new) do |memo, k|
@@ -155,12 +191,23 @@ module ItemPrivacy
         end
 
         # Load the saved private attributes into the current instance.
+        #
+        # ROB:  load_private: loads the information stashed on the IN-MEMORY MODEL by 
+        #       store_private! and applies these to the model's active-record variables.
         def load_private!
-          reload
-          private_attrs = YAML.load(private_version_serialized)
+          # EOIN:reload the current model from the DB, presumably this makes sure we have the most recent version of it
+          reload 
+
+          # EOIN: => private_version_serialized contains YAML
+          private_attrs = YAML.load(private_version_serialized) 
+
+          # EOIN: private_version_serialized contains an Array
           raise "No private attributes" if private_attrs.nil? || !private_attrs.kind_of?(Array)
 
+
+          # EOIN: private_version_serialized contains an Array of 2-tuples (Array with two values) 
           private_attrs.each do |key, value|
+            # EOIN: create a attribute writer for each element of the private_version_serialized array
             send("#{key}=".to_sym, value)
           end
 
@@ -180,9 +227,10 @@ module ItemPrivacy
             # and current model are public and appropriate.
           else
 
+            # EOIN: it seems like update_hash is a default set of attributes tha
             update_hash = {
-              :title => Kete.no_public_version_title,
-              :description => Kete.no_public_version_description,
+              :title => SystemSetting.no_public_version_title,
+              :description => SystemSetting.no_public_version_description,
               :extended_content => nil,
               :tag_list => nil,
               :private => false,
@@ -192,8 +240,10 @@ module ItemPrivacy
             update_hash[:short_summary] = nil if can_have_short_summary?
 
             # Update without callbacks
+            # EOIN: this also saves the record in the DB
             self.update_attributes!(update_hash)
 
+            # EOIN: this seems to assume that the first user in the DB will be the admin. This seems dangerous ???
             add_as_contributor(User.find(:first))
           end
 
@@ -202,6 +252,9 @@ module ItemPrivacy
         #   false
         end
 
+        # EOIN: 
+        # * this instance method just passes the call on to the class method with the same name
+        # * the class method is implemented below
         def without_saving_private(&block)
           self.class.without_saving_private(&block)
         end
@@ -210,6 +263,10 @@ module ItemPrivacy
 
     module ClassMethods
 
+      # replace the store_correct_versions_after_save method with an empty one 
+      # then run the given block
+      # then re-enable the original store_correct_versions_after_save method 
+      # "run the given block but skip the store_correct_versions_after_save method callback"
       def without_saving_private(&block)
         class_eval do
           alias_method :orig_store_correct_versions_after_save, :store_correct_versions_after_save
@@ -312,14 +369,14 @@ module ItemPrivacy
     # in the correct folder.
     def full_filename(thumbnail = nil)
       file_system_path = (thumbnail ? thumbnail_class : self).attachment_options[:path_prefix].to_s.gsub("public", "")
-      File.join(RAILS_ROOT, attachment_path_prefix, file_system_path, *partitioned_path(thumbnail_name_for(thumbnail)))
+      File.join(Rails.root, attachment_path_prefix, file_system_path, *partitioned_path(thumbnail_name_for(thumbnail)))
     end
 
     # Make sure that the correct base path is stripped off in
     # AttachmentFu::Backends::FileSystemBackend.public_filename
     # Overridden from AttachmentFu
     def base_path
-      @base_path ||= File.join(RAILS_ROOT, attachment_path_prefix)
+      @base_path ||= File.join(Rails.root, attachment_path_prefix)
     end
 
     private

@@ -1,0 +1,21 @@
+- unless result.thumbnail.nil?
+  - thumb_src = result.thumbnail[:src]
+  - thumb_src = thumb_src.sub(SystemSetting.site_url, '/') if locally_hosted
+  - result.thumbnail.delete(:src)
+  - result.thumbnail.delete(:size)
+  - thumb_options = result.thumbnail
+
+%div{:class => "image-result-wrapper#{' first' if first_result}", :id => "item_#{result.id}_wrapper"}
+  .image-result-thumb
+    - link_text = result.thumbnail.nil? ? t('search.image.view_image') :
+    - image_tag("#{thumb_src}?show_placeholder=true", thumb_options.merge(:alt => altify(title)))
+    = link_to link_text, url_for(result.model)
+  .image-result-header
+    %h4= link_to h(result.title), url_for(result.model), :tabindex => '1'
+  .image-result-description
+    = strip_tags(result.short_summary)
+    .image-result-more
+      = link_to(t('search.image.more'), url_for(result.model), { :title => t('search.image.more_on', :title => title), :tabindex => '1' })
+  = render('related', :related => related, :source_url => url_for(result.model), :title => title) if result.related
+  = dc_date_display_of(result.dc_dates)
+  %div{:style => "clear:left;"}

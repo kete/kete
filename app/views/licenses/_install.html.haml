@@ -1,0 +1,8 @@
+.active-scaffold-header
+  %h2= t('licenses.install.title')
+  = form_tag :action => 'install_license' do
+    = select_tag 'task', options_for_select([[t('licenses.install.choose_license'), '']] + |
+      @available_licenses.collect { |v| [v.humanize, v] })                                 |
+    = submit_tag t('licenses.install.submit')
+  %p= t('licenses.install.creative_commons_note')
+%br/

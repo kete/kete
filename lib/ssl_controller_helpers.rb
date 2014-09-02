@@ -2,7 +2,7 @@ module SslControllerHelpers
   unless included_modules.include? SslControllerHelpers
     
     def ssl_required?
-      Kete.force_https_on_restricted_pages || false
+      SystemSetting.force_https_on_restricted_pages || false
     end
 
     # If ssl_allowed? returns true, the SSL requirement is not enforced,

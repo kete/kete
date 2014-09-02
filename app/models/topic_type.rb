@@ -24,7 +24,7 @@ class TopicType < ActiveRecord::Base
   # that they are importing
   has_many :imports, :dependent => :destroy
 
-  named_scope :from_urlified_name, lambda { |urlified_name| { :conditions => ['LOWER(name) = ?', urlified_name.downcase.gsub('_', ' ')] } }
+  scope :from_urlified_name, lambda {|urlified_name| where('LOWER(name) = ?', urlified_name.downcase.gsub('_', ' ') ) }
 
   validates_presence_of :name, :description
   validates_uniqueness_of :name, :case_sensitive => false
@@ -50,7 +50,7 @@ class TopicType < ActiveRecord::Base
     options[:with_ancestors] ||= true
     relevant_topic_types = options[:with_ancestors] ? self_and_ancestors : [self]
     # TODO: might want to reconsider using a subselect here
-    ExtendedField.find(:all, :conditions => ["id in (select extended_field_id from topic_type_to_field_mappings where topic_type_id in (?))", relevant_topic_types])
+    ExtendedField.where("id in (select extended_field_id from topic_type_to_field_mappings where topic_type_id in (?))", relevant_topic_types).all
   end
 
   def self_and_ancestors_ids
@@ -69,5 +69,10 @@ class TopicType < ActiveRecord::Base
 
   def urlified_name
     name.downcase.gsub(/\s/, '_')
+  end
+
+  def full_set
+    # RABID: TODO: implement this as it not in the awesome_nested_set gem
+    []
   end
 end

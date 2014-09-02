@@ -1,0 +1,11 @@
+- unless params[:topic] && params[:topic][:topic_type_id]
+  - @title = t('topics.new.what_is_topic_about')
+  %h2= @title
+  = form_tag do
+    %fieldset
+      = render :partial => 'pick_form'
+    = submit_tag t('topics.new.choose_type'), { :class => "save-button", :tabindex => '1' }
+  = link_to_cancel
+- else
+  = render :partial => 'form'
+

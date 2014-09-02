@@ -1,0 +1,19 @@
+- if params[:related_topic].blank?
+- location = @import.directory
+- else
+- location = @import.import_archive_file.filename
+- end
+- @title = t('importers.create.title', :location => location)
+= render(:partial => "baskets/actions_menu", |
+  :locals => { :item => @current_basket })   |
+= render :partial => "topics/content_wrapper_start"
+%h2= @title
+= periodically_call_remote(:url => {:action => 'get_progress',                               |
+  :worker_type => @worker_type, :related_topic => params[:related_topic]}, :frequency => 30) |
+#report_records_processed= t 'importers.create.starting_import'
+#spinner
+  %img{:alt => t 'importers.create.completed', :height => "16", :src => "/images/indicator.gif", :width => "16"}/
+#done= t 'importers.create.in_progress'
+#exit
+  = button_to t('importers.create.stop_early'), :action => 'stop', :id => @import, :worker_type => @worker_type
+

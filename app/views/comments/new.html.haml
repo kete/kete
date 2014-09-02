@@ -1,0 +1,23 @@
+- @title = t('comments.new.title')
+- if @parent_comment
+  %h2
+    = h(@title)
+    in reply to
+    %a{:href => "#original"}= h @parent_comment.title
+- else
+  %h2= h(@title)
+- form_for :comment,
+- :url => { :action => 'create'},
+- :html => { :multipart => true } do |form|
+  = render :partial => 'form', :object => form
+  .wrap= submit_tag t('comments.new.button'), {:class => "save-button", :tabindex => '1'}
+= link_to_cancel
+- if @parent_comment
+  #comment_in_response_to
+    #comment_in_response_to_original
+      %a{:name => "original"}
+      = link_to t('comments.new.view_original'), path_to_show_for(@parent_comment, :anchor => @parent_comment.to_anchor)
+    %h2= t('comments.new.in_response_to', :user_name => link_to_contributions_of(@parent_comment.creator))
+    %h4= h @parent_comment.title
+    %p= quoted_description_of(@parent_comment)
+

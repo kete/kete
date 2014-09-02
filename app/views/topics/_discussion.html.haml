@@ -1,0 +1,14 @@
+%div{:class => "secondary-content-section-wrapper"}
+  %div{:class => "secondary-content-section", :id => "discussion"}
+    .secondary-content-section-content
+      %h3
+        %a{:name => "comments"}= t 'topics.discussion.discuss_this_topic'
+      - if logged_in? and @at_least_a_moderator
+        - cache_with_privacy(item, {:part => "comments-moderators"}) do
+          = show_comments_for(item)
+      - else
+        - cache_with_privacy(item, {:part => "comments"}) do
+          = show_comments_for(item)
+      %div{:style => "clear:both;"}
+    .secondary-content-section-footer-wrapper
+      .secondary-content-section-footer &nbsp;

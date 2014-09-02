@@ -1,3 +1,4 @@
+# encoding: UTF-8
 #
 # CAUTION
 #
@@ -94,139 +95,120 @@ module ActiveRecord
       self.class.name.tableize.singularize.to_sym
     end
   end
-
-  class Errors
-    # Kieran Pilkington, 2010-03-26
-    # The ability to use I18n in validation messages. Exsits in Rails 3. Remove when we upgrade.
-    alias :add_orig :add
-    def add(attribute, message = nil, options = {})
-      options[:default] = options[:default].call if options[:default].is_a?(Proc)
-      add_orig(attribute, message, options)
-    end
-  end
-end
-
-# Kieran Pilkington, 2009-07-09
-# Getting around issue within Rails that causes a hash to be stringified, but
-# no take options into account later because the values require symbols
-# Alias the old method, redefine and symbolize keys before continuing
-module ActionController
-  class UrlRewriter
-    private
-      alias :rewrite_url_orig :rewrite_url
-      def rewrite_url(options)
-        rewrite_url_orig options.symbolize_keys
-      end
-  end
 end
 
 module I18n
-  def self.available_locales_with_labels
-    @@available_locales_with_labels ||= begin
-      locales_file = File.join(Rails.root.to_s, 'config', 'locales.yml')
-      return Hash.new unless File.exist?(locales_file)
-      YAML.load(IO.read(locales_file)).stringify_keys
-    end
-  end
 
-  module Backend
-    class Simple
-      protected
-        # Kieran Pilkington, 2009-07-09
-        # Adding very simple translation fallback support to I18n module
-        # Calls the original lookup method. If the value is empty, call it again with default locale
-        alias :lookup_orig :lookup
-        def lookup(locale, key, scope = [])
-          return unless key
-          entry = lookup_orig(locale, key, scope)
-          if (entry.nil? || (entry.is_a?(String) && entry.empty?)) && I18n.default_locale
-            entry = lookup_orig(I18n.default_locale, key, scope)
-          end
-          entry
-        end
+   # EOIN: I have servere doubts about the usefulness of this extension. It is
+   # called in a number of places in the code but it's not clear what benefit it
+   # gives us.
+   def self.available_locales_with_labels
+     @@available_locales_with_labels ||= begin
+       locales_file = File.join(Rails.root.to_s, 'config', 'locales', 'en.yml')
+       return Hash.new unless File.exist?(locales_file)
+       YAML.load(IO.read(locales_file)).stringify_keys
+     end
+   end
 
-        # Kieran Pilkington, 2009-07-09
-        # Allows us to use keys in translations "Change {{t.base.password}}"
-        # Replace all the {{t.}} values before handing the resulting string
-        # to the original interpolate method
-        alias :interpolate_orig :interpolate
-        def interpolate(locale, string, values = {})
-          return string unless string.is_a?(String)
+   module Backend
+     class Simple
+       protected
+         # Kieran Pilkington, 2009-07-09
+         # Adding very simple translation fallback support to I18n module
+         # Calls the original lookup method. If the value is empty, call it again with default locale
+         alias :lookup_orig :lookup
+         def lookup(locale, key, scope = [], options = {})
+           return unless key
+           entry = lookup_orig(locale, key, scope, options)
+           if (entry.nil? || (entry.is_a?(String) && entry.empty?)) && I18n.default_locale
+             entry = lookup_orig(I18n.default_locale, key, scope, options)
+           end
+           entry
+         end
 
-          string = string.gsub(MATCH) do
-            escaped, pattern, key = $1, $2, $2.to_sym
+         # Kieran Pilkington, 2009-07-09
+         # Allows us to use keys in translations "Change {{t.base.password}}"
+         # Replace all the {{t.}} values before handing the resulting string
+         # to the original interpolate method
+         # alias :interpolate_orig :interpolate
+         # def interpolate(locale, string, values = {})
+         #   match = /(\\\\)?\{\{([^\}]+)\}\}/
+         #   return string unless string.is_a?(String)
 
-            if !escaped && pattern.match(/^t\./)
-              # a list of acceptable string methods to call
-              string_methods = ['downcase', 'upcase', 'capitalize', 'singularize', 'pluralize']
+         #   string = string.gsub(match) do
+         #     escaped, pattern, key = $1, $2, $2.to_sym
 
-              # remove string methods and t. from the key, then turn to a symbol
-              # and run it through the translate method
-              key = pattern.gsub(/^t\./, '').gsub(/\.(#{string_methods.join('|')})/, '').to_sym
-              value = translate(locale, key, values)
+         #     if !escaped && pattern.match(/^t\./)
+         #       # a list of acceptable string methods to call
+         #       string_methods = ['downcase', 'upcase', 'capitalize', 'singularize', 'pluralize']
 
-              # for each string method in the patern, in order, execute that
-              # method on the returned value, and overwrite value
-              pattern.gsub(/\.(#{string_methods.join('|')})/) do
-                if $1 == 'pluralize'
-                  value = pluralize_with_locale(locale, value)
-                elsif $1 == 'singularize'
-                  value = singularize_with_locale(locale, value)
-                else
-                  value = value.respond_to?($1) ? value.send($1) : value
-                end
-              end
+         #       # remove string methods and t. from the key, then turn to a symbol
+         #       # and run it through the translate method
+         #       key = pattern.gsub(/^t\./, '').gsub(/\.(#{string_methods.join('|')})/, '').to_sym
+         #       value = translate(locale, key, values)
 
-              # return the translated, and string method executed value
-              value
-            else
-              "{{#{pattern}}}"
-            end
-          end
+         #       # for each string method in the patern, in order, execute that
+         #       # method on the returned value, and overwrite value
+         #       pattern.gsub(/\.(#{string_methods.join('|')})/) do
+         #         if $1 == 'pluralize'
+         #           value = pluralize_with_locale(locale, value)
+         #         elsif $1 == 'singularize'
+         #           value = singularize_with_locale(locale, value)
+         #         else
+         #           value = value.respond_to?($1) ? value.send($1) : value
+         #         end
+         #       end
 
-          interpolate_orig(locale, string, values)
-        end
+         #       # return the translated, and string method executed value
+         #       value
+         #     else
+         #       "{{#{pattern}}}"
+         #     end
+         #   end
 
-        PluralizeValues = {
-          :mi => { :prefix => 'ngā ' },
-          :zh => { :prefix => '', :suffix => '' }
-        }
-        SingularizeValues = {
-          :mi => { :prefix => 'te ' },
-          :zh => { :prefix => '', :suffix => '' }
-        }
+         #   interpolate_orig(locale, string, values)
+         # end
 
-        def pluralize_with_locale(locale, string)
-          if PluralizeValues[locale.to_sym]
-            string = strip_prefix_and_suffix(locale, string)
-            PluralizeValues[locale.to_sym][:prefix].to_s + string + PluralizeValues[locale.to_sym][:suffix].to_s
-          else
-            string.pluralize
-          end
-        end
+         PluralizeValues = {
+           :mi => { :prefix => 'ngā ' },
+           :zh => { :prefix => '', :suffix => '' }
+         }
+         SingularizeValues = {
+           :mi => { :prefix => 'te ' },
+           :zh => { :prefix => '', :suffix => '' }
+         }
 
-        def singularize_with_locale(locale, string)
-          if SingularizeValues[locale.to_sym]
-            string = strip_prefix_and_suffix(locale, string)
-            SingularizeValues[locale.to_sym][:prefix].to_s + string + SingularizeValues[locale.to_sym][:suffix].to_s
-          else
-            string.singularize
-          end
-        end
+         def pluralize_with_locale(locale, string)
+           if PluralizeValues[locale.to_sym]
+             string = strip_prefix_and_suffix(locale, string)
+             PluralizeValues[locale.to_sym][:prefix].to_s + string + PluralizeValues[locale.to_sym][:suffix].to_s
+           else
+             string.pluralize
+           end
+         end
 
-        def strip_prefix_and_suffix(locale, string)
-          # strip any prefixes for this locale
-          string.gsub!(/^#{PluralizeValues[locale.to_sym][:prefix]}/, '') unless PluralizeValues[locale.to_sym][:prefix].blank?
-          string.gsub!(/^#{SingularizeValues[locale.to_sym][:prefix]}/, '') unless SingularizeValues[locale.to_sym][:prefix].blank?
+         def singularize_with_locale(locale, string)
+           if SingularizeValues[locale.to_sym]
+             string = strip_prefix_and_suffix(locale, string)
+             SingularizeValues[locale.to_sym][:prefix].to_s + string + SingularizeValues[locale.to_sym][:suffix].to_s
+           else
+             string.singularize
+           end
+         end
 
-          # strip any suffixes for this locale
-          string.gsub!(/#{PluralizeValues[locale.to_sym][:suffix]}$/, '') unless PluralizeValues[locale.to_sym][:suffix].blank?
-          string.gsub!(/#{SingularizeValues[locale.to_sym][:suffix]}$/, '') unless SingularizeValues[locale.to_sym][:suffix].blank?
+         def strip_prefix_and_suffix(locale, string)
+           # strip any prefixes for this locale
+           string.gsub!(/^#{PluralizeValues[locale.to_sym][:prefix]}/, '') unless PluralizeValues[locale.to_sym][:prefix].blank?
+           string.gsub!(/^#{SingularizeValues[locale.to_sym][:prefix]}/, '') unless SingularizeValues[locale.to_sym][:prefix].blank?
 
-          string
-        end
-    end
-  end
+           # strip any suffixes for this locale
+           string.gsub!(/#{PluralizeValues[locale.to_sym][:suffix]}$/, '') unless PluralizeValues[locale.to_sym][:suffix].blank?
+           string.gsub!(/#{SingularizeValues[locale.to_sym][:suffix]}$/, '') unless SingularizeValues[locale.to_sym][:suffix].blank?
+
+           string
+         end
+     end
+   end
 end
 
 # Include extensions into Kete dependancies here

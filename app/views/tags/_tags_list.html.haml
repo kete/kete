@@ -1,0 +1,12 @@
+- if @tags.size > 0
+  %div= will_paginate @results, :params => params
+  %br/
+  - if @type == 'tag cloud'
+    = render :partial => 'tags/tags_by_tag_cloud', :locals => { :tags => @tags }
+  - else
+    = render :partial => 'tags/tags_by_categories', :locals => { :tags => @tags }
+  %div{:style => "clear:both;"}
+  %br/
+  %div= will_paginate @results, :params => params
+- else
+  %h4= t 'tags.tags_list.no_tags'

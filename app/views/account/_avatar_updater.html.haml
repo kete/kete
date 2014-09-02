@@ -1,0 +1,19 @@
+- if SystemSetting.enable_user_portraits? || SystemSetting.enable_gravatar_support?
+  %img#user_avatar_spinner{:alt => t('account.avatar_updater.fetching_avatar'), :height => "16", :src => "/images/indicator.gif", :style => "display:none;", :width => "16"}/
+  %table#user_avatar_updater_table
+    %tr
+      %td#user_avatar_img
+        - options = { :width => 30, :height => 30, :alt => t('account.avatar_updater.your_avatar') }
+        - if !current_user.nil? && current_user != :false
+          = avatar_for(current_user, options)
+        - else
+          = image_tag('no-avatar.png', options)
+      %td
+        - if SystemSetting.enable_user_portraits?
+          - if !current_user.nil? && current_user != :false
+            = t 'account.avatar_updater.add_avatar',                                                |
+              :profile_link => link_to(t('account.avatar_updater.profile_link'), :action => 'show') |
+          - else
+            = t 'account.avatar_updater.add_avatar_after_signup'
+        - if SystemSetting.enable_gravatar_support?
+          = t 'account.avatar_updater.gravatar_link', :gravatar_link => '<a href="http://gravatar.com/">Gravatar</a>'
