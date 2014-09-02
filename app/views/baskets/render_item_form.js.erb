@@ -1,10 +1,1 @@
 $('#item_form').html("<%=j render(:partial => 'topics/form') %>")
-
-<%- #-- ROB: These have probably been removed with the other javascript cruft. %>
-<%- #-- You'll need to re-add these if you want to use mceEditor %>
-/* 
-<%- # raw_tiny_mce_init %>
-tinyMCE.execCommand('mceRemoveControl', false, 'mceEditor');
-tinyMCE.execCommand('mceAddControl', false, 'mceEditor');*/
-
-<%= google_map_initializers if defined?(google_map_initializers) %>
