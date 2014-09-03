@@ -99,6 +99,7 @@ GEM
     choice (0.1.6)
     chronic (0.10.2)
     chunky_png (1.2.8)
+    cliver (0.3.2)
     coderay (1.1.0)
     coffee-rails (3.2.2)
       coffee-script (>= 2.2.0)
@@ -126,6 +127,7 @@ GEM
       builder (>= 2.0.0)
       debugger (>= 1.6.2)
     diff-lcs (1.2.5)
+    dynamic_form (1.1.4)
     erubis (2.7.0)
     execjs (1.4.0)
       multi_json (~> 1.0)
@@ -183,6 +185,11 @@ GEM
       activerecord (>= 3.1)
       activesupport (>= 3.1)
       arel
+    poltergeist (1.5.1)
+      capybara (~> 2.1)
+      cliver (~> 0.3.1)
+      multi_json (~> 1.0)
+      websocket-driver (>= 0.2.0)
     polyglot (0.3.3)
     pothoven-attachment_fu (3.2.13)
     pry (0.9.12.3)
@@ -277,6 +284,7 @@ GEM
     unicode (0.4.4)
     validates_xml (1.0.3)
       activerecord (>= 2.0.0)
+    websocket-driver (0.3.4)
     will_paginate (3.0.5)
     xml-simple (1.1.2)
     xpath (2.0.0)
@@ -308,6 +316,7 @@ DEPENDENCIES
   database_cleaner
   debugger
   debugger-xml
+  dynamic_form (~> 1.1.4)
   factory_girl_rails (~> 4.3.0)
   figaro (~> 0.7.0)
   haml
@@ -325,6 +334,7 @@ DEPENDENCIES
   packet
   pg
   pg_search (~> 0.7.2)
+  poltergeist
   pothoven-attachment_fu (~> 3.2.13)
   pry-byebug
   pry-rails
