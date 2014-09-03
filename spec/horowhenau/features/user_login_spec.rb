@@ -2,27 +2,6 @@ require 'spec_helper'
 
 feature "User login" do
 
-  def username
-    "eoinkelly"
-  end
-
-  def password
-    "iDHVrBKH2QeH"
-  end
-
-  def sign_in
-    visit "/"
-    within(".user-nav") do
-      click_link('Login')
-    end
-
-    within("form#login") do
-      fill_in "Login", with: username
-      fill_in "Password", with: password
-      click_button "Login"
-    end
-  end
-
   it "A site admin can login" do
     sign_in
     expect(page).to have_text("Logged in successfully")
