@@ -7,7 +7,7 @@
 #report_records_failed
 #report_records_skipped
 #spinner
-  %img{:alt => t 'search.rebuild_zoom_index.completed', :height => "16", :src => "/images/indicator.gif", :width => "16"}/
+  %img{:alt => t 'search.rebuild_zoom_index.completed', :height => "16", :src => "#{image_path('indicator.gif')}", :width => "16"}/
 #done= t 'search.rebuild_zoom_index.in_progress'
 = periodically_call_remote :url => { :action => 'check_rebuild_status', |
             :worker_key => @worker_key },                               |

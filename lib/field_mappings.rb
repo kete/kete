@@ -20,10 +20,7 @@ module FieldMappings
       klass.send :belongs_to, :form_field, :class_name => "ExtendedField", :foreign_key => "extended_field_id"
       klass.send :belongs_to, :required_form_field, :class_name => "ExtendedField", :foreign_key => "extended_field_id"
 
-
-
       klass.extend(ClassMethods)
-      klass.include(InstanceMethods)
     end
 
     module ClassMethods
