@@ -715,9 +715,7 @@ require 'xmlsimple'
             )
           end
 
-        # end
-        # ROB: I was having problems with Nokogiri blowing up with this.
-        end.flatten.uniq.join("\n")
+        end
 
         # OLD_KETE_TODO: For some reason a bunch of duplicate extended fields are created. Work out why.
 
