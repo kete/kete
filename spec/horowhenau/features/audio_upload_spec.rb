@@ -17,7 +17,7 @@ feature "Users can upload audio" do
     attach_file('audio_recording[uploaded_data]', audio_file_path)
     click_button 'Create'
 
-    expect(page).to have_text("stuff")
+    expect(page).to have_text("Audio was successfully created.")
   end
 end
 

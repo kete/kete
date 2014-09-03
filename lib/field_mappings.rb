@@ -3,7 +3,6 @@ module FieldMappings
 
     def self.included(klass)
 
-
       # RABID: it seems this module can only be included in 2 classes
       case klass.name
       when 'ContentTypeToFieldMapping'
@@ -21,25 +20,10 @@ module FieldMappings
       klass.send :belongs_to, :form_field, :class_name => "ExtendedField", :foreign_key => "extended_field_id"
       klass.send :belongs_to, :required_form_field, :class_name => "ExtendedField", :foreign_key => "extended_field_id"
 
-      # RABID: piggy_back is a way of avoiding doing multiple queries to get attributes from associated models
-      # * see http://37signals.com/rails/wiki/PiggyBackQuery.html for the basics
-      # * This reads as:
-      # * the horrible long attribute is just a unique name for the piggy back
 
-      # * it reads as "When you search for klass in the database, manipulate
-      # * the SQL so that it also selects the attributes named below from the
-      # * 'extended_fields' table."
-      # e.g. a find query that results in
-      #   SELECT id,name FROM users;
-      # would become something like
-      #   SELECT users.id, users.name, extended_fields,label, extended_fields.xml_element_name ... FROM users, extended_fields; 
-      # EOIN: I'm not sure what to replace this with yet as it will depend on how we represent extended fields
-      # klass.send :piggy_back, 
-      #            :extended_field_label_xml_element_name_xsi_type_multiple_description_user_choice_addition_and_ftype,
-      #            :from => :extended_field, 
-      #            :attributes => [:label, :xml_element_name, :xsi_type, :multiple, :description, :user_choice_addition, :ftype]
 
       klass.extend(ClassMethods)
+      klass.include(InstanceMethods)
     end
 
     module ClassMethods
@@ -47,6 +31,37 @@ module FieldMappings
         with_scope(:create => { :required => is_required }) { type.concat field }
       end
     end
+
+    # RABID:
+    # Old Kete used a plugin called 'Piggy Back' which adjusted ActiveRecord
+    # finder methods to load extra data. It used it to automatically load the
+    # following attributes:
+    #
+    #   * ExtendedField#label
+    #   * ExtendedField#xml_element_name
+    #   * ExtendedField#xsi_type
+    #   * ExtendedField#multiple
+    #   * ExtendedField#description
+    #   * ExtendedField#user_choice_addition
+    #   * ExtendedField#ftype
+    #
+    # as attributes of whatever model this module is included into e.g.
+    # ExtendedField#label would be available as #label in this class.
+    #
+    # See http://37signals.com/rails/wiki/PiggyBackQuery.html for the
+    # basics of how PiggyBack worked and the vendor/plugins/piggy_back
+    # directory in the old Kete code for the gory details.
+    #
+    # We just do the simpler (probably slower) thing until we are sure it is
+    # a performance problem.
+
+    def extended_field_label ;                extended_field.label ; end
+    def extended_field_xml_element_name ;     extended_field.xml_element_name ; end
+    def extended_field_xsi_type ;             extended_field.xsi_type ; end
+    def extended_field_multiple ;             extended_field.multiple ; end
+    def extended_field_description ;          extended_field.description ; end
+    def extended_field_user_choice_addition ; extended_field.user_choice_addition ; end
+    def extended_field_ftype ;                extended_field.ftype ; end
 
     def used_by_items?
       # Check whether we are dealing with a topic type mapping
