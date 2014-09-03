@@ -56,6 +56,10 @@ gem "rake", "~> 10.1.0"
 gem "rdoc"
 gem 'nokogiri', '~> 1.6.0'
 
+# Officially sanctioned Rails way to add Rails 2 stuff like #error_messages_for
+# to Rails 3 projects
+gem 'dynamic_form', '~> 1.1.4'
+
 # Background tasks
 # ################
 gem "backgroundrb-rails3", "~> 1.1.6", :require => 'backgroundrb'
@@ -74,6 +78,7 @@ group :development do
 end
 
 group :development, :test do
+  gem 'poltergeist'
   gem "rspec-rails", "~> 3.0.0"
   gem "factory_girl_rails", "~> 4.3.0"
   gem "capybara", "~> 2.4.1"
