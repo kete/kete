@@ -127,12 +127,12 @@ module ItemPrivacy
         end
 
         # ROB:  From what I can see this function:
-        #       * if is private?:  stashes the model's values, loads the last public version, 
+        #       * if is private?:  stashes the model's values, loads the last public version,
         #         then re-applies the old private-version's id (strangely).
-        #       * if is public but has private-version:  gets the private version and then 
+        #       * if is public but has private-version:  gets the private version and then
         #         updates it's id to the public-version's id
-        # EOIN: 
-        # * #save_without_saving_private! saves the model but skips this method 
+        # EOIN:
+        # * #save_without_saving_private! saves the model but skips this method
         # * this is hooked up as an after_save callback directly in the model class file
         #   which implies that not all models that include this module will want this method as a callback
         def store_correct_versions_after_save
@@ -168,8 +168,8 @@ module ItemPrivacy
         # YAML is 34.65 times slower in serialization and 5.66 times slower in unserialization.
         # http://significantbits.wordpress.com/2008/01/29/yaml-vs-marshal-performance/
         #
-        # ROB:  store_private! loops through the columns set to be versioned and creates a array 
-        #       of name-value tuples. These are converted to YAML and stashed in the a variable 
+        # ROB:  store_private! loops through the columns set to be versioned and creates a array
+        #       of name-value tuples. These are converted to YAML and stashed in the a variable
         #       which is STORED ON THE IN-MEMORY MODEL (ie not in the database).
         def store_private!(save_after_serialization = false)
 
@@ -192,20 +192,20 @@ module ItemPrivacy
 
         # Load the saved private attributes into the current instance.
         #
-        # ROB:  load_private: loads the information stashed on the IN-MEMORY MODEL by 
+        # ROB:  load_private: loads the information stashed on the IN-MEMORY MODEL by
         #       store_private! and applies these to the model's active-record variables.
         def load_private!
           # EOIN:reload the current model from the DB, presumably this makes sure we have the most recent version of it
-          reload 
+          reload
 
           # EOIN: => private_version_serialized contains YAML
-          private_attrs = YAML.load(private_version_serialized) 
+          private_attrs = YAML.load(private_version_serialized)
 
           # EOIN: private_version_serialized contains an Array
           raise "No private attributes" if private_attrs.nil? || !private_attrs.kind_of?(Array)
 
 
-          # EOIN: private_version_serialized contains an Array of 2-tuples (Array with two values) 
+          # EOIN: private_version_serialized contains an Array of 2-tuples (Array with two values)
           private_attrs.each do |key, value|
             # EOIN: create a attribute writer for each element of the private_version_serialized array
             send("#{key}=".to_sym, value)
@@ -252,7 +252,7 @@ module ItemPrivacy
         #   false
         end
 
-        # EOIN: 
+        # EOIN:
         # * this instance method just passes the call on to the class method with the same name
         # * the class method is implemented below
         def without_saving_private(&block)
@@ -263,9 +263,9 @@ module ItemPrivacy
 
     module ClassMethods
 
-      # replace the store_correct_versions_after_save method with an empty one 
+      # replace the store_correct_versions_after_save method with an empty one
       # then run the given block
-      # then re-enable the original store_correct_versions_after_save method 
+      # then re-enable the original store_correct_versions_after_save method
       # "run the given block but skip the store_correct_versions_after_save method callback"
       def without_saving_private(&block)
         class_eval do
@@ -352,10 +352,11 @@ module ItemPrivacy
 
   module AttachmentFuOverload
 
+    # Not in attachment_fu
     attr_accessor :force_privacy
 
+    # Not in attachment_fu
     def file_private=(*args)
-
       # File privacy can only go private => public as a public file cannot
       # be made private at a later time due to the need for previous
       # versions have file access.
@@ -365,30 +366,31 @@ module ItemPrivacy
       end
     end
 
-    # Override the AttachmentFu default method to ensure we place the attachment
-    # in the correct folder.
+    # https://github.com/kete/attachment_fu/blob/master/lib/technoweenie/attachment_fu/backends/file_system_backend.rb#L21
+    # * Override the AttachmentFu default method to ensure we place the
+    #   attachment in the correct folder.
     def full_filename(thumbnail = nil)
       file_system_path = (thumbnail ? thumbnail_class : self).attachment_options[:path_prefix].to_s.gsub("public", "")
       File.join(Rails.root, attachment_path_prefix, file_system_path, *partitioned_path(thumbnail_name_for(thumbnail)))
     end
 
-    # Make sure that the correct base path is stripped off in
-    # AttachmentFu::Backends::FileSystemBackend.public_filename
-    # Overridden from AttachmentFu
+    # https://github.com/kete/attachment_fu/blob/master/lib/technoweenie/attachment_fu/backends/file_system_backend.rb#L27
+    # * Make sure that the correct base path is stripped off in
+    #   AttachmentFu::Backends::FileSystemBackend.public_filename
     def base_path
       @base_path ||= File.join(Rails.root, attachment_path_prefix)
     end
 
     private
 
-      # Get the path we should be using based on the item's
-      # privacy
+      # Not in attachment_fu
+      # * Get the path we should be using based on the item's privacy
       def attachment_path_prefix
         file_private? ? 'private' : 'public'
       end
 
-      # Renames the given file before saving
-      # Overridden from AttachmentFu
+      # https://github.com/kete/attachment_fu/blob/master/lib/technoweenie/attachment_fu/backends/file_system_backend.rb#L97
+      # * Renames the given file before saving
       def rename_file
         return unless @old_filename && @old_filename != full_filename
         if save_attachment? && File.exists?(@old_filename)

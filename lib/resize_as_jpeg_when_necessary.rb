@@ -6,43 +6,20 @@
 # this obviously is deeply dependent on use of AttachmentFu plugin with Rmagick
 module ResizeAsJpegWhenNecessary
   unless included_modules.include? ResizeAsJpegWhenNecessary
-    # declarations
+
     def self.included(klass)
       klass.send :set_callback, :before_thumbnail_saved, :before do |record|
         record.content_type = 'image/jpeg' if record.class.should_be_converted?(record.parent.filename)
       end
-
       klass.extend(ClassMethods)
     end
 
     module ClassMethods
-      def should_be_converted?(name)
-        ext = File.extname(name).gsub(".", "")
-        # we leave along formats that make thumbnails fine themselves
-        !%w( gif jpg jpeg png ).include?(ext.downcase) && rmagick_can_read_extension?(ext)
-      end
 
-      def rmagick_can_read_extension?(extension)
-        # Convert extensions to ones that RMagick recognises.
-        if extension == 'tif'
-          ext = 'tiff' 
-        else
-          ext = extension
-        end
-        
-        rmagick_can_read_format? ext.upcase
-      end
-
-      def rmagick_can_read_format?(format)
-        code = Magick.formats[format]
-        # Determine whether RMagick knows how to read files in this format.
-        # TODO: test native blob support?  p.416 Ruby Cookbook.
-        code && code[1] == ?r
-      end
-
-
-      # attachment fu limits image content types to too narrow a view
-      # we make it match what the user has set as configuration
+      # https://github.com/kete/attachment_fu/blob/master/lib/technoweenie/attachment_fu.rb#L190
+      #   * attachment_fu limits image content types to too narrow a view - we
+      #     make it match what the user has set as configuration.
+      #   * CAREFUL: There is both an instance method and class method named `image?` in that file.
       def image?(content_type)
         allowed_content_types = attachment_options[:content_type]
         if allowed_content_types.include?(:image)
@@ -53,15 +30,45 @@ module ResizeAsJpegWhenNecessary
         format = content_type_parts[1].upcase
         allowed_content_types.include?(content_type) && rmagick_can_read_format?(format)
       end
+
+      # Not in attachment_fu
+      def should_be_converted?(name)
+        ext = File.extname(name).gsub(".", "")
+        # we leave along formats that make thumbnails fine themselves
+        !%w( gif jpg jpeg png ).include?(ext.downcase) && rmagick_can_read_extension?(ext)
+      end
+
+      # Not in attachment_fu
+      def rmagick_can_read_extension?(extension)
+        extension = 'tiff' if extension == 'tif'
+        rmagick_can_read_format? extension.upcase
+      end
+
+      # Not in attachment_fu
+      def rmagick_can_read_format?(format)
+        code = Magick.formats[format]
+        # Magick.formats[format] returns a 4 character code that represents what ImageMagick can do with the file
+        # char 1: * if it has "native blob support" for that filetype, <space> otherwise
+        # char 2: r if it can read this file, - otherwise
+        # char 3: w if it can read this file, - otherwise
+        # char 4: + if it put multiple images into a single image e.g. animated gif
+        return false if code.nil?
+        code[1] == "r"
+      end
     end
 
+    # Instance Methods
+    # ################
+
+    # https://github.com/kete/attachment_fu/blob/master/lib/technoweenie/attachment_fu/processors/rmagick_processor.rb#L41
     def resize_image(img, size)
       img.strip! unless attachment_options[:keep_profile] # remove metadata from the resized image
       img.format = 'JPEG' # set format to JPEG
-      self.temp_path = write_to_temp_file(img.to_blob { self.format = 'JPEG' }) if self.class.should_be_converted?(img.format)
+      self.temp_paths.unshift write_to_temp_file(img.to_blob { self.format = 'JPEG' }) if self.class.should_be_converted?(img.format)
       super
     end
 
+    # https://github.com/kete/attachment_fu/blob/master/lib/technoweenie/attachment_fu.rb#L299
     def thumbnail_name_for(thumbnail = nil)
       name = super
       # if this not the original and should be converted to a jpeg
@@ -77,5 +84,6 @@ module ResizeAsJpegWhenNecessary
       end
       name
     end
+
   end
 end

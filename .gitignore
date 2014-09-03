@@ -90,6 +90,10 @@ pickle-email-*.html
 /tags
 
 /public/assets/
+/public/audio/
+/public/video/
+/public/image_files/
+/public/documents/
 
 
 /database-backups

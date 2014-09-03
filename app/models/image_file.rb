@@ -48,18 +48,6 @@ class ImageFile < ActiveRecord::Base
 
   include OverrideAttachmentFuMethods
 
-  # custom error message, probably overkill
-  # validates the size and content_type attributes according to the current model's options
-  def attachment_attributes_valid?
-    [:size, :content_type].each do |attr_name|
-      enum = attachment_options[attr_name]
-      unless enum.nil? || enum.include?(send(attr_name))
-        errors.add attr_name, I18n.t("image_file_model.not_acceptable_#{attr_name}",
-                                     :max_size => (SystemSetting.maximum_uploaded_file_size / 1.megabyte))
-      end
-    end
-  end
-
   def width_and_height_present?
     if width.nil? || width == 0 || height.nil? || height == 0
       errors.add :content_type, I18n.t("image_file_model.unparsable_content_type")
@@ -71,25 +59,53 @@ class ImageFile < ActiveRecord::Base
   # for thumbnail privacy
   attr_accessor :item_private
 
-  # Overload attachment_fu method to ensure file_private is propagated to peers
+  # #############################
+  # BEGIN attachment_fu overrides
+  # #############################
+  #
+  # * These overrides are just for this model so they are not in the
+  #   OverrideAttachmentFuMethods module.
+  #
+
+  # https://github.com/kete/attachment_fu/blob/master/lib/technoweenie/attachment_fu.rb#L470
+  # * custom error message, probably overkill. validates the size and
+  #   content_type attributes according to the current model's options
+  def attachment_attributes_valid?
+    [:size, :content_type].each do |attr_name|
+      enum = attachment_options[attr_name]
+      unless enum.nil? || enum.include?(send(attr_name))
+        errors.add attr_name, I18n.t("image_file_model.not_acceptable_#{attr_name}",
+                                     :max_size => (SystemSetting.maximum_uploaded_file_size / 1.megabyte))
+      end
+    end
+  end
+
+  # https://github.com/kete/attachment_fu/blob/master/lib/technoweenie/attachment_fu.rb#L318
+  #   * Overload attachment_fu method to ensure file_private is propagated to peers
   def create_or_update_thumbnail(temp_file, file_name_suffix, *size)
     thumbnailable? || raise(ThumbnailError.new("Can't create a thumbnail if the content type is not an image or there is no parent_id column"))
-    returning find_or_initialize_thumbnail(file_name_suffix) do |thumb|
-      thumb.attributes = {
+    find_or_initialize_thumbnail(file_name_suffix).tap do |thumb|
+      thumb.temp_paths.unshift temp_file
+      assign_attributes_args = []
+      assign_attributes_args << {
         :content_type             => content_type,
         :filename                 => thumbnail_name_for(file_name_suffix),
-        :temp_path                => temp_file,
         :thumbnail_resize_options => size,
-
-        # Make sure thumbnails are also saved in the context of
-        # the still image item privacy
         :file_private             => (self.item_private || false) # <- attr_accessor, not a model attribute
-
       }
+      if defined?(Rails) && Rails::VERSION::MAJOR == 3
+        # assign_attributes API in Rails 2.3 doesn't take a second argument
+        assign_attributes_args << { :without_protection => true }
+      end
+      thumb.send(:assign_attributes, *assign_attributes_args)
       callback_with_args :before_thumbnail_saved, thumb
       thumb.save!
     end
   end
+
+  # ###########################
+  # END attachment_fu overrides
+  # ###########################
 
   def basket
     still_image.basket
