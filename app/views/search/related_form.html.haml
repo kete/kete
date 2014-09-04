@@ -52,6 +52,6 @@
     .prev-next
       = will_paginate @results, :params => params.reject { |k, v| k == :page } if @results.respond_to?(:total_entries)
     = submit_tag @verb, :id => 'submit', :onclick => "$('spinner').show();$('submit').hide();"
-    <img src='#{image_path("indicator.gif")}' width='16' height='16' alt='#{t 'search.related_form.executing_action', :action => @verb}' id='spinner' style='border:none;display:none;' />
+    <img src='#{image_path('indicator.gif')}' width='16' height='16' alt='#{t 'search.related_form.executing_action', :action => @verb}' id='spinner' style='border:none;display:none;' />
 / <a href="#" onclick="javascript:window.close()">Cancel</a>
 = link_to_function t('search.related_form.close'), "opener.location.reload();window.close()"

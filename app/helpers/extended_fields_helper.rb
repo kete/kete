@@ -306,7 +306,7 @@ module ExtendedFieldsHelper
     }
 
     html = select_tag("#{name}[#{level}][preset]", option_tags, options.merge(default_options))
-    html += "<img src='/images/indicator.gif' width='16' height='16' alt='#{t('extended_fields_helper.extended_field_choice_select_editor.getting_choices')}' id='#{id_for_extended_field(extended_field)}_level_#{level}_spinner' style='display:none;' />"
+    html += "<img src='#{image_path('indicator.gif')}' width='16' height='16' alt='#{t('extended_fields_helper.extended_field_choice_select_editor.getting_choices')}' id='#{id_for_extended_field(extended_field)}_level_#{level}_spinner' style='display:none;' />"
     if extended_field.user_choice_addition?
       user_supplied_id = "#{id_for_extended_field(extended_field)}_level_#{level}_custom"
       html += " #{t('extended_fields_helper.extended_field_choice_select_editor.suggest_a',
@@ -332,7 +332,7 @@ module ExtendedFieldsHelper
                                   :complete => "Element.hide('#{id_for_extended_field(extended_field)}_#{level}_spinner')")
 
     text_field_tag("#{name}[#{level}]", value, options.merge(:id => "#{id_for_extended_field(extended_field)}_#{level}", :autocomplete => "off", :tabindex => 1)) +
-    "<img src='/images/indicator.gif' width='16' height='16' alt='#{t('extended_fields_helper.extended_field_choice_autocomplete_editor.getting_choices')}' id='#{id_for_extended_field(extended_field)}_#{level}_spinner' style='display:none;' />" +
+    "<img src='#{image_path('indicator.gif')}' width='16' height='16' alt='#{t('extended_fields_helper.extended_field_choice_autocomplete_editor.getting_choices')}' id='#{id_for_extended_field(extended_field)}_#{level}_spinner' style='display:none;' />" +
     tag("br") +
     content_tag("div", nil,
       :class => "extended_field_autocomplete",
@@ -366,7 +366,7 @@ module ExtendedFieldsHelper
                                              :multiple_id => (extended_field.multiple? ? @field_multiple_id : nil)
                                            }
                                          })
-    html += "<img src='/images/indicator.gif' width='16' height='16' alt='#{t('extended_fields_helper.extended_field_topic_type_editor.getting_topics')}' id='#{spinner_id}' style='display:none;' />"
+    html += "<img src='#{image_path('indicator.gif')}' width='16' height='16' alt='#{t('extended_fields_helper.extended_field_topic_type_editor.getting_topics')}' id='#{spinner_id}' style='display:none;' />"
 
     # Add some images and text to indicate whether the value entered is valid or invalid
     checking_value = t('extended_fields_helper.extended_field_topic_type_editor.checking_value')
@@ -374,7 +374,7 @@ module ExtendedFieldsHelper
     invalid_value = t('extended_fields_helper.extended_field_topic_type_editor.invalid_value')
     html += <<-RUBY
       <span id='#{spinner_id}_checker' style='display:none;'>
-        <img src='/images/indicator.gif' width='16' height='16' alt='#{checking_value}' /> #{checking_value}...
+        <img src='#{image_path('indicator.gif')}' width='16' height='16' alt='#{checking_value}' /> #{checking_value}...
       </span>
       <span id='#{id}_valid' style='display:none;'>
         <img src='/images/tick14x14.gif' width='14' height='14' alt='#{valid_value}' /> #{valid_value}

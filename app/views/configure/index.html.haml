@@ -112,7 +112,7 @@
         %p= t 'configure.index.search_engine_needs_bootstrapping'
         = form_tag({ :action => 'prime_zebra' }, :remote => true, :id => 'prime_zebra_form') do
           #prime-spinner{:style => "display:none; text-align:center"}
-            %img{:alt => t 'configure.index.completed', :height => "16", :src => image_path('indicator.gif'), :width => "16"}/
+            %img{:alt => t 'configure.index.completed', :height => "16", :src => "#{image_path('indicator.gif')}", :width => "16"}/
           .wrap= submit_tag t('configure.index.prime_search_engine'), :id => 'prime-button'
   %tr
     %td{:colspan => "2"}

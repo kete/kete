@@ -1,5 +1,5 @@
 - if SystemSetting.enable_user_portraits? || SystemSetting.enable_gravatar_support?
-  %img#user_avatar_spinner{:alt => t('account.avatar_updater.fetching_avatar'), :height => "16", :src => image_path('indicator.gif'), :style => "display:none;", :width => "16"}/
+  %img#user_avatar_spinner{:alt => t('account.avatar_updater.fetching_avatar'), :height => "16", :src => "#{image_path('indicator.gif')}", :style => "display:none;", :width => "16"}/
   %table#user_avatar_updater_table
     %tr
       %td#user_avatar_img

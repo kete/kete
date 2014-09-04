@@ -24,7 +24,7 @@
         %div= submit_tag t('configure.link_to_site.send_information'), :id => 'data-button'
   #updater
   #spinner{:style => "display:none;"}
-    %img{:alt => t 'configure.link_to_site.completed', :height => "16", :src => image_path('indicator.gif'), :width => "16"}/
+    %img{:alt => t 'configure.link_to_site.completed', :height => "16", :src => "#{image_path('indicator.gif')}", :width => "16"}/
 - else
   #site_is_listed
     = t 'configure.link_to_site.already_listed', :listing_link => link_to(@site_listing, @site_listing)
