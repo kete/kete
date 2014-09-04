@@ -12,8 +12,8 @@
       %noscript
         %span#submit_button
           = submit_tag t('baskets.new.choose_profile'), { :class => "save-button", :tabindex => '1' }
-    <img src='/images/indicator.gif' width='16' height='16' alt='#{t 'baskets.new.working'}' id='data_spinner' style='display:none;' />
-    
+    <img src='#{image_path('indicator.gif')}' width='16' height='16' alt='#{t 'baskets.new.working'}' id='data_spinner' style='display:none;' />
+
     \#{link_to_cancel("choose")}
   #basket_form
   :javascript

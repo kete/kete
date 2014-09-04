@@ -286,7 +286,7 @@ class SystemSetting
     end
 
     def audio_content_types
-      ['audio/mpeg', 'audio/mpg', 'audio/x-mpeg', 'audio/x-mpegurl', 'audio/wav', 'audio/x-wav', 'audio/x-ms-wma', 'audio/x-ms-waxaudio', 'audio/ogg', 'application/ogg', 'audio/x-vorbis+ogg', 'audio/x-aiff', 'application/octet-stream', 'audio/vorbis', 'audio/speex', 'audio/flac']
+      ['audio/mpeg', 'audio/mpg', 'audio/mp3', 'audio/x-mpeg', 'audio/x-mpegurl', 'audio/wav', 'audio/x-wav', 'audio/x-ms-wma', 'audio/x-ms-waxaudio', 'audio/ogg', 'application/ogg', 'audio/x-vorbis+ogg', 'audio/x-aiff', 'application/octet-stream', 'audio/vorbis', 'audio/speex', 'audio/flac']
     end
 
     def document_content_types

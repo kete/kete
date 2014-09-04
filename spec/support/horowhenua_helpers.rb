@@ -22,3 +22,7 @@ end
 def sample_image_path
   Rails.root.join('spec', 'fixtures', 'sample.jpg').to_s
 end
+
+def audio_file_path
+  Rails.root.join('spec', 'fixtures', 'audio_example.mp3').to_s
+end

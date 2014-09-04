@@ -3,6 +3,7 @@ ENV["RAILS_ENV"] ||= 'test'
 require File.expand_path("../../config/environment", __FILE__)
 require 'rspec/rails'
 require 'capybara/rails'
+require 'database_cleaner'
 
 require 'capybara/poltergeist'
 Capybara.javascript_driver = :poltergeist
@@ -29,14 +30,24 @@ RSpec.configure do |config|
   config.use_transactional_fixtures = true
 
   # config.before(:suite) do
-  #   DatabaseCleaner.strategy = :truncation
+  #   DatabaseCleaner.strategy = :transaction
+  # end
+
+  # JS enabled specs happen in a separate process (with a separate DB
+  # connection) to the app. We turn off cleaning for them because the changes
+  # they make were not made in our transaciton so rolling back has no effect.
+  # Basically they have to clean up after themselves.
+  # config.before(:each, :js => true) do
+  #   DatabaseCleaner.strategy = nil
   # end
   #
   # config.before(:each) do
+  #   puts "starting databascleaner"
   #   DatabaseCleaner.start
   # end
   #
   # config.after(:each) do
+  #   puts "running databaseclean.clean"
   #   DatabaseCleaner.clean
   # end
 
@@ -51,3 +62,25 @@ RSpec.configure do |config|
   #     --seed 1234
   config.order = "random"
 end
+
+
+
+# Capybara runs Javascript enabled specs run in a separate process which gets a
+# separate DB connection by default. Using multiple connections is quicker and
+# is easy to manage provided that your test database can be emptied between
+# runs. We are in an unusual situation where we have a test DB with a lot of
+# data so we resort to this old-school hack from:
+# http://blog.plataformatec.com.br/2011/12/three-tips-to-improve-the-performance-of-your-test-suite/
+
+class ActiveRecord::Base
+  mattr_accessor :shared_connection
+  @@shared_connection = nil
+
+  def self.connection
+    @@shared_connection || retrieve_connection
+  end
+end
+
+# Forces all threads to share the same connection. This works on
+# Capybara because it starts the web server in a thread.
+ActiveRecord::Base.shared_connection = ActiveRecord::Base.connection
