@@ -26,3 +26,7 @@ end
 def audio_file_path
   Rails.root.join('spec', 'fixtures', 'audio_example.mp3').to_s
 end
+
+def video_file_path
+  Rails.root.join('spec', 'fixtures', 'video_example.mp4').to_s
+end
