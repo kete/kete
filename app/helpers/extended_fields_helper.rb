@@ -410,8 +410,7 @@ module ExtendedFieldsHelper
 
   def additional_extended_field_control(extended_field, n)
     id = id_for_extended_field(extended_field) + "_additional"
-
-    link_to_remote(t('extended_fields_helper.additional_extended_field_control.add_another',
+    link_to(t('extended_fields_helper.additional_extended_field_control.add_another',
                      :field_name => display_label_for(extended_field).singularize.downcase),
                    :url => { :controller => 'extended_fields',
                              :action => 'add_field_to_multiples',

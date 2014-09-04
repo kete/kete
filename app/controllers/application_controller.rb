@@ -417,7 +417,7 @@ class ApplicationController < ActionController::Base
     redirect_to(:controller => 'search',
                 :trailing_slash => true,
                 :action => :all,
-                :controller_name_for_zoom_class => zoom_class_controller(zoom_class))
+                :controller_name_for_zoom_class => zoom_class)
   end
 
   def redirect_to_default_all
