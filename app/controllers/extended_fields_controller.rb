@@ -41,25 +41,12 @@ class ExtendedFieldsController < ApplicationController
   end
 
   def add_field_to_multiples
-
-    extended_field = ExtendedField.find(params[:extended_field_id])
-    n = params[:n].to_i
+    @extended_field = ExtendedField.find(params[:extended_field_id])
+    @n = params[:n].to_i
     @item_type_for_params = params[:item_key]
 
-    render :update do |page|
-
-      # Remove the field adder control
-      page.remove "#{qualified_name_for_field(extended_field)}_multis_extender"
-
-      # Add a new field editor to the bottom of the set
-      page.insert_html :bottom, "#{qualified_name_for_field(extended_field)}_multis", \
-        :partial => 'extended_fields/extended_field_editor', \
-        :locals => { :ef => extended_field, :content => [], :n => n, :multiple => true }
-
-      # Add the field adder control back to the bottom of the set
-      page.insert_html :bottom, "#{qualified_name_for_field(extended_field)}_multis", \
-        :partial => 'extended_fields/additional_extended_field_control', \
-        :locals => { :ef => extended_field, :n => n.to_i + 1 }
+    respond_to do |format|
+      format.js
     end
   end
 

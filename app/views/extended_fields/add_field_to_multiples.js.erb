@@ -1,0 +1,9 @@
+
+<%-# Remove the field adder control %>
+$("#<%=j qualified_name_for_field(@extended_field) %>_multis_extender").remove();
+
+<%-# Add a new field editor to the bottom of the set %>
+$("#<%=j qualified_name_for_field(@extended_field) %___>_multis").append(<%=j render(:partial => 'extended_fields/extended_field_editor', :locals => { :ef => @extended_field, :content => [], :@n => n, :multiple => true } %>);
+
+<%-# Add the field adder control back to the bottom of the set %>
+$("#<%=j qualified_name_for_field(@extended_field %___>)_multis").append(<%=j render(:partial => 'extended_fields/additional_extended_field_control', :locals => { :ef => @extended_field, :n => @n.to_i + 1 }%>);

@@ -14,7 +14,7 @@
 
         %h2
           = @title
-          %img#data_spinner{:alt => t('tags.list.retrieving_tags'), :height => "16", :src => "/assets/indicator.gif", :style => "display:none;", :width => "16"}
+          %img#data_spinner{:alt => t('tags.list.retrieving_tags'), :height => "16", :src => image_path('indicator.gif'), :style => "display:none;", :width => "16"}
         #tags_list
           = render :partial => 'tags/tags_list', :locals => { :tags => @tags }
 

@@ -136,8 +136,12 @@ class Topic < ActiveRecord::Base
     def to_param; format_for_friendly_urls(true); end
   RUBY
 
-  validates_xml :extended_content
+  validates_xml :fixed_extended_content
   validates_presence_of :title
+
+  def fixed_extended_content
+    add_xml_fix(extended_content)
+  end
 
   # TODO: add validation that prevents markup in short_summary
   # globalize stuff, uncomment later
