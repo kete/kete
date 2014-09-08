@@ -22,4 +22,5 @@ KeteApp::Application.configure do # Settings specified here will take precedence
   #  :domain               => 'localhost.localdomain',
   #  :enable_starttls_auto => false
   #}
+  config.attachments_overide_url = 'http://horowhenua.kete.net.nz'
 end
