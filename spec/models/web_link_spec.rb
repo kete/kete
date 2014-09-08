@@ -1,19 +1,13 @@
 require 'spec_helper'
 
 describe WebLink do
-  let(:web_link) { WebLink.new }
 
   it "does not blow up when you initialize it" do
-    web_link
+    WebLink.new
   end
 
-  it "can be validated" do
-    expect( FactoryGirl.build(:validatable_web_link) ).to be_valid
-    expect { FactoryGirl.create(:validatable_web_link) }.to raise_error
+  it 'validates URLs' do
+    wl = WebLink.new(url: 'http://www.foo.com', title: 'Some interesting link')
+    expect(wl).to be_valid
   end
-
-  it "can be saved to the database with minimal data filled in" do
-    expect( FactoryGirl.create(:saveable_web_link) ).to be_a(WebLink)
-  end
-
 end

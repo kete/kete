@@ -42,6 +42,9 @@ gem 'acts-as-taggable-on', '~> 3.3.0'
 #
 gem 'pothoven-attachment_fu', github: 'kete/attachment_fu'
 
+
+gem 'validate_url'
+
 # ROB:  kete had it's own feedzirra which adds some extra functions needed by the 
 #       external_search_sources plugin.
 #       It'll probably be possible to pull these function into external_search_sources
