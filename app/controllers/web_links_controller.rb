@@ -8,9 +8,9 @@ class WebLinksController < ApplicationController
     redirect_to_search_for('WebLink')
   end
 
-  # def list
-  #   index
-  # end
+  def list
+    index
+  end
 
   def show
     @web_link = prepare_item_and_vars

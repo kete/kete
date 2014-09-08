@@ -6,9 +6,9 @@ class VideoController < ApplicationController
     redirect_to_search_for('Video')
   end
 
-  # def list
-  #   index
-  # end
+  def list
+    index
+  end
 
   def show
     @video = prepare_item_and_vars

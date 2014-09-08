@@ -5,9 +5,9 @@ class CommentsController < ApplicationController
     redirect_to_search_for('Comment')
   end
 
-  # def list
-  #   index
-  # end
+  def list
+    index
+  end
 
   def show
     @comment = Comment.find(params[:id])
