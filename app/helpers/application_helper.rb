@@ -1244,22 +1244,13 @@ module ApplicationHelper
 
   # related to comments
   def show_comments_for(item)
-    html_string = "<p>#{t('application_helper.show_comments_for.comment_count',
-                          :count => @comments.size)}</p>\n<p>"
+    html_string = "<p>#{t('application_helper.show_comments_for.comment_count', :count => @comments.size)}</p><p>"
 
-    logger.debug("what are comments: " + @comments.inspect)
     if @comments.size > 0
       html_string += t('application_helper.show_comments_for.read_and')
     end
 
-    html_string += link_to(t('application_helper.show_comments_for.join_discussion'),
-                           { :action => 'new',
-                             :controller => 'comments',
-                             :commentable_id => item,
-                             :commentable_type => item.class.name,
-                             :commentable_private => (item.respond_to?(:private) && item.private?) ? 1 : 0 })
-
-    html_string += "</p>\n"
+    html_string += "</p>"
 
     if @comments.size > 0
       @comments.each do |comment|
