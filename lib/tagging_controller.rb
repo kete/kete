@@ -57,7 +57,6 @@ module TaggingController
           respond_to do |format|
             flash[:notice] = I18n.t('tagging_controller_lib.add_tags.tags_added', :item_title => @item.title)
             format.html { redirect_to_show_for @item, :private => (params[:private] == "true") }
-            format.js { render :file => File.join(RAILS_ROOT, 'app/views/topics/add_tags.js.rjs') }
           end
           return true
         else
@@ -66,7 +65,6 @@ module TaggingController
                                    :item_title => @item.title,
                                    :errors => @item.errors['Tags'])
             format.html { redirect_to_show_for @item, :private => (params[:private] == "true") }
-            format.js { render :file => File.join(RAILS_ROOT, 'app/views/topics/add_tags.js.rjs') }
           end
           return false
         end
@@ -75,7 +73,6 @@ module TaggingController
         respond_to do |format|
           flash[:error] = I18n.t('tagging_controller_lib.add_tags.no_tags_entered', :item_title => @item.title)
           format.html { redirect_to_show_for @item, :private => (params[:private] == "true") }
-          format.js { render :file => File.join(RAILS_ROOT, 'app/views/topics/add_tags.js.rjs') }
         end
         return false
       end

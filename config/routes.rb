@@ -56,8 +56,9 @@
   ####################################################
   # Various RSS feeds not associated with search #####
 
-  match ':urlified_name/moderate/rss.:format' => 'moderate#rss', :as => :basket_moderate_rss
-  match ':urlified_name/members/rss.:format' => 'members#rss', :as => :basket_moderate_rss
+  # RABID: we have disabled RSS Feeds
+  # match ':urlified_name/moderate/rss.:format' => 'moderate#rss', :as => :basket_moderate_rss
+  # match ':urlified_name/members/rss.:format' => 'members#rss', :as => :basket_moderate_rss
 
   ####################################################
   ####################################################
@@ -66,30 +67,18 @@
   match ':urlified_name/account/signup' => 'account#signup', via: [:get, :post]
   match ':urlified_name/account/login' => 'account#login', via: [:get, :post]
   get   ':urlified_name/account/disclaimer/:id' => 'account#disclaimer'
-
   match ':urlified_name/account/show_captcha' => 'account#show_captcha'
   match ':urlified_name/account/forgot_password' => 'account#forgot_password'
 
   ####################################################
   # terrible hacks ###################################
 
-
   match 'site/index_page/selected_image' => 'index_page#selected_image'
   get 'site/moderate/list' => 'moderate#list'
   get ':urlified_name/members/list' => 'members#list'
   get 'site/importers/list' => 'importers#list'
 
-  # Baskets
-  # #######
-
-  get ':urlified_name/baskets/edit' => 'baskets#edit'
-  get ':urlified_name/baskets/list' => 'baskets#list'
-  # match ':urlified_name/baskets/rss.:format' => 'baskets#rss', :as => :basket_list_rss
-  # match ':urlified_name/baskets/choose_type' => 'baskets#choose_type'
-  # post  ':urlified_name/baskets/create' => 'baskets#create'
-  # post  ':urlified_name/baskets/update' => 'baskets#update'
-  # post  ':urlified_name/baskets/destory' => 'baskets#destory'
-
+  match ':urlified_name/contact' => 'baskets#contact', :as => :basket_contact
 
   # Link Helpers
   # ############
@@ -112,16 +101,22 @@
   # helper to match. If the route name does not match the model name this will
   # not work.
 
-  # Content Items (all types)
-  # #########################
-  #
-
   scope '/:urlified_name', as: :basket do
+
+    resources :baskets, only: [:edit] do
+      member do
+        post :add_tags # TaggingController
+      end
+      collection do
+        get :list
+      end
+    end
 
     resources :topics do
       member do
         get :history # FlaggingController
         get :preview # FlaggingController
+        post :add_tags # TaggingController
       end
       collection do
         get :list
@@ -132,6 +127,7 @@
       member do
         get :history # FlaggingController
         get :preview # FlaggingController
+        post :add_tags # TaggingController
       end
       collection do
         get :list
@@ -142,6 +138,7 @@
       member do
         get :history # FlaggingController
         get :preview # FlaggingController
+        post :add_tags # TaggingController
       end
       collection do
         get :list
@@ -152,6 +149,7 @@
       member do
         get :history # FlaggingController
         get :preview # FlaggingController
+        post :add_tags # TaggingController
       end
       collection do
         get :list
@@ -162,6 +160,7 @@
       member do
         get :history # FlaggingController
         get :preview # FlaggingController
+        post :add_tags # TaggingController
       end
       collection do
         get :list
@@ -172,8 +171,7 @@
       member do
         get :history # FlaggingController
         get :preview # FlaggingController
-        # get :convert
-        # get :make_theme
+        post :add_tags # TaggingController
       end
       collection do
         get :list
@@ -181,20 +179,14 @@
     end
 
     resources :comments
+
+    resources :tags, only: [:index, :show] do
+      collection do
+        get :list
+      end
+    end
+
   end
-
-
-  # TagsController
-  # ##############
-  #
-  get ':urlified_name/tags/list(.:format)' => 'tags#list'
-  get ':urlified_name/tags/show' => 'tags#show'
-  get ':urlified_name/tags/rss.:format' => 'tags#rss', as: :tags_list_rss
-  get ':urlified_name/tags/index' => 'tags#index'
-
-
-  ####################################################
-  ####################################################
 
 
   ####################################################
@@ -217,7 +209,6 @@
   end
 
   match ':urlified_name' => 'index_page#index', :as => :basket_index
-  match ':urlified_name/contact' => 'baskets#contact', :as => :basket_contact
 
   # James Stradling <james@katipo.co.nz>, 2008-04-15
   # Map private files to the PrivateFilesController
