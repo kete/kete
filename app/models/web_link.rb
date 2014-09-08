@@ -20,7 +20,7 @@ class WebLink < ActiveRecord::Base
   self.non_versioned_columns << "file_private"
   self.non_versioned_columns << "private_version_serialized"
 
-  # Setup attributes 
+  # Setup attributes
   # ################
 
   # some web sites will always refuse our url requests
@@ -30,16 +30,15 @@ class WebLink < ActiveRecord::Base
   validates_presence_of :url
   validates_uniqueness_of :url, case_sensitive: false
 
-  # validates_http_url comes from a separate gem
-  validates_http_url :url, :if => Proc.new { |web_link| web_link.new_record? && !web_link.force_url }
-  
+  validates_url :url, :if => Proc.new { |web_link| web_link.new_record? && !web_link.force_url }
+
   # ItemPrivacy::All
   # * adds method overrides for:
   #   * acts_as_versioned
   #   * attachment_fu
   #   * acts-as-taggable-on
   include ItemPrivacy::All
-  
+
   # acts as licensed but this is not versionable (we cannot change a license
   # once it is applied)
   acts_as_licensed

@@ -25,6 +25,8 @@ gem 'acts_as_versioned', github: "jwhitehorn/acts_as_versioned"
 # RABID: the old plugin version of acts-as-taggable-on was 1.0.0
 gem 'acts-as-taggable-on', '~> 3.3.0'
 
+gem 'validate_url'
+
 gem 'pothoven-attachment_fu', '~> 3.2.13'
 
 # ROB:  kete had it's own feedzirra which adds some extra functions needed by the 
