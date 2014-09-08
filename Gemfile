@@ -25,9 +25,25 @@ gem 'acts_as_versioned', github: "jwhitehorn/acts_as_versioned"
 # RABID: the old plugin version of acts-as-taggable-on was 1.0.0
 gem 'acts-as-taggable-on', '~> 3.3.0'
 
-gem 'validate_url'
+# RABID: 
+# Kete monkey patches attachment_fu a lot so we cannot track easily track the
+# main version. You can see which attachment_fu ours was forked from (and when)
+# by inspecting the repo on Github:
+#   https://github.com/kete/attachment_fu/blob/master/attachment_fu.gemspec
+#
+# As I have discovered methods which patch AttachmentFu I have added a link to
+# the original as a comment.  There are probably other places but at least the
+# following classes & modules patch AttachmentFu:
+#
+# * ItemPrivacy::AttachmentFuOverload
+# * ImageFile
+# * OverrideAttachmentFuMethods
+# * ResizeAsJpegWhenNecessary
+#
+gem 'pothoven-attachment_fu', github: 'kete/attachment_fu'
 
-gem 'pothoven-attachment_fu', '~> 3.2.13'
+
+gem 'validate_url'
 
 # ROB:  kete had it's own feedzirra which adds some extra functions needed by the 
 #       external_search_sources plugin.
@@ -73,7 +89,7 @@ gem 'mini_exiftool', '< 2.0.0'
 ##gem 'acts_as_zoom' # included in gem/plugins 
 
 
-gem 'rmagick', "2.12.2", :require => 'RMagick'
+gem 'rmagick', "2.13.3", require: 'RMagick'
 
 group :development do
   gem 'quiet_assets'

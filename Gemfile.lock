@@ -14,6 +14,12 @@ GIT
       railties (>= 3.0.0)
 
 GIT
+  remote: git://github.com/kete/attachment_fu.git
+  revision: 8b6c7beda9e0d9528245f26648e66a243d95216d
+  specs:
+    pothoven-attachment_fu (3.2.13)
+
+GIT
   remote: git://github.com/kete/feedzirra.git
   revision: c38c7ab43d75de4f073f6f8f34531a785054f363
   specs:
@@ -191,7 +197,6 @@ GEM
       multi_json (~> 1.0)
       websocket-driver (>= 0.2.0)
     polyglot (0.3.3)
-    pothoven-attachment_fu (3.2.13)
     pry (0.9.12.3)
       coderay (~> 1.0)
       method_source (~> 0.8)
@@ -239,7 +244,7 @@ GEM
     rake (10.1.0)
     rdoc (3.12.2)
       json (~> 1.4)
-    rmagick (2.12.2)
+    rmagick (2.13.3)
     routing-filter (0.3.1)
       actionpack
     rspec-core (3.0.3)
@@ -338,7 +343,7 @@ DEPENDENCIES
   pg
   pg_search (~> 0.7.2)
   poltergeist
-  pothoven-attachment_fu (~> 3.2.13)
+  pothoven-attachment_fu!
   pry-byebug
   pry-rails
   quiet_assets
@@ -348,7 +353,7 @@ DEPENDENCIES
   rails_12factor
   rake (~> 10.1.0)
   rdoc
-  rmagick (= 2.12.2)
+  rmagick (= 2.13.3)
   routing-filter (~> 0.3.1)
   rspec-rails (~> 3.0.0)
   sass-rails

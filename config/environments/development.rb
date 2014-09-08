@@ -22,7 +22,4 @@ KeteApp::Application.configure do # Settings specified here will take precedence
   #  :domain               => 'localhost.localdomain',
   #  :enable_starttls_auto => false
   #}
-
-  # Attachments (images/audio) link files on the local disk.
-  config.attachments_overide_url = 'http://horowhenua.kete.net.nz'
 end
