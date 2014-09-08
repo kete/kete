@@ -106,8 +106,6 @@ class ApplicationController < ActionController::Base
 
   # see method definition for details
 
-  before_filter :delete_zoom_record, :only => [ :update, :flag_version, :restore, :add_tags ]
-
   # we often need baskets for edits
   before_filter :load_array_of_baskets, :only => [ :edit, :update, :restore ]
 
@@ -206,23 +204,11 @@ class ApplicationController < ActionController::Base
     end
   end
 
-  # some updates will change the item so that the updating of zoom record
-  # will no longer match the existing record
-  # and create a new one instead
-  # so we delete the existing zoom record here
-  # and create a new zoom record in the update
-  def delete_zoom_record
-    zoom_class = zoom_class_from_controller(params[:controller])
-    if ZOOM_CLASSES.include?(zoom_class)
-      zoom_destroy_for(Module.class_eval(zoom_class).find(params[:id]))
-    end
-  end
-
   # so we can transfer an item from one basket to another
   def load_array_of_baskets
     zoom_class = zoom_class_from_controller(params[:controller])
     if ZOOM_CLASSES.include?(zoom_class) and zoom_class != 'Comment'
-      @baskets = Basket.where(:order => 'name').map { |basket| [ basket.name, basket.id ] }
+      @baskets = Basket.all(order: 'name').map { |basket| [ basket.name, basket.id ] }
     end
   end
 
@@ -253,8 +239,8 @@ class ApplicationController < ActionController::Base
     # clear out old zoom records before we change the items
     # sometimes zoom updates are confused and create a duplicate new record
     # instead of updating existing one
-    zoom_destroy_for(topic)
-    zoom_destroy_for(related)
+    # zoom_destroy_for(topic)
+    # zoom_destroy_for(related)
 
     successful = ContentItemRelation.new_relation_to_topic(topic, related)
 
@@ -271,8 +257,8 @@ class ApplicationController < ActionController::Base
     # clear out old zoom records before we change the items
     # sometimes zoom updates are confused and create a duplicate new record
     # instead of updating existing one
-    zoom_destroy_for(topic)
-    zoom_destroy_for(related)
+    # zoom_destroy_for(topic)
+    # zoom_destroy_for(related)
 
     successful = ContentItemRelation.destroy_relation_to_topic(topic, related)
 
@@ -569,7 +555,7 @@ class ApplicationController < ActionController::Base
       if new_basket != original_basket
         item.comments.each do |comment|
           # get rid of zoom record that it tied to old basket
-          zoom_destroy_for(comment)
+          # zoom_destroy_for(comment)
           comment.basket = new_basket
           if comment.save
             # moving the comment adds a version
