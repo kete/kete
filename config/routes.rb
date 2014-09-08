@@ -123,12 +123,18 @@
         get :history # FlaggingController
         get :preview # FlaggingController
       end
+      collection do
+        get :list
+      end
     end
 
     resources :images, as: :still_image do
       member do
         get :history # FlaggingController
         get :preview # FlaggingController
+      end
+      collection do
+        get :list
       end
     end
 
@@ -137,6 +143,9 @@
         get :history # FlaggingController
         get :preview # FlaggingController
       end
+      collection do
+        get :list
+      end
     end
 
     resources :video do
@@ -144,12 +153,18 @@
         get :history # FlaggingController
         get :preview # FlaggingController
       end
+      collection do
+        get :list
+      end
     end
 
     resources :web_links do
       member do
         get :history # FlaggingController
         get :preview # FlaggingController
+      end
+      collection do
+        get :list
       end
     end
 
@@ -159,6 +174,9 @@
         get :preview # FlaggingController
         # get :convert
         # get :make_theme
+      end
+      collection do
+        get :list
       end
     end
 

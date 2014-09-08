@@ -1,6 +1,16 @@
 require 'spec_helper'
 
-feature "Users can upload audio" do
+feature "Users can CRUD audio recordings" do
+
+  def create_audio_recording
+    sign_in
+    click_on "Add Item"
+    select 'Audio', from: 'new_item_controller'
+    fill_in 'audio_recording[title]', with: 'Some title'
+    fill_in 'audio_recording[description]', with: 'Some description'
+    attach_file('audio_recording[uploaded_data]', audio_file_path)
+    click_button 'Create'
+  end
 
   it "can store a new audio file", js: true do
     sign_in
@@ -18,6 +28,14 @@ feature "Users can upload audio" do
     click_button 'Create'
 
     expect(page).to have_text("Audio was successfully created.")
+  end
+
+  it "A user can delete an existing audio recording", js: true do
+    create_audio_recording
+    original_num_audios = AudioRecording.all.count
+    click_on 'Delete' # poltergeist ignores confirm/alert modals by default
+    expect(AudioRecording.all.count).to eq(original_num_audios - 1)
+    expect(current_path).to match(/#{search_all_path}/)
   end
 end
 
