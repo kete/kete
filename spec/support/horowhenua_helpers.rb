@@ -30,3 +30,11 @@ end
 def video_file_path
   Rails.root.join('spec', 'fixtures', 'video_example.mp4').to_s
 end
+
+def pdf_doc_file_path
+  Rails.root.join('spec', 'fixtures', 'document_example.pdf').to_s
+end
+
+def ms_word_doc_file_path
+  Rails.root.join('spec', 'fixtures', 'document_example.docx').to_s
+end
