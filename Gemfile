@@ -5,7 +5,10 @@ ruby '2.1.2'
 gem "rails", "3.2.19"
 gem 'unicorn'
 
-# EOIN: TODO: I suspect there are gems mentioned in here that rails pulls in implicitly - we should remove them from here if so.
+gem 'tinymce-rails', '~> 4.1.4'
+
+# EOIN: TODO: I suspect there are gems mentioned in here that rails pulls in
+# implicitly - we should remove them from here if so.
 
 # Heroku needs this
 gem 'rails_12factor', group: :production

@@ -1,5 +1,5 @@
 .form-element
-  = form.text_area :index_page_extra_side_bar_html, {:class => "mceEditor", :cols => 120, :rows => 10, :tabindex => '1'}
+  = form.text_area :index_page_extra_side_bar_html, {:class => "tinymce", :cols => 120, :rows => 10, :tabindex => '1'}
 .form_example
   = t 'baskets.homepage_form.security_warning'
   = t 'baskets.homepage_form.security_warning_admin' if @site_admin

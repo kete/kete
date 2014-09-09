@@ -1,34 +1,45 @@
-# Here you can specify default options for TinyMCE across all controllers
+# # Here you can specify default options for TinyMCE across all controllers
+#
+# # advanced theme settings
+# theme: advanced
+# theme_advanced_toolbar_location: top
+# theme_advanced_toolbar_align: left
+# theme_advanced_statusbar_location: bottom
+# theme_advanced_buttons1: [
+#   bold, italic, underline, strikethrough, separator, justifyleft, justifycenter, justifyright,
+#   justifyfull, separator, indent, outdent, separator, bullist, numlist, forecolor, backcolor,
+#   separator, link, unlink, imageselector, separator, undo, redo, separator, code
+# ]
+# theme_advanced_buttons2: [
+#   formatselect, fontselect, fontsizeselect, separator, pastetext, pasteword, selectal
+# ]
+# theme_advanced_buttons3_add: [ tablecontrols, fullscreen ]
+# theme_advanced_resizing: true
+# theme_advanced_resize_horizontal: false
+#
+# # link / image path conversions
+# convert_urls: false
+# content_css: "/stylesheets/base.css"
+#
+# # which plugins we are enabling, inlinepopups switches to lightbox style rather than popups
+# # prevents scrolling problems with IE and FireFox with some plugins (e.g. imageselector)
+# plugins: [ inlinepopups, imageselector, contextmenu, paste, table, fullscreen ]
+#
+# # switches to lightbox modal dialogs rather popups
+# dialog_type: "modal"
+#
+# # paste plugin specific settings
+# paste_auto_cleanup_on_paste: true
+# paste_convert_middot_lists: false
+# paste_convert_headers_to_strong: true
 
-# advanced theme settings
-theme: advanced
-theme_advanced_toolbar_location: top
-theme_advanced_toolbar_align: left
-theme_advanced_statusbar_location: bottom
-theme_advanced_buttons1: [
-  bold, italic, underline, strikethrough, separator, justifyleft, justifycenter, justifyright,
-  justifyfull, separator, indent, outdent, separator, bullist, numlist, forecolor, backcolor,
-  separator, link, unlink, imageselector, separator, undo, redo, separator, code
-]
-theme_advanced_buttons2: [
-  formatselect, fontselect, fontsizeselect, separator, pastetext, pasteword, selectal
-]
-theme_advanced_buttons3_add: [ tablecontrols, fullscreen ]
-theme_advanced_resizing: true
-theme_advanced_resize_horizontal: false
+default:
+  plugins:
+    - image
+    - link
 
-# link / image path conversions
-convert_urls: false
-content_css: "/stylesheets/base.css"
-
-# which plugins we are enabling, inlinepopups switches to lightbox style rather than popups
-# prevents scrolling problems with IE and FireFox with some plugins (e.g. imageselector)
-plugins: [ inlinepopups, imageselector, contextmenu, paste, table, fullscreen ]
-
-# switches to lightbox modal dialogs rather popups
-dialog_type: "modal"
-
-# paste plugin specific settings
-paste_auto_cleanup_on_paste: true
-paste_convert_middot_lists: false
-paste_convert_headers_to_strong: true
+alternate:
+  selector: textarea.table-editor
+  toolbar: styleselect | bold italic | undo redo | table
+  plugins:
+    - table

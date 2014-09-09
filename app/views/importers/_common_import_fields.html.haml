@@ -28,10 +28,10 @@
   .form_example= t 'importers.common_import_fields.tags_description'
 .form-element
   %label{:for => "import_description_beginning_template"}= t 'importers.common_import_fields.description_template_start'
-  = form.text_area :description_beginning_template, :class => "mceEditor", :cols => 120, :rows => 10
+  = form.text_area :description_beginning_template, :class => "tinymce", :cols => 120, :rows => 10
   .form_example= t 'importers.common_import_fields.description_template_start_description'
 .form-element
   %label{:for => "import_default_description_end_template"}= t 'importers.common_import_fields.description_template_end'
-  = form.text_area :default_description_end_template, :class => "mceEditor", :cols => 120, :rows => 10
+  = form.text_area :default_description_end_template, :class => "tinymce", :cols => 120, :rows => 10
   .form_example= t 'importers.common_import_fields.description_template_end_description'
 = render('topics/license_chooser_or_agreement', :item => @import) if licenses_are_available?
