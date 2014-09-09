@@ -5,8 +5,8 @@ KeteApp::Application.configure do
 
   # EOIN: FIXME: This must be set to true before we go into production
   # EOIN: I have set this to false just to get a demo running on heroku
-  puts "XXXXXXXXXXXXX FIX THIS config/environments/production.rb: Disabling class caching in production!"
-  config.cache_classes = false
+  # puts "XXXXXXXXXXXXX FIX THIS config/environments/production.rb: Disabling class caching in production!"
+  # config.cache_classes = false
 
   # Full error reports are disabled and caching is turned on
   config.consider_all_requests_local       = false
