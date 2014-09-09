@@ -16,4 +16,5 @@
           - else
             = t 'account.avatar_updater.add_avatar_after_signup'
         - if SystemSetting.enable_gravatar_support?
-          = t 'account.avatar_updater.gravatar_link', :gravatar_link => '<a href="http://gravatar.com/">Gravatar</a>'
+          = t('account.avatar_updater.gravatar_link', :gravatar_link => '')
+          = link_to "Gravatar", "http://gravatar.com"
