@@ -343,7 +343,7 @@ class SystemSetting
     end
 
     def provide_oai_pmh_repository
-      true
+      false
     end
 
     def government_website

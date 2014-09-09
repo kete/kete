@@ -71,8 +71,8 @@ gem "awesome_nested_set", "~> 2.1.6"
 
 # Added to get rake working. I suspect these should be removed.
 # gem 'rake', '0.9.2.2' # version needed to use: require 'rake/rdoctask'
-gem "rake", "~> 10.1.0"
-gem "rdoc"
+gem 'rake'
+# gem "rdoc"
 gem 'nokogiri', '~> 1.6.0'
 
 # Officially sanctioned Rails way to add Rails 2 stuff like #error_messages_for
