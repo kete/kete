@@ -13,7 +13,7 @@
     = form.text_field :title, :tabindex => '1'
   .form-element
     %label.cleared-right{:for => "comment_description"}= t 'comments.form.description'
-    = form.text_area :description, {:class => "mceEditor", :cols => 120, :tabindex => '1'}
+    = form.text_area :description, {:class => "tinymce", :cols => 120, :tabindex => '1'}
     .form-example
       = t 'comments.form.security_warning'
       = t 'comments.form.security_warning_admin' if @site_admin

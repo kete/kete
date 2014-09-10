@@ -14,7 +14,7 @@ feature "Users can CRUD videos" do
     click_on "Add Item"
     select 'Video', from: 'new_item_controller'
     fill_in 'video[title]', with: attrs[:title]
-    fill_in 'video[description]', with: attrs[:description]
+    tinymce_fill_in 'video_description', attrs[:description]
     attach_file('video[uploaded_data]', video_file_path)
     click_button 'Create'
   end
@@ -29,7 +29,7 @@ feature "Users can CRUD videos" do
     expect(page).to have_text("New Video")
 
     fill_in 'video[title]', with: 'Some title'
-    fill_in 'video[description]', with: 'Some description'
+    tinymce_fill_in 'video_description', 'Some description'
 
     attach_file('video[uploaded_data]', video_file_path)
     click_button 'Create'
@@ -60,7 +60,7 @@ feature "Users can CRUD videos" do
     expect(page).to have_text('Editing Video')
 
     fill_in 'video[title]', with: new_attrs[:title]
-    fill_in 'video[description]', with: new_attrs[:description]
+    tinymce_fill_in 'video_description', new_attrs[:description]
     click_on 'Update'
 
     expect(page).to have_text('Video was successfully updated.')

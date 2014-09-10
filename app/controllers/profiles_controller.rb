@@ -8,10 +8,6 @@ class ProfilesController < ApplicationController
 
   permit "site_admin"
 
-  ### TinyMCE WYSIWYG editor stuff
-  # uses_tiny_mce :only => VALID_TINYMCE_ACTIONS
-  ### end TinyMCE WYSIWYG editor stuff
-
   # active_scaffold :profiles do |config|
   #
   #   # Which columns to show

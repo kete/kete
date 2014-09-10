@@ -2,7 +2,7 @@
   %label= t 'baskets.appearance.additional_footer_content'
   %fieldset
     .form-element
-      = text_area 'settings', 'additional_footer_content', :rows => 7, :cols => 30, :class => 'mceEditor', :value => current_value_of('additional_footer_content')
+      = text_area 'settings', 'additional_footer_content', :rows => 7, :cols => 30, :class => 'tinymce', :value => current_value_of('additional_footer_content')
     .form_example
       = t 'baskets.appearance.additional_footer_content_security'
       = t 'baskets.appearance.additional_footer_content_security_admin' if @site_admin

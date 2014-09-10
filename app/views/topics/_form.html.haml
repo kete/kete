@@ -104,7 +104,7 @@
 
     .form-element
       = label_tag :description, t('topics.form.description'), :class => 'cleared-right'
-      = form.text_area :description, { :class => "mceEditor", :cols => 120, :tabindex => '1',
+      = form.text_area :description, { :class => "tinymce", :cols => 120, :tabindex => '1',
         :example => "#{t('topics.form.description_example')} #{t('topics.form.description_example_exception') if @site_admin}." }
 
     - if @site_admin
