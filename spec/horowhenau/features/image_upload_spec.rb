@@ -16,7 +16,7 @@ feature "Users can CRUD images" do
     expect(page).to have_text("What would you like to add?")
     select 'Image', from: 'new_item_controller'
     fill_in 'still_image[title]', with: attrs[:title]
-    fill_in 'still_image[description]', with: attrs[:description]
+    tinymce_fill_in 'still_image_description', attrs[:description]
     attach_file('image_file[uploaded_data]', sample_image_path)
     click_button 'Create'
   end
@@ -31,7 +31,7 @@ feature "Users can CRUD images" do
     expect(page).to have_text("New Image")
 
     fill_in 'still_image[title]', with: 'Some title'
-    fill_in 'still_image[description]', with: 'Some description'
+    tinymce_fill_in 'still_image_description', 'Some description'
 
     attach_file('image_file[uploaded_data]', sample_image_path)
     click_button 'Create'
@@ -62,7 +62,7 @@ feature "Users can CRUD images" do
     expect(page).to have_text('Editing Image')
 
     fill_in 'still_image[title]', with: new_attrs[:title]
-    fill_in 'still_image[description]', with: new_attrs[:description]
+    tinymce_fill_in 'still_image_description', new_attrs[:description]
     click_on 'Update'
 
     expect(page).to have_text('Image was successfully updated.')

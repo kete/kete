@@ -14,7 +14,7 @@ feature "Users can CRUD audio recordings" do
     click_on "Add Item"
     select 'Audio', from: 'new_item_controller'
     fill_in 'audio_recording[title]', with: attrs[:title]
-    fill_in 'audio_recording[description]', with: attrs[:description]
+    tinymce_fill_in 'audio_recording_description', attrs[:description]
     attach_file('audio_recording[uploaded_data]', audio_file_path)
     click_button 'Create'
   end
@@ -29,7 +29,7 @@ feature "Users can CRUD audio recordings" do
     expect(page).to have_text("New Audio")
 
     fill_in 'audio_recording[title]', with: 'Some title'
-    fill_in 'audio_recording[description]', with: 'Some description'
+    tinymce_fill_in 'audio_recording_description', 'Some description of stuff'
 
     attach_file('audio_recording[uploaded_data]', audio_file_path)
     click_button 'Create'
@@ -60,7 +60,7 @@ feature "Users can CRUD audio recordings" do
     expect(page).to have_text('Editing Audio')
 
     fill_in 'audio_recording[title]', with: new_attrs[:title]
-    fill_in 'audio_recording[description]', with: new_attrs[:description]
+    tinymce_fill_in 'audio_recording_description', new_attrs[:description]
     click_on 'Update'
 
     expect(page).to have_text('Audio was successfully updated.')
