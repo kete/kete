@@ -77,4 +77,41 @@ feature "Related Items" do
     click_on "Topics (2)"
     expect(page).to have_content "Volunteers Demolition Team at Work"
   end
+
+  it "can be created between a topic and an image" do
+    sign_in
+    visit "/en/site/images/23115-manakau-school-125th-jubilee-rev-kahira-rau-blessing-the-totem-poles"
+    within("#related_items") { click_on "Create" }
+
+    expect(page).to have_content "What is the topic about?"
+    select "General", from: "About a?"
+    click_on "Choose Type"
+    fill_in "topic[title]", with: 'testing relations'
+    click_on 'Create'
+
+    within("#related_items") do
+      expect(page).to have_content("testing relations")
+    end
+  end
+
+  it "can be created between a topic and a topic", js: true do
+    old_overide_url = Rails.configuration.attachments_overide_url
+    Rails.configuration.attachments_overide_url = 'http://horowhenua.kete.net.nz'
+
+    sign_in
+    visit "/en/site/topics/2725-shannon-school-1930-40"
+    within("#related_items") { click_on "Create" }
+
+    expect(page).to have_content("What would you like to add that relates to Shannon School 1930-40? Where would you like to add it?  ")
+    select "Topic", from: 'Add a?'
+    select "General", from: "About a?"
+    fill_in "topic[title]", with: 'testing relations'
+    click_on 'Create'
+
+    within("#related_items") do
+      expect(page).to have_content("testing relations")
+    end
+
+    Rails.configuration.attachments_overide_url = old_overide_url
+  end
 end
