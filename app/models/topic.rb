@@ -243,4 +243,7 @@ class Topic < ActiveRecord::Base
     []
   end
 
+  def basket_or_default
+    basket.present? ? basket : Basket.find_by_urlified_name(SystemSetting.default_basket)
+  end
 end

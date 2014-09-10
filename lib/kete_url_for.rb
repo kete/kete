@@ -13,7 +13,7 @@ module KeteUrlFor
         :id => item,
         :format => nil,
         :locale => false,
-        :urlified_name => item.basket.urlified_name }
+        :urlified_name => item.basket_or_default.urlified_name }
 
       location[:protocol] = 'http' if options[:force_http]
 
