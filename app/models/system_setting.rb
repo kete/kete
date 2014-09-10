@@ -369,7 +369,7 @@ class SystemSetting
     end
 
     def captcha_type
-      "all"
+      "question"
     end
 
     def number_of_related_images_to_display

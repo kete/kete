@@ -25,12 +25,12 @@
     - form_fields = @content_type.content_type_to_field_mappings
 
     - if form_fields.size > 0
-      = render(:partial => 'extended_fields/extended_field_mapping', 
-                :collection => form_fields, 
-                :locals => { :form_fields => form_fields, 
-                              :edit => false, 
-                              :extended_item => @user, 
-                              :item_key => 'user'})                                       
+      = render(:partial => 'extended_fields/extended_field_mapping',
+                :collection => form_fields,
+                :locals => { :form_fields => form_fields,
+                              :edit => false,
+                              :extended_item => @user,
+                              :item_key => 'user'})
 
     - if I18n.available_locales_with_labels.keys.size > 1
       .form-element
@@ -42,7 +42,7 @@
     .form-element
       %label= t 'account.signup.preferred_license'
       = render :partial => 'topics/license_chooser_or_agreement',:locals => {:item => @user}
-    = render :partial => "captcha_wrapper", :locals => { :f => f }
+    -# = render :partial => "captcha_wrapper", :locals => { :f => f }
     .form-element
       = f.check_box :agree_to_terms, :tabindex => '1'
       - terms_and_conditions_link = link_to(t('account.signup.terms_and_conditions_link'),  { :action => 'disclaimer', :id => 4}, :remote => true, :tabindex => '1' )
