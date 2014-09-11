@@ -14,7 +14,7 @@
   %div{:style => "clear:both;"}
 %fieldset
   %legend= @title
-  - if params[:function] == "add"
+  - if params[:function] == "add" || params[:function] == "remove"
     - privacy = params[:privacy_type] || "public"
     = form_tag(params.merge(:search_terms => nil)) do
       = content_tag "label", t('search.related_form.search_for', :privacy => privacy, :item_class => item_class_plural), "for" => "search_terms"
