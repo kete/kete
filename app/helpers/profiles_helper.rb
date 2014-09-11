@@ -107,7 +107,7 @@ module ProfilesHelper
 
   # A text area tag. Wraps it in form-element div,
   # with label, and appropriate id and name
-  def rules_text_area_tag(name, label=nil, class_name='mceEditor')
+  def rules_text_area_tag(name, label=nil, class_name='tinymce')
     '<div class="form-element">' +
       (label ? content_tag('label', label, :for => rules_label_id(name), :class => 'inline') : '') +
       text_area_tag("#{@rule_locals[:values_field_prefix]}[#{name}]", current_value_for(name),

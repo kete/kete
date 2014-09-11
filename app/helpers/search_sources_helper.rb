@@ -16,7 +16,7 @@ module SearchSourcesHelper
     search_sources = SearchSource.all(conditions)
     search_sources.each do |source|
       # ROB:  this was previously: htmp += @template.render(...)
-      #       @template was probably supplied by one of the plugin that 
+      #       @template was probably supplied by one of the plugin that
       #       was removed
       html += render('search_sources/search_source',
                                :search_text => search_text,

@@ -37,24 +37,24 @@ class AccountController < ApplicationController
       if params[:login].present? && params[:password].present?
         self.current_user = User.authenticate(params[:login], params[:password])
       else
-        case @captcha_type
-        when 'image'
-          if simple_captcha_valid?
-            @security_code = params[:security_code]
-          end
-
-          if simple_captcha_confirm_valid?
-            @res = Captcha.find(session[:captcha_id])
-            @security_code_confirmation = @res.text
-          else
-            @security_code_confirmation = false
-          end
-        when 'question'
-          if validate_brain_buster
-            @security_code = true
-            @security_code_confirmation = true
-          end
-        end
+        # case @captcha_type
+        # when 'image'
+        #   if simple_captcha_valid?
+        #     @security_code = params[:security_code]
+        #   end
+        #
+        #   if simple_captcha_confirm_valid?
+        #     @res = Captcha.find(session[:captcha_id])
+        #     @security_code_confirmation = @res.text
+        #   else
+        #     @security_code_confirmation = false
+        #   end
+        # when 'question'
+        #   if validate_brain_buster
+        #     @security_code = true
+        #     @security_code_confirmation = true
+        #   end
+        # end
 
         if anonymous_ok_for?(session[:return_to]) &&
             @security_code == @security_code_confirmation &&
@@ -110,13 +110,13 @@ class AccountController < ApplicationController
 
           flash[:notice] = error_msgs.join("#{t('account_controller.login.or')}")
 
-          set_captcha_type if anonymous_ok_for?(session[:return_to])
-          create_brain_buster if @captcha_type == 'question'
+          # set_captcha_type if anonymous_ok_for?(session[:return_to])
+          # create_brain_buster if @captcha_type == 'question'
         end
       end
     else
-      set_captcha_type if anonymous_ok_for?(session[:return_to])
-      create_brain_buster if @captcha_type == 'question'
+      # set_captcha_type if anonymous_ok_for?(session[:return_to])
+      # create_brain_buster if @captcha_type == 'question'
     end
   end
 
@@ -126,42 +126,48 @@ class AccountController < ApplicationController
 
     @user = User.new
 
-    set_captcha_type
-
-    create_brain_buster if @captcha_type == 'question'
+    # set_captcha_type
+    #
+    # create_brain_buster if @captcha_type == 'question'
 
     # after this is processing submitted form only
     return unless request.post?
-    @user = User.new(params[:user].reject { |k, v| k == "captcha_type" })
+    # @user = User.new(params[:user].reject { |k, v| k == "captcha_type" })
+    @user = User.new(params[:user])
 
-    case @captcha_type
-    when 'image'
-      if simple_captcha_valid?
-        @user.security_code = params[:user][:security_code]
-      end
-
-      if simple_captcha_confirm_valid?
-        @res = Captcha.find(session[:captcha_id])
-        @user.security_code_confirmation = @res.text
-      else
-        @user.security_code_confirmation = false
-      end
-    when 'question'
-      if validate_brain_buster
-        @user.security_code = true
-        @user.security_code_confirmation = true
-      end
-    end
+    # case @captcha_type
+    # when 'image'
+    #   if simple_captcha_valid?
+    #     @user.security_code = params[:user][:security_code]
+    #   end
+    #
+    #   if simple_captcha_confirm_valid?
+    #     @res = Captcha.find(session[:captcha_id])
+    #     @user.security_code_confirmation = @res.text
+    #   else
+    #     @user.security_code_confirmation = false
+    #   end
+    # when 'question'
+    #   if validate_brain_buster
+    #     @user.security_code = true
+    #     @user.security_code_confirmation = true
+    #   end
+    # end
 
     if agreed_terms?
       @user.agree_to_terms = params[:user][:agree_to_terms]
     end
 
+    # We have removed captcha and will re-enable something if/when dummy
+    # sign-ups becomes a problem.
+    @user.security_code = true
+    @user.security_code_confirmation = true
+
     @user.save!
 
     @user.add_as_member_to_default_baskets
 
-    if !SystemSetting.activation?
+    if !SystemSetting.require_activation?
       self.current_user = @user
       move_session_searches_to_current_user
       flash[:notice] = t('account_controller.signup.signed_up')
@@ -181,15 +187,15 @@ class AccountController < ApplicationController
     render :action => 'signup'
   end
 
-  def show_captcha
-    return unless !params[:id].nil?
-    captcha = Captcha.find(params[:id])
-    imgdata = captcha.imageblob
-    send_data(imgdata,
-              :filename => 'captcha.jpg',
-              :type => 'image/jpeg',
-              :disposition => 'inline')
-  end
+  # def show_captcha
+  #   return unless !params[:id].nil?
+  #   captcha = Captcha.find(params[:id])
+  #   imgdata = captcha.imageblob
+  #   send_data(imgdata,
+  #             :filename => 'captcha.jpg',
+  #             :type => 'image/jpeg',
+  #             :disposition => 'inline')
+  # end
 
   def disclaimer
     @topic = Topic.find(params[:id])
@@ -234,14 +240,14 @@ class AccountController < ApplicationController
 
   # override brain_buster method to suit our UI
   # and working in conjunction with simple_captcha
-  def captcha_failure
-    if @user
-      @user.security_code = 'failed'
-      @user.security_code_confirmation = false
-    else
-      # TODO: do something here for login case
-    end
-  end
+  # def captcha_failure
+  #   if @user
+  #     @user.security_code = 'failed'
+  #     @user.security_code_confirmation = false
+  #   else
+  #     # TO DO: do something here for login case
+  #   end
+  # end
 
 
   def fetch_gravatar
@@ -257,28 +263,28 @@ class AccountController < ApplicationController
     end
   end
 
-  def simple_captcha_valid?
-    (params[:user].present? && params[:user][:security_code].present? &&
-     params[:security_code].nil?) ||
-      (params[:user].nil? && params[:security_code].present?)
-  end
-
+  # def simple_captcha_valid?
+  #   (params[:user].present? && params[:user][:security_code].present? &&
+  #    params[:security_code].nil?) ||
+  #     (params[:user].nil? && params[:security_code].present?)
+  # end
+  #
   def agreed_terms?
     if params[:user][:agree_to_terms] == '1'
       return true
     end
   end
 
-  def simple_captcha_confirm_valid?
-    return false unless simple_captcha_valid?
-
-    @res = Captcha.find(session[:captcha_id])
-
-    (params[:user].present? &&
-     @res.text == params[:user][:security_code]) ||
-      (params[:security_code].present? &&
-       @res.text == params[:security_code])
-  end
+  # def simple_captcha_confirm_valid?
+  #   return false unless simple_captcha_valid?
+  #
+  #   @res = Captcha.find(session[:captcha_id])
+  #
+  #   (params[:user].present? &&
+  #    @res.text == params[:user][:security_code]) ||
+  #     (params[:security_code].present? &&
+  #      @res.text == params[:security_code])
+  # end
 
   def logout
     deauthenticate
@@ -546,10 +552,10 @@ class AccountController < ApplicationController
   end
 
 
-  def set_captcha_type
-    @captcha_type = params[:captcha_type] || SystemSetting.captcha_type
-    @captcha_type = 'image' if @captcha_type == 'all'
-  end
+  # def set_captcha_type
+  #   @captcha_type = params[:captcha_type] || SystemSetting.captcha_type
+  #   @captcha_type = 'image' if @captcha_type == 'all'
+  # end
 
   include SslControllerHelpers
 end

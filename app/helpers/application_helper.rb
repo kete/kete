@@ -61,11 +61,17 @@ module ApplicationHelper
         return image_tag(user.avatar.thumbnail_file.public_filename, options)
       end
     elsif SystemSetting.enable_user_portraits? && !SystemSetting.enable_gravatar_support?
-      return image_tag('no-avatar.png', options)
+      return image_tag(image_path('no-avatar.png'), options)
     end
 
     if SystemSetting.enable_gravatar_support?
-      return avatar_tag(user, { size: 50, rating: 'G', gravatar_default_url: "#{request.protocol}#{request.host_with_port}#{asset_path("no-avatar.png")}" }, options)
+      default_img_url = URI.join(root_url, image_path("no-avatar.png")).to_s
+      avatar_options = {
+        size: 50,
+        rating: 'G',
+        gravatar_default_url: default_img_url
+      }
+      return avatar_tag(user, avatar_options, options)
     end
 
     return ''

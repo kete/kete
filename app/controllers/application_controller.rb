@@ -407,11 +407,13 @@ class ApplicationController < ActionController::Base
   end
 
   def redirect_to_default_all
-    redirect_to(basket_all_url(:controller_name_for_zoom_class => zoom_class_controller(SystemSetting.default_search_class)))
+    redirect_to list_basket_baskets_url("site")
+    # redirect_to(basket_all_url(:controller_name_for_zoom_class => zoom_class_controller(SystemSetting.default_search_class)))
   end
 
   def redirect_to_all_for(controller)
-    redirect_to(basket_all_url(:controller_name_for_zoom_class => controller))
+    redirect_to list_basket_baskets_url("site")
+    # redirect_to(basket_all_url(:controller_name_for_zoom_class => controller))
   end
 
   def redirect_to_show_for(item, options = {})

@@ -78,44 +78,44 @@
             -#  |
             -#  = link_to_unless_current t('layouts.application.delete'), { :controller => 'baskets', :action => 'destroy', :id => @current_basket, }, :confirm => t('layouts.application.delete_confirmation'), :method => 'post', :tabindex => '2'
 
-          - if logged_in? && @site_admin && !@displaying_error
-            #adminToolbox
-
-              %h4= t 'layouts.application.toolbox_label'
-              %p
-                = t 'layouts.application.toolbox_controls'
-                = link_to_unless_current t('layouts.application.basket_profiles'), { :urlified_name => @site_basket.urlified_name, :controller => 'profiles', :action => 'list' }, :tabindex => '2'
-                |
-                = link_to_unless_current t('layouts.application.topic_types'), { :urlified_name => @site_basket.urlified_name, :controller => 'topic_types', :action => 'list' }, :tabindex => '2'
-                |
-                = link_to_unless_current t('layouts.application.content_types'), { :urlified_name => @site_basket.urlified_name, :controller => 'content_types', :action => 'list' }, :tabindex => '2'
-                |
-                = link_to_unless_current t('layouts.application.extended_fields'), { :urlified_name => @site_basket.urlified_name, :controller => 'extended_fields', :action => 'list' }, :tabindex => '2'
-                |
-                = link_to_unless_current t('layouts.application.choices'), { :urlified_name => @site_basket.urlified_name, :controller => 'choices', :action => 'list'}, :tabindex => '2'
-                |
-                = link_to_unless_current t('layouts.application.search_sources'), { :urlified_name => @site_basket.urlified_name, :controller => 'search_sources', :action => 'list'}, :tabindex => '2'
-                |
-                = link_to_unless_current t('layouts.application.site_members'), { :urlified_name => @site_basket.urlified_name, :controller => 'members', :action => 'list' }, :tabindex => '2'
-                |
-                = link_to_unless_current t('layouts.application.licenses'), { :urlified_name => @site_basket.urlified_name, :controller => 'licenses', :action => 'index' }, :tabindex => '2'
-                |
-                = link_to_unless_current t('layouts.application.add_link'), { :urlified_name => @site_basket.urlified_name, :controller => 'configure', :action => 'add_link_to_kete_net' }, :tabindex => '2'
-                = add_ons_site_admin_list if respond_to?(:add_ons_site_admin_list)
-
-                - if @tech_admin
-                  |
-                  \#{link_to_unless_current t('layouts.application.configure'), { :urlified_name => @site_basket.urlified_name, :controller => 'configure', :action => 'index' }, :tabindex => '2'}
-                  |
-                  = link_to_unless_current t('layouts.application.oai_pmh'), { :urlified_name => @site_basket.urlified_name, :controller => 'oai_pmh_repository_sets', :action => 'index' }, :tabindex => '2'
-                  |
-                  = link_to_unless_current t('layouts.application.zoom_dbs'), { :urlified_name => @site_basket.urlified_name, :controller => 'zoom_dbs', :action => 'list' }, :tabindex => '2'
-                  |
-                  = link_to_unless_current t('layouts.application.rebuild'), { :urlified_name => @site_basket.urlified_name, :controller => 'search', :action => 'setup_rebuild' }, :tabindex => '2'
-
-              %p
-                = t 'layouts.application.support'
-                = link_to_unless_current t('layouts.application.documentation'), basket_index_url(:urlified_name => @documentation_basket.urlified_name), :tabindex => '2'
+          -# - if logged_in? && @site_admin && !@displaying_error
+          -#   #adminToolbox
+          -#
+          -#     %h4= t 'layouts.application.toolbox_label'
+          -#     %p
+          -#       = t 'layouts.application.toolbox_controls'
+          -#       = link_to_unless_current t('layouts.application.basket_profiles'), { :urlified_name => @site_basket.urlified_name, :controller => 'profiles', :action => 'list' }, :tabindex => '2'
+          -#       |
+          -#       = link_to_unless_current t('layouts.application.topic_types'), { :urlified_name => @site_basket.urlified_name, :controller => 'topic_types', :action => 'list' }, :tabindex => '2'
+          -#       |
+          -#       = link_to_unless_current t('layouts.application.content_types'), { :urlified_name => @site_basket.urlified_name, :controller => 'content_types', :action => 'list' }, :tabindex => '2'
+          -#       |
+          -#       = link_to_unless_current t('layouts.application.extended_fields'), { :urlified_name => @site_basket.urlified_name, :controller => 'extended_fields', :action => 'list' }, :tabindex => '2'
+          -#       |
+          -#       = link_to_unless_current t('layouts.application.choices'), { :urlified_name => @site_basket.urlified_name, :controller => 'choices', :action => 'list'}, :tabindex => '2'
+          -#       |
+          -#       = link_to_unless_current t('layouts.application.search_sources'), { :urlified_name => @site_basket.urlified_name, :controller => 'search_sources', :action => 'list'}, :tabindex => '2'
+          -#       |
+          -#       = link_to_unless_current t('layouts.application.site_members'), { :urlified_name => @site_basket.urlified_name, :controller => 'members', :action => 'list' }, :tabindex => '2'
+          -#       |
+          -#       = link_to_unless_current t('layouts.application.licenses'), { :urlified_name => @site_basket.urlified_name, :controller => 'licenses', :action => 'index' }, :tabindex => '2'
+          -#       |
+          -#       = link_to_unless_current t('layouts.application.add_link'), { :urlified_name => @site_basket.urlified_name, :controller => 'configure', :action => 'add_link_to_kete_net' }, :tabindex => '2'
+          -#       = add_ons_site_admin_list if respond_to?(:add_ons_site_admin_list)
+          -#
+          -#       - if @tech_admin
+          -#         |
+          -#         \#{link_to_unless_current t('layouts.application.configure'), { :urlified_name => @site_basket.urlified_name, :controller => 'configure', :action => 'index' }, :tabindex => '2'}
+          -#         |
+          -#         = link_to_unless_current t('layouts.application.oai_pmh'), { :urlified_name => @site_basket.urlified_name, :controller => 'oai_pmh_repository_sets', :action => 'index' }, :tabindex => '2'
+          -#         |
+          -#         = link_to_unless_current t('layouts.application.zoom_dbs'), { :urlified_name => @site_basket.urlified_name, :controller => 'zoom_dbs', :action => 'list' }, :tabindex => '2'
+          -#         |
+          -#         = link_to_unless_current t('layouts.application.rebuild'), { :urlified_name => @site_basket.urlified_name, :controller => 'search', :action => 'setup_rebuild' }, :tabindex => '2'
+          -#
+          -#     %p
+          -#       = t 'layouts.application.support'
+          -#       = link_to_unless_current t('layouts.application.documentation'), basket_index_url(:urlified_name => @documentation_basket.urlified_name), :tabindex => '2'
 
         #footer_custom.footer_div
         - unless @current_basket.additional_footer_content_with_inheritance.nil? || @current_basket.additional_footer_content_with_inheritance.squish.blank?

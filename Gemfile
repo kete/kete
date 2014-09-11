@@ -1,16 +1,19 @@
 source "https://rubygems.org"
 
-ruby '2.0.0'
+ruby '2.1.2'
 
-gem "rails", "3.2.16"
+gem "rails", "3.2.19"
+gem 'unicorn'
 
-# EOIN: TODO: I suspect there are gems mentioned in here that rails pulls in implicitly - we should remove them from here if so.
+gem 'tinymce-rails', '~> 4.1.4'
+
+# EOIN: TODO: I suspect there are gems mentioned in here that rails pulls in
+# implicitly - we should remove them from here if so.
 
 # Heroku needs this
 gem 'rails_12factor', group: :production
 
 gem 'jquery-rails', '~> 3.1.1'
-gem 'rails-erd'
 gem 'haml'
 gem 'acts_as_licensed', github: 'kete/acts_as_licensed', branch: 'rails3-gem'
 # gem "sql-logging"
@@ -68,10 +71,11 @@ gem 'pg'
 
 gem 'railroady'
 gem "awesome_nested_set", "~> 2.1.6"
+
 # Added to get rake working. I suspect these should be removed.
 # gem 'rake', '0.9.2.2' # version needed to use: require 'rake/rdoctask'
-gem "rake", "~> 10.1.0"
-gem "rdoc"
+gem 'rake'
+# gem "rdoc"
 gem 'nokogiri', '~> 1.6.0'
 
 # Officially sanctioned Rails way to add Rails 2 stuff like #error_messages_for
@@ -80,34 +84,10 @@ gem 'dynamic_form', '~> 1.1.4'
 
 # Background tasks
 # ################
+
 gem "backgroundrb-rails3", "~> 1.1.6", :require => 'backgroundrb'
-
 gem 'mini_exiftool', '< 2.0.0'
-
-## You'll need Zebra and Yaz installed (Z39.50 databse and ZOOM API).
-#gem 'zoom'
-##gem 'acts_as_zoom' # included in gem/plugins 
-
-
 gem 'rmagick', "2.13.3", require: 'RMagick'
-
-group :development do
-  gem 'quiet_assets'
-end
-
-group :development, :test do
-  gem 'poltergeist'
-  gem "rspec-rails", "~> 3.0.0"
-  gem "factory_girl_rails", "~> 4.3.0"
-  gem "capybara", "~> 2.4.1"
-  gem "database_cleaner"
-  gem "pry-rails"
-  gem "debugger", :platforms => [:mingw_19, :ruby_19]
-  gem 'debugger-xml', :platforms => [:mingw_19, :ruby_19]
-  gem 'byebug', :platforms => [:mingw_20, :ruby_20]
-  gem 'pry-byebug', :platforms => [:mingw_20, :ruby_20]
-  gem 'awesome_print'
-end
 
 
 # Note: the file config/required_software.yml is a good place to look for things that would be needed in a bundler file.
@@ -221,8 +201,25 @@ gem 'authorization', github: 'kete/rails-authorization-plugin'
 
 gem 'sass-rails'
 gem 'compass-rails'
+gem 'coffee-rails', '~> 3.2.1'
+gem 'uglifier', '>= 1.0.3'
 
-group :assets do
-  gem 'coffee-rails', '~> 3.2.1'
-  gem 'uglifier', '>= 1.0.3'
+group :development do
+  gem 'quiet_assets'
+  gem 'rails-erd'
 end
+
+group :development, :test do
+  gem 'poltergeist'
+  gem "rspec-rails", "~> 3.0.0"
+  gem "factory_girl_rails", "~> 4.3.0"
+  gem "capybara", "~> 2.4.1"
+  gem "database_cleaner"
+  gem "pry-rails"
+  gem "debugger", :platforms => [:mingw_19, :ruby_19]
+  gem 'debugger-xml', :platforms => [:mingw_19, :ruby_19]
+  gem 'byebug', :platforms => [:mingw_20, :ruby_20, :ruby_21]
+  gem 'pry-byebug', :platforms => [:mingw_20, :ruby_20, :ruby_21]
+  gem 'awesome_print'
+end
+

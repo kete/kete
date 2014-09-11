@@ -8,23 +8,19 @@ class ProfilesController < ApplicationController
 
   permit "site_admin"
 
-  ### TinyMCE WYSIWYG editor stuff
-  # uses_tiny_mce :only => VALID_TINYMCE_ACTIONS
-  ### end TinyMCE WYSIWYG editor stuff
-
-  active_scaffold :profiles do |config|
-
-    # Which columns to show
-    config.columns = [:name]
-
-    config.columns[:name].required = true
-
-    # the parent field for the individual forms
-    config.columns << [:rules]
-    config.columns[:rules].required = true
-    config.columns[:rules].label = I18n.t('profiles_controller.fields_available')
-
-  end
+  # active_scaffold :profiles do |config|
+  #
+  #   # Which columns to show
+  #   config.columns = [:name]
+  #
+  #   config.columns[:name].required = true
+  #
+  #   # the parent field for the individual forms
+  #   config.columns << [:rules]
+  #   config.columns[:rules].required = true
+  #   config.columns[:rules].label = I18n.t('profiles_controller.fields_available')
+  #
+  # end
 
   # make the render_to_string method public and available as a helper
   # so we can render forms inline in the profile rules column

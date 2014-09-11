@@ -1,2 +1,2 @@
-class Captcha < ActiveRecord::Base
-end
+# class Captcha < ActiveRecord::Base
+# end

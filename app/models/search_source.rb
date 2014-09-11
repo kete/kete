@@ -1,3 +1,5 @@
+require 'feedzirra'
+
 class SearchSource < ActiveRecord::Base
   acts_as_list
 

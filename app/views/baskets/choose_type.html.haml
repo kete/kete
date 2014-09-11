@@ -29,7 +29,7 @@
         %noscript
           %span#submit_button
             = submit_tag t('baskets.choose_type.button'), { :class => "save-button", :tabindex => '1' }
-      
+
       \#{link_to_cancel("choose").html_safe}
     #item_form
     :javascript
@@ -48,7 +48,10 @@
         return base_url +"?"+ params
       }
       function request_item_form(topic_type) {
-        $.getScript( item_form_url(topic_type), function() { $('#item_form').show(); } );
+        $.getScript( item_form_url(topic_type), function() {
+          $('#item_form').show();
+          setupTinyMCE();
+        });
       }
       $('#new_item_controller').on('change', function() {
         $('#topic_type_form').hide();

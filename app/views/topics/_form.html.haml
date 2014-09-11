@@ -75,7 +75,7 @@
       = hidden_field_tag "is_theme", params[:is_theme]
 
     - if @editing && @site_admin
-      = label_tag 'basket_id', t('topics.form.move_baskets') 
+      = label_tag 'basket_id', t('topics.form.move_baskets')
       = form.select 'basket_id', @baskets, {}, { :tabindex => '1' }
     - else
       = form.hidden_field :basket_id, :value => @basket.id
@@ -104,7 +104,7 @@
 
     .form-element
       = label_tag :description, t('topics.form.description'), :class => 'cleared-right'
-      = form.text_area :description, { :class => "mceEditor", :cols => 120, :tabindex => '1',
+      = form.text_area :description, { :class => "tinymce", :cols => 120, :tabindex => '1',
         :example => "#{t('topics.form.description_example')} #{t('topics.form.description_example_exception') if @site_admin}." }
 
     - if @site_admin
@@ -145,8 +145,9 @@
             %em *
           = file_field_tag 'image_file[uploaded_data]', { :id => 'image_file_uploaded_data', :tabindex => '1' }
       - else
-        = label_tag :uploaded_data, "#{t('topics.form.upload')} #{@item_name}"
-        = form.file_field :uploaded_data, { :tabindex => '1', :required => true }
+        .form-element
+          = label_tag :uploaded_data, "#{t('topics.form.upload')} #{@item_name}"
+          = form.file_field :uploaded_data, { :tabindex => '1', :required => true }
 
     = add_ons_item_form_mid(form)
 
@@ -181,8 +182,7 @@
       = form.text_field :version_comment, { :tabindex => '1',
         :value => (!params[@item_type].blank? ? params[@item_type][:version_comment] : '') }
 
-    = render :partial => 'topics/license_chooser_or_agreement',
-      :locals => { :item => @item }
+    = render :partial => 'topics/license_chooser_or_agreement', :locals => { :item => @item }
 
     - if SystemSetting.hide_related_items_position_field
       = form.hidden_field :related_items_position, :value => SystemSetting.related_items_position_default
@@ -194,9 +194,7 @@
       - else
         - position = SystemSetting.related_items_position_default
       = label_tag :related_items_position, t('topics.form.related_items_position')
-      = form.select :related_items_position, related_items_positions,
-        { :selected => position },
-        { :tabindex => '1' }
+      = form.select :related_items_position, related_items_positions, { :selected => position }, { :tabindex => '1' }
 
   = add_ons_item_form_end(form)
   .wrap

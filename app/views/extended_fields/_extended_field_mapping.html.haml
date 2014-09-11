@@ -9,21 +9,26 @@
 - content = extended_item.extended_content_pairs
 - @item_type_for_params = item_key
 - hide_field = extended_field_mapping.private_only? && !adding_or_editing_private_item?
-<div class="form-element#{" private_only" if extended_field_mapping.private_only?}"#{" style='display:none;'" if hide_field}>
-\#{extended_field_label(ef, extended_field_mapping.required)}
-%div{:style => "float: left"}
-  - if ef.multiple?
-    .extended_field_multiple_fields{:id => qualified_name_for_field(ef) + "_multis"}
-      - existing_multiples = existing_multiples_in(ef, extended_item.xml_attributes_without_position) || ["1"]
-      - existing_multiples.sort.each do |n|
-        = render :partial => 'extended_fields/extended_field_editor', :locals => { :ef => ef, :content => extended_item.xml_attributes_without_position, :n => n, :multiple => true }
-      = render :partial => 'extended_fields/additional_extended_field_control', :locals => { :n => existing_multiples.flatten.map { |i| i.to_i }.max.to_i + 1, :ef => ef, :content => extended_item.xml_attributes_without_position }
-  - else
-    = extended_field_editor(ef, field_value_from_hash(ef, content))
-    .form-example= extended_field_example(ef)
-- # Kieran Pilkington, 2008/11/19
-- # The browser is sometimes sending XML when the above operations are called, and while most browsers
-- # know how to handle it, Internet Explorer outputs it as literal XML, instead of rendering it as a
-- # site, so to fix this, we have to send the text/html header instead of the application/xml is
-- # normally sends. It also mucks up javascript, and we can't have that happening
-- response.headers["Content-Type"] = "text/html; charset=utf-8"
+
+- extra_cls = extended_field_mapping.private_only? ? 'private_only' : ''
+- extra_attr = hide_field ? 'display:none;' : ''
+
+.form-element{ class: extra_cls, style: extra_attr }
+
+  = extended_field_label(ef, extended_field_mapping.required)
+  %div{ style: "float: left" }
+    - if ef.multiple?
+      .extended_field_multiple_fields{:id => qualified_name_for_field(ef) + "_multis"}
+        - existing_multiples = existing_multiples_in(ef, extended_item.xml_attributes_without_position) || ["1"]
+        - existing_multiples.sort.each do |n|
+          = render :partial => 'extended_fields/extended_field_editor', :locals => { :ef => ef, :content => extended_item.xml_attributes_without_position, :n => n, :multiple => true }
+        = render :partial => 'extended_fields/additional_extended_field_control', :locals => { :n => existing_multiples.flatten.map { |i| i.to_i }.max.to_i + 1, :ef => ef, :content => extended_item.xml_attributes_without_position }
+    - else
+      = extended_field_editor(ef, field_value_from_hash(ef, content))
+      .form-example= extended_field_example(ef)
+  - # Kieran Pilkington, 2008/11/19
+  - # The browser is sometimes sending XML when the above operations are called, and while most browsers
+  - # know how to handle it, Internet Explorer outputs it as literal XML, instead of rendering it as a
+  - # site, so to fix this, we have to send the text/html header instead of the application/xml is
+  - # normally sends. It also mucks up javascript, and we can't have that happening
+  -# - response.headers["Content-Type"] = "text/html; charset=utf-8"

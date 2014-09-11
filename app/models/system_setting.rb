@@ -345,7 +345,7 @@ class SystemSetting
     end
 
     def provide_oai_pmh_repository
-      true
+      false
     end
 
     def government_website
@@ -371,7 +371,7 @@ class SystemSetting
     end
 
     def captcha_type
-      "all"
+      "question"
     end
 
     def number_of_related_images_to_display
