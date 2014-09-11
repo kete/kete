@@ -5,7 +5,7 @@
     %fieldset
       = render :partial => 'pick_form'
     = submit_tag t('topics.new.choose_type'), { :class => "save-button", :tabindex => '1' }
-  = link_to_cancel
+  = link_to_cancel.html_safe
 - else
   = render :partial => 'form'
 

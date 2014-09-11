@@ -844,8 +844,7 @@ module ApplicationHelper
       link_text += " (#{restore_count})"
     end
     # EOIN: re-enable when we have decided how to implement related items
-    # link = disabled ? link_text : link_to(link_text, { :controller => 'search', :action => 'find_related' }.merge(options), { :popup => ['links', 'height=500,width=500,scrollbars=yes,top=100,left=100,resizable=yes'] })
-    link = ''
+    link = disabled ? link_text : link_to(link_text, { :controller => 'search', :action => 'find_related' }.merge(options), { :onclick => "window.open(this.href,'links','height=500,width=500,scrollbars=yes,top=100,left=100,resizable=yes');return false;" })
     content_tag('li', link)
   end
 

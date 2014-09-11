@@ -590,8 +590,35 @@ class SearchController < ApplicationController
     render :action => 'homepage_topic_form', :layout => "popup_dialog"
   end
 
-  # James - 2008-06-13
-  # SLOW. Not sure why at this point, but it's 99% rendering, not DB.
+  # #related_items
+  # * Things we know about this method:
+  # * It is hit from a popup window created by clicking on the 'Link existing' in the related items section of a topic.
+  #
+  # Example URL:
+  # http://localhost:3000/en/site/search/find_related?function=add&relate_to_item=2506-herbert-denton&relate_to_type=Topic
+  #
+  # Params:
+  # =======
+  #
+  # function:
+  #     values: 'add'|'remove'|'restore'
+  #     * => it seems this method is hit from all the related item popup windows
+  # relate_to_item:
+  #     a unique id (but not just the database ID) of the item that we are linking **to**
+  # relate_to_type:
+  #     the name of the class of of item that we are linking **to**
+  # related_class:
+  #     the name of the type of item we should restrict the search within
+  #     optional, it is only present if the user clicked on one of the 'Topic, Image etc.' links in the popup window
+  #     * Looking at the code below it seems to default to 'Topic' if it is missing
+  # privacy_type
+  #   optional, only passed in if user clicked on 'search private' link in popup window
+  #   values: nil|'public'|'private'
+  # search_terms
+  #   optional
+  #   * if it exists then this method will do a search, otherwise just show the search form/popup window
+  #
+  #
   def find_related
     # related items are now shown on basket homepage topics, small change to allow linking here
     params[:relate_to_type] = 'Topic' if params[:relate_to_type] == 'IndexPage'
@@ -637,8 +664,10 @@ class SearchController < ApplicationController
       # Run a search if necessary
       # this will update @results
       @search_terms = params[:search_terms]
-      unless @search_terms.blank?
-        search
+      if @search_terms.present?
+        related_items_search
+        current_page = (params[:page] && params[:page].to_i > 0) ? params[:page].to_i : 1
+        @results = @results.paginate(page: current_page)
 
         # Store pagination information, we'll need this later
         pagination_methods = ['total_entries', 'total_pages', 'current_page',
@@ -648,10 +677,16 @@ class SearchController < ApplicationController
           hash[method_name] = @results.send(method_name)
           hash
         end
+        # EOIN: pagination_methods is a hash
+        #   key = one of ['total_entries', 'total_pages', 'current_page', 'previous_page', 'next_page']
+        #   value = the result of sending the method name in the key to the @results collection
       end
 
       # existing is all one class
       # compare against results ids
+      # EOIN: @existing_ids are the Ids of items that we already have a
+      #   relationship with. We identify them so we can exclude them from the
+      #   results we show the user.
       @existing_ids = existing.collect { |existing_item| existing_item.id }
 
       # Ensure results do not include already linked items or the current item.
@@ -866,4 +901,24 @@ class SearchController < ApplicationController
     # @rss_tag_auto = [rss_tag, rss_tag(:combined => true)]
     # @rss_tag_link = [rss_tag(:auto_detect => false), rss_tag(:auto_detect => false, :combined => true)]
   end
+
+  def related_items_search
+    # @results
+    #   Array
+    #   put results in here
+    # @search_terms
+    #     String
+    #     the search term from the user
+    # @related_class
+    #     String
+    #     restrict search to just this content type
+    #     will always be present - is set to 'Topic' if user did not specify
+    # #is_a_private_search?
+    #   returns Bool that says whether we should search private records
+
+    @results = @related_class.constantize.where('title ILIKE ?', "%#{@search_terms}%")
+
+    # NOTE: the return value of this method is ignored
+  end
+
 end

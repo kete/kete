@@ -16,42 +16,39 @@
   %legend= @title
   - if params[:function] == "add"
     - privacy = params[:privacy_type] || "public"
-    = form_tag(params.merge(:search_terms => nil))
-    = content_tag "label", t('search.related_form.search_for', :privacy => privacy, :item_class => item_class_plural), "for" => "search_terms"
-    = text_field_tag "search_terms", params[:search_terms]
-    = submit_tag t('search.related_form.search')
-    - if show_privacy_search_controls? && permitted_to_view_private_items?
-      - if privacy == 'private'
-        (#{link_to t('search.related_form.search_public'), params.merge(:privacy_type => 'public')})
-      - else
-        (#{link_to t('search.related_form.search_private'), params.merge(:privacy_type => 'private')})
-  - if @results.blank? && !params[:search_terms].blank?
-    %p.alone
-      %strong= t 'search.related_form.no_items_found', :item_class => item_class_plural
-  - elsif !@results.blank?
-    %p.alone= t 'search.related_form.select_items', :item_class => item_class_plural, :action => @verb
-    = form_tag(                                     |
-        :controller => 'search',                    |
-        :action => "#{@next_action}_related",       |
-        :relate_to_item => params[:relate_to_item], |
-        :relate_to_type => params[:relate_to_type], |
-        :urlified_name => params[:urlified_name],   |
-        :related_class => @related_class            |
-      )                                             |
-    %ul
-      - for item in @results
-        %li
-          = check_box_tag "item[#{item.id}]", "true", related?(item), "id" => "item_#{item.id}", :disabled => related?(item)
-          - item.private_version! if item.latest_version_is_private?
-          = image_tag(item.thumbnail_file.public_filename, :size => item.thumbnail_file.image_size, :alt => "#{item.title}. ") if item.instance_of?(StillImage) && !item.thumbnail_file.nil?
-          = link_to h(item.title), { :urlified_name => item.basket.urlified_name, |
-              :controller => zoom_class_controller(item.class.name),              |
-              :action => 'show',                                                  |
-              :id => item },                                                      |
-            :target => '_blank'                                                   |
-    .prev-next
-      = will_paginate @results, :params => params.reject { |k, v| k == :page } if @results.respond_to?(:total_entries)
-    = submit_tag @verb, :id => 'submit', :onclick => "$('spinner').show();$('submit').hide();"
-    <img src='#{image_path('indicator.gif')}' width='16' height='16' alt='#{t 'search.related_form.executing_action', :action => @verb}' id='spinner' style='border:none;display:none;' />
-/ <a href="#" onclick="javascript:window.close()">Cancel</a>
+    = form_tag(params.merge(:search_terms => nil)) do
+      = content_tag "label", t('search.related_form.search_for', :privacy => privacy, :item_class => item_class_plural), "for" => "search_terms"
+      = text_field_tag "search_terms", params[:search_terms]
+      = submit_tag t('search.related_form.search')
+      - if show_privacy_search_controls? && permitted_to_view_private_items?
+        - if privacy == 'private'
+          (#{link_to t('search.related_form.search_public'), params.merge(:privacy_type => 'public')})
+        - else
+          (#{link_to t('search.related_form.search_private'), params.merge(:privacy_type => 'private')})
+    - if @results.blank? && !params[:search_terms].blank?
+      %p.alone
+        %strong= t 'search.related_form.no_items_found', :item_class => item_class_plural
+    - elsif !@results.blank?
+      %p.alone= t 'search.related_form.select_items', :item_class => item_class_plural, :action => @verb
+      = form_tag :controller => 'search',
+                :action => "#{@next_action}_related",
+                :relate_to_item => params[:relate_to_item],
+                :relate_to_type => params[:relate_to_type],
+                :urlified_name => params[:urlified_name],
+                :related_class => @related_class do
+        %ul
+          - @results.each do |item|
+            %li
+              = check_box_tag "item[#{item.id}]", "true", related?(item), "id" => "item_#{item.id}", :disabled => related?(item)
+              - item.private_version! if item.latest_version_is_private?
+              = image_tag(item.thumbnail_file.public_filename, :size => item.thumbnail_file.image_size, :alt => "#{item.title}. ") if item.instance_of?(StillImage) && !item.thumbnail_file.nil?
+              = link_to h(item.title), { :urlified_name => item.basket.urlified_name,
+                  :controller => zoom_class_controller(item.class.name),
+                  :action => 'show',
+                  :id => item },
+                :target => '_blank'
+        .prev-next
+          = will_paginate @results, :params => params.reject { |k, v| k == :page } if @results.respond_to?(:total_entries)
+        = submit_tag @verb, :id => 'submit', :onclick => "$('spinner').show();$('submit').hide();"
+
 = link_to_function t('search.related_form.close'), "opener.location.reload();window.close()"

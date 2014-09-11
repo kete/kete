@@ -113,7 +113,9 @@ class SystemSetting
     end
 
     def related_items_position_default
-      "inset"
+      # ROB: In the exisiting data this is often saved as the empty string. 
+      #      Some models also have "inset" or "sidebar"
+      "below"
     end
 
     def hide_related_items_position_field
