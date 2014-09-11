@@ -250,22 +250,10 @@ class ApplicationController < ActionController::Base
     return successful
   end
 
-  def remove_relation_and_update_zoom_and_related_caches_for(item1, item2)
-    raise "ERROR: Neither item 1 or 2 was a Topic" unless item1.is_a?(Topic) || item2.is_a?(Topic)
-    topic, related = (item1.is_a?(Topic) ? [item1, item2] : [item2, item1])
+  def remove_relation_between(related_item: item1, topic: item2)
+    raise "ERROR: Neither topic is not a Topic" unless topic.is_a?(Topic)
 
-    # clear out old zoom records before we change the items
-    # sometimes zoom updates are confused and create a duplicate new record
-    # instead of updating existing one
-    # zoom_destroy_for(topic)
-    # zoom_destroy_for(related)
-
-    successful = ContentItemRelation.destroy_relation_to_topic(topic, related)
-
-    update_zoom_and_related_caches_for(topic, zoom_class_controller(related.class.name))
-    update_zoom_and_related_caches_for(related, ('topics' if related.is_a?(Topic)))
-
-    return successful
+    ContentItemRelation.destroy_relation_to_topic(topic, related_item)
   end
 
   def setup_related_topic_and_zoom_and_redirect(item, commented_item = nil, options = {})
@@ -372,9 +360,8 @@ class ApplicationController < ActionController::Base
       for id in params[:item].reject { |k, v| v != "true" }.collect { |k, v| k }
         item = only_valid_zoom_class(params[:related_class]).find(id)
 
-        remove_relation_and_update_zoom_and_related_caches_for(item, @related_to_item)
+        remove_relation_between(related_item: item, topic: @related_to_item)
 
-        update_zoom_and_related_caches_for(item)
         flash[:notice] = t('application_controller.unlink_related.unlinked_relation')
 
       end
