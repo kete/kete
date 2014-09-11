@@ -15,13 +15,4 @@
 
         = link_to_related_item_function(:link_text => t('topics.related_items.remove'), :function => 'remove', :relate_to_item => item, :relate_to_type => zoom_class)
 
-      - if params[:controller] == 'topics'
-        - if @basket_moderator
-          - cache({ :related => 'related-tools-restore', :id => @cache_id }) do
-            -# ROB: re-add this functions later
-            -#= link_to_related_item_function(:link_text => t('topics.related_items.restore'), :function => 'restore', |
-            -#  :relate_to_item => item, :relate_to_type => zoom_class)                                                |
-            %li
-              = link_to(t('topics.related_items.restore'), not_implemented_path)
-
   %div{:style => "clear:both;"}

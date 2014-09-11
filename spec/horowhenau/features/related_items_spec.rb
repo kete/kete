@@ -1,5 +1,13 @@
 require 'spec_helper'
 
+
+def exec_with_horowhenua_attachments
+   old_overide_url = Rails.configuration.attachments_overide_url
+    Rails.configuration.attachments_overide_url = 'http://horowhenua.kete.net.nz'
+    yield 
+    Rails.configuration.attachments_overide_url = old_overide_url
+end
+
 feature "Related Items" do
 
   it "are listed on a page" do
@@ -95,23 +103,31 @@ feature "Related Items" do
   end
 
   it "can be created between a topic and a topic", js: true do
-    old_overide_url = Rails.configuration.attachments_overide_url
-    Rails.configuration.attachments_overide_url = 'http://horowhenua.kete.net.nz'
+    exec_with_horowhenua_attachments do
+      sign_in
+      visit "/en/site/topics/2725-shannon-school-1930-40"
+      within("#related_items") { click_on "Create" }
 
-    sign_in
-    visit "/en/site/topics/2725-shannon-school-1930-40"
-    within("#related_items") { click_on "Create" }
+      expect(page).to have_content("What would you like to add that relates to Shannon School 1930-40? Where would you like to add it?  ")
+      select "Topic", from: 'Add a?'
+      select "General", from: "About a?"
+      fill_in "topic[title]", with: 'testing relations'
+      click_on 'Create'
 
-    expect(page).to have_content("What would you like to add that relates to Shannon School 1930-40? Where would you like to add it?  ")
-    select "Topic", from: 'Add a?'
-    select "General", from: "About a?"
-    fill_in "topic[title]", with: 'testing relations'
-    click_on 'Create'
-
-    within("#related_items") do
-      expect(page).to have_content("testing relations")
+      within("#related_items") do
+        expect(page).to have_content("testing relations")
+      end
     end
+  end
 
-    Rails.configuration.attachments_overide_url = old_overide_url
+  it "does not have a restore option", js: true do
+    exec_with_horowhenua_attachments do
+      sign_in
+      visit "/en/site/topics/2657-manakau-school-125th-jubilee-2013-and-dedication-ceremony-at-the-completion-of-the-jubilee"
+
+      within("#related_items") do
+        expect(page).not_to have_content("Restore")
+      end
+    end
   end
 end
