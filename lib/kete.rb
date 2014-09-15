@@ -19,9 +19,9 @@ class Kete
 
     def setup_extensions!
       # setup so extensions are loaded once in production, but each request in development
-      ActionController::Dispatcher.to_prepare { Kete.load_extensions! }
+#      ActionController::Dispatcher.to_prepare { Kete.load_extensions! }
       # then setup initially so that script/console works
-      Kete.load_extensions!
+#      Kete.load_extensions!
     end
 
     def load_extensions!
@@ -78,6 +78,13 @@ class Kete
       # create predicate method if boolean
       if value.kind_of?(TrueClass) || value.kind_of?(FalseClass)
         metaclass.instance_eval { define_method("#{method_name}?", &code) }
+      end
+    end
+
+    def metaclass
+      # !! should be replace by Object#singleton_class (ruby 1.9.2)
+      class << self
+        self
       end
     end
   end

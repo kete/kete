@@ -1,0 +1,80 @@
+%fieldset{:style => "width:750px;"}
+  = error_messages_for 'basket'
+  = hidden_field_tag "source_form", 'homepage_options'
+  - if allowed_field?('index_page_redirect_to_all')
+    .form-element
+      %label= t 'baskets.homepage_form.go_to_browse'
+      %fieldset
+        .form-element
+          %label.inline{:for => "basket_index_page_redirect_to_all"}= t 'baskets.homepage_form.redirect_to'
+          = homepage_form.select :index_page_redirect_to_all, zoom_controllers_as_options([[t('baskets.homepage_form.dont_redirect'), '']]), {}, :tabindex => '1'
+  <div id="depth1" #{'style="display:none;"' unless current_value_of('index_page_redirect_to_all').blank?}>
+  - if allowed_field?('index_page_topic_is_entire_page')
+    <div class="form-element" #{'style="display:none;"' if @index_topic.blank?} >
+    %label= t 'baskets.homepage_form.homepage_topic'
+    %fieldset
+      .form-element
+        - options = @index_topic.blank? ? { :disabled => true } : {}
+        = homepage_form.check_box :index_page_topic_is_entire_page, options.merge({:tabindex => '1'})
+        %label.inline{:for => "basket_index_page_topic_is_entire_page"}= t 'baskets.homepage_form.only_homepage'
+        <div class="form-element" id="depth2" #{'style="display:none;"' if current_value_of('index_page_topic_is_entire_page')}>
+        %br/
+        %label.inline{:for => "basket_index_page_link_to_index_topic_as"}= t 'baskets.homepage_form.homepage_link'
+        = homepage_form.select :index_page_link_to_index_topic_as, Basket.link_to_index_topic_as_options, {}, :tabindex => '1'
+  <div id="depth3" #{'style="display:none;"' if current_value_of('index_page_topic_is_entire_page')}>
+  - if allowed_field?('index_page_number_of_recent_topics')
+    .form-element
+      %label= t 'baskets.homepage_form.recent_topics'
+      %fieldset
+        .form_example= t 'baskets.homepage_form.recent_topics_example'
+        .form-element
+          %label{:for => "basket_index_page_number_of_recent_topics"}= t 'baskets.homepage_form.recent_topics_amount'
+          = homepage_form.text_field :index_page_number_of_recent_topics, {:size => '3', :tabindex => '1'}
+        <div class="form-element" id="depth4" #{'style="display:none;"' unless current_value_of('index_page_number_of_recent_topics').to_s.to_i > 0}>
+        %label{:for => "basket_index_page_recent_topics_as"}= t 'baskets.homepage_form.recent_topics_type'
+        = homepage_form.select :index_page_recent_topics_as, Basket.recent_topics_as_options, :tabindex => '1'
+- if allowed_field?('index_page_basket_search')
+  .form-element
+    %label= t 'baskets.homepage_form.search'
+    %fieldset
+      .form-element
+        = homepage_form.check_box :index_page_basket_search, :tabindex => '1'
+        %label.inline{:for => "basket_index_page_basket_search"}= t 'baskets.homepage_form.include_search'
+- if allowed_field?('index_page_extra_side_bar_html')
+  .form-element
+    %label{:for => "basket_index_page_extra_side_bar_html"}= t 'baskets.homepage_form.sidebar_content'
+    %fieldset
+      = render 'side_bar_html', :form => homepage_form
+- if allowed_field?('index_page_image_as')
+  .form-element
+    %label= t 'baskets.homepage_form.selected_image'
+    %fieldset
+      .form-element
+        %label.inline{:for => "basket_index_page_image_as"}= t 'baskets.homepage_form.selected_image_show'
+        = homepage_form.select :index_page_image_as, Basket.image_as_options, {}, :tabindex => '1'
+- if allowed_field?('index_page_archives_as')
+  .form-element
+    %label= t 'baskets.homepage_form.archives'
+    %fieldset
+      .form-element
+        %label.inline{:for => "basket_index_page_archives_as"}= t 'baskets.homepage_form.archives_as'
+        = homepage_form.select :index_page_archives_as, Basket.archives_as_options, {}, :tabindex => '1'
+- if allowed_field?('index_page_number_of_tags')
+  .form-element
+    %label= t 'baskets.homepage_form.tags'
+    %fieldset
+      .form-element
+        %label.inline{:for => "basket_index_page_number_of_tags"}= t 'baskets.homepage_form.tags_amount'
+        = homepage_form.text_field :index_page_number_of_tags, {:size => '3', :tabindex => '1'}
+      <div id="depth5" #{'style="display:none;"' unless current_value_of('index_page_number_of_tags').to_s.to_i > 0}>
+      .form-element
+        %label.inline{:for => "basket_index_page_tags_as"}= t 'baskets.homepage_form.tags_as'
+        = homepage_form.select :index_page_tags_as, Basket.tags_as_options, :tabindex => '1'
+      .form-element
+        %label.inline{:for => "basket_index_page_order_tags_by"}= t 'baskets.homepage_form.tags_ordered_by'
+        = homepage_form.select :index_page_order_tags_by, Basket.order_tags_by_options, :tabindex => '1'
+- if allowed_field?('feeds_attributes')
+  .form-element
+    %label= t 'baskets.homepage_form.rss_feeds'
+    %fieldset
+      = render 'basket_feeds_fields', :feeds => @basket.feeds

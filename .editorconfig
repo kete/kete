@@ -1,0 +1,4 @@
+# Hacky file to disable editorconfig.
+root = true
+
+trim_trailing_whitespace = false

@@ -22,12 +22,42 @@ class SearchController < ApplicationController
   # for slideshow functionality.
   after_filter :store_results_for_slideshow, :only => [:for, :all]
 
-  # GETs should be safe (see http://www.w3.org/2001/tag/doc/whenToUseGet.html)
-  verify :method => :post, :only => [ :rebuild_zoom_index ],
-         :redirect_to => { :action => :index }
+  def for
+    query = SearchQuery.new(params)
 
-  # these search actions should only be done by tech admins at this time
-  permit "tech_admin", :only => [ :setup_rebuild, :rebuild_zoom_index, :check_rebuild_status ]
+    if query.missing_search_terms?
+      flash[:notice] = t('search_controller.for.no_search_terms')
+      @scope = SearchPresenter.new(query: query)
+      render :for
+    end
+
+    relation = Searcher.new(query: query).run
+    @scope = SearchPresenter.new(query: query, results: relation)
+  end
+
+  def all
+    query = SearchQuery.new(params)
+    relation = Searcher.new(query: query).all
+    @scope = SearchPresenter.new(query: query, results: relation)
+  end
+
+  def tagged
+    query = SearchQuery.new(params)
+    relation = Searcher.new(query: query).tagged
+    @scope = SearchPresenter.new(query: query, results: relation)
+  end
+
+  def related_to
+    query = SearchQuery.new(params)
+    relation = Searcher.new(query: query).related_to
+    @scope = SearchPresenter.new(query: query, results: relation)
+  end
+
+  def contributed_by
+    query = SearchQuery.new(params)
+    relation = Searcher.new(query: query).contributed_by
+    @scope = SearchPresenter.new(query: query, results: relation)
+  end
 
   def index
   end
@@ -47,51 +77,29 @@ class SearchController < ApplicationController
     end
   end
 
-  # REFACTOR SCRATCH:
-  # split search action into "all", "for", and "index"
-  # index: where somone can enter search terms
-  # all: search results that are not based on search_terms
-  # for: results for search terms
-  # search currently handles results "for" these types of results
-  #
-  # bare search terms with no other criteria
-  #
-  # all items of a type - criteria only zoom_class_to_controller_name
-  #
-  # all items contributed by a user - criteria zoom_class_to_controller_name, user.id
-  #
-  # all items related to an item - criteria zoom_class_to_controller_name, source_item_class, source_item_id
-  #
-  # all items with tag - criteria zoom_class_to_controller_name, tag
-  #
-  # -> search within results of "all items..."
-
-  # REFACTOR TODOS:
-  # TODO: catch zoom_db errors or zoom_db down
-
   # query our ZoomDbs for results, grab only the xml records for the results we need
   # all returns all results for a class, contributor_id, or source_item (i.e. all related items to source)
   # it is the default if the search_terms parameter is not defined
-  def all
-    @search_terms = params[:search_terms]
-    if @search_terms.nil?
-      setup_rss
-      search
-    else
-      # TODO: redirect_to search form of the same url
-    end
+  # def all
+  #   @search_terms = params[:search_terms]
+  #   if @search_terms.nil?
+  #     setup_rss
+  #     search
+  #   else
+  #     # TODO: redirect_to search form of the same url
+  #   end
 
-    # if zoom class isn't valid, @results is nil,
-    # so lets rescue with a 404 in this case
-    rescue_404 if @results.nil?
+  #   # if zoom class isn't valid, @results is nil,
+  #   # so lets rescue with a 404 in this case
+  #   rescue_404 if @results.nil?
 
-    # if everything went well, lets save this search for the current_user
-    save_current_search
-  end
+  #   # if everything went well, lets save this search for the current_user
+  #   save_current_search
+  # end
 
   # this action is the action that relies on search_terms being defined
   # it can be thought of as "for/search_terms"
-  def for
+  def legacy_for
     # setup our variables derived from the url
     # several of these are valid if nil
     @search_terms = params[:search_terms]
@@ -110,6 +118,35 @@ class SearchController < ApplicationController
     save_current_search
   end
 
+  # search method now is smart enough to handle rss situation
+  # especially now that we have pagination in rss (ur, atom?)
+  def rss
+    @search_terms = params[:search_terms]
+
+    # set up the cache key, which handles our params beyond basket, action, and controller
+    @cache_key_hash = Hash.new
+
+    @cache_key_hash[:page] = (params[:page] || 1).to_i
+    @cache_key_hash[:number_per_page] = (params[:count] || 50).to_i
+
+    @cache_key_hash[:privacy] = "private" if is_a_private_search?
+
+    # set the following, if they exist in params
+    relevant_keys = %w( search_terms_slug search_terms tag contributor limit_to_choice source_controller_singular source_item )
+    relevant_keys.each do |key|
+      key = key.to_sym
+      @cache_key_hash[key] = params[key] unless params[key].blank?
+    end
+
+    @search = Search.new
+    search
+
+    respond_to do |format|
+      format.xml
+    end
+  end
+
+  # EOIN: does this method need to be public?
   def search
     @search = Search.new
 
@@ -122,7 +159,7 @@ class SearchController < ApplicationController
     # the search is done with the limitations of the contributor_id or source_item
     # i.e. search for 'bob smith' within topics related to source_item 'daddy smith'
 
-    @controller_name_for_zoom_class = params[:controller_name_for_zoom_class] || zoom_class_controller(DEFAULT_SEARCH_CLASS)
+    @controller_name_for_zoom_class = params[:controller_name_for_zoom_class] || zoom_class_controller(SystemSetting.default_search_class)
 
     @current_class = zoom_class_from_controller(@controller_name_for_zoom_class)
 
@@ -162,7 +199,7 @@ class SearchController < ApplicationController
       # otherwise we fallback to default constant
       # unless user has specifically chosen a different number
       if params[:number_of_results_per_page].blank?
-        @number_per_page = session[:number_of_results_per_page] ? session[:number_of_results_per_page].to_i : DEFAULT_RECORDS_PER_PAGE
+        @number_per_page = session[:number_of_results_per_page] ? session[:number_of_results_per_page].to_i : SystemSetting.default_records_per_page
       else
         @number_per_page = params[:number_of_results_per_page].to_i
       end
@@ -186,6 +223,8 @@ class SearchController < ApplicationController
 
     @result_sets = Hash.new
 
+    # EOIN: put our new search stuff here
+
     # iterate through all record types and build up a result set for each
     if params[:related_class].nil?
       # rss doesn't use :related_class
@@ -200,38 +239,6 @@ class SearchController < ApplicationController
     else
       # populate_result_sets_for(relate_to_class)
       populate_result_sets_for(only_valid_zoom_class(params[:related_class]).name)
-    end
-  end
-
-  # search method now is smart enough to handle rss situation
-  # especially now that we have pagination in rss (ur, atom?)
-  def rss
-    @search_terms = params[:search_terms]
-
-    # set up the cache key, which handles our params beyond basket, action, and controller
-    @cache_key_hash = Hash.new
-
-    @cache_key_hash[:page] = (params[:page] || 1).to_i
-    @cache_key_hash[:number_per_page] = (params[:count] || 50).to_i
-
-    @cache_key_hash[:privacy] = "private" if is_a_private_search?
-
-    # set the following, if they exist in params
-    relevant_keys = %w( search_terms_slug search_terms tag contributor limit_to_choice source_controller_singular source_item )
-    relevant_keys.each do |key|
-      key = key.to_sym
-      @cache_key_hash[key] = params[key] unless params[key].blank?
-    end
-
-    # no need to hit zebra and parse records
-    # if we already have the cached rss
-    unless has_all_rss_fragments?(@cache_key_hash)
-      @search = Search.new
-      search
-    end
-
-    respond_to do |format|
-      format.xml
     end
   end
 
@@ -372,8 +379,8 @@ class SearchController < ApplicationController
       end
     end
 
-    sort_type = @current_basket.settings[:sort_order_default]
-    sort_direction = @current_basket.settings[:sort_direction_reversed_default]
+    sort_type = @current_basket.setting(:sort_order_default)
+    sort_direction = @current_basket.setting(:sort_direction_reversed_default)
     search_sort_type = (params[:sort_type].blank? and !sort_type.blank?) ? sort_type : params[:sort_type]
     search_sort_direction = (params[:sort_type].blank? and !sort_direction.blank?) ? sort_direction : params[:sort_direction]
     @search.add_sort_to_query_if_needed(:user_specified => search_sort_type,
@@ -400,7 +407,7 @@ class SearchController < ApplicationController
   end
 
   def redirect_to_default_all
-    redirect_to basket_all_url(:controller_name_for_zoom_class => zoom_class_controller(DEFAULT_SEARCH_CLASS))
+    redirect_to basket_all_url(:controller_name_for_zoom_class => zoom_class_controller(SystemSetting.default_search_class))
   end
 
   # takes search_terms from form
@@ -410,7 +417,7 @@ class SearchController < ApplicationController
       params[:urlified_name] : params[:target_basket]
 
     controller_name = params[:controller_name_for_zoom_class].nil? ? \
-      zoom_class_controller(DEFAULT_SEARCH_CLASS) : params[:controller_name_for_zoom_class]
+      zoom_class_controller(SystemSetting.default_search_class) : params[:controller_name_for_zoom_class]
 
     location_hash = { :urlified_name => basket_name,
                       :controller_name_for_zoom_class => controller_name,
@@ -521,117 +528,10 @@ class SearchController < ApplicationController
     Unicode::normalize_KD(slug.escape).downcase
   end
 
-  # expects a comma separated list of zoom_class-id
-  # for the objects to be reindexed
-  def rebuild_zoom_for_items
-    permit "site_admin" do
-      items_to_rebuild = params[:items_to_rebuild].split(",")
-      items_count = 1
-      first_item = nil
-      items_to_rebuild.each do |item_class_and_id|
-        item_array = item_class_and_id.split("-")
-        item = only_valid_zoom_class(item_array[0]).find(item_array[1])
-        item.prepare_and_save_to_zoom
-        if items_count == 1
-          first_item = item
-        end
-        items_count += 1
-      end
-      flash[:notice] = t('search_controller.rebuild_zoom_for_items.zoom_rebuilt')
-      # first item in list should be self
-      redirect_to_show_for(first_item)
-    end
-  end
 
   # actions for rebuilding search records
   # see filters and permissions for security towards top of code
   include ZoomControllerActions
-  # this is the form for tech admins
-  # to configure the rebuild_zoom_index action
-  def setup_rebuild
-  end
-
-  # rebuild_zoom_index action now lives in lib/worker_controller_helpers.rb
-
-  # this reports progress back to the tech admin
-  # on how the backgroundrb worker is doing
-  # with the search record rebuild
-  def check_rebuild_status
-    if !request.xhr?
-      flash[:notice] = t('search_controller.check_rebuild_status.need_js')
-      redirect_to 'setup_rebuild'
-    else
-      @worker_type = 'zoom_index_rebuild_worker'
-      @worker_key = params[:worker_key]
-      status = MiddleMan.worker(@worker_type, @worker_key).ask_result(:results)
-      logger.debug("status: " + status.inspect)
-      begin
-        if !status.blank?
-          current_zoom_class = status[:current_zoom_class] || 'Topic'
-          records_processed = status[:records_processed]
-          records_failed = status[:records_failed]
-          records_skipped = status[:records_skipped]
-
-          render :update do |page|
-
-            page.replace_html 'time_started', "<p>#{t('search_controller.check_rebuild_status.started_at', :start_time => status[:do_work_time])}</p>"
-
-            page.replace_html 'processing_zoom_class', "<p>#{t('search_controller.check_rebuild_status.working_on', :zoom_class => zoom_class_plural_humanize(current_zoom_class))}</p>"
-
-            if records_processed > 0
-              page.replace_html 'report_records_processed', "<p>#{t('search_controller.check_rebuild_status.amount_processed', :amount => records_processed)}</p>"
-            end
-
-            if records_failed > 0
-              failed_message = "<p>#{t('search_controller.check_rebuild_status.records_failed', :amount => records_failed)}</p>"
-              failed_message += "<p>#{t('search_controller.check_rebuild_status.failed_reason')}</p>"
-              page.replace_html 'report_records_failed', failed_message
-            end
-
-            if records_skipped > 0
-              page.replace_html 'report_records_skipped', "<p>#{t('search_controller.check_rebuild_status.records_skipped', :amount => records_skipped)}</p>"
-            end
-
-            logger.info("after record reports")
-            if status[:done_with_do_work] == true or !status[:error].blank?
-              logger.info("inside done")
-              done_message = t('search_controller.check_rebuild_status.all_processed')
-
-              if !status[:error].blank?
-                logger.info("error not blank")
-                done_message = t('search_controller.check_rebuild_status.rebuild_error', :error => status[:error])
-              end
-              done_message += t('search_controller.check_rebuild_status.finished_at', :end_time => status[:done_with_do_work_time])
-              page.hide("spinner")
-              page.replace_html 'done', done_message
-              page.replace_html 'exit', '<p>' + link_to(t('search_controller.check_rebuild_status.browse'), { :action => 'all', :controller_name_for_zoom_class => 'topics' }) + '</p>'
-            end
-          end
-        else
-          message = t('search_controller.check_rebuild_status.rebuild_failed')
-          message +=  t('search_controller.check_rebuild_status.finished_at', :end_time => status[:done_with_do_work_time]) unless status[:done_with_do_work_time].blank?
-          flash[:notice] = message
-          render :update do |page|
-            page.hide("spinner")
-            page.replace_html 'done', '<p>' + message + ' ' + link_to(t('search_controller.check_rebuild_status.return_to_rebuild'), :action => 'setup_rebuild') + '</p>'
-          end
-        end
-      rescue
-        # we aren't getting to this point, might be nested begin/rescue
-        # check background logs for error
-        rebuild_error = !status.blank? ? status[:error] : t('search_controller.check_rebuild_status.not_running')
-        logger.info(rebuild_error)
-        message = t('search_controller.check_rebuild_status.rebuild_failed', :error => rebuild_error)
-        message += " - #{$!}" unless $!.blank?
-        message +=  t('search_controller.check_rebuild_status.finished_at', :end_time => status[:done_with_do_work_time]) unless status.nil? || status[:done_with_do_work_time].blank?
-        flash[:notice] = message
-        render :update do |page|
-          page.hide("spinner")
-          page.replace_html 'done', '<p>' + message + ' ' + link_to(t('search_controller.check_rebuild_status.return_to_rebuild'), :action => 'setup_rebuild') + '</p>'
-        end
-      end
-    end
-  end
 
   # used to choose a topic as homepage for a basket
   # Kieran - 2008-07-07
@@ -690,8 +590,35 @@ class SearchController < ApplicationController
     render :action => 'homepage_topic_form', :layout => "popup_dialog"
   end
 
-  # James - 2008-06-13
-  # SLOW. Not sure why at this point, but it's 99% rendering, not DB.
+  # #related_items
+  # * Things we know about this method:
+  # * It is hit from a popup window created by clicking on the 'Link existing' in the related items section of a topic.
+  #
+  # Example URL:
+  # http://localhost:3000/en/site/search/find_related?function=add&relate_to_item=2506-herbert-denton&relate_to_type=Topic
+  #
+  # Params:
+  # =======
+  #
+  # function:
+  #     values: 'add'|'remove'|'restore'
+  #     * => it seems this method is hit from all the related item popup windows
+  # relate_to_item:
+  #     a unique id (but not just the database ID) of the item that we are linking **to**
+  # relate_to_type:
+  #     the name of the class of of item that we are linking **to**
+  # related_class:
+  #     the name of the type of item we should restrict the search within
+  #     optional, it is only present if the user clicked on one of the 'Topic, Image etc.' links in the popup window
+  #     * Looking at the code below it seems to default to 'Topic' if it is missing
+  # privacy_type
+  #   optional, only passed in if user clicked on 'search private' link in popup window
+  #   values: nil|'public'|'private'
+  # search_terms
+  #   optional
+  #   * if it exists then this method will do a search, otherwise just show the search form/popup window
+  #
+  #
   def find_related
     # related items are now shown on basket homepage topics, small change to allow linking here
     params[:relate_to_type] = 'Topic' if params[:relate_to_type] == 'IndexPage'
@@ -737,8 +664,10 @@ class SearchController < ApplicationController
       # Run a search if necessary
       # this will update @results
       @search_terms = params[:search_terms]
-      unless @search_terms.blank?
-        search
+      if @search_terms.present?
+        related_items_search
+        current_page = (params[:page] && params[:page].to_i > 0) ? params[:page].to_i : 1
+        @results = @results.paginate(page: current_page)
 
         # Store pagination information, we'll need this later
         pagination_methods = ['total_entries', 'total_pages', 'current_page',
@@ -748,10 +677,16 @@ class SearchController < ApplicationController
           hash[method_name] = @results.send(method_name)
           hash
         end
+        # EOIN: pagination_methods is a hash
+        #   key = one of ['total_entries', 'total_pages', 'current_page', 'previous_page', 'next_page']
+        #   value = the result of sending the method name in the key to the @results collection
       end
 
       # existing is all one class
       # compare against results ids
+      # EOIN: @existing_ids are the Ids of items that we already have a
+      #   relationship with. We identify them so we can exclude them from the
+      #   results we show the user.
       @existing_ids = existing.collect { |existing_item| existing_item.id }
 
       # Ensure results do not include already linked items or the current item.
@@ -962,7 +897,28 @@ class SearchController < ApplicationController
   # we now have combined version of each search/browse results RSS
   # in addition to the zoom class specific rss
   def setup_rss
-    @rss_tag_auto = [rss_tag, rss_tag(:combined => true)]
-    @rss_tag_link = [rss_tag(:auto_detect => false), rss_tag(:auto_detect => false, :combined => true)]
+    # EOIN: TODO: re-enable these sometime
+    # @rss_tag_auto = [rss_tag, rss_tag(:combined => true)]
+    # @rss_tag_link = [rss_tag(:auto_detect => false), rss_tag(:auto_detect => false, :combined => true)]
   end
+
+  def related_items_search
+    # @results
+    #   Array
+    #   put results in here
+    # @search_terms
+    #     String
+    #     the search term from the user
+    # @related_class
+    #     String
+    #     restrict search to just this content type
+    #     will always be present - is set to 'Topic' if user did not specify
+    # #is_a_private_search?
+    #   returns Bool that says whether we should search private records
+
+    @results = @related_class.constantize.where('title ILIKE ?', "%#{@search_terms}%")
+
+    # NOTE: the return value of this method is ignored
+  end
+
 end

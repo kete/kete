@@ -2,7 +2,7 @@ module SearchDcDateFormulator
   unless included_modules.include? SearchDcDateFormulator
 
     def dc_date_display_of(dc_dates)
-      return String.new unless Kete.dc_date_display_on_search_results?
+      return String.new unless SystemSetting.dc_date_display_on_search_results?
       content_tag(:div, select_and_format_dc_dates_from(dc_dates), :class => 'generic-result-dc-dates')
     end
 
@@ -13,7 +13,7 @@ module SearchDcDateFormulator
       # We want these to be Time objects
       dc_dates = dc_dates.collect { |date| date.to_time rescue date }
       # run the dc dates through each formulator if present
-      Kete.dc_date_display_formulator.split(',').each do |formulator|
+      SystemSetting.dc_date_display_formulator.split(',').each do |formulator|
         dc_dates = send(formulator.strip.to_sym, dc_dates)
       end
       # collect all the dc dates and format any that haven't been yet, then join with the dc_date_separator
@@ -29,11 +29,11 @@ module SearchDcDateFormulator
       I18n.t('date.order').each do |order|
         case order
         when :year
-          date_bits << dc_date.year if Kete.dc_date_display_detail_level.include?('year')
+          date_bits << dc_date.year if SystemSetting.dc_date_display_detail_level.include?('year')
         when :month
-          date_bits << dc_date.strftime('%m') if Kete.dc_date_display_detail_level.include?('month')
+          date_bits << dc_date.strftime('%m') if SystemSetting.dc_date_display_detail_level.include?('month')
         when :day
-          date_bits << dc_date.strftime('%d') if Kete.dc_date_display_detail_level.include?('day')
+          date_bits << dc_date.strftime('%d') if SystemSetting.dc_date_display_detail_level.include?('day')
         end
       end
       date_bits.join('-')

@@ -1,0 +1,14 @@
+@media print {
+
+  p, th, td, ul, ol, li, div, input, textarea, select, option {
+    font-size: 1em;
+  }
+
+  h1, h2, h3, h4 {
+    margin:0
+  }
+
+  form {
+    margin:0
+  }
+}

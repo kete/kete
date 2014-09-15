@@ -1,0 +1,12 @@
+!!! XML
+%opensearchdescription{:xmlns => "http://a9.com/-/spec/opensearch/1.1/"}
+  %shortname
+    = SystemSetting.pretty_site_name
+    Web Search
+  %description
+    Search combined results of #{SystemSetting.pretty_site_name}
+  %contact= SystemSetting.contact_email
+  %url{:method => "GET", :template => "#{SystemSetting.full_site_url}site/search/topics/for/open_search?search_terms={searchTerms}&amp;count={count?}&amp;page={startPage?}", :type => "text/html"}/
+  %url{:method => "GET", :template => "#{SystemSetting.full_site_url}site/all/combined/rss.xml?search_terms={searchTerms}&amp;count={count?}&amp;page={startPage?}", :type => "application/rss+xml"}/
+  %outputencoding UTF-8
+  %inputencoding UTF-8

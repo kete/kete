@@ -1,224 +1,226 @@
-ActionController::Routing::Routes.draw do |map|
+  KeteApp::Application.routes.draw do
 
-  map.filter 'locale'
+  ####################################################
+  ####################################################
+  # prepend locale to all routes
+  # * see routing-filter gem for details
+  # * it prepends the :locale to all routes e.g. /de/ping
 
-  Translate::Routes.translation_ui(map) if RAILS_ENV != "production"
+  # * it is not clear if this gem is still required in rails 3. We are
+  #   keeping it around until we figure out whether the same stuff can be}
+  #   achieved with standard rails 3 routing stuff. EOIN: personally I am keen
+  #   to do this to minimise our dependencies
+  #   http://stackoverflow.com/questions/8459506/prepend-path-prefix-to-all-rails-routes
+  #   http://stackoverflow.com/questions/4613996/implementing-account-scoping/4614466#4614466
+  #   https://gist.github.com/pixeltrix/653543
+  # scope(path: :locale) do
+  #   # all other routes
+  # end
 
-  map.oai '/oai_pmh_repository', :controller => 'oai_pmh_repository', :action => 'index'
+  filter :locale
 
-  ### monitoring tools
-  map.with_options :controller => 'index_page' do |index_page|
-    # to make sure the rails process is answering
-    index_page.connect 'uptime.txt', :action => 'uptime'
-    # to make sure that the db is answering
-    index_page.connect 'db_uptime.txt', :action => 'db_uptime'
-    # to make sure that the zebra is answering
-    index_page.connect 'zebra_uptime.txt', :action => 'zebra_uptime'
-    # to make sure that the backgroundrb is answering
-    index_page.connect 'bdrb_uptime.txt', :action => 'bdrb_uptime'
-    # to make sure that registration is valid
-    index_page.connect 'validate_kete_net_link.xml', :action => 'validate_kete_net_link'
-    # for search engines, ask them not to go to certain places
-    index_page.connect 'robots.txt', :action => 'robots'
-    # for opensearch compatible clients
-    index_page.connect 'opensearchdescription.xml', :action => 'opensearchdescription'
-  end
 
-  # Various RSS feeds not associated with search
-  map.with_options :action => "rss" do |rss|
-    rss.basket_list_rss ':urlified_name/baskets/rss.:format', :controller => "baskets"
-    rss.tags_list_rss ':urlified_name/tags/rss.:format', :controller => "tags"
-    rss.basket_moderate_rss ':urlified_name/moderate/rss.:format', :controller => "moderate"
-    rss.basket_moderate_rss ':urlified_name/members/rss.:format', :controller => "members"
-  end
+  ####################################################
+  ####################################################
 
-  # All search related routes (all, rss, for)
-  map.with_options :controller => 'search' do |search|
 
-    search.with_options :action => 'all' do |search_all|
-      search_all.basket_all ':urlified_name/all/:controller_name_for_zoom_class/'
-      search_all.basket_all_private ':urlified_name/all/:privacy_type/:controller_name_for_zoom_class/'
-      search_all.basket_all_topic_type ':urlified_name/all/:controller_name_for_zoom_class/of/:topic_type'
-      search_all.basket_all_private_topic_type ':urlified_name/all/:privacy_type/:controller_name_for_zoom_class/of/:topic_type'
-      search_all.basket_all_contributed_by ':urlified_name/all/:controller_name_for_zoom_class/contributed_by/user/:contributor/'
-      search_all.basket_all_private_contributed_by ':urlified_name/all/:privacy_type/:controller_name_for_zoom_class/contributed_by/user/:contributor/'
-      search_all.basket_all_of_category ':urlified_name/all/:controller_name_for_zoom_class/of/:extended_field/:limit_to_choice'
-      search_all.basket_all_private_of_category ':urlified_name/all/:privacy_type/:controller_name_for_zoom_class/of/:extended_field/:limit_to_choice'
-      search_all.basket_all_related_to ':urlified_name/all/:controller_name_for_zoom_class/related_to/:source_controller_singular/:source_item/'
-      search_all.basket_all_private_related_to ':urlified_name/all/:privacy_type/:controller_name_for_zoom_class/related_to/:source_controller_singular/:source_item/'
-      search_all.basket_all_tagged ':urlified_name/all/:controller_name_for_zoom_class/tagged/:tag/'
-      search_all.basket_all_private_tagged ':urlified_name/all/:privacy_type/:controller_name_for_zoom_class/tagged/:tag/'
-      search_all.basket_all_date_until ':urlified_name/all/:controller_name_for_zoom_class/until/:date_until'
-      search_all.basket_all_private_date_until ':urlified_name/all/:privacy_type/:controller_name_for_zoom_class/until/:date_until'
-      search_all.basket_all_date_since ':urlified_name/all/:controller_name_for_zoom_class/since/:date_since'
-      search_all.basket_all_private_date_since ':urlified_name/all/:privacy_type/:controller_name_for_zoom_class/since/:date_since'
-      search_all.basket_all_date_since_and_until ':urlified_name/all/:controller_name_for_zoom_class/since/:date_since/until/:date_until'
-      search_all.basket_all_private_date_since_and_until ':urlified_name/all/:privacy_type/:controller_name_for_zoom_class/since/:date_since/until/:date_until'
+
+  match '/oai_pmh_repository' => 'oai_pmh_repository#index', :as => :oai
+
+  # EOIN/ROB: rabid temp test and "feature not done" routes.
+  get '/cruft/ping' => 'cruft#index'
+  get '/cruft/not_implemented' => 'cruft#not_implemented', :as => :not_implemented
+
+  #####################################################
+  #### monitoring tools ###############################
+  #
+  ## to make sure the rails process is answering
+  #match 'uptime.txt' => 'index_page#uptime'
+  ## to make sure that the db is answering
+  #match 'db_uptime.txt' => 'index_page#db_uptime'
+  ## to make sure that the zebra is answering
+  #match 'zebra_uptime.txt' => 'index_page#zebra_uptime'
+  ## to make sure that the backgroundrb is answering
+  #match 'bdrb_uptime.txt' => 'index_page#bdrb_uptime'
+  ## to make sure that registration is valid
+  #match 'validate_kete_net_link.xml' => 'index_page#validate_kete_net_link'
+  ## for search engines, ask them not to go to certain places
+  #match 'robots.txt' => 'index_page#robots'
+  ## for opensearch compatible clients
+  #match 'opensearchdescription.xml' => 'index_page#opensearchdescription'
+
+  ####################################################
+  ####################################################
+
+
+  ####################################################
+  # Various RSS feeds not associated with search #####
+
+  # RABID: we have disabled RSS Feeds
+  # match ':urlified_name/moderate/rss.:format' => 'moderate#rss', :as => :basket_moderate_rss
+  # match ':urlified_name/members/rss.:format' => 'members#rss', :as => :basket_moderate_rss
+
+  ####################################################
+  ####################################################
+
+  get   ':urlified_name/account/index' => 'account#index'
+  match ':urlified_name/account/signup' => 'account#signup', via: [:get, :post]
+  match ':urlified_name/account/login' => 'account#login', via: [:get, :post]
+  get   ':urlified_name/account/disclaimer/:id' => 'account#disclaimer'
+  match ':urlified_name/account/show_captcha' => 'account#show_captcha'
+  match ':urlified_name/account/forgot_password' => 'account#forgot_password'
+
+  ####################################################
+  # terrible hacks ###################################
+
+  match 'site/index_page/selected_image' => 'index_page#selected_image'
+  get 'site/moderate/list' => 'moderate#list'
+  get ':urlified_name/members/list' => 'members#list'
+  get 'site/importers/list' => 'importers#list'
+
+  match ':urlified_name/contact' => 'baskets#contact', :as => :basket_contact
+
+  # Link Helpers
+  # ############
+  #
+  # Since the views in this app date from Rails 2 they do not make much use the
+  # *_path and *_url helpers that routes create.
+
+  # #url_for
+  #     url_for([model.basket, model])
+  #     url_for(urlified_name: basket.urlified_name, controller: 'foos', action: 'blah', id: 33)
+  #     url_for(action: 'newthing') # url_for will tweak the current_url if you don't supply all the required args
+  # #link_to
+  #     link_to "Some model ", url_for(model.basket, model.first)
+  #     link_to "Some model ", basket_topic_path(model.basket, model.first)
+
+  # We adjust the name of the route (via `as:`) in cases where the controller
+  # name does not match the model name because
+  #     url_for(some_model)
+  # does its magic by looking up the class of `some_model` and finding a path
+  # helper to match. If the route name does not match the model name this will
+  # not work.
+
+  scope '/:urlified_name', as: :basket do
+
+    resources :baskets, only: [:edit] do
+      member do
+        post :add_tags # TaggingController
+      end
+      collection do
+        get :list
+      end
     end
 
-    search.with_options :action => 'rss' do |search_rss|
-      search_rss.basket_all_rss ':urlified_name/all/:controller_name_for_zoom_class/rss.xml'
-      search_rss.basket_all_private_rss ':urlified_name/all/:privacy_type/:controller_name_for_zoom_class/rss.xml'
-      search_rss.basket_all_topic_type_rss ':urlified_name/all/:controller_name_for_zoom_class/of/:topic_type/rss.xml'
-      search_rss.basket_all_private_topic_type_rss ':urlified_name/all/:privacy_type/:controller_name_for_zoom_class/of/:topic_type/rss.xml'
-      search_rss.basket_all_contributed_by_rss ':urlified_name/all/:controller_name_for_zoom_class/contributed_by/user/:contributor/rss.xml'
-      search_rss.basket_all_private_contributed_by_rss ':urlified_name/all/:privacy_type/:controller_name_for_zoom_class/contributed_by/user/:contributor/rss.xml'
-      search_rss.basket_all_related_to_rss ':urlified_name/all/:controller_name_for_zoom_class/related_to/:source_controller_singular/:source_item/rss.xml'
-      search_rss.basket_all_private_related_to_rss ':urlified_name/all/:privacy_type/:controller_name_for_zoom_class/related_to/:source_controller_singular/:source_item/rss.xml'
-      search_rss.basket_all_tagged_rss ':urlified_name/all/:controller_name_for_zoom_class/tagged/:tag/rss.xml'
-      search_rss.basket_all_private_tagged_rss ':urlified_name/all/:privacy_type/:controller_name_for_zoom_class/tagged/:tag/rss.xml'
-      search_rss.basket_all_of_category_rss ':urlified_name/all/:controller_name_for_zoom_class/of/:extended_field/:limit_to_choice/rss.xml'
-      search_rss.basket_all_private_of_category_rss ':urlified_name/all/:privacy_type/:controller_name_for_zoom_class/of/:extended_field/:limit_to_choice/rss.xml'
-      search_rss.basket_all_date_until_rss ':urlified_name/all/:controller_name_for_zoom_class/until/:date_until/rss.xml'
-      search_rss.basket_all_private_date_until_rss ':urlified_name/all/:privacy_type/:controller_name_for_zoom_class/until/:date_until/rss.xml'
-      search_rss.basket_all_date_since_rss ':urlified_name/all/:controller_name_for_zoom_class/since/:date_since/rss.xml'
-      search_rss.basket_all_private_date_since_rss ':urlified_name/all/:privacy_type/:controller_name_for_zoom_class/since/:date_since/rss.xml'
-      search_rss.basket_all_date_since_and_until_rss ':urlified_name/all/:controller_name_for_zoom_class/since/:date_since/until/:date_until/rss.xml'
-      search_rss.basket_all_private_date_since_and_until_rss ':urlified_name/all/:privacy_type/:controller_name_for_zoom_class/since/:date_since/until/:date_until/rss.xml'
-      search_rss.basket_search_contributed_by_rss ':urlified_name/search/:controller_name_for_zoom_class/contributed_by/user/:contributor/for/:search_terms_slug/rss.xml'
-      search_rss.basket_search_private_contributed_by_rss ':urlified_name/search/:privacy_type/:controller_name_for_zoom_class/contributed_by/user/:contributor/for/:search_terms_slug/rss.xml'
-      search_rss.basket_search_related_to_rss ':urlified_name/search/:controller_name_for_zoom_class/related_to/:source_controller_singular/:source_item/for/:search_terms_slug/rss.xml'
-      search_rss.basket_search_private_related_to_rss ':urlified_name/search/:privacy_type/:controller_name_for_zoom_class/related_to/:source_controller_singular/:source_item/for/:search_terms_slug/rss.xml'
-      search_rss.basket_search_tagged_rss ':urlified_name/search/:controller_name_for_zoom_class/tagged/:tag/for/:search_terms_slug/rss.xml'
-      search_rss.basket_search_private_tagged_rss ':urlified_name/search/:privacy_type/:controller_name_for_zoom_class/tagged/:tag/for/:search_terms_slug/rss.xml'
-      search_rss.basket_search_rss ':urlified_name/search/:controller_name_for_zoom_class/for/:search_terms_slug/rss.xml'
-      search_rss.basket_search_private_rss ':urlified_name/search/:privacy_type/:controller_name_for_zoom_class/for/:search_terms_slug/rss.xml'
-      search_rss.basket_search_topic_type ':urlified_name/search/:controller_name_for_zoom_class/of/:topic_type/for/:search_terms_slug/rss.xml'
-      search_rss.basket_search_private_topic_type ':urlified_name/search/:privacy_type/:controller_name_for_zoom_class/of/:topic_type/for/:search_terms_slug/rss.xml'
-      search_rss.basket_search_of_category_rss ':urlified_name/search/:controller_name_for_zoom_class/of/:extended_field/:limit_to_choice/for/:search_terms_slug/rss.xml'
-      search_rss.basket_search_private_of_category_rss ':urlified_name/search/:privacy_type/:controller_name_for_zoom_class/of/:extended_field/:limit_to_choice/for/:search_terms_slug/rss.xml'
-      search_rss.basket_search_date_until_rss ':urlified_name/search/:controller_name_for_zoom_class/until/:date_until/for/:search_terms_slug/rss.xml'
-      search_rss.basket_search_private_date_until_rss ':urlified_name/search/:privacy_type/:controller_name_for_zoom_class/until/:date_until/for/:search_terms_slug/rss.xml'
-      search_rss.basket_search_date_since_rss ':urlified_name/search/:controller_name_for_zoom_class/since/:date_since/for/:search_terms_slug/rss.xml'
-      search_rss.basket_search_private_date_since_rss ':urlified_name/search/:privacy_type/:controller_name_for_zoom_class/since/:date_since/for/:search_terms_slug/rss.xml'
-      search_rss.basket_search_date_since_and_until_rss ':urlified_name/search/:controller_name_for_zoom_class/since/:date_since/until/:date_until/for/:search_terms_slug/rss.xml'
-      search_rss.basket_search_private_date_since_and_until_rss ':urlified_name/search/:privacy_type/:controller_name_for_zoom_class/since/:date_since/until/:date_until/for/:search_terms_slug/rss.xml'
+    resources :topics do
+      member do
+        get :history # FlaggingController
+        get :preview # FlaggingController
+        post :add_tags # TaggingController
+      end
+      collection do
+        get :list
+      end
     end
 
-    search.with_options :action => 'for' do |search_for|
-      search_for.basket_search_contributed_by ':urlified_name/search/:controller_name_for_zoom_class/contributed_by/user/:contributor/for/:search_terms_slug'
-      search_for.basket_search_private_contributed_by ':urlified_name/search/:privacy_type/:controller_name_for_zoom_class/contributed_by/user/:contributor/for/:search_terms_slug'
-      search_for.basket_search_related_to ':urlified_name/search/:controller_name_for_zoom_class/related_to/:source_controller_singular/:source_item/for/:search_terms_slug'
-      search_for.basket_search_private_related_to ':urlified_name/search/:privacy_type/:controller_name_for_zoom_class/related_to/:source_controller_singular/:source_item/for/:search_terms_slug'
-      search_for.basket_search_tagged ':urlified_name/search/:controller_name_for_zoom_class/tagged/:tag/for/:search_terms_slug'
-      search_for.basket_search_private_tagged ':urlified_name/search/:privacy_type/:controller_name_for_zoom_class/tagged/:tag/for/:search_terms_slug'
-      search_for.basket_search ':urlified_name/search/:controller_name_for_zoom_class/for/:search_terms_slug'
-      search_for.basket_search_private ':urlified_name/search/:privacy_type/:controller_name_for_zoom_class/for/:search_terms_slug'
-      search_for.basket_search_topic_type ':urlified_name/search/:controller_name_for_zoom_class/of/:topic_type/for/:search_terms_slug'
-      search_for.basket_search_private_topic_type ':urlified_name/search/:privacy_type/:controller_name_for_zoom_class/of/:topic_type/for/:search_terms_slug'
-      search_for.basket_search_of_category ':urlified_name/search/:controller_name_for_zoom_class/of/:extended_field/:limit_to_choice/for/:search_terms_slug'
-      search_for.basket_search_private_of_category ':urlified_name/search/:privacy_type/:controller_name_for_zoom_class/of/:extended_field/:limit_to_choice/for/:search_terms_slug'
-      search_for.basket_search_date_until ':urlified_name/search/:controller_name_for_zoom_class/until/:date_until/for/:search_terms_slug'
-      search_for.basket_search_private_date_until ':urlified_name/search/:privacy_type/:controller_name_for_zoom_class/until/:date_until/for/:search_terms_slug'
-      search_for.basket_search_date_since ':urlified_name/search/:controller_name_for_zoom_class/since/:date_since/for/:search_terms_slug'
-      search_for.basket_search_private_date_since ':urlified_name/search/:privacy_type/:controller_name_for_zoom_class/since/:date_since/for/:search_terms_slug'
-      search_for.basket_search_date_since_and_until ':urlified_name/search/:controller_name_for_zoom_class/since/:date_since/until/:date_until/for/:search_terms_slug'
-      search_for.basket_search_private_date_since_and_until ':urlified_name/search/:privacy_type/:controller_name_for_zoom_class/since/:date_since/until/:date_until/for/:search_terms_slug'
+    resources :images, as: :still_image do
+      member do
+        get :history # FlaggingController
+        get :preview # FlaggingController
+        post :add_tags # TaggingController
+      end
+      collection do
+        get :list
+      end
+    end
 
-      search_for.with_options :search_terms => nil do |nil_search_terms|
-        nil_search_terms.basket_search_contributed_by_empty ':urlified_name/search/:controller_name_for_zoom_class/contributed_by/user/:contributor/for/:search_terms_slug'
-        nil_search_terms.basket_search_private_contributed_by_empty ':urlified_name/search/:privacy_type/:controller_name_for_zoom_class/contributed_by/user/:contributor/for/:search_terms_slug'
-        nil_search_terms.basket_search_related_to_empty ':urlified_name/search/:controller_name_for_zoom_class/related_to/:source_controller_singular/:source_item/for'
-        nil_search_terms.basket_search_private_related_to_empty ':urlified_name/search/:privacy_type/:controller_name_for_zoom_class/related_to/:source_controller_singular/:source_item/for'
-        nil_search_terms.basket_search_tagged_empty ':urlified_name/search/:controller_name_for_zoom_class/tagged/:tag/for'
-        nil_search_terms.basket_search_private_tagged_empty ':urlified_name/search/:privacy_type/:controller_name_for_zoom_class/tagged/:tag/for'
-        nil_search_terms.basket_search_empty ':urlified_name/search/:controller_name_for_zoom_class/for'
-        nil_search_terms.basket_search_private_empty ':urlified_name/search/:privacy_type/:controller_name_for_zoom_class/for'
-        nil_search_terms.basket_search_topic_type ':urlified_name/search/:controller_name_for_zoom_class/of/:topic_type/for'
-        nil_search_terms.basket_search_private_topic_type ':urlified_name/search/:privacy_type/:controller_name_for_zoom_class/of/:topic_type/for'
-        nil_search_terms.basket_search_of_category_empty ':urlified_name/search/:controller_name_for_zoom_class/of/:extended_field/:limit_to_choice/for'
-        nil_search_terms.basket_search_private_of_category_empty ':urlified_name/search/:privacy_type/:controller_name_for_zoom_class/of/:extended_field/:limit_to_choice/for'
-        nil_search_terms.basket_search_date_until ':urlified_name/search/:controller_name_for_zoom_class/until/:date_until/for'
-        nil_search_terms.basket_search_private_date_until ':urlified_name/search/:privacy_type/:controller_name_for_zoom_class/until/:date_until/for'
-        nil_search_terms.basket_search_date_since ':urlified_name/search/:controller_name_for_zoom_class/since/:date_since/for'
-        nil_search_terms.basket_search_private_date_since ':urlified_name/search/:privacy_type/:controller_name_for_zoom_class/since/:date_since/for'
-        nil_search_terms.basket_search_date_since_and_until ':urlified_name/search/:controller_name_for_zoom_class/since/:date_since/until/:date_until/for'
-        nil_search_terms.basket_search_private_date_since_and_until ':urlified_name/search/:privacy_type/:controller_name_for_zoom_class/since/:date_since/until/:date_until/for'
+    resources :audio, as: :audio_recording do
+      member do
+        get :history # FlaggingController
+        get :preview # FlaggingController
+        post :add_tags # TaggingController
+      end
+      collection do
+        get :list
+      end
+    end
+
+    resources :video do
+      member do
+        get :history # FlaggingController
+        get :preview # FlaggingController
+        post :add_tags # TaggingController
+      end
+      collection do
+        get :list
+      end
+    end
+
+    resources :web_links do
+      member do
+        get :history # FlaggingController
+        get :preview # FlaggingController
+        post :add_tags # TaggingController
+      end
+      collection do
+        get :list
+      end
+    end
+
+    resources :documents do
+      member do
+        get :history # FlaggingController
+        get :preview # FlaggingController
+        post :add_tags # TaggingController
+      end
+      collection do
+        get :list
+      end
+    end
+
+    resources :comments
+
+    resources :tags, only: [:index, :show] do
+      collection do
+        get :list
       end
     end
 
   end
 
+
+  ####################################################
+  # rails 3+ search routes ###########################
+
+  match 'site/search/for'    => 'search#for',    :as => 'search_for'
+  match 'site/search/all'    => 'search#all',    :as => 'search_all'
+  match 'site/search/rss'    => 'search#rss',    :as => 'search_rss'
+  match 'site/search/tagged' => 'search#tagged', :as => 'search_tagged'
+  match 'site/search/related_to' => 'search#related_to', :as => 'search_related_to'
+  match 'site/search/contributed_by' => 'search#contributed_by', :as => 'search_contributed_by'
+
+
+  ####################################################
+  ####################################################
+
   # active_scaffold routes
   ACTIVE_SCAFFOLD_CONTROLLERS.each do |as_controller|
-    map.resources as_controller.to_sym, :active_scaffold => true, :path_prefix => ':urlified_name'
+    resources as_controller.to_sym, :active_scaffold => true, :path_prefix => ':urlified_name'
   end
 
-  map.basket_index ':urlified_name', :controller => "index_page", :action => 'index'
-  map.basket_contact ':urlified_name/contact', :controller => "baskets", :action => 'contact'
+  match ':urlified_name' => 'index_page#index', :as => :basket_index
 
   # James Stradling <james@katipo.co.nz>, 2008-04-15
   # Map private files to the PrivateFilesController
   # E.g. /documents/0000/0000/0011/Bio.txt
-  map.private_file '/:type/:a/:b/:c/:filename.*formats', :controller => "private_files", :action => 'show'
+  match '/:type/:a/:b/:c/:filename.*formats' => 'private_files#show', :as => :private_file
 
   # Catch everything else
-  map.basket_with_format ':urlified_name/:controller/:action/:id.:format'
-  map.basket ':urlified_name/:controller/:action/:id'
+  # match ':urlified_name/:controller/:action/:id.:format' => ':controller#:action', :as => :basket_with_format
+  match ':urlified_name(/:controller(/:action(/:id)))'         => ':controller#:action', :as => :basket
 
-  # Walter McGinnis, 2007-07-13
-  # if the site isn't configured, we don't setup our full routes
-  skip_configuration = Object.const_defined?(:SKIP_SYSTEM_CONFIGURATION)
-  is_configured = false
-  if !skip_configuration &&
-        Object.const_defined?('SystemSetting') &&
-        ActiveRecord::Base.connection.table_exists?('system_settings') &&
-        SystemSetting.find(:all).size > 0
-    is_configured = eval(SystemSetting.find_by_name('Is Configured').value)
-  end
-  if skip_configuration || is_configured
-    # comment this line and uncomment the next after initial migration
-    site_basket = Basket.find(1) unless skip_configuration # we skip a query here if running integration tests
-    site_urlified_name = !site_basket.nil? ? site_basket.urlified_name : 'site'
-    map.connect '', :controller => "index_page", :urlified_name => site_urlified_name
-  else
-    # not configured, redirect to homepage which is configuration page
-    map.connect '', :controller => "configure", :urlified_name => 'site'
-  end
+  root :to => 'index_page#index', :urlified_name => 'site'
 
-  map.connect '*path', :controller => 'application', :action => 'rescue_404' unless ActionController::Base.consider_all_requests_local
+  # If none of the above routes match, send the browser to application#rescue_404
+  match '*path' => 'application#rescue_404' unless Rails.env.development?
 end
-
-# route scratch
-
-# example site/all/topics/
-# basket/all/controller_name_for_zoom_class/ ->
-# all items of that zoom_class in basket, with current tab reflecting
-# if the user opts to search from this point, they go to basket/search/controller_name_for_zoom_class/for/search_term
-
-# example walters_stuff/search/topics/
-# basket/search/controller_name_for_zoom_class/ ->
-# search from zoom_class as displayed tab
-# SEE SEARCH RESULTS PATTERN AT END
-
-# example walters_stuff/all/topics/contributed_by/user/7/
-# basket/all/controller_name_for_zoom_class/contributed_by/user/id ->
-# all contributions in a basket for a user with the zoom_class being the default tab
-
-# example site/search/web_links/contributed_by/user/7/for/tramping
-# basket/search/controller_name_for_zoom_class/contributed_by/user/id/for/search_term ->
-# search within contributions in a basket for a user with zom_class being the current tab
-
-# example walters_stuff/all/topics/related_to/image/6/
-# basket/all/controller_name_for_zoom_class/related_to/controller_name_for_zoom_class_singular_for_related_to_item/id ->
-# all related items in a basket for an item with the zoom_class being the default tab
-
-# example site/search/web_links/related_to/image/6/for/ruby
-# basket/search/controller_name_for_zoom_class/related_to/controller_name_for_zoom_class_singular_for_related_to_item/id/for/search_erm ->
-# search related items in a basket for an item with the zoom_class being the default tab
-
-# search results pattern:
-# example site/search/topics/for/gertrude_stein
-# basket/search/controller_name_for_zoom_class/for/search_term
-
-# example site/search/topics/for/gertrude_stein_and_picasso
-# basket/search/controller_name_for_zoom_class/for/search_term_1_boolean_operator_search_term_2
-
-# may want to add a route something like this:
-# basket/search/everything/for/search_term
-# but limit it to rss only
-
-# tech notes:
-# need to create a "for" action in our search controller
-# what is necessary for rss urls?
-

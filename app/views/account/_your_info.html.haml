@@ -1,0 +1,18 @@
+#or-divider= t 'account.your_info.or'
+#your-info-wrapper
+  %h2= t('account.your_info.enter_your_information')
+  %fieldset
+    .form-element
+      %label{:for => "name"}= t 'account.your_info.name'
+      = text_field_tag 'name', nil, :tabindex => '1'
+    .form-element
+      %label{:for => "website"}= t 'account.your_info.website'
+      = text_field_tag 'website', nil, :tabindex => '1'
+    .form-element
+      %label{:for => "email"}= t 'account.your_info.email'
+      = text_field_tag 'email', nil, :tabindex => '1'
+      - if session[:return_to].include?('contact')
+        .form_example= t 'account.your_info.email_will_only_be_shared_with_person_emailed'
+      - else
+        .form_example= t 'account.your_info.email_will_not_be_shared'
+    = render :partial => "captcha_wrapper"

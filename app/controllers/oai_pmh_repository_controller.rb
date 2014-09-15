@@ -1,9 +1,9 @@
-require 'oai_pmh_provider'
+# require 'oai_pmh_provider'
 class OaiPmhRepositoryController < ApplicationController
   before_filter :set_page_title
 
   def index
-    if IS_CONFIGURED && defined?(PROVIDE_OAI_PMH_REPOSITORY) && PROVIDE_OAI_PMH_REPOSITORY
+    if SystemSetting.is_configured? && defined?(SystemSetting.provide_oai_pmh_repository) && SystemSetting.provide_oai_pmh_repository
       # Remove controller and action from the options.  Rails adds them automatically.
       options = params.delete_if { |k,v| %w{controller action}.include?(k) }
       provider = OaiPmhRepositoryProvider.new

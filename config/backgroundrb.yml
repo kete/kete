@@ -1,0 +1,9 @@
+--- 
+:backgroundrb: 
+  :port: 11006
+  :ip: 127.0.0.1
+  :environment: development
+  :persistent_disabled: true
+#  :result_storage: memcache
+
+#:memcache: "127.0.0.1:11211"

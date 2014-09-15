@@ -1,7 +1,6 @@
 require 'rake'
-require 'rake/rdoctask'
-require 'rake/testtask'
-require 'tasks/rails'
+# require 'rake/rdoctask'
+# require 'rake/testtask'
 
 class ConfigureController < ApplicationController
   # everything else is handled by application.rb
@@ -17,13 +16,9 @@ class ConfigureController < ApplicationController
 
   def index
     @advanced = params[:advanced] || false
-    @sections = SETUP_SECTIONS.collect { |s| s }
+    @sections = SystemSetting.setup_sections.collect { |s| s }
     if @advanced
-      SystemSetting.find(:all,
-                         :select => 'distinct section',
-                         :conditions => ["technically_advanced = :technically_advanced and section not in (:sections)",
-                                         { :technically_advanced => true,
-                                           :sections => @sections }]).each { |advanced_section| @sections << advanced_section.section }
+      SystemSetting.select(:section).distinct.where("technically_advanced = ? and section not in (?)", true, @sections).each { |advanced_section| @sections << advanced_section.section }
     end
     @admin_password_changed = User.find(1).crypted_password != '00742970dc9e6319f8019fd54864d3ea740f04b1' ? true : false
 
@@ -41,7 +36,7 @@ class ConfigureController < ApplicationController
   def section
     @section = params[:section]
     @advanced = params[:advanced]
-    @settings = SystemSetting.find_all_by_section(@section)
+    @settings = SystemSetting.where(:section => @section)
     if request.xhr?
       flash[:notice] = nil
       render :layout => false
@@ -53,7 +48,7 @@ class ConfigureController < ApplicationController
   def update
     @section = params[:section]
 
-    @settings = SystemSetting.find_all_by_section(@section).each {  |s| s.value = params[:setting][s.id.to_s][:value] }
+    @settings = SystemSetting.where(:section => @section).each {  |s| s.value = params[:setting][s.id.to_s][:value] }
 
     # run validations
     @settings.each(&:valid?)
@@ -103,7 +98,7 @@ class ConfigureController < ApplicationController
   end
 
   def zoom_dbs_edit
-    @zoom_dbs = ZoomDb.find(:all)
+    @zoom_dbs = ZoomDb.all()
     @kete_password = @zoom_dbs.first.zoom_password
     if request.xhr?
       render :layout => false
@@ -119,7 +114,7 @@ class ConfigureController < ApplicationController
     # so killing that pid is usually not enough
 
     @kete_password = params[:kete_password]
-    @zoom_dbs = ZoomDb.find(:all).each do |zoom_db|
+    @zoom_dbs = ZoomDb.all().each do |zoom_db|
       zoom_db.zoom_password = @kete_password
       zoom_db.port = params[:zoom_db][zoom_db.id.to_s][:port]
     end
@@ -289,7 +284,7 @@ class ConfigureController < ApplicationController
   def finish
     set_not_completed
     raise "Not all settings have been filled out." if @not_completed
-    @is_configured_setting = SystemSetting.find(1)
+    @is_configured_setting = SystemSetting.find_by_name("Is Configured")
     @is_configured_setting.value = 'true'
     @success = @is_configured_setting.save
     if @success and !request.xhr?
@@ -304,7 +299,7 @@ class ConfigureController < ApplicationController
   # controls once the site is configured
 
   def restart_server
-    ENV['RAILS_ENV'] = RAILS_ENV
+    ENV['RAILS_ENV'] = Rails.env
     rake_result = Rake::Task["kete:tools:restart"].execute(ENV)
     if rake_result
       flash[:notice] = t('configure_controller.restart_server.server_restarted')
@@ -315,7 +310,7 @@ class ConfigureController < ApplicationController
   end
 
   def clear_cache
-    ENV['RAILS_ENV'] = RAILS_ENV
+    ENV['RAILS_ENV'] = Rails.env
     rake_result = Rake::Task["tmp:cache:clear"].execute(ENV)
     if rake_result
       flash[:notice] = t('configure_controller.clear_cache.cache_cleared')

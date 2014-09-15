@@ -5,10 +5,8 @@ class ApplicationController < ActionController::Base
   #helper :all # include all helpers, all the time
   protect_from_forgery # See ActionController::RequestForgeryProtection for details
 
-  # Scrub sensitive parameters from your log
-  filter_parameter_logging :password, :password_confirmation
-
   include DefaultUrlOptions
+  include KeteAuthorisationSettings
 
   before_filter :set_locale
   # first take the locale in the url, then the session[:locale],
@@ -83,7 +81,7 @@ class ApplicationController < ActionController::Base
 
   # doesn't work for redirects, those are handled by
   # after filters on registered on specific controllers
-  # based on Kete.allowed_anonymous_actions specs
+  # based on SystemSetting.allowed_anonymous_actions specs
   # this should prevent url surgery to subvert logging out of anonymous user though
   before_filter :logout_anonymous_user_unless_allowed, :except => [:logout,
                                                                    :login,
@@ -93,8 +91,6 @@ class ApplicationController < ActionController::Base
   # all topics and content items belong in a basket
   # and will always be specified in our routes
   before_filter :load_standard_baskets
-
-  before_filter :load_theme_related
 
   # sets up instance variables for authentication
   include KeteAuthorization
@@ -110,15 +106,8 @@ class ApplicationController < ActionController::Base
 
   # see method definition for details
 
-  before_filter :delete_zoom_record, :only => [ :update, :flag_version, :restore, :add_tags ]
-
   # we often need baskets for edits
   before_filter :load_array_of_baskets, :only => [ :edit, :update, :restore ]
-
-  # only site_admin can set item.do_not_sanitize to true
-  # however, non site admins can edit content with insecure elements so the the do_not_sanitize
-  # param is changed later on. See lib/extended_content_controller.rb#ensure_no_new_insecure_elements_in
-  before_filter :security_check_of_do_not_sanitize, :only => [ :create, :update ]
 
   # don't allow forms to set do_not_moderate
   before_filter :security_check_of_do_not_moderate, :only => [ :create, :update, :restore ]
@@ -134,13 +123,6 @@ class ApplicationController < ActionController::Base
   # creates a @cache_id variable based on params[:id]
   before_filter :set_cache_id, :only => [:show]
 
-  # if anything is updated or deleted
-  # we need toss our show action fragments
-  # destroy has to happen before the item is deleted
-  before_filter :expire_show_caches_on_destroy, :only => [ :destroy ]
-  # everything else we do after the action is completed
-  after_filter :expire_show_caches, :only => [ :update, :convert, :add_tags ]
-
   # TODO: NOT USED, delete code here and in lib/zoom_controller_helpers.rb
   # related items only track title and url, therefore only update will change those attributes
   after_filter :update_zoom_record_for_related_items, :only => [ :update ]
@@ -149,21 +131,6 @@ class ApplicationController < ActionController::Base
   # TODO: this needs to be updated to store location for newer actions
   # might be better to do an except?
   after_filter :store_location, :only => [ :for, :all, :search, :index, :new, :show, :edit, :new_related_set_from_archive_file]
-
-  # if anything is added, edited, or deleted
-  # we need to rebuild our rss caches
-  after_filter :expire_rss_caches, :only => [ :create, :update, :destroy ]
-
-  # if anything is added, edited, or deleted in a basket
-  # we need toss our basket index page fragments
-  after_filter :expire_basket_index_caches, :only => [ :create,
-                                                       :update,
-                                                       :destroy,
-                                                       :add_index_topic, :find_index,
-                                                       :add_tags ]
-
-  # clear any outstanding search source caches
-  before_filter :expire_search_source_caches, :only => [ :show ]
 
   # RSS feed related operations
   # no layout on rss pages
@@ -195,7 +162,7 @@ class ApplicationController < ActionController::Base
     @help_basket ||= Basket.help_basket
     @about_basket ||= Basket.about_basket
     @documentation_basket ||= Basket.documentation_basket
-    @standard_baskets ||= Basket.standard_baskets
+    @standard_basket_ids ||= Basket.standard_basket_ids
 
     if params[:urlified_name].blank?
       @current_basket = @site_basket
@@ -210,7 +177,7 @@ class ApplicationController < ActionController::Base
       when @documentation_basket.urlified_name
         @current_basket = @documentation_basket
       else
-        @current_basket = Basket.find_by_urlified_name(params[:urlified_name])
+        @current_basket = Basket.where(:urlified_name => params[:urlified_name]).first
       end
     end
 
@@ -223,139 +190,8 @@ class ApplicationController < ActionController::Base
     end
   end
 
-  # figure out which theme we need
-  # and load up an array of the web paths
-  # to the css files
-  def load_theme_related
-    # For some reason, (a || b || c)  syntax is not working properly when using settings
-    # (it doesn't interpret NilClass as nil - hopefully a future version of acts_as_configurable
-    # will fix this issue so we don't have to keep doing this here, in basket edits, and in rake tasks)
-    @theme = if @current_basket.settings[:theme].class != NilClass
-      @current_basket.settings[:theme]
-    elsif @site_basket.settings[:theme].class != NilClass
-      @site_basket.settings[:theme]
-    else
-      'default'
-    end
-    @theme_font_family = @current_basket.settings[:theme_font_family] || @site_basket.settings[:theme_font_family] || 'sans-serif'
-    @header_image = @current_basket.settings[:header_image] || @site_basket.settings[:header_image] || nil
-  end
-
-  def security_check_of_do_not_sanitize
-    item_class = zoom_class_from_controller(params[:controller])
-    item_class_for_param_key = item_class.tableize.singularize
-    if ZOOM_CLASSES.include?(item_class) && !params[item_class_for_param_key].nil? && !params[item_class_for_param_key][:do_not_sanitize].nil?
-      params[item_class_for_param_key][:do_not_sanitize] = false if !@site_admin
-    end
-  end
-
-  def security_check_of_do_not_moderate
-    item_class = zoom_class_from_controller(params[:controller])
-    item_class_for_param_key = item_class.tableize.singularize
-    if ZOOM_CLASSES.include?(item_class) && !params[item_class_for_param_key].nil? && !params[item_class_for_param_key][:do_not_moderate].nil?
-      params[item_class_for_param_key][:do_not_moderate] = false if !@site_admin
-    end
-  end
-
-  def current_user_can_see_flagging?
-    current_user_is?(@current_basket.settings[:show_flagging])
-  end
-
-  def current_user_can_see_add_links?
-    current_user_is?(@current_basket.settings[:show_add_links])
-  end
-
-  def current_user_can_add_or_request_basket?
-    return false unless logged_in?
-    return true if @site_admin
-    case BASKET_CREATION_POLICY
-    when 'open', 'request'
-      true
-    else
-      false
-    end
-  end
-
-  def basket_policy_request_with_permissions?
-    BASKET_CREATION_POLICY == 'request' && !@site_admin
-  end
-
-  def current_user_can_see_action_menu?
-    current_user_is?(@current_basket.settings[:show_action_menu])
-  end
-
-  def current_user_can_see_discussion?
-    current_user_is?(@current_basket.settings[:show_discussion])
-  end
-
-  # Specific test for private file visibility.
-  # If the user is a site admin, the file isn't private,
-  # or they have permissions then return true
-  def current_user_can_see_private_files_for?(item)
-    @site_admin || !item.file_private? || current_user_can_see_private_files_in_basket?(item.basket)
-  end
-
-  # Test for private file visibility in a given basket
-  def current_user_can_see_private_files_in_basket?(basket)
-    current_user_is?(basket.private_file_visibility_with_inheritance)
-  end
-
-  # Test for memberlist visibility in a given basket
-  def current_user_can_see_memberlist_for?(basket)
-    current_user_is?(basket.memberlist_policy_with_inheritance, basket)
-  end
-
-  # Test for import archive set visibility for the given user in the current basket
-  def current_user_can_import_archive_sets_for?(basket = @current_basket)
-    current_user_is?(basket.import_archive_set_policy_with_inheritance, basket)
-  end
-  alias :current_user_can_import_archive_sets? :current_user_can_import_archive_sets_for?
-
-  # Walter McGinnis, 2006-04-03
-  # bug fix for when site admin moves an item from one basket to another
-  # if params[:topic][basket_id] exists and site admin
-  # set do_not_moderate to true
-  # James - Also allows for versions of an item modified my a moderator due to insufficient content to bypass moderation
-  def set_do_not_moderate_if_site_admin_or_exempted
-    item_class = zoom_class_from_controller(params[:controller])
-    item_class_for_param_key = item_class.tableize.singularize
-    if ZOOM_CLASSES.include?(item_class)
-      if !params[item_class_for_param_key].nil? && @site_admin
-        params[item_class_for_param_key][:do_not_moderate] = true
-
-      # James - Allow an item to be exempted from moderation - this allows for items that have been edited by a moderator prior to
-      # acceptance or reversion to be passed through without needing a second moderation pass.
-      # Only applicable usage can be found in lib/flagging_controller.rb line 93 (also see 2x methods below).
-      elsif !params[item_class_for_param_key].nil? && exempt_from_moderation?(params[:id], item_class)
-        params[item_class_for_param_key][:do_not_moderate] = true
-
-      elsif !params[item_class_for_param_key].nil? && !params[item_class_for_param_key][:do_not_moderate].nil?
-        params[item_class_for_param_key][:do_not_moderate] = false
-      end
-    end
-  end
-
-  # James - Allow us to flag a version as except from moderation
-  def exempt_next_version_from_moderation!(item)
-    session[:moderation_exempt_item] = {
-      :item_class_name => item.class.name,
-      :item_id => item.id.to_s
-    }
-  end
-
-  # James - Find whether an item is exempt from moderation. Used in #set_do_not_moderate_if_site_admin_or_exempted
-  # Note that this can only be used once, so when this is called, the exemption on the item is cleared and future versions will
-  # be moderated if full moderation is turned on.
-  def exempt_from_moderation?(item_id, item_class_name)
-    key = session[:moderation_exempt_item]
-    return false if key.blank?
-
-    result = ( item_class_name == key[:item_class_name] && item_id.to_s.split("-").first == key[:item_id] )
-
-    session[:moderation_exempt_item] = nil
-
-    return result
-  end
+  # ROB:  item_from_controller_and_id() should probably be gotten-rid-of/clarrified along with
+  #       prepare_item_and_vars(). #get_item
 
   # Walter McGinnis, 2008-09-29
   # adding security fix, so you can't see another basket's item's history
@@ -368,34 +204,20 @@ class ApplicationController < ActionController::Base
     end
   end
 
-  # some updates will change the item so that the updating of zoom record
-  # will no longer match the existing record
-  # and create a new one instead
-  # so we delete the existing zoom record here
-  # and create a new zoom record in the update
-  def delete_zoom_record
-    zoom_class = zoom_class_from_controller(params[:controller])
-    if ZOOM_CLASSES.include?(zoom_class)
-      zoom_destroy_for(Module.class_eval(zoom_class).find(params[:id]))
-    end
-  end
-
   # so we can transfer an item from one basket to another
   def load_array_of_baskets
     zoom_class = zoom_class_from_controller(params[:controller])
     if ZOOM_CLASSES.include?(zoom_class) and zoom_class != 'Comment'
-      @baskets = Basket.find(:all, :order => 'name').map { |basket| [ basket.name, basket.id ] }
+      @baskets = Basket.all(order: 'name').map { |basket| [ basket.name, basket.id ] }
     end
   end
 
   def show_basket_list_naviation_menu?
-    return false unless IS_CONFIGURED
+    return false unless SystemSetting.is_configured
     return false if params[:controller] == 'baskets' && ['edit', 'appearance', 'homepage_options'].include?(params[:action])
     return false if params[:controller] == 'search'
-    USES_BASKET_LIST_NAVIGATION_MENU_ON_EVERY_PAGE
+    SystemSetting.uses_basket_list_navigation_menu_on_every_page?
   end
-
-  include CacheControllerHelpers
 
   def redirect_to_related_item(item, options={})
     redirect_to_show_for(item, options)
@@ -408,12 +230,6 @@ class ApplicationController < ActionController::Base
     # item.prepare_and_save_to_zoom
     # use async backgroundrb process instead
     update_search_record_for(item)
-
-    if controller.nil?
-      expire_related_caches_for(item)
-    else
-      expire_related_caches_for(item, controller)
-    end
   end
 
   def add_relation_and_update_zoom_and_related_caches_for(item1, item2)
@@ -423,8 +239,8 @@ class ApplicationController < ActionController::Base
     # clear out old zoom records before we change the items
     # sometimes zoom updates are confused and create a duplicate new record
     # instead of updating existing one
-    zoom_destroy_for(topic)
-    zoom_destroy_for(related)
+    # zoom_destroy_for(topic)
+    # zoom_destroy_for(related)
 
     successful = ContentItemRelation.new_relation_to_topic(topic, related)
 
@@ -434,22 +250,10 @@ class ApplicationController < ActionController::Base
     return successful
   end
 
-  def remove_relation_and_update_zoom_and_related_caches_for(item1, item2)
-    raise "ERROR: Neither item 1 or 2 was a Topic" unless item1.is_a?(Topic) || item2.is_a?(Topic)
-    topic, related = (item1.is_a?(Topic) ? [item1, item2] : [item2, item1])
+  def remove_relation_between(related_item: item1, topic: item2)
+    raise "ERROR: Neither topic is not a Topic" unless topic.is_a?(Topic)
 
-    # clear out old zoom records before we change the items
-    # sometimes zoom updates are confused and create a duplicate new record
-    # instead of updating existing one
-    zoom_destroy_for(topic)
-    zoom_destroy_for(related)
-
-    successful = ContentItemRelation.destroy_relation_to_topic(topic, related)
-
-    update_zoom_and_related_caches_for(topic, zoom_class_controller(related.class.name))
-    update_zoom_and_related_caches_for(related, ('topics' if related.is_a?(Topic)))
-
-    return successful
+    ContentItemRelation.destroy_relation_to_topic(topic, related_item)
   end
 
   def setup_related_topic_and_zoom_and_redirect(item, commented_item = nil, options = {})
@@ -504,7 +308,7 @@ class ApplicationController < ActionController::Base
 
         if params[:append_show_url].present? &&
             params[:append_show_url] == 'true'
-        
+
           service_target += url_for_dc_identifier(item).sub('://', '%3A%2F%2F').gsub('/', '%2F')
         end
         redirect_to service_target
@@ -556,9 +360,8 @@ class ApplicationController < ActionController::Base
       for id in params[:item].reject { |k, v| v != "true" }.collect { |k, v| k }
         item = only_valid_zoom_class(params[:related_class]).find(id)
 
-        remove_relation_and_update_zoom_and_related_caches_for(item, @related_to_item)
+        remove_relation_between(related_item: item, topic: @related_to_item)
 
-        update_zoom_and_related_caches_for(item)
         flash[:notice] = t('application_controller.unlink_related.unlinked_relation')
 
       end
@@ -579,7 +382,7 @@ class ApplicationController < ActionController::Base
     return if params[:controller] == 'private_files'
     # this should prevent the same page from being added to return_to
     # but does not prevent case of differnt size images...
-    session[:return_to] = request.request_uri
+    session[:return_to] = request.original_fullpath
     session[:return_to_title] = @title
   end
 
@@ -587,15 +390,17 @@ class ApplicationController < ActionController::Base
     redirect_to(:controller => 'search',
                 :trailing_slash => true,
                 :action => :all,
-                :controller_name_for_zoom_class => zoom_class_controller(zoom_class))
+                :controller_name_for_zoom_class => zoom_class)
   end
 
   def redirect_to_default_all
-    redirect_to(basket_all_url(:controller_name_for_zoom_class => zoom_class_controller(DEFAULT_SEARCH_CLASS)))
+    redirect_to list_basket_baskets_url("site")
+    # redirect_to(basket_all_url(:controller_name_for_zoom_class => zoom_class_controller(SystemSetting.default_search_class)))
   end
 
   def redirect_to_all_for(controller)
-    redirect_to(basket_all_url(:controller_name_for_zoom_class => controller))
+    redirect_to list_basket_baskets_url("site")
+    # redirect_to(basket_all_url(:controller_name_for_zoom_class => controller))
   end
 
   def redirect_to_show_for(item, options = {})
@@ -688,7 +493,7 @@ class ApplicationController < ActionController::Base
 
     ZOOM_CLASSES.each do |zoom_class|
       # pending items aren't counted
-      private_conditions = "title != '#{Kete.blank_title}' "
+      private_conditions = "title != '#{SystemSetting.blank_title}' "
       local_public_conditions = PUBLIC_CONDITIONS
 
       # comments are a special case
@@ -739,7 +544,7 @@ class ApplicationController < ActionController::Base
       if new_basket != original_basket
         item.comments.each do |comment|
           # get rid of zoom record that it tied to old basket
-          zoom_destroy_for(comment)
+          # zoom_destroy_for(comment)
           comment.basket = new_basket
           if comment.save
             # moving the comment adds a version
@@ -764,7 +569,7 @@ class ApplicationController < ActionController::Base
       # James - 2008-12-21
       # Ensure the contribution is added against the latest version, not the current verrsion as it could
       # have been reverted automatically if full moderation is on for the basket.
-      version = item.versions.find(:first, :order => 'version DESC').version
+        version = item.versions.order('version DESC').first.version
 
       # add this to the user's empire of contributions
       # TODO: allow current_user whom is at least moderator to pick another user
@@ -817,7 +622,7 @@ class ApplicationController < ActionController::Base
     url += request.host_with_port
 
     # split everything before the query string and the query string
-    url_parts = request.request_uri.split('?')
+    url_parts = request.original_url.split('?')
 
     # now split the path up and add rss to it
     path_elements = url_parts[0].split('/')
@@ -878,7 +683,7 @@ class ApplicationController < ActionController::Base
   end
 
   cattr_accessor :add_ons_full_width_content_wrapper_controllers, :add_ons_content_wrapper_end_controllers
-  
+
   def self.add_ons_full_width_content_wrapper_controllers
     @@add_ons_full_width_content_wrapper_controllers || Array.new
   end
@@ -897,7 +702,7 @@ class ApplicationController < ActionController::Base
   def add_ons_content_wrapper_end_controllers
     self.class.add_ons_content_wrapper_end_controllers
   end
-  
+
   def render_full_width_content_wrapper?
     if @displaying_error
       return false
@@ -928,51 +733,6 @@ class ApplicationController < ActionController::Base
     false
   end
 
-  def public_or_private_version_of(item)
-    if allowed_to_access_private_version_of?(item)
-      item.private_version!
-    else
-      item
-    end
-  end
-
-  # checks to see if a user has access to view this private item.
-  # result cached so the function can be used several times on the
-  # same request
-  def permitted_to_view_private_items?
-    @permitted_to_view_private_items ||= logged_in? &&
-                                         permit?("site_admin or moderator of :current_basket or member of :current_basket or admin of :current_basket")
-  end
-  alias permitted_to_edit_current_item? permitted_to_view_private_items?
-
-  def permitted_to_edit_basket_homepage_topic?
-    @permitted_to_edit_basket_homepage_topic ||= logged_in? &&
-        permit?("site_admin of :site_basket or admin of :site_basket")
-  end
-
-  # checks if the user is requesting a private version of an item, and see
-  # if they are allowed to do so
-  def allowed_to_access_private_version_of?(item)
-    return false unless item.nil? || item.has_private_version?
-    (!params[:private].nil? && params[:private] == "true" && permitted_to_view_private_items?)
-  end
-
-  # checks if the user is requesting a private search of a basket, and see
-  # if they are allowed to do so
-  def accessing_private_search_and_allowed?
-    (!params[:privacy_type].nil? and params[:privacy_type] == "private" and permitted_to_view_private_items?)
-  end
-
-  # used to get the acceptable privacy type (that is the current requested
-  # privacy type unless not allowed), and return a value
-  # (used in caching to decide whether to look for public or private fragments)
-  def get_acceptable_privacy_type_for(item, value_when_public='public', value_when_private='private')
-    if allowed_to_access_private_version_of?(item)
-      value_when_private
-    else
-      value_when_public
-    end
-  end
 
   # Check whether the attached files for a given item should be displayed
   # Note this is independent of file privacy.
@@ -1012,6 +772,9 @@ class ApplicationController < ActionController::Base
     url + append_operator + options
   end
 
+  # ROB: I would like to get-rid-of/clarrify prepare_item_and_vars(). It feels like it should
+  #      be something simpler in a controller. #get_item
+
   # setup a few variables that will be used on topic/audio/etc items
   def prepare_item_and_vars
     zoom_class = zoom_class_from_controller(params[:controller])
@@ -1023,25 +786,25 @@ class ApplicationController < ActionController::Base
 
     @show_privacy_chooser = true if permitted_to_view_private_items?
 
-    if params[:format] == 'xml' || !has_all_fragments? || allowed_to_access_private_version_of?(@current_item)
+    if params[:format] == 'xml' || allowed_to_access_private_version_of?(@current_item)
       public_or_private_version_of(@current_item)
       privacy = get_acceptable_privacy_type_for(@current_item)
 
-      if params[:format] == 'xml' || !has_fragment?({ :part => "page_title_#{privacy}" })
+      if params[:format] == 'xml'
         @title = @current_item.title
       end
 
-      if params[:format] == 'xml' || !has_fragment?({ :part => "contributor_#{privacy}" })
+      if params[:format] == 'xml'
         @creator = @current_item.creator
         @last_contributor = @current_item.contributors.last || @creator
       end
 
       if logged_in? && @at_least_a_moderator
-        if params[:format] == 'xml' || !has_fragment?({ :part => "comments-moderators_#{privacy}" })
+        if params[:format] == 'xml'
           @comments = @current_item.non_pending_comments
         end
       else
-        if params[:format] == 'xml' || !has_fragment?({ :part => "comments_#{privacy}" })
+        if params[:format] == 'xml'
           @comments = @current_item.non_pending_comments
         end
       end
@@ -1050,6 +813,7 @@ class ApplicationController < ActionController::Base
     @current_item
   end
 
+  # ROB:  WHy aren't using rails 404 page? Kill it. KILLLLL IIIITT! #custom_error_pages
   def rescue_404
     redirect_registration = RedirectRegistration.match(request).first
     unless redirect_registration
@@ -1057,28 +821,19 @@ class ApplicationController < ActionController::Base
       @title = t('application_controller.rescue_404.title')
       render :template => "errors/error404", :layout => "application", :status => "404"
     else
-      new_url = String.new
-      partial_re = Regexp.new(/^\/.+\/$/)
-      if redirect_registration.source_url_pattern =~ partial_re &&
-          redirect_registration.target_url_pattern =~ partial_re
-
-        new_url = request.url.sub(redirect_registration.source_url_pattern, 
-                                  redirect_registration.target_url_pattern)
-      else
-        # target_url_pattern is actually direct replacement
-        new_url = redirect_registration.target_url_pattern
-      end
-
-      redirect_to new_url, :status => redirect_registration.status_code
+      redirect_to redirect_registration.new_url, :status => redirect_registration.status_code
     end
   end
 
+  # ROB:  see rescue_404() #custom_error_pages
   def rescue_500(template)
     @displaying_error = true
     @title = t('application_controller.rescue_500.title')
     render :template => "errors/#{template}", :layout => "application", :status => "500"
   end
 
+  # ROB:  current_item() should probably be gotten-rid-of/clarrified along with
+  #       prepare_item_and_vars(). #get_item
   def current_item
     @current_item ||= @audio_recording || @document || @still_image || @topic || @video || @web_link || nil
   end
@@ -1089,63 +844,10 @@ class ApplicationController < ActionController::Base
     "#{@order} #{@direction}"
   end
 
-  def show_notification_controls?(basket = @current_basket)
-    return false if basket.settings[:private_item_notification].blank?
-    return false if basket.settings[:private_item_notification] == 'do_not_email'
-    return false unless basket.show_privacy_controls_with_inheritance?
-    true
-  end
-
-  def private_item_notification_for(item, type)
-    return if item.skip_email_notification == '1'
-    return unless show_notification_controls?(item.basket)
-
-    url_options = { :private => true }
-
-    if item.is_a?(Comment)
-      email_type = 'comment'
-      url_options.merge!(:anchor => item.to_anchor)
-    else
-      email_type = 'item'
-    end
-
-    # send notifications of private item
-    item.basket.users_to_notify_of_private_item.each do |user|
-      next if user == current_user
-      case type
-      when :created
-        UserNotifier.send("deliver_private_#{email_type}_created", user, item, path_to_show_for(item, url_options))
-      when :edited
-        UserNotifier.send("deliver_private_#{email_type}_edited", user, item, path_to_show_for(item, url_options))
-      end
-    end
-  end
-
-  # check to see if url is something that can be done anonymously
-  def anonymous_ok_for?(url)
-    return false unless url.present? && Kete.is_configured? &&
-      Kete.allowed_anonymous_actions.present? &&
-      Kete.allowed_anonymous_actions.size > 0
-
-    # get controller and action from url
-    # strip off query string before submitting to routing
-    url = url.split("?")[0]
-    from_url = String.new
-    begin
-      from_url = ActionController::Routing::Routes.recognize_path(url, :method => :get)
-    rescue
-      from_url = ActionController::Routing::Routes.recognize_path(url, :method => :post)
-    end
-    value = from_url[:controller] + '/' + from_url[:action]
-
-    # check if it is an allowed for or finished after controller/action combo
-    Kete.allowed_anonymous_actions.collect { |h| h.values }.flatten.include?(value)
-  end
-
   def logout_anonymous
     if logged_in? &&
         current_user.anonymous?
-      
+
       session[:anonymous_user] = nil
 
       current_user.reload
@@ -1161,12 +863,15 @@ class ApplicationController < ActionController::Base
   # methods that should be available in views as well
   helper_method :prepare_short_summary, :history_url, :render_full_width_content_wrapper?, :render_content_wrapper_end?, :permitted_to_view_private_items?,
                 :permitted_to_edit_current_item?, :allowed_to_access_private_version_of?, :accessing_private_search_and_allowed?,
-                :get_acceptable_privacy_type_for, :current_user_can_see_flagging?, :current_user_can_see_add_links?,
+                :get_acceptable_privacy_type_for, :current_user_can_see_contributors?, :current_user_can_see_add_links?,
                 :current_user_can_add_or_request_basket?, :basket_policy_request_with_permissions?, :current_user_can_see_action_menu?,
                 :current_user_can_see_discussion?, :current_user_can_see_private_files_for?, :current_user_can_see_private_files_in_basket?,
                 :current_user_can_see_memberlist_for?, :show_attached_files_for?, :slideshow, :append_options_to_url, :current_item,
                 :show_basket_list_naviation_menu?, :url_for_dc_identifier, :derive_url_for_rss, :show_notification_controls?, :path_to_show_for,
                 :permitted_to_edit_basket_homepage_topic?, :current_user_can_import_archive_sets?, :current_user_can_import_archive_sets_for?, :anonymous_ok_for?
+
+  # stub out methods to allow specs to run
+  def auto_complete_for(*args); end
 
   protected
 
@@ -1174,6 +879,7 @@ class ApplicationController < ActionController::Base
     false
   end
 
+  # ROB:  see rescue_404() #custom_error_pages
   def rescue_action_in_public(exception)
     #logger.info("ERROR: #{exception.to_s}")
 
@@ -1182,7 +888,6 @@ class ApplicationController < ActionController::Base
     # when an exception occurs, before filters arn't called, so we have to manually call them here
     # only call the ones absolutely nessesary (required settings, themes, permissions etc)
     load_standard_baskets
-    load_theme_related
     redirect_if_current_basket_isnt_approved_for_public_viewing
     update_basket_permissions_hash
 
@@ -1197,7 +902,7 @@ class ApplicationController < ActionController::Base
     when ActionController::InvalidAuthenticityToken then
       respond_to do |format|
         format.html { rescue_500('invalid_authenticity_token') }
-        format.js { render :file => File.join(RAILS_ROOT, 'app/views/errors/invalid_authenticity_token.js.rjs') }
+        format.js { render :file => File.join(Rails.root, 'app/views/errors/invalid_authenticity_token.js.rjs') }
       end
     else
       if exception.to_s.match(/Connect\ failed/)
@@ -1205,45 +910,13 @@ class ApplicationController < ActionController::Base
       else
         respond_to do |format|
           format.html { rescue_500('error500') }
-          format.js { render :file => File.join(RAILS_ROOT, 'app/views/errors/error500.js.rjs') }
+          format.js { render :file => File.join(Rails.root, 'app/views/errors/error500.js.rjs') }
         end
       end
     end
   end
 
   private
-
-  def update_basket_permissions_hash
-    @basket_access_hash = logged_in? ? current_user.basket_permissions : Hash.new
-  end
-
-  def current_user_is?(at_least_setting, basket = @current_basket)
-    begin
-      # everyone can see, just return true
-      return true if at_least_setting == 'all users' || at_least_setting.blank?
-
-      # all other settings, you must be at least logged in
-      return false unless logged_in?
-
-      # do we just want people logged in?
-      return true if at_least_setting == 'logged in'
-
-      # finally, if they are logged in
-      # we evaluate matching instance variable if they have the role that matches
-      # our basket setting
-
-      # if we are checking at least settings on a different basket, we have to
-      # populate new ones with the context of that basket, not the current basket
-      if basket != @current_basket
-        load_at_least(basket)
-        instance_variable_get("@#{at_least_setting.gsub(" ", "_")}_of_specified_basket")
-      else
-        instance_variable_get("@#{at_least_setting.gsub(" ", "_")}")
-      end
-    rescue
-      raise "Unknown authentication type: #{$!}"
-    end
-  end
 
   def redirect_if_current_basket_isnt_approved_for_public_viewing
     if @current_basket.status != 'approved' && !@site_admin && !@basket_admin

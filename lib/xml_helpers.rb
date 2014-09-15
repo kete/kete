@@ -3,7 +3,7 @@ module XmlHelpers
 
     def appropriate_protocol_for(item)
       protocol = "http"
-      if Kete.force_https_on_restricted_pages &&
+      if SystemSetting.force_https_on_restricted_pages &&
           ( ( item.respond_to?(:private) && item.private? ) ||
             ( item.respond_to?(:commentable_private?) && item.commentable_private? ) )
 
@@ -150,7 +150,7 @@ module XmlHelpers
             # and generating them also slows down the create/update actions for items
             # limiting here, since we are likely to only want this many
             # if the item is not private, don't allow private related still images
-            options = { :limit => NUMBER_OF_RELATED_THINGS_TO_DISPLAY_PER_TYPE,
+            options = { :limit => SystemSetting.number_of_related_things_to_display_per_type,
               :conditions => PUBLIC_CONDITIONS}
 
             options.delete(:conditions) if item.private

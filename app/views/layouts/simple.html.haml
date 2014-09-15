@@ -1,0 +1,25 @@
+!!! Strict
+%html{lang: "en", xmlns: "http://www.w3.org/1999/xhtml"}
+  %head
+    %meta{content: "text/html; charset=utf-8", "http-equiv" => "Content-Type"}/
+    %title= h(@title)
+      = stylesheet_link_tag 'base'
+      = stylesheet_link_tag 'comment'
+      = stylesheet_link_tag 'redbox'
+      = stylesheet_link_tag 'kete-print', media: 'print'
+      - if !@rss_tag_auto.nil?
+        = @rss_tag_auto
+      /[if IE]
+        = stylesheet_link_tag 'kete-ie'
+
+  %body
+    #body-outer-wrapper
+      #body-inner-wrapper
+        #wrapper.simple{:style => "margin-top: 1em"}
+          .cleaner &nbsp;
+          - if flash[:notice]
+            #notice
+              %div= flash[:notice]
+          #container
+            = @content_for_layout
+          .cleaner &nbsp;

@@ -13,6 +13,12 @@ class TopicsController < ApplicationController
 
   def show
     @topic = prepare_item_and_vars
+    @comments = @topic.non_pending_comments
+
+    @creator = @topic.creator
+    @last_contributor = @topic.contributors.last || @creator
+
+    @related_item = @topic.related_items
 
     respond_to do |format|
       format.html
@@ -24,7 +30,7 @@ class TopicsController < ApplicationController
     @topic = Topic.new
     respond_to do |format|
       format.html
-      format.js { render :file => File.join(RAILS_ROOT, 'app/views/topics/pick_form.js.rjs') }
+      format.js { render :file => File.join(Rails.root, 'app/views/topics/pick_form.js.rjs') }
     end
   end
 
@@ -129,7 +135,7 @@ class TopicsController < ApplicationController
       )
 
       # add a contributor to the previous topic update
-      version = @topic.versions.find(:first, :order => 'version DESC').version
+      version = @topic.versions.where(:order => 'version DESC').first.version
       @topic.add_as_contributor(current_user, version)
 
       # reload, get the correct privacy and return the user to the topic form
@@ -143,10 +149,9 @@ class TopicsController < ApplicationController
     elsif @topic != @site_basket.index_topic || permit?("site_admin of :site_basket or admin of :site_basket")
       version_after_update = @topic.max_version + 1
 
-      @successful = ensure_no_new_insecure_elements_in('topic')
       @topic.attributes = params[:topic]
       logger.debug("before topic save")
-      @successful = @topic.save if @successful
+      @successful = @topic.save
       logger.debug("after topic save")
     else
       # they don't have permission
@@ -169,6 +174,26 @@ class TopicsController < ApplicationController
       end
       render :action => 'edit'
     end
+  end
+
+  def history
+    @item = Topic.find(params[:id])
+    @versions = @item.versions
+    @item_taggings = @item.taggings
+
+    @current_public_version = @item.version
+    #@item.private_version do
+    #  @current_private_version = @item.version
+    #end if @item.respond_to?(:private_version)
+
+    @item_contributors = @item.contributors.order('contributions.version ASC')
+    #@item_contributors = @item.contributors.all(
+    #  :select => 'contributions.version, contributions.created_at as version_created_at, users.id, users.resolved_name, users.email, users.login',
+    #  :order => 'contributions.version ASC', :group => 'contributions.version'
+    #)
+
+    @contributor_index = 0
+
   end
 
   def destroy

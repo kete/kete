@@ -7,8 +7,9 @@ module FieldMappingsController
 
       # GETs should be safe (see
       # http://www.w3.org/2001/tag/doc/whenToUseGet.html)
-      klass.send :verify, :method => :post, :only => [ :destroy, :create, :update ],
-        :redirect_to => { :action => :list }
+      # TODO: re-implement this before we go into production
+      # klass.send :verify, :method => :post, :only => [ :destroy, :create, :update ],
+      #   :redirect_to => { :action => :list }
     end
 
     def index

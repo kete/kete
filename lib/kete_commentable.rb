@@ -11,9 +11,9 @@ module KeteCommentable
         # that have suitable privacy
         def non_pending_comments
           if respond_to?(:private?)
-            comments.all(:conditions => ['title != ? AND commentable_private = ?', Kete.blank_title, private?])
+            comments.all(:conditions => ['title != ? AND commentable_private = ?', SystemSetting.blank_title, private?])
           else
-            comments.all(:conditions => ['title != ?', Kete.blank_title])
+            comments.all(:conditions => ['title != ?', SystemSetting.blank_title])
           end
         end
 

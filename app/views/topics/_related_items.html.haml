@@ -1,0 +1,37 @@
+-# ROB: I'm sorry. So very, very, sorry.
+
+- topics_only ||= false
+- position ||= ''
+
+- @total_item_counts = related_items_count_for_current_item
+- if @total_item_counts > 0
+  - options = { :item_classes => (topics_only ? ['Topic'] : nil), :with_counts => true, :start_record => 0,
+              :end_record => [SystemSetting.number_of_related_images_to_display, SystemSetting.number_of_related_things_to_display_per_type].sort.last }
+  - @public_items, @public_item_counts = public_related_items_for(item, options)
+  - @private_items, @private_item_counts = private_related_items_for(item, options)
+
+
+
+%div{ :id => "related_items", :class => related_items_class_from(position, related_items.count), :style => related_items_styles_from(position, related_items.count) }
+  %div{:class => "secondary-content-section-wrapper#{class_suffix_from(position)}"}
+    %div{:class => "secondary-content-section", :id => "related"}
+      .secondary-content-section-content
+        -if item.is_a? Topic
+          %h2.related-link
+            = link_to_related_items_of(item, 'Topic', :link_text => "#{t('topics.related_items.related_items')} (#{related_items.count})")
+          = render 'topics/related_items_for_topics', { :related_items => related_items, :item => item }
+
+        -else 
+          %h2.related-link
+            = link_to_related_items_of(item, 'Topic', :link_text => "#{t('topics.related_items.related_topics')} (#{related_items.count})")
+          = render 'topics/related_items_for_content_items', { :related_items => related_items, :item => item }
+
+
+        %div(style="clear:both;")
+
+        = render('topics/related_items_tools', :item => item)
+
+        %div(style="clear:both;")
+
+      .secondary-content-section-footer-wrapper
+        .secondary-content-section-footer &nbsp;

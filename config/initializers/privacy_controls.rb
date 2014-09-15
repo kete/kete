@@ -6,7 +6,7 @@ BASE_PRIVATE_PATH = 'private'
 # (needs to be run after load_system_settings.rb)
 value = "title IS NOT NULL"
 if Object.const_defined?(:Kete) && Kete.respond_to?(:blank_title) && Kete.respond_to?(:no_public_version_title)
-  value = "title != '#{Kete.blank_title}' AND title != '#{Kete.no_public_version_title}'"
+  value = "title != '#{SystemSetting.blank_title}' AND title != '#{SystemSetting.no_public_version_title}'"
   Kete.define_reader_method_as('public_conditions', value)
 end
 

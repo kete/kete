@@ -1,0 +1,45 @@
+= render :partial => 'topics/content_wrapper_start', :locals => { :style_classes => 'full-width notabs' }
+- @title = t('search.setup_rebuild.title')
+%h2= h(@title)
+/
+  <h3>Some things to keep in mind:</h3>
+
+  <ul>
+  <li><p></p><p></p></li>
+  <li><p></p><p></p></li>
+  </ul>
+= form_tag :overwrite_params => { :action => 'rebuild_zoom_index' }  do
+  %fieldset
+    .form-element
+      %label{:for => "zoom_class"}= t 'search.setup_rebuild.type_to_rebuild'
+      - zoom_class_options = "<option value='all'>#{t('search.setup_rebuild.all_types')}</option>"
+      - ZOOM_CLASSES.each { |class_name| zoom_class_options += "<option value=\"#{class_name}\">#{zoom_class_humanize(class_name)}</option>" }
+      = select_tag 'zoom_class', zoom_class_options
+    #clear_zebra_field
+      .form-element
+        %label{:for => "clear_zebra"}= t 'search.setup_rebuild.clear_search_engine'
+        %input#clear_zebra{:checked => "checked", :name => "clear_zebra", :type => "checkbox", :value => "true"}/
+        .form-example= t 'search.setup_rebuild.clear_search_engine_description'
+    #skip_existing_field
+      .form-element
+        %label{:for => "skip_existing"}= t 'search.setup_rebuild.skip_existing_records'
+        %input#skip_existing{:name => "skip_existing", :type => "checkbox", :value => "true"}/
+        .form-example= t 'search.setup_rebuild.skip_existing_records_description'
+    #skip_private_field
+      .form-element
+        %label{:for => "skip_private"}= t 'search.setup_rebuild.skip_private_records'
+        %input#skip_private{:name => "skip_private", :type => "checkbox", :value => "true"}/
+        .form-example= t 'search.setup_rebuild.skip_private_records_description'
+    #start_field
+      .form-element
+        %label{:for => "start"}= t 'search.setup_rebuild.start_rebuild_at'
+        = text_field_tag 'start', 'first', :size => '6', :disabled => true
+        .form-example= t 'search.setup_rebuild.start_rebuild_at_description'
+    #end_field
+      .form-element
+        %label{:for => "end"}= t 'search.setup_rebuild.end_rebuild_at'
+        = text_field_tag 'end', 'last', :size => '6', :disabled => true
+        .form-example= t 'search.setup_rebuild.end_rebuild_at_description'
+    .form-element
+      = submit_tag t('search.setup_rebuild.start_rebuild')
+
