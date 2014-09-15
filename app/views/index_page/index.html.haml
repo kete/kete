@@ -92,22 +92,29 @@
           .secondary-content-section-footer-wrapper
             .secondary-content-section-footer &nbsp;
 
-    - links = link_to_membership_request_of(@current_basket)
-    - links += link_to_members_of(@current_basket)
-    - unless links.blank?
+    - if @current_basket.index_page_number_of_tags && @current_basket.index_page_number_of_tags > 0 && @tag_counts_array.size > 0
       %div{:class => "secondary-content-section-wrapper"}
-        %div{:class => "secondary-content-section", :id => "basket-options"}
+        %div{:class => "secondary-content-section", :id => "tags-box"}
           .secondary-content-section-content
-            %ul= links.html_safe
-          .secondary-content-section-footer-wrapper
-            .secondary-content-section-footer &nbsp;
-
-    - if !@current_basket.index_page_extra_side_bar_html.blank?
-      %div{:class => "secondary-content-section-wrapper"}
-        %div{:class => "secondary-content-section", :id => "homepage-extra"}
-          .secondary-content-section-content
+            %h3 Browse Collections by Selecting a Tag
             %ul
-            = @current_basket.index_page_extra_side_bar_html.html_safe
+
+            - tag_counts = '' # default
+            - if @tag_counts_total > @tag_counts_array.size
+              - all_tags_path = link_to t('.all_tags'), { urlified_name: 'site', controller: 'tags', action: 'list' }
+              - tag_count_summary = t('.show_x_of_x', count: @tag_counts_array.size, total: @tag_counts_total)
+              - tag_counts = "( #{tag_count_summary} ) | #{all_tags_path}".html_safe
+
+            - if @current_basket.index_page_tags_as == 'tag cloud'
+              #tags-headline
+                %h3{:style => "display:inline;"}= t '.tags_title'
+                %span= tag_counts
+              = render :partial => 'tags/tags_by_tag_cloud', :locals => { :tags => @tag_counts_array }
+            - else
+              #tags-headline
+                %h3{:style => "display:inline;"}= t '.categories_title'
+                %span= tag_counts
+              = render :partial => 'tags/tags_by_categories', :locals => { :tags => @tag_counts_array }
             %div{:style => "clear:both;"}
           .secondary-content-section-footer-wrapper
             .secondary-content-section-footer &nbsp;
@@ -117,7 +124,7 @@
       %div{:class => "secondary-content-section-wrapper"}
         %div{:class => "secondary-content-section", :id => "contents-by-type"}
           .secondary-content-section-content
-            %h3= t '.contents_by_type'
+            %h3 Browse Our Archive by Media Type
             = render(:partial => 'archive_by_type')
             %div{:style => "clear:both;"}
           .secondary-content-section-footer-wrapper
@@ -151,32 +158,6 @@
                 = t "basket_model.image_#{@current_basket.index_page_image_as}"
                 = t '.image_from_archive'
             = slideshow_div
-            %div{:style => "clear:both;"}
-          .secondary-content-section-footer-wrapper
-            .secondary-content-section-footer &nbsp;
-
-    - if @current_basket.index_page_number_of_tags && @current_basket.index_page_number_of_tags > 0 && @tag_counts_array.size > 0
-      %div{:class => "secondary-content-section-wrapper"}
-        %div{:class => "secondary-content-section", :id => "tags-box"}
-          .secondary-content-section-content
-            %ul
-
-            - tag_counts = '' # default
-            - if @tag_counts_total > @tag_counts_array.size
-              - all_tags_path = link_to t('.all_tags'), { urlified_name: 'site', controller: 'tags', action: 'list' }
-              - tag_count_summary = t('.show_x_of_x', count: @tag_counts_array.size, total: @tag_counts_total)
-              - tag_counts = "( #{tag_count_summary} ) | #{all_tags_path}".html_safe
-
-            - if @current_basket.index_page_tags_as == 'tag cloud'
-              #tags-headline
-                %h3{:style => "display:inline;"}= t '.tags_title'
-                %span= tag_counts
-              = render :partial => 'tags/tags_by_tag_cloud', :locals => { :tags => @tag_counts_array }
-            - else
-              #tags-headline
-                %h3{:style => "display:inline;"}= t '.categories_title'
-                %span= tag_counts
-              = render :partial => 'tags/tags_by_categories', :locals => { :tags => @tag_counts_array }
             %div{:style => "clear:both;"}
           .secondary-content-section-footer-wrapper
             .secondary-content-section-footer &nbsp;

@@ -3,14 +3,14 @@
   %head
     %meta{content: "text/html; charset=utf-8", "http-equiv" => "Content-Type"}/
     %title= h(@title)
-      = stylesheet_link_tag 'base'
-      = stylesheet_link_tag 'comment'
-      = stylesheet_link_tag 'redbox'
-      = stylesheet_link_tag 'kete-print', media: 'print'
-      - if !@rss_tag_auto.nil?
-        = @rss_tag_auto
-      /[if IE]
-        = stylesheet_link_tag 'kete-ie'
+    = stylesheet_link_tag 'base'
+    = stylesheet_link_tag 'comment'
+    = stylesheet_link_tag 'redbox'
+    = stylesheet_link_tag 'kete-print', media: 'print'
+    - if !@rss_tag_auto.nil?
+      = @rss_tag_auto
+    /[if IE]
+      = stylesheet_link_tag 'kete-ie'
 
   %body
     #body-outer-wrapper
