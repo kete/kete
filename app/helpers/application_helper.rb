@@ -592,7 +592,7 @@ module ApplicationHelper
       :user_id => user.id,
       :controller_name_for_zoom_class => zoom_class,
     }
-    url = search_contributed_by_path(options)
+    url = basket_search_contributed_by_path(options)
 
     url.blank? ? display_html : link_to(display_html, url)
   end
@@ -762,7 +762,7 @@ module ApplicationHelper
       :controller_name_for_zoom_class => zoom_class,
     }.merge(location)
 
-    related_item_url = search_related_to_path(path_options)
+    related_item_url = basket_search_related_to_path(path_options)
 
     link_to options[:link_text], related_item_url, { :class => 'small' }
   end
@@ -879,7 +879,7 @@ module ApplicationHelper
       #:controller_name_for_zoom_class => zoom_class,
       :urlified_name => basket,
     }
-    link_to h(link_text), search_tagged_path(options), :class => tag[:css_class]
+    link_to h(link_text), basket_search_tagged_path(options), :class => tag[:css_class]
   end
   alias :link_to_tagged_in_basket :link_to_tagged
 

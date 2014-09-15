@@ -44,15 +44,15 @@
               - if @current_basket.show_privacy_controls_with_inheritance? && permitted_to_view_private_items?
                 = render :partial => 'topics/privacy_chooser', :locals => { :item => @topic }
       - else
-        - if @basket_admin
-          #moderator-tools.clearfix
-            %ul
-              %li= link_to t('.create_homepage_topic'),            |
-                  :urlified_name => @current_basket.urlified_name, |
-                  :controller => 'topics',                         |
-                  :action => 'new',                                |
-                  :index_for_basket => @current_basket.id,         |
-                  :return_to_homepage => true                      |
+        -# - if @basket_admin
+        -#   #moderator-tools.clearfix
+        -#     %ul
+        -#       %li= link_to t('.create_homepage_topic'),            |
+        -#           :urlified_name => @current_basket.urlified_name, |
+        -#           :controller => 'topics',                         |
+        -#           :action => 'new',                                |
+        -#           :index_for_basket => @current_basket.id,         |
+        -#           :return_to_homepage => true                      |
 
       - if @recent_topics_limit > 0 && @recent_topics_items.size > 0 && !@current_basket.index_page_recent_topics_as.blank?
         .home-feature-wrapper

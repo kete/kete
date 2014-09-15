@@ -12,7 +12,7 @@ class SearchQuery
               # :privacy_type,
               :content_item_type,
               # :topic_type,
-              :basket,
+              :basket_name,
               :page,
               :controller,
               :action,
@@ -37,7 +37,6 @@ class SearchQuery
     @date_since   = params[:date_since]
     @date_until   = params[:date_until]
 
-
     # ? what do these mean exactly?
     # possible values: "public"|"private"
     @privacy_type = params[:privacy_type]
@@ -55,7 +54,7 @@ class SearchQuery
     @topic_type = params[:topic_type]
 
     # the name of the basket within which the search should happen
-    @basket = params[:target_basket] || "site" #FIXME pull this from Basket
+    @basket_name = params[:urlified_name] || 'site'
 
     # the page of results (within a content-type) that the user would like to see
     # * defaults to the first page
@@ -104,7 +103,7 @@ class SearchQuery
 
   def to_hash
     hash = {
-      target_basket: basket,
+      # target_basket: basket_name,
       controller_name_for_zoom_class: content_item_type
     }
 

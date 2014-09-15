@@ -41,7 +41,7 @@ feature 'Users can CRUD web links' do
     original_num_web_links = WebLink.all.count
     click_on 'Delete' # poltergeist ignores confirm/alert modals by default
     expect(WebLink.all.count).to eq(original_num_web_links - 1)
-    expect(current_path).to match(/#{search_all_path}/)
+    expect(current_path).to match(/#{basket_search_all_path('site')}/)
   end
 
   it 'Edit', js: true do

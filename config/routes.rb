@@ -103,6 +103,14 @@
 
   scope '/:urlified_name', as: :basket do
 
+    scope '/search', as: :search do
+      post 'for/(:controller_name_for_zoom_class)'            => 'search#for', as: :for
+      post 'all/(:controller_name_for_zoom_class)'            => 'search#all', as: :all
+      post 'tagged/(:controller_name_for_zoom_class)'         => 'search#tagged', as: :tagged
+      post 'related_to/(:controller_name_for_zoom_class)'     => 'search#related_to', as: :related_to
+      post 'contributed_by/(:controller_name_for_zoom_class)' => 'search#contributed_by', as: :contributed_by
+    end
+
     resources :baskets, only: [:edit] do
       member do
         post :add_tags # TaggingController
@@ -187,17 +195,6 @@
     end
 
   end
-
-
-  ####################################################
-  # rails 3+ search routes ###########################
-
-  match 'site/search/for'    => 'search#for',    :as => 'search_for'
-  match 'site/search/all'    => 'search#all',    :as => 'search_all'
-  match 'site/search/rss'    => 'search#rss',    :as => 'search_rss'
-  match 'site/search/tagged' => 'search#tagged', :as => 'search_tagged'
-  match 'site/search/related_to' => 'search#related_to', :as => 'search_related_to'
-  match 'site/search/contributed_by' => 'search#contributed_by', :as => 'search_contributed_by'
 
 
   ####################################################

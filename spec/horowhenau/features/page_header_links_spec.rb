@@ -67,7 +67,7 @@ feature "Page header navigation Links" do
     visit "/"
     click_link "Browse"
     expect(page.status_code).to be(200)
-    expect(current_url).to end_with("/en/site/search/all/?controller_name_for_zoom_class=Topic&urlified_name=site")
+    expect(current_url).to end_with("/en/site/search/all/Topic/")
 
   end
 

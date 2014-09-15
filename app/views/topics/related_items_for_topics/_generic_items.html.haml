@@ -4,7 +4,7 @@
   - visible_class = "related-items-section"
 
 - item_class = item_type.singularize.camelize
-- related_to_path = search_related_to_path({related_item_id: @topic.id, related_item_type: 'Topic', controller_name_for_zoom_class: item_class, urlified_name: @topic.basket.urlified_name})
+- related_to_path = basket_search_related_to_path({related_item_id: @topic.id, related_item_type: 'Topic', controller_name_for_zoom_class: item_class, urlified_name: @topic.basket.urlified_name})
 
 %div{:id => "detail-linked-#{item_type}", :class => visible_class}
   %h4

@@ -99,52 +99,52 @@ class SearchController < ApplicationController
 
   # this action is the action that relies on search_terms being defined
   # it can be thought of as "for/search_terms"
-  def legacy_for
-    # setup our variables derived from the url
-    # several of these are valid if nil
-    @search_terms = params[:search_terms]
-    if @search_terms.nil?
-      flash[:notice] = t('search_controller.for.no_search_terms')
-    else
-      setup_rss
-      search
-    end
-
-    # if zoom class isn't valid, @results is nil,
-    # so lets rescue with a 404 in this case
-    rescue_404 if @results.nil?
-
-    # if everything went well, lets save this search for the current_user
-    save_current_search
-  end
+  # def legacy_for
+  #   # setup our variables derived from the url
+  #   # several of these are valid if nil
+  #   @search_terms = params[:search_terms]
+  #   if @search_terms.nil?
+  #     flash[:notice] = t('search_controller.for.no_search_terms')
+  #   else
+  #     setup_rss
+  #     search
+  #   end
+  #
+  #   # if zoom class isn't valid, @results is nil,
+  #   # so lets rescue with a 404 in this case
+  #   rescue_404 if @results.nil?
+  #
+  #   # if everything went well, lets save this search for the current_user
+  #   save_current_search
+  # end
 
   # search method now is smart enough to handle rss situation
   # especially now that we have pagination in rss (ur, atom?)
-  def rss
-    @search_terms = params[:search_terms]
-
-    # set up the cache key, which handles our params beyond basket, action, and controller
-    @cache_key_hash = Hash.new
-
-    @cache_key_hash[:page] = (params[:page] || 1).to_i
-    @cache_key_hash[:number_per_page] = (params[:count] || 50).to_i
-
-    @cache_key_hash[:privacy] = "private" if is_a_private_search?
-
-    # set the following, if they exist in params
-    relevant_keys = %w( search_terms_slug search_terms tag contributor limit_to_choice source_controller_singular source_item )
-    relevant_keys.each do |key|
-      key = key.to_sym
-      @cache_key_hash[key] = params[key] unless params[key].blank?
-    end
-
-    @search = Search.new
-    search
-
-    respond_to do |format|
-      format.xml
-    end
-  end
+  # def rss
+  #   @search_terms = params[:search_terms]
+  #
+  #   # set up the cache key, which handles our params beyond basket, action, and controller
+  #   @cache_key_hash = Hash.new
+  #
+  #   @cache_key_hash[:page] = (params[:page] || 1).to_i
+  #   @cache_key_hash[:number_per_page] = (params[:count] || 50).to_i
+  #
+  #   @cache_key_hash[:privacy] = "private" if is_a_private_search?
+  #
+  #   # set the following, if they exist in params
+  #   relevant_keys = %w( search_terms_slug search_terms tag contributor limit_to_choice source_controller_singular source_item )
+  #   relevant_keys.each do |key|
+  #     key = key.to_sym
+  #     @cache_key_hash[key] = params[key] unless params[key].blank?
+  #   end
+  #
+  #   @search = Search.new
+  #   search
+  #
+  #   respond_to do |format|
+  #     format.xml
+  #   end
+  # end
 
   # EOIN: does this method need to be public?
   def search
@@ -921,4 +921,7 @@ class SearchController < ApplicationController
     # NOTE: the return value of this method is ignored
   end
 
+  def authorised_basket_names
+    @basket_access_hash.keys.collect { |key| key.to_s }
+  end
 end

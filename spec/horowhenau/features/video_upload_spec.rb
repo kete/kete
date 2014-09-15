@@ -42,7 +42,7 @@ feature "Users can CRUD videos" do
     original_num_videos = Video.all.count
     click_on 'Delete' # poltergeist ignores confirm/alert modals by default
     expect(Video.all.count).to eq(original_num_videos - 1)
-    expect(current_path).to match(/#{search_all_path}/)
+    expect(current_path).to match(/#{basket_search_all_path('site')}/)
   end
 
   it "Edit", js: true do

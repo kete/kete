@@ -145,6 +145,6 @@ module SearchHelper
   # Methods to replace the old and complex search routes. These should now pass
   # variables as query params.
   def basket_all_topic_type_path(*args)
-    search_all_path(*args)
+    basket_search_all_path(*args)
   end
 end
