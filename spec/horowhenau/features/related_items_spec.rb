@@ -130,4 +130,47 @@ feature "Related Items" do
       end
     end
   end
+
+  it "can remove linked images and topics", js: true do
+    exec_with_horowhenua_attachments do
+      topic_titles = [ "Tararua Rodders Inc. 2013 Hot Rod Show", "Colin N. Webber" ]
+      image_titles = [ "Manakau School 125th Jubilee programme", "IMG_0850  Manakau School, The front entrance   20-10-2012" ]
+      topic_ids = [ 2736, 2713 ]
+      image_ids = [ 21544, 20764 ]
+      main_topic = "/en/site/topics/2657-manakau-school-125th-jubilee-2013-and-dedication-ceremony-at-the-completion-of-the-jubilee"
+
+      sign_in
+      visit main_topic
+
+      within("#related_items") do
+        expect(page).to have_content topic_titles[0]
+        expect(page).to have_content topic_titles[1]
+        expect(page).to have_css "img[alt=\"#{image_titles[0]}\"]"
+        expect(page).to have_css "img[alt=\"#{image_titles[1]}\"]"
+      end
+
+      # We can't click_on 'Remove' because it opens a new window that Poltergeist doesn't follow.
+      remove_link = find("#related_items").find(:xpath, "//a[text()='Remove']")[:href]
+      visit(remove_link)
+
+      check "item[#{topic_ids[0]}]"
+      check "item[#{topic_ids[1]}]"
+      click_on 'Remove'
+
+      click_link 'Image'
+
+      check "item[#{image_ids[0]}]"
+      check "item[#{image_ids[1]}]"
+      click_on 'Remove'
+
+      visit main_topic
+
+      within("#related_items") do
+        expect(page).not_to have_content topic_titles[0]
+        expect(page).not_to have_content topic_titles[1]
+        expect(page).not_to have_css 'img[alt="#{image_titles[0]}"]'
+        expect(page).not_to have_css 'img[alt="#{image_titles[1]}"]'
+      end
+    end
+  end
 end

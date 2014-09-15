@@ -23,7 +23,10 @@ feature 'User login' do
 
     it 'can view the list of members' do
       sign_in
-      click_link 'Members'
+      click_link 'Sitemap'
+
+      site_row_in_table = "//tr[td[a[text()='Site']]]"
+      find(:xpath, site_row_in_table).click_on("Members")
       expect(page).to have_text('Site Members')
     end
   end
