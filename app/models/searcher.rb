@@ -18,15 +18,31 @@ class Searcher
   end
 
   def all
-    {
-      "Topic"          => Topic.order("updated_at DESC"),
-      "StillImage"     => StillImage.order("updated_at DESC"),
-      "AudioRecording" => AudioRecording.order("updated_at DESC"),
-      "Video"          => Video.order("updated_at DESC"),
-      "WebLink"        => WebLink.order("updated_at DESC"),
-      "Document"       => Document.order("updated_at DESC"),
-      "Comment"        => Comment.order("updated_at DESC"),
-    }
+    ##
+    # In a somewhat confusing move, old kete makes searching the 'site' basket
+    # actually search all baskets so we special case the 'site' basket here to
+    # maintain compatibility.
+    if query.basket_name == 'site'
+      results = {
+        "Topic"          => Topic.order("updated_at DESC"),
+        "StillImage"     => StillImage.order("updated_at DESC"),
+        "AudioRecording" => AudioRecording.order("updated_at DESC"),
+        "Video"          => Video.order("updated_at DESC"),
+        "WebLink"        => WebLink.order("updated_at DESC"),
+        "Document"       => Document.order("updated_at DESC"),
+        "Comment"        => Comment.order("updated_at DESC"),
+      }
+    else
+      {
+        'Topic'          => Topic.joins(:basket).where(baskets: { urlified_name: query.basket_name }).order('updated_at DESC'),
+        'StillImage'     => StillImage.joins(:basket).where(baskets: { urlified_name: query.basket_name }).order('updated_at DESC'),
+        'AudioRecording' => AudioRecording.joins(:basket).where(baskets: { urlified_name: query.basket_name }).order('updated_at DESC'),
+        'Video'          => Video.joins(:basket).where(baskets: { urlified_name: query.basket_name }).order('updated_at DESC'),
+        'WebLink'        => WebLink.joins(:basket).where(baskets: { urlified_name: query.basket_name }).order('updated_at DESC'),
+        'Document'       => Document.joins(:basket).where(baskets: { urlified_name: query.basket_name }).order('updated_at DESC'),
+        'Comment'        => Comment.joins(:basket).where(baskets: { urlified_name: query.basket_name }).order('updated_at DESC'),
+      }
+    end
   end
 
   def tagged
@@ -54,7 +70,7 @@ class Searcher
       "WebLink"        => distinct_contributions.where(contributed_item_type: "WebLink"),
       "Document"       => distinct_contributions.where(contributed_item_type: "Document"),
       "Comment"        => distinct_contributions.where(contributed_item_type: "Comment"),
-    } 
+    }
   end
 
   def related

@@ -29,11 +29,12 @@ feature "Users can CRUD documents" do
   end
 
   it "Delete", js: true do
-    create_document(pdf_doc_file_path)
     original_num_docs = Document.all.count
+    create_document(pdf_doc_file_path)
+    sleep 3
     click_on 'Delete' # poltergeist ignores confirm/alert modals by default
-    expect(Document.all.count).to eq(original_num_docs - 1)
-    expect(current_path).to match(/#{search_all_path}/)
+    expect(Document.all.count).to eq(original_num_docs)
+    expect(current_path).to match(/#{basket_search_all_path('site')}/)
   end
 
   it "Edit", js: true do

@@ -3,7 +3,7 @@
 -else
   - visible_class = "related-items-section"
 
-- related_to_path = search_related_to_path({related_item_id: @topic.id, related_item_type: 'Topic', controller_name_for_zoom_class: 'StillImage', urlified_name: @topic.basket.urlified_name})
+- related_to_path = basket_search_related_to_path({related_item_id: @topic.id, related_item_type: 'Topic', controller_name_for_zoom_class: 'StillImage', urlified_name: @topic.basket.urlified_name})
 
 #detail-linked-images{:class => visible_class}
   %h4

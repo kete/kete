@@ -44,7 +44,7 @@ feature "Users can CRUD images" do
     original_num_images = StillImage.all.count
     click_on 'Delete' # poltergeist ignores confirm/alert modals by default
     expect(StillImage.all.count).to eq(original_num_images - 1)
-    expect(current_path).to match(/#{search_all_path}/)
+    expect(current_path).to match(/#{basket_search_all_path('site')}/)
   end
 
   it "Edit", js: true do

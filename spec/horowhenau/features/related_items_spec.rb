@@ -4,7 +4,7 @@ require 'spec_helper'
 def exec_with_horowhenua_attachments
    old_overide_url = Rails.configuration.attachments_overide_url
     Rails.configuration.attachments_overide_url = 'http://horowhenua.kete.net.nz'
-    yield 
+    yield
     Rails.configuration.attachments_overide_url = old_overide_url
 end
 
@@ -35,7 +35,7 @@ feature "Related Items" do
         expect(sub_page).to have_content "Video (3)"
         expect(sub_page).to have_content "Salute to Fund Raisers"
         expect(sub_page).to have_css('ul a', count: 3)
-      end      
+      end
     end
   end
 
@@ -58,26 +58,26 @@ feature "Related Items" do
 
     within find("#related") do
       link = find_link("Related Items (11)")[:href]
-      expect(link).to end_with "/en/site/search/related_to?controller_name_for_zoom_class=Topic&related_item_id=2453&related_item_type=Topic&urlified_name=site"
+      expect(link).to end_with "/en/site/search/related_to/Topic?related_item_id=2453&related_item_type=Topic"
 
       link = find("#detail-linked-images").find_link("Images")[:href]
-      expect(link).to end_with "/en/site/search/related_to?controller_name_for_zoom_class=StillImage&related_item_id=2453&related_item_type=Topic&urlified_name=site"
+      expect(link).to end_with "/en/site/search/related_to/StillImage?related_item_id=2453&related_item_type=Topic"
       link = find("#detail-linked-images").find_link("1 more like this")[:href]
-      expect(link).to end_with "/en/site/search/related_to?controller_name_for_zoom_class=StillImage&related_item_id=2453&related_item_type=Topic&urlified_name=site"
+      expect(link).to end_with "/en/site/search/related_to/StillImage?related_item_id=2453&related_item_type=Topic"
 
       link = find("#detail-linked-topics").find_link("Topics")[:href]
-      expect(link).to end_with "/en/site/search/related_to?controller_name_for_zoom_class=Topic&related_item_id=2453&related_item_type=Topic&urlified_name=site"
+      expect(link).to end_with "/en/site/search/related_to/Topic?related_item_id=2453&related_item_type=Topic"
 
       link = find("#detail-linked-video").find_link("Video")[:href]
-      expect(link).to end_with "/en/site/search/related_to?controller_name_for_zoom_class=Video&related_item_id=2453&related_item_type=Topic&urlified_name=site"
+      expect(link).to end_with "/en/site/search/related_to/Video?related_item_id=2453&related_item_type=Topic"
     end
   end
 
   it "it searching by related items" do
-    visit "/en/site/search/related_to?controller_name_for_zoom_class=Topic&related_item_id=2453&related_item_type=Topic&urlified_name=site"
+    visit "/en/site/search/related_to/Topic?related_item_id=2453&related_item_type=Topic"
 
     click_on "Images (6)"
-    expect(page).to have_content "Mayor Duffy takes a sledge hammer to the old Countdown building" 
+    expect(page).to have_content "Mayor Duffy takes a sledge hammer to the old Countdown building"
 
     click_on "Video (3)"
     expect(page).to have_content "Salute to Fund Raisers"

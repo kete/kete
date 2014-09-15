@@ -35,9 +35,9 @@ class SearchResultPresenter
     summary = ""
 
     if model.respond_to? :description
-      summary = model.description
+      summary = model.description || ""
     elsif model.respond_to? :short_summary
-      summary =  model.short_summary
+      summary =  model.short_summary || ""
     end
 
     summary.sanitize.truncate(180, omission: '...')
