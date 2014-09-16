@@ -149,34 +149,11 @@ module ApplicationHelper
   end
 
   def header_links_to_baskets
-    baskets_limit = SystemSetting.list_baskets_number
-    return unless baskets_limit > 0
+    html = '<div class="basket-list">'.html_safe
+    html += link_to "Baskets List", basket_path({ :urlified_name => @site_basket.urlified_name, :controller => 'baskets', :action => 'list', :id => '' })
+    html += '</div>'.html_safe
 
-    html = '<ul id="basket-list" class="nav-list">'
-
-    baskets = @standard_basket_ids
-    baskets += [@current_basket] if @current_basket != @site_basket
-
-    total_baskets_count = Basket.except_certain_baskets(baskets).count
-
-    basket_count = 0
-    Basket.except_certain_baskets(baskets).limit(baskets_limit).all.each do |basket|
-      basket_count += 1
-      html += li_with_correct_class(basket_count) + link_to_index_for(basket)
-    end
-
-    if baskets_limit < total_baskets_count
-      html += '<li class="more-baskets">' + link_to_unless_current(t('application_helper.header_links_to_baskets.more_baskets'),
-                                              url_for(:urlified_name => @site_basket.urlified_name,
-                                                      :controller => 'baskets' ), {:tabindex => '2'}) + '</li>'
-    end
-
-    html += '</ul>'
-    if basket_count > 0
-      return html
-    else
-      return ''
-    end
+    html
   end
 
   def header_link_to_current_basket
