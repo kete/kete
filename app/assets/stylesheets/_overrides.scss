@@ -4,3 +4,18 @@
   background: white;
   padding: 0 15px;
 }
+
+
+.basket-list {
+  text-align: right;
+
+  position: relative;
+  z-index: 50;
+
+  padding-right: 15px;
+
+  > a {
+    color: black;
+    font-weight: bold;
+  }
+}
