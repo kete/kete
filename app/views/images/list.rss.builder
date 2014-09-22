@@ -171,13 +171,14 @@ def rss_dc_extended_content(xml, item)
   #       }
   #    }
   # }
-  
+
   @builder_instance = xml
   @anonymous_fields = []
 
-  fields_with_position = item.xml_attributes
+  fields_with_position_hash = item.xml_attributes
+  sorted_fields_with_position_hash = fields_with_position_hash.sort_by { |k,v| k.to_s }.to_h
+  fields_in_sorted_array = sorted_fields_with_position_hash.values
 
-  fields_in_sorted_array = fields_with_position.keys.sort_by { |s| s.to_s }.map { |key| fields_with_position[key] }
   fields_in_sorted_array.each do |field_hash|
       field_hash.each_pair do |field_key, field_data|
       # If this is google map contents, and no_map is '1', then do not use this data
