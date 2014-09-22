@@ -133,10 +133,46 @@ end
 
 
 def rss_dc_extended_content(xml, item)
-  @builder_instance = xml
-
   # We start with something like: {"text_field_multiple"=>{"2"=>{"text_field"=>{"xml_element_name"=>"dc:description", "value"=>"Value"}}, "3"=>{"text_field"=>{"xml_element_name"=>"dc:description", "value"=>"Second value"}}}, "married"=>"No", "check_boxes_multiple"=>{"1"=>{"check_boxes"=>"Yes"}}, "vehicle_type"=>{"1"=>"Car", "2"=>"Coupé"}, "truck_type_multiple"=>{"1"=>{"truck_type"=>{"1"=>"Lorry"}}, "2"=>{"truck_type"=>{"1"=>"Tractor Unit", "2"=>"Tractor with one trailer"}}}}
-
+  #
+  # which expands to this:
+  #
+  # { 
+  #    "text_field_multiple"=>{
+  #       "2"=>{"text_field"=>{
+  #          "xml_element_name"=>"dc:description", 
+  #          "value"=>"Value"
+  #       }
+  #       }, 
+  #       "3"=>{
+  #          "text_field"=>{
+  #             "xml_element_name"=>"dc:description", 
+  #             "value"=>"Second value"
+  #           }
+  #       }
+  #    }, 
+  #    "married"=>"No", 
+  #    "check_boxes_multiple"=>{
+  #      "1"=>{"check_boxes"=>"Yes"}
+  #    }, 
+  #    "vehicle_type"=>{
+  #       "1"=>"Car", 
+  #       "2"=>"Coupé"
+  #     }, 
+  #    "truck_type_multiple"=>{
+  #       "1"=>{
+  #          "truck_type"=>{"1"=>"Lorry"}
+  #       }, 
+  #       "2"=>{
+  #          "truck_type"=>{
+  #              "1"=>"Tractor Unit", 
+  #              "2"=>"Tractor with one trailer"
+  #          }
+  #       }
+  #    }
+  # }
+  
+  @builder_instance = xml
   @anonymous_fields = []
 
   fields_with_position = item.xml_attributes
