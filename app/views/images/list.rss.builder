@@ -132,6 +132,107 @@ def rss_dc_coverage_array(item)
 end
 
 
+def rss_dc_extended_content(xml, item)
+  @builder_instance = xml
+
+  # We start with something like: {"text_field_multiple"=>{"2"=>{"text_field"=>{"xml_element_name"=>"dc:description", "value"=>"Value"}}, "3"=>{"text_field"=>{"xml_element_name"=>"dc:description", "value"=>"Second value"}}}, "married"=>"No", "check_boxes_multiple"=>{"1"=>{"check_boxes"=>"Yes"}}, "vehicle_type"=>{"1"=>"Car", "2"=>"Coupé"}, "truck_type_multiple"=>{"1"=>{"truck_type"=>{"1"=>"Lorry"}}, "2"=>{"truck_type"=>{"1"=>"Tractor Unit", "2"=>"Tractor with one trailer"}}}}
+
+  @anonymous_fields = []
+
+  fields_with_position = item.xml_attributes
+
+  fields_in_sorted_array = fields_with_position.keys.sort_by { |s| s.to_s }.map { |key| fields_with_position[key] }
+  fields_in_sorted_array.each do |field_hash|
+      field_hash.each_pair do |field_key, field_data|
+      # If this is google map contents, and no_map is '1', then do not use this data
+      next if field_data.is_a?(Hash) && field_data['no_map'] && field_data['no_map'] == '1'
+      
+      if field_key =~ /_multiple$/
+        # We are dealing with multiple instances of an attribute
+        field_data.each_pair do |index, data|
+          rss_for_field_dataset(field_key, data.values.first)
+        end
+      else
+        rss_for_field_dataset(field_key, field_data)
+      end
+    end
+  end
+
+  # Build the anonymous fields that have no dc:* attributes.
+  @builder_instance.dc(:description) do |nested|
+    @anonymous_fields.each do |k, v|
+      nested.safe_send(k, v)
+    end
+  end
+end
+
+def rss_for_field_dataset(field_key, data)
+  original_field_key = field_key.gsub(/_multiple/, '')
+
+  if data.is_a?(String)
+    # This works as expected
+    # In the most simple case, the content is represented as "key" => "value", so use this directly
+    # now if it's available.
+    @anonymous_fields << [original_field_key, data]
+  elsif data.has_key?("value")
+    # We add a dc:date for 5 years before and after the value specified
+    # We also convert the single YYYY value to a format Zebra can search against
+    # Note: We use DateTime instead of just Date/Time so that we can get dates before 1900
+    if data.has_key?("circa")
+      data['value'] = Time.zone.parse("#{data['value']}-01-01").xmlschema
+      if data['circa'] == '1'
+        five_years_before, five_years_after = (data['value'].to_i - 5), (data['value'].to_i + 5)
+        @builder_instance.send("dc:date", Time.zone.parse("#{five_years_before}-01-01").xmlschema)
+        @builder_instance.send("dc:date", Time.zone.parse("#{five_years_after}-12-31").xmlschema)
+      end
+    end
+
+    # When xml_element_name is an attribute, the value is stored in a value key in a Hash.
+    if data["xml_element_name"].blank?
+      @anonymous_fields << [original_field_key, data["value"]]
+    else
+      # safe_send will drop the namespace from the element and therefore our dc elements
+      # will not be parsed by zebra, only use safe_send on non-dc elements
+      if data["xml_element_name"].include?("dc:")
+        @builder_instance.send(data["xml_element_name"], data["value"])
+      else
+        @builder_instance.safe_send(data["xml_element_name"], data["value"])
+      end
+    end
+  else
+
+    # Example of what we might have in data at this point
+    # {"xml_element_name"=>"dc:subject",
+    #  "1"=>{"value"=>"Recreation", "label"=>"Sports & Recreation"},
+    #  "2"=>"Festivals",
+    #  "3"=>"New Year"}
+
+    # This means we're dealing with a second set of nested values, to build these now.
+    data_for_values = data.reject { |k, v| k == 'xml_element_name' || k == 'label' }.map { |k, v| v }
+
+    # By this stage, we may have either of the following:
+    # [{:label => 'Something', :value => 'This'}, {:label => 'Another', :value => 'That'}]
+    # ['This', 'That']
+    # (or a combination of both). So in this case, lets collect the correct values before continuing
+    data_for_values.collect! { |v| (v.is_a?(Hash) && v['value']) ? v['value'] : v }.flatten.compact
+
+    return nil if data_for_values.empty?
+
+    if data["xml_element_name"].blank?
+      @anonymous_fields << [original_field_key, ":#{data_for_values.join(":")}:"]
+    else
+      if data["xml_element_name"].include?("dc:")
+        # we want the namespace for dc xml_element_name
+        @builder_instance.send(data["xml_element_name"], ":#{data_for_values.join(":")}:")
+      else
+        @builder_instance.safe_send(data["xml_element_name"], ":#{data_for_values.join(":")}:")
+      end
+    end
+  end
+
+end
+
+
 xml.instruct! :xml, :version => "1.0" 
 xml.rss("version" => "2.0", "xmlns:dc" => "http://purl.org/dc/elements/1.1/") do
   xml.channel do
@@ -219,8 +320,8 @@ xml.rss("version" => "2.0", "xmlns:dc" => "http://purl.org/dc/elements/1.1/") do
           xml.dc :contributor, contributor_string
         end
 
-        # # all types at this point have an extended_content attribute
-        # rss_dc_extended_content(xml, item)
+        # all types at this point have an extended_content attribute
+        rss_dc_extended_content(xml, item)
 
         # # related topics and items should have dc:subject elem here with their title
         rss_dc_relations_array(item).each do |relation_string|
