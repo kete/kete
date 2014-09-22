@@ -211,39 +211,46 @@ def rss_for_field_dataset(field_key, data)
     # In the most simple case, the content is represented as "key" => "value", so use this directly
     # now if it's available.
     @anonymous_fields << [original_field_key, data]
-  elsif data.has_key?("value")
-    # We add a dc:date for 5 years before and after the value specified
-    # We also convert the single YYYY value to a format Zebra can search against
-    # Note: We use DateTime instead of just Date/Time so that we can get dates before 1900
-    if data.has_key?("circa")
-      data['value'] = Time.zone.parse("#{data['value']}-01-01").xmlschema
-      if data['circa'] == '1'
-        five_years_before, five_years_after = (data['value'].to_i - 5), (data['value'].to_i + 5)
-        @builder_instance.send("dc:date", Time.zone.parse("#{five_years_before}-01-01").xmlschema)
-        @builder_instance.send("dc:date", Time.zone.parse("#{five_years_after}-12-31").xmlschema)
-      end
-    end
+  end
+  
+  # We add a dc:date for 5 years before and after the value specified
+  # We also convert the single YYYY value to a format Zebra can search against
+  # Note: We use DateTime instead of just Date/Time so that we can get dates before 1900
 
-    # When xml_element_name is an attribute, the value is stored in a value key in a Hash.
-    if data["xml_element_name"].blank?
-      @anonymous_fields << [original_field_key, data["value"]]
-    else
-      # safe_send will drop the namespace from the element and therefore our dc elements
-      # will not be parsed by zebra, only use safe_send on non-dc elements
-      if data["xml_element_name"].include?("dc:")
-        @builder_instance.send(data["xml_element_name"], data["value"])
-      else
-        @builder_instance.safe_send(data["xml_element_name"], data["value"])
-      end
-    end
-  else
+  if ! data.is_a?(String) && data.has_key?("value") && data.has_key?("circa") && ! (data['circa'] == '1')
+    data['value'] = Time.zone.parse("#{data['value']}-01-01").xmlschema
+  end
 
-    # Example of what we might have in data at this point
-    # {"xml_element_name"=>"dc:subject",
-    #  "1"=>{"value"=>"Recreation", "label"=>"Sports & Recreation"},
-    #  "2"=>"Festivals",
-    #  "3"=>"New Year"}
+  if ! data.is_a?(String) && data.has_key?("value") && data.has_key?("circa") && data['circa'] == '1'
+    data['value'] = Time.zone.parse("#{data['value']}-01-01").xmlschema
 
+    five_years_before, five_years_after = (data['value'].to_i - 5), (data['value'].to_i + 5)
+    @builder_instance.send("dc:date", Time.zone.parse("#{five_years_before}-01-01").xmlschema)
+    @builder_instance.send("dc:date", Time.zone.parse("#{five_years_after}-12-31").xmlschema)
+  end
+
+  # When xml_element_name is an attribute, the value is stored in a value key in a Hash.
+  if ! data.is_a?(String) && data.has_key?("value") && data["xml_element_name"].blank?
+    @anonymous_fields << [original_field_key, data["value"]]
+  end
+
+  # safe_send will drop the namespace from the element and therefore our dc elements
+  # will not be parsed by zebra, only use safe_send on non-dc elements
+  if ! data.is_a?(String) && data.has_key?("value") && ! data["xml_element_name"].blank? && data["xml_element_name"].include?("dc:")
+    @builder_instance.send(data["xml_element_name"], data["value"])
+  end
+
+  if ! data.is_a?(String) && data.has_key?("value") && ! data["xml_element_name"].blank? && ! data["xml_element_name"].include?("dc:")
+    @builder_instance.safe_send(data["xml_element_name"], data["value"])
+  end
+
+  # Example of what we might have in data at this point
+  # {"xml_element_name"=>"dc:subject",
+  #  "1"=>{"value"=>"Recreation", "label"=>"Sports & Recreation"},
+  #  "2"=>"Festivals",
+  #  "3"=>"New Year"}
+
+  if ! data.is_a?(String) && ! data.has_key?("value")
     # This means we're dealing with a second set of nested values, to build these now.
     data_for_values = data.reject { |k, v| k == 'xml_element_name' || k == 'label' }.map { |k, v| v }
 
@@ -254,19 +261,20 @@ def rss_for_field_dataset(field_key, data)
     data_for_values.collect! { |v| (v.is_a?(Hash) && v['value']) ? v['value'] : v }.flatten.compact
 
     return nil if data_for_values.empty?
-
-    if data["xml_element_name"].blank?
-      @anonymous_fields << [original_field_key, ":#{data_for_values.join(":")}:"]
-    else
-      if data["xml_element_name"].include?("dc:")
-        # we want the namespace for dc xml_element_name
-        @builder_instance.send(data["xml_element_name"], ":#{data_for_values.join(":")}:")
-      else
-        @builder_instance.safe_send(data["xml_element_name"], ":#{data_for_values.join(":")}:")
-      end
-    end
   end
 
+  if ! data.is_a?(String) && ! data.has_key?("value") && data["xml_element_name"].blank?
+    @anonymous_fields << [original_field_key, ":#{data_for_values.join(":")}:"]
+  end
+  
+  if ! data.is_a?(String) && ! data.has_key?("value") && ! data["xml_element_name"].blank? && data["xml_element_name"].include?("dc:")
+    # we want the namespace for dc xml_element_name
+    @builder_instance.send(data["xml_element_name"], ":#{data_for_values.join(":")}:")
+  end
+
+  if ! data.is_a?(String) && ! data.has_key?("value") && ! data["xml_element_name"].blank? && ! data["xml_element_name"].include?("dc:")
+    @builder_instance.safe_send(data["xml_element_name"], ":#{data_for_values.join(":")}:")
+  end
 end
 
 
