@@ -7,7 +7,10 @@ class ImagesController < ApplicationController
   end
 
   def list
-    index
+    respond_to do |format|
+      format.html { redirect_to basket_still_image_index_path }
+      format.rss  { }
+    end
   end
 
   def show
