@@ -132,6 +132,8 @@ def rss_dc_coverage_array(item)
 end
 
 
+# ================================
+
 def rss_dc_extended_content(xml, item)
   # We start with something like: {"text_field_multiple"=>{"2"=>{"text_field"=>{"xml_element_name"=>"dc:description", "value"=>"Value"}}, "3"=>{"text_field"=>{"xml_element_name"=>"dc:description", "value"=>"Second value"}}}, "married"=>"No", "check_boxes_multiple"=>{"1"=>{"check_boxes"=>"Yes"}}, "vehicle_type"=>{"1"=>"Car", "2"=>"Coupé"}, "truck_type_multiple"=>{"1"=>{"truck_type"=>{"1"=>"Lorry"}}, "2"=>{"truck_type"=>{"1"=>"Tractor Unit", "2"=>"Tractor with one trailer"}}}}
   #
@@ -175,84 +177,164 @@ def rss_dc_extended_content(xml, item)
   @builder_instance = xml
   @anonymous_fields = []
 
+
+  # for extended_content like this:
+  #
+  #   <creator xml_element_name="dc:creator"></creator>
+  #   <creation_date xml_element_name="dc:date"></creation_date>
+  #   <user_reference xml_element_name="dc:identifier"></user_reference>
+
+
   fields_with_position_hash = item.xml_attributes
+  # xml_attributes is a hash like this:
+  #
+  # '1':
+  #   creator:
+  #     xml_element_name: dc:creator
+  # '2':
+  #   creation_date:
+  #     xml_element_name: dc:date
+  # '3':
+  #   user_reference:
+      # xml_element_name: dc:identifier
+
   sorted_fields_with_position_hash = fields_with_position_hash.sort_by { |k,v| k.to_s }.to_h
   fields_in_sorted_array = sorted_fields_with_position_hash.values
 
+  # and we output an array like this:
+  #
+  # - creator:
+  #     xml_element_name: dc:creator
+  # - creation_date:
+  #     xml_element_name: dc:date
+  # - user_reference:
+  #     xml_element_name: dc:identifier  
+
+  attribute_pairs = [ ]
+
   fields_in_sorted_array.each do |field_hash|
-      field_hash.each_pair do |field_key, field_data|
+    field_hash = field_hash.reject do |field_key, field_data|
       # If this is google map contents, and no_map is '1', then do not use this data
-      next if field_data.is_a?(Hash) && field_data['no_map'] && field_data['no_map'] == '1'
-      
-      if field_key =~ /_multiple$/
-        # We are dealing with multiple instances of an attribute
-        field_data.each_pair do |index, data|
-          rss_for_field_dataset(field_key, data.values.first)
-        end
-      else
-        rss_for_field_dataset(field_key, field_data)
+      field_data.is_a?(Hash) && field_data['no_map'] && field_data['no_map'] == '1'
+    end
+
+    multi_instance_attributes = field_hash.select { |field_key, field_data| field_key =~ /_multiple$/  }
+    regular_attributes =        field_hash.reject { |field_key, field_data| field_key =~ /_multiple$/  }
+
+    multi_instance_attribute_pairs = multi_instance_attributes.flat_map do |field_key, field_data|
+      field_data.map do |index, data| 
+        [ field_key, data.values.first ]
       end
     end
+
+    regular_attribute_pairs = regular_attributes.map do |field_key, field_data|
+      [ field_key, field_data ]
+    end
+
+    attribute_pairs = attribute_pairs + multi_instance_attribute_pairs + regular_attribute_pairs
+  end
+
+  attribute_pairs.each do |field_key, field_data|
+    rss_for_field_dataset(field_key, field_data)
   end
 
   # Build the anonymous fields that have no dc:* attributes.
-  @builder_instance.dc(:description) do |nested|
-    @anonymous_fields.each do |k, v|
-      nested.safe_send(k, v)
+  @builder_instance.dc(:description) do |inner_xml|
+    @anonymous_fields.compact.each do |k, v|
+      inner_xml.tag!(escape_xml_name(k), v)
     end
   end
 end
 
+
 def rss_for_field_dataset(field_key, data)
+  @anonymous_fields << rss_for_field_dataset_anonymous(field_key, data)
+
+  rss_for_field_dataset_non_anonymous(field_key, data).each do |array|
+    dc_label, value =  array[0], array[1]
+    @builder_instance.tag! dc_label, value
+  end
+end
+
+
+def rss_for_field_dataset_non_anonymous(field_key, data)
+  key_value_pairs = [ ]
+
+  return key_value_pairs if data.is_a?(String)
+  
+  # We add a dc:date for 5 years before and after the value specified
+  # We also convert the single YYYY value to a format Zebra can search against
+  # Note: We use DateTime instead of just Date/Time so that we can get dates before 1900
+  date_conversion_for_extended_content_hash!(data)     
+
+  if data.has_key?("value") && data.has_key?("circa") && data['circa'] == '1'
+    five_years_before, five_years_after = (data['value'].to_i - 5), (data['value'].to_i + 5)
+    key_value_pairs << [ "dc:date", Time.zone.parse("#{five_years_before}-01-01").xmlschema ]
+    key_value_pairs << [ "dc:date", Time.zone.parse("#{five_years_after}-12-31").xmlschema ]
+  end
+
+  xml_value = flatten_any_extended_content_trees(data)
+  # return key_value_pairs if xml_value.nil?
+
+  # safe_send will drop the namespace from the element and therefore our dc elements
+  # will not be parsed by zebra, only use safe_send on non-dc elements
+  if data["xml_element_name"].present?
+    xml_name = data["xml_element_name"]
+
+    unless data["xml_element_name"].include?("dc:")
+      xml_name = escape_xml_name(xml_name)  
+    end
+
+    key_value_pairs << [ xml_name, xml_value ]
+  end
+
+  key_value_pairs
+end
+
+
+def rss_for_field_dataset_anonymous(field_key, data)
+  anonymous_fields = nil
   original_field_key = field_key.gsub(/_multiple/, '')
 
   if data.is_a?(String)
     # This works as expected
     # In the most simple case, the content is represented as "key" => "value", so use this directly
     # now if it's available.
-    @anonymous_fields << [original_field_key, data]
-  end
+    anonymous_fields = [original_field_key, data]
   
-  # We add a dc:date for 5 years before and after the value specified
-  # We also convert the single YYYY value to a format Zebra can search against
-  # Note: We use DateTime instead of just Date/Time so that we can get dates before 1900
+  else
+    date_conversion_for_extended_content_hash!(data)     
 
-  if ! data.is_a?(String) && data.has_key?("value") && data.has_key?("circa") && ! (data['circa'] == '1')
+    xml_value = flatten_any_extended_content_trees(data)
+    # return nil if xml_value.nil?
+
+    # If data["xml_element_name"] exists this is handled by rss_for_field_dataset_non_anonymous()
+    if data["xml_element_name"].blank?
+      anonymous_fields = [original_field_key, xml_value]
+    end
+  end
+
+  anonymous_fields
+end
+
+def date_conversion_for_extended_content_hash!(data) 
+  if data.has_key?("value") && data.has_key?("circa")
     data['value'] = Time.zone.parse("#{data['value']}-01-01").xmlschema
   end
+end
 
-  if ! data.is_a?(String) && data.has_key?("value") && data.has_key?("circa") && data['circa'] == '1'
-    data['value'] = Time.zone.parse("#{data['value']}-01-01").xmlschema
-
-    five_years_before, five_years_after = (data['value'].to_i - 5), (data['value'].to_i + 5)
-    @builder_instance.send("dc:date", Time.zone.parse("#{five_years_before}-01-01").xmlschema)
-    @builder_instance.send("dc:date", Time.zone.parse("#{five_years_after}-12-31").xmlschema)
-  end
-
-  # When xml_element_name is an attribute, the value is stored in a value key in a Hash.
-  if ! data.is_a?(String) && data.has_key?("value") && data["xml_element_name"].blank?
-    @anonymous_fields << [original_field_key, data["value"]]
-  end
-
-  # safe_send will drop the namespace from the element and therefore our dc elements
-  # will not be parsed by zebra, only use safe_send on non-dc elements
-  if ! data.is_a?(String) && data.has_key?("value") && ! data["xml_element_name"].blank? && data["xml_element_name"].include?("dc:")
-    @builder_instance.send(data["xml_element_name"], data["value"])
-  end
-
-  if ! data.is_a?(String) && data.has_key?("value") && ! data["xml_element_name"].blank? && ! data["xml_element_name"].include?("dc:")
-    @builder_instance.safe_send(data["xml_element_name"], data["value"])
-  end
-
+def flatten_any_extended_content_trees(data)
   # Example of what we might have in data at this point
   # {"xml_element_name"=>"dc:subject",
   #  "1"=>{"value"=>"Recreation", "label"=>"Sports & Recreation"},
   #  "2"=>"Festivals",
   #  "3"=>"New Year"}
 
-  if ! data.is_a?(String) && ! data.has_key?("value")
+  if data.has_key?("value")
+    data["value"]
+  else    
     # This means we're dealing with a second set of nested values, to build these now.
-    data_for_values = data.reject { |k, v| k == 'xml_element_name' || k == 'label' }.map { |k, v| v }
+    data_for_values = data.reject { |k, v| k == 'xml_element_name' || k == 'label' }.values
 
     # By this stage, we may have either of the following:
     # [{:label => 'Something', :value => 'This'}, {:label => 'Another', :value => 'That'}]
@@ -260,22 +342,30 @@ def rss_for_field_dataset(field_key, data)
     # (or a combination of both). So in this case, lets collect the correct values before continuing
     data_for_values.collect! { |v| (v.is_a?(Hash) && v['value']) ? v['value'] : v }.flatten.compact
 
-    return nil if data_for_values.empty?
-  end
-
-  if ! data.is_a?(String) && ! data.has_key?("value") && data["xml_element_name"].blank?
-    @anonymous_fields << [original_field_key, ":#{data_for_values.join(":")}:"]
-  end
-  
-  if ! data.is_a?(String) && ! data.has_key?("value") && ! data["xml_element_name"].blank? && data["xml_element_name"].include?("dc:")
-    # we want the namespace for dc xml_element_name
-    @builder_instance.send(data["xml_element_name"], ":#{data_for_values.join(":")}:")
-  end
-
-  if ! data.is_a?(String) && ! data.has_key?("value") && ! data["xml_element_name"].blank? && ! data["xml_element_name"].include?("dc:")
-    @builder_instance.safe_send(data["xml_element_name"], ":#{data_for_values.join(":")}:")
+    if data_for_values.empty?
+      nil
+    else
+      ":#{data_for_values.join(":")}:"
+    end
   end
 end
+
+
+# When importing, if any fields contain a reserved
+# name (like 'id' or 'parent') the importer will fail.
+# To avoid that, we add a quick method on the builder
+# to escape it by appending an underscore, then sending
+# it to the builder, which Nokogiri sees and removes
+# before generating the XML.
+#
+# At the same time, make sure that the name is a valid
+# XML name and escape common patterns (spaces to
+# underscores) to prevent import errors
+def escape_xml_name(name)
+  name.to_s.gsub(/\W/, '_').gsub(/(^_*|_*$)/, '') + "_"
+end
+
+# ================================
 
 
 xml.instruct! :xml, :version => "1.0" 
@@ -288,7 +378,7 @@ xml.rss("version" => "2.0", "xmlns:dc" => "http://purl.org/dc/elements/1.1/") do
     xml.ttl "60" 
 
     #[ StillImage.find(7), StillImage.find(11), StillImage.find(9) ].each do |item|
-    [ StillImage.find(79) ].each do |item|
+    [ StillImage.find(1) ].each do |item|
       xml.item do
                 # oai_dc_xml_oai_datestamp(xml)
                 # oai_dc_xml_oai_set_specs(xml)
@@ -297,40 +387,6 @@ xml.rss("version" => "2.0", "xmlns:dc" => "http://purl.org/dc/elements/1.1/") do
         xml.pubDate item.updated_at.utc.xmlschema
         xml.link basket_still_image_index_url(item.basket, item)
 
-        # ----------------------------
-        xml.dc :MAHHHHHHHH, " ---------------- "
-        xml.dc :MAHHHHHHHH, " ---------------- "
-        # ----------------------------
-
-        xml.dc :identifier, basket_still_image_url(item.basket, item)
-        xml.dc :title, item.title
-        xml.dc :publisher, SystemSetting.site_domain
-        xml.dc(:description) {  xml.cdata!(item.description) }
-        if item.class.name == 'StillImage'
-          xml.dc :source, item.original_file.public_filename
-        else
-          xml.dc :source, item.public_filename
-        end
-        xml.dc :date, item.updated_at.utc.xmlschema
-        
-        if item.creator.present?
-          xml.dc :creator, item.creator.display_name
-          xml.dc :creator, item.creator.login
-        end
-
-    #       <dc:description/>
-        xml.dc :type, "StillImage"
-        item.tags.each do |tag|
-          xml.dc(:subject) { xml.cdata! tag.name }
-        end
-
-        xml.dc :rights, item.license.url
-        xml.dc :format, item.original_file.content_type
-
-        # ----------------------------
-        xml.dc :MAHHHHHHHH, " ---------------- "
-        xml.dc :MAHHHHHHHH, " ---------------- "
-        # ----------------------------
 
         xml.dc :identifier, rss_dc_identifier(item)
         xml.dc :title,      rss_dc_title(item)
