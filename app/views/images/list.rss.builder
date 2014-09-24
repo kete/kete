@@ -174,9 +174,6 @@ def rss_dc_extended_content(xml, item)
   #    }
   # }
 
-  @builder_instance = xml
-  @anonymous_fields = []
-
 
   # for extended_content like this:
   #
@@ -234,26 +231,15 @@ def rss_dc_extended_content(xml, item)
     attribute_pairs = attribute_pairs + multi_instance_attribute_pairs + regular_attribute_pairs
   end
 
+  anonymous_fields = []
+  non_anonymous_fields = []
+
   attribute_pairs.each do |field_key, field_data|
-    rss_for_field_dataset(field_key, field_data)
+    anonymous_fields << rss_for_field_dataset_anonymous(field_key, field_data)
+    non_anonymous_fields += rss_for_field_dataset_non_anonymous(field_key, field_data)
   end
 
-  # Build the anonymous fields that have no dc:* attributes.
-  @builder_instance.dc(:description) do |inner_xml|
-    @anonymous_fields.compact.each do |k, v|
-      inner_xml.tag!(escape_xml_name(k), v)
-    end
-  end
-end
-
-
-def rss_for_field_dataset(field_key, data)
-  @anonymous_fields << rss_for_field_dataset_anonymous(field_key, data)
-
-  rss_for_field_dataset_non_anonymous(field_key, data).each do |array|
-    dc_label, value =  array[0], array[1]
-    @builder_instance.tag! dc_label, value
-  end
+  [ anonymous_fields.compact, non_anonymous_fields ]
 end
 
 
@@ -378,7 +364,7 @@ xml.rss("version" => "2.0", "xmlns:dc" => "http://purl.org/dc/elements/1.1/") do
     xml.ttl "60" 
 
     #[ StillImage.find(7), StillImage.find(11), StillImage.find(9) ].each do |item|
-    [ StillImage.find(1) ].each do |item|
+    [ StillImage.find(3), StillImage.find(18000) ].each do |item|
       xml.item do
                 # oai_dc_xml_oai_datestamp(xml)
                 # oai_dc_xml_oai_set_specs(xml)
@@ -401,9 +387,11 @@ xml.rss("version" => "2.0", "xmlns:dc" => "http://purl.org/dc/elements/1.1/") do
           end
         end
 
-        xml.send("dc:subject") {
-          xml.cdata! item.url
-        } if item.is_a?(WebLink)
+        if item.is_a?(WebLink)
+          xml.dc(:subject) {
+            xml.cdata! item.url
+          } 
+        end
 
         # we do a dc:source element for the original binary file
         source_text = rss_dc_source_for_file(item)
@@ -422,7 +410,21 @@ xml.rss("version" => "2.0", "xmlns:dc" => "http://purl.org/dc/elements/1.1/") do
         end
 
         # all types at this point have an extended_content attribute
-        rss_dc_extended_content(xml, item)
+        anonymous_fields, non_anonymous_fields = rss_dc_extended_content(xml, item)
+
+        unless anonymous_fields.empty?
+          # Build the anonymous fields that have no dc:* attributes.
+          xml.dc(:description) do |inner_xml|
+            anonymous_fields.each do |k, v|
+              inner_xml.tag!(escape_xml_name(k), v)
+            end
+          end
+        end
+
+        non_anonymous_fields.each do |array|
+          dc_label, value =  array[0], array[1]
+          xml.tag! dc_label, value if value.present?
+        end
 
         # # related topics and items should have dc:subject elem here with their title
         rss_dc_relations_array(item).each do |relation_string|
@@ -432,7 +434,7 @@ xml.rss("version" => "2.0", "xmlns:dc" => "http://purl.org/dc/elements/1.1/") do
         xml.dc :type, rss_dc_type(item)
 
 
-        rss_tags_to_dc_subjects_array(item) do |subject_string|
+        rss_tags_to_dc_subjects_array(item).each do |subject_string|
           xml.dc(:subject) do 
             xml.cdata! subject_string
           end
