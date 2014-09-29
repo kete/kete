@@ -40,6 +40,36 @@ class StillImage < ActiveRecord::Base
   self.non_versioned_columns << "file_private"
   self.non_versioned_columns << "private_version_serialized"
 
+  def self.updated_since(date)
+    # StillImage.where( <StillImage or its join tables is newer than date>  )
+
+    still_images =                    StillImage.arel_table
+    taggings =                        Tagging.arel_table
+    contributions =                   Contribution.arel_table
+    content_item_relations =          ContentItemRelation.arel_table
+    deleted_content_item_relations =  Arel::Table.new(:deleted_content_item_relations)
+
+
+    join_table = StillImage.outer_joins(:taggings).
+                            outer_joins(:contributions).
+                            outer_joins(:content_item_relations).
+                            joins("LEFT OUTER JOIN  deleted_content_item_relations " +
+                                  "ON deleted_content_item_relations.related_item_id = still_images.id " +
+                                  "AND deleted_content_item_relations.related_item_type = 'StillImage'")
+                            # I would liked to have searched for changed ImageFiles too
+                            # but the table doesnt have created_at/updated_at.
+
+    result = join_table.where(
+      still_images[:updated_at].gt(date).
+      or( taggings[:created_at].gt(date) ). # Tagging doesn't have a updated_at column.
+      or( contributions[:updated_at].gt(date) ).
+      or( content_item_relations[:updated_at].gt(date) ).
+      or( deleted_content_item_relations[:updated_at].gt(date) )
+    )
+
+    result.uniq   # Joins give us repeated results
+  end
+
   # acts as licensed but this is not versionable (cant change a license once it is applied)
   acts_as_licensed
 

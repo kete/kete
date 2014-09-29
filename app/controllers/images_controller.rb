@@ -9,7 +9,7 @@ class ImagesController < ApplicationController
   def list
     respond_to do |format|
       format.html { redirect_to basket_still_image_index_path }
-      format.rss  { }
+      format.rss  { @items = StillImage.updated_since( DateTime.now.beginning_of_month ) }
     end
   end
 

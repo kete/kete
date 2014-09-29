@@ -17,8 +17,7 @@ xml.rss("version" => "2.0", "xmlns:dc" => "http://purl.org/dc/elements/1.1/") do
     xml.language "en-nz"
     xml.ttl "60" 
 
-    #[ StillImage.find(7), StillImage.find(11), StillImage.find(9) ].each do |item|
-    [ StillImage.find(3), StillImage.find(18000) ].each do |item|
+    @items.each do |item|
       xml.item do
                 # oai_dc_xml_oai_datestamp(xml)
                 # oai_dc_xml_oai_set_specs(xml)
