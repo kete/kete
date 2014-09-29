@@ -9,7 +9,10 @@ class WebLinksController < ApplicationController
   end
 
   def list
-    index
+    respond_to do |format|
+      format.html { redirect_to basket_web_links_path }
+      format.rss  { @items = WebLink.updated_since( DateTime.now.beginning_of_month ) }
+    end
   end
 
   def show

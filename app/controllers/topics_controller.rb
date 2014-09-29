@@ -8,7 +8,10 @@ class TopicsController < ApplicationController
   end
 
   def list
-    index
+    respond_to do |format|
+      format.html { redirect_to basket_topics_path }
+      format.rss  { @items = Topic.updated_since( DateTime.now.beginning_of_month ) }
+    end
   end
 
   def show

@@ -7,7 +7,10 @@ class VideoController < ApplicationController
   end
 
   def list
-    index
+    respond_to do |format|
+      format.html { redirect_to basket_video_index_path }
+      format.rss  { @items = Video.updated_since( DateTime.now.beginning_of_month ) }
+    end
   end
 
   def show

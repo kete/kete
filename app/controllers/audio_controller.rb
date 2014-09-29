@@ -7,7 +7,10 @@ class AudioController < ApplicationController
   end
 
   def list
-    index
+    respond_to do |format|
+      format.html { redirect_to basket_audio_recording_index_path }
+      format.rss  { @items = AudioRecording.updated_since( DateTime.now.beginning_of_month ) }
+    end
   end
 
   def show

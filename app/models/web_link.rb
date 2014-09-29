@@ -20,6 +20,34 @@ class WebLink < ActiveRecord::Base
   self.non_versioned_columns << "file_private"
   self.non_versioned_columns << "private_version_serialized"
 
+  def self.updated_since(date)
+    # WebLink.where( <WebLink or its join tables is newer than date>  )
+
+    web_links =                       WebLink.arel_table
+    taggings =                        Tagging.arel_table
+    contributions =                   Contribution.arel_table
+    content_item_relations =          ContentItemRelation.arel_table
+    deleted_content_item_relations =  Arel::Table.new(:deleted_content_item_relations)
+
+
+    join_table = WebLink.outer_joins(:taggings).
+                            outer_joins(:contributions).
+                            outer_joins(:content_item_relations).
+                            joins("LEFT OUTER JOIN  deleted_content_item_relations " +
+                                  "ON deleted_content_item_relations.related_item_id = web_links.id " +
+                                  "AND deleted_content_item_relations.related_item_type = 'WebLink'")
+
+    result = join_table.where(
+      web_links[:updated_at].gt(date).
+      or( taggings[:created_at].gt(date) ). # Tagging doesn't have a updated_at column.
+      or( contributions[:updated_at].gt(date) ).
+      or( content_item_relations[:updated_at].gt(date) ).
+      or( deleted_content_item_relations[:updated_at].gt(date) )
+    )
+
+    result.uniq   # Joins give us repeated results
+  end
+
   # Setup attributes
   # ################
 
