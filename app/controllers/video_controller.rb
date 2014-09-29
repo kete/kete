@@ -9,7 +9,10 @@ class VideoController < ApplicationController
   def list
     respond_to do |format|
       format.html { redirect_to basket_video_index_path }
-      format.rss  { @items = Video.updated_since( DateTime.now.beginning_of_month ) }
+      format.rss do 
+        @items = Video.updated_since( DateTime.now.beginning_of_month )
+        render 'shared/list.rss'
+      end
     end
   end
 

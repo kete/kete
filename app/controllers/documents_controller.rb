@@ -8,8 +8,11 @@ class DocumentsController < ApplicationController
 
   def list
     respond_to do |format|
-      format.html { redirect_to basket_documents_path }
-      format.rss  { @items = Document.updated_since( DateTime.now.beginning_of_month ) }
+      format.html { redirect_to basket_documents_path } 
+      format.rss do 
+        @items = Document.updated_since( DateTime.now.beginning_of_month )
+        render 'images/list.rss'
+      end
     end
   end
 
