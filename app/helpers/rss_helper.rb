@@ -1,3 +1,5 @@
+# ROB: This is a possible candidate for converting to a presenter.
+
 module RssHelper
   # ROB: Methods pulled from oai_dc_helper.rb and simplified to return strings/nil 
   # So far only used for StillImages. May need some more tweaking for other content-types.

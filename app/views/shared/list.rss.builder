@@ -1,13 +1,10 @@
-
-# Note:
+# ROB:
 #
-# * if an topics related items change it is considered updated, if another item is added to a topic
-#   it's not considered updated.
-# * If a model directly related to this item is updated (say the user or the saved image) the item 
-#   is considered is changed.
+# * If an item's tags/contributors/related_items is updated, or the item is changed
+#   then it is considered changed.
 # * We're not listing comments
-# * udpated_since=date_string is handled by Ruby's DateTime.parse can handle (which include iso8601, rfc3339, rfc2822, rfc822)
-
+# * udpated_since=date_string is handled by Ruby's DateTime.parse can handle (which
+#   include iso8601, rfc3339, rfc2822, rfc822)
 
 xml.instruct! :xml, :version => "1.0" 
 xml.rss("version" => "2.0", "xmlns:dc" => "http://purl.org/dc/elements/1.1/") do

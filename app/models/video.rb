@@ -48,11 +48,11 @@ class Video < ActiveRecord::Base
 
 
     join_table = Video.outer_joins(:taggings).
-                            outer_joins(:contributions).
-                            outer_joins(:content_item_relations).
-                            joins("LEFT OUTER JOIN  deleted_content_item_relations " +
-                                  "ON deleted_content_item_relations.related_item_id = videos.id " +
-                                  "AND deleted_content_item_relations.related_item_type = 'StillImage'")
+                       outer_joins(:contributions).
+                       outer_joins(:content_item_relations).
+                       joins("LEFT OUTER JOIN  deleted_content_item_relations " +
+                             "ON deleted_content_item_relations.related_item_id = videos.id " +
+                             "AND deleted_content_item_relations.related_item_type = 'Video'")
 
     result = join_table.where(
       videos[:updated_at].gt(date).

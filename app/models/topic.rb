@@ -47,6 +47,46 @@ class Topic < ActiveRecord::Base
   has_many :child_content_item_relations, :class_name => "ContentItemRelation", :as => :related_item, :dependent => :delete_all
   has_many :parent_related_topics, :through => :child_content_item_relations, :source => :topic
 
+  def self.updated_since(date)
+    # Topic.where( <Topic or its join tables is newer than date>  )
+
+    topics =         Topic.arel_table
+    taggings =       Tagging.arel_table
+    contributions =  Contribution.arel_table
+    cir_1 =          Arel::Table.new(:content_item_relations, as: 'cir_1')
+    cir_2 =          Arel::Table.new(:content_item_relations, as: 'cir_2')
+    dcir_1 =         Arel::Table.new(:deleted_content_item_relations, as: 'dcir_1')
+    dcir_2 =         Arel::Table.new(:deleted_content_item_relations, as: 'dcir_2')
+
+
+    join_table = Topic.outer_joins(:taggings).
+                       outer_joins(:contributions).
+                       # On a topic the content_item_relations/deleted_content_item_relations 
+                       # joins are a bit more complex because it can be the parent or the child.
+                       joins("LEFT OUTER JOIN content_item_relations cir_1 "+
+                             "ON cir_1.related_item_id = topics.id "+
+                             "AND cir_1.related_item_type = 'Topic'").
+                       joins("LEFT OUTER JOIN content_item_relations cir_2 "+
+                             "ON cir_2.topic_id = topics.id").
+                       joins("LEFT OUTER JOIN deleted_content_item_relations dcir_1 "+
+                             "ON dcir_1.related_item_id = topics.id "+
+                             "AND dcir_1.related_item_type = 'Topic'").
+                       joins("LEFT OUTER JOIN deleted_content_item_relations dcir_2 "+
+                             "ON dcir_2.topic_id = topics.id")
+
+    result = join_table.where(
+      topics[:updated_at].gt(date).
+      or( taggings[:created_at].gt(date) ). # Tagging doesn't have a updated_at column.
+      or( contributions[:updated_at].gt(date) ).
+      or( cir_1[:updated_at].gt(date) ).
+      or( cir_2[:updated_at].gt(date) ).
+      or( dcir_1[:updated_at].gt(date) ).
+      or( dcir_2[:updated_at].gt(date) )
+    )
+
+    result.uniq   # Joins give us repeated results
+  end
+
   def child_topic_content_relations
     content_item_relations.where(related_item_type: 'Topic').order(:position)
   end
