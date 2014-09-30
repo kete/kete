@@ -6,6 +6,7 @@
 # * If a model directly related to this item is updated (say the user or the saved image) the item 
 #   is considered is changed.
 # * We're not listing comments
+# * udpated_since=date_string is handled by Ruby's DateTime.parse can handle (which include iso8601, rfc3339, rfc2822, rfc822)
 
 
 xml.instruct! :xml, :version => "1.0" 

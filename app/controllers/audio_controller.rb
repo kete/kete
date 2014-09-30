@@ -9,7 +9,13 @@ class AudioController < ApplicationController
   def list
     respond_to do |format|
       format.html { redirect_to basket_audio_recording_index_path }
-      format.rss  { @items = AudioRecording.updated_since( DateTime.now.beginning_of_month ) }
+      format.rss do 
+        date = DateTime.parse(params[:updated_since]) if params[:updated_since]
+        date = DateTime.now.beginning_of_month        if date.nil?
+
+        @items = AudioRecording.updated_since(date)
+        render 'images/list.rss'
+      end
     end
   end
 

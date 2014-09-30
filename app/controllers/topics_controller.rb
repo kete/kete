@@ -10,8 +10,11 @@ class TopicsController < ApplicationController
   def list
     respond_to do |format|
       format.html { redirect_to basket_topics_path }
-      format.rss do 
-        @items = Topic.updated_since( DateTime.now.beginning_of_month )
+      format.rss do
+        date = DateTime.parse(params[:updated_since]) if params[:updated_since]
+        date = DateTime.now.beginning_of_month        if date.nil?
+
+        @items = Topic.updated_since(date)
         render 'images/list.rss'
       end
     end

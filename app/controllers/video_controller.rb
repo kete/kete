@@ -10,7 +10,10 @@ class VideoController < ApplicationController
     respond_to do |format|
       format.html { redirect_to basket_video_index_path }
       format.rss do 
-        @items = Video.updated_since( DateTime.now.beginning_of_month )
+        date = DateTime.parse(params[:updated_since]) if params[:updated_since]
+        date = DateTime.now.beginning_of_month        if date.nil?
+
+        @items = Video.updated_since(date)
         render 'shared/list.rss'
       end
     end

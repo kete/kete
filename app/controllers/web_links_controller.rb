@@ -11,7 +11,13 @@ class WebLinksController < ApplicationController
   def list
     respond_to do |format|
       format.html { redirect_to basket_web_links_path }
-      format.rss  { @items = WebLink.updated_since( DateTime.now.beginning_of_month ) }
+      format.rss do
+        date = DateTime.parse(params[:updated_since]) if params[:updated_since]
+        date = DateTime.now.beginning_of_month        if date.nil?
+
+        @items = WebLink.updated_since(date)
+        render 'images/list.rss'
+      end
     end
   end
 

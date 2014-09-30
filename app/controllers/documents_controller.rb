@@ -10,7 +10,10 @@ class DocumentsController < ApplicationController
     respond_to do |format|
       format.html { redirect_to basket_documents_path } 
       format.rss do 
-        @items = Document.updated_since( DateTime.now.beginning_of_month )
+        date = DateTime.parse(params[:updated_since]) if params[:updated_since]
+        date = DateTime.now.beginning_of_month        if date.nil?
+
+        @items = Document.updated_since(date)
         render 'images/list.rss'
       end
     end
