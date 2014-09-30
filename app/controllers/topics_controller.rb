@@ -15,7 +15,7 @@ class TopicsController < ApplicationController
         date = DateTime.now.beginning_of_month        if date.nil?
 
         @items = Topic.updated_since(date)
-        render 'images/list.rss'
+        render 'shared/list.rss'
       end
     end
   end

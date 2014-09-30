@@ -14,7 +14,7 @@ class AudioController < ApplicationController
         date = DateTime.now.beginning_of_month        if date.nil?
 
         @items = AudioRecording.updated_since(date)
-        render 'images/list.rss'
+        render 'shared/list.rss'
       end
     end
   end
