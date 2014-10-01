@@ -6,7 +6,7 @@ module RssHelper
 
   def rss_dc_identifier(item)
     # ROB: this seemed to adjust the url if the was latest item was private. We're just ignoring this.
-    basket_still_image_url(item.basket, item)
+    rss_link_for(item)
   end
 
   def rss_dc_title(item)
@@ -68,7 +68,7 @@ module RssHelper
     item.related_items.map do |related|
       # ROB: Previously a dc:subject tag was created using related.title. This 
       #      seems unnecessary and wasn't implemented.
-      url_for_dc_identifier(related, { :force_http => true, :minimal => true }.merge(request.params) ) 
+      rss_link_for(related)
     end
   end
 
@@ -127,5 +127,24 @@ module RssHelper
 
   def rss_dc_extended_content(item)
     ExtendedContentParser.key_value_pairs(item)
+  end
+
+  def rss_link_for(item)
+    # For some reason `url_for[ item.basket, item]` gives us *_path rather than *_url strings.
+    if item.is_a? AudioRecording
+      basket_audio_recording_url(item.basket, item)
+    elsif item.is_a? Document
+      basket_document_url(item.basket, item)
+    elsif item.is_a? StillImage
+      basket_still_image_url(item.basket, item)
+    elsif item.is_a? Topic
+      basket_topic_url(item.basket, item)
+    elsif item.is_a? Video
+      basket_video_url(item.basket, item)
+    elsif item.is_a? WebLink
+      basket_web_link_url(item.basket, item)
+    else
+      "something has gone wrong in rss_link_for"
+    end
   end
 end

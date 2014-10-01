@@ -16,9 +16,9 @@ module XmlHelpers
       protocol = protocol || appropriate_protocol_for(item)
       the_url = String.new
       if item.class.name == 'StillImage'
-        the_url = "#{protocol}://#{host}#{item.original_file.public_filename}"
+        the_url = "#{host}#{item.original_file.public_filename}"
       else
-        the_url = "#{protocol}://#{host}#{item.public_filename}"
+        the_url = "#{host}#{item.public_filename}"
       end
       the_url
     end

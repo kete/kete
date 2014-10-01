@@ -5,12 +5,14 @@
 # * We're not listing comments
 # * udpated_since=date_string is handled by Ruby's DateTime.parse can handle (which
 #   include iso8601, rfc3339, rfc2822, rfc822)
+# * you can identify the objects by their <guid> tag which is the old <identifier> tag in <head>
+# * the url schema has changed slightly so <dc:identifier> is slightly different
 
 xml.instruct! :xml, :version => "1.0" 
 xml.rss("version" => "2.0", "xmlns:dc" => "http://purl.org/dc/elements/1.1/") do
   xml.channel do
     xml.title("#{SystemSetting.site_domain} StillImages RSS Feed")
-    xml.link "http://#{SystemSetting.site_url}}"
+    xml.link "http://#{SystemSetting.site_url}"
     xml.description "#{SystemSetting.pretty_site_name} StillImage ordered by most update-time"
     xml.language "en-nz"
     xml.ttl "60" 
@@ -22,7 +24,7 @@ xml.rss("version" => "2.0", "xmlns:dc" => "http://purl.org/dc/elements/1.1/") do
         xml.guid "rss:#{SystemSetting.site_domain}:#{item.basket.urlified_name}:#{item.class.name}:#{item.id}", isPermaLink: "false"
         xml.title item.title        
         xml.pubDate item.updated_at.utc.xmlschema
-        xml.link basket_still_image_index_url(item.basket, item)
+        xml.link rss_link_for(item)
 
 
         xml.dc :identifier, rss_dc_identifier(item)
