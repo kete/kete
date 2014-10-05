@@ -225,17 +225,10 @@ class ExtendedContentParser
     end
   end
 
-  # When importing, if any fields contain a reserved
-  # name (like 'id' or 'parent') the importer will fail.
-  # To avoid that, we add a quick method on the builder
-  # to escape it by appending an underscore, then sending
-  # it to the builder, which Nokogiri sees and removes
-  # before generating the XML.
-  #
-  # At the same time, make sure that the name is a valid
-  # XML name and escape common patterns (spaces to
-  # underscores) to prevent import errors
+
+  # Make sure that the name is a valid XML name and escape common patterns (spaces to underscores) 
+  # to prevent import errors
   def self.escape_xml_name(name)
-    name.to_s.gsub(/\W/, '_').gsub(/(^_*|_*$)/, '') + "_"
+    name.to_s.gsub(/\W/, '_').gsub(/(^_*|_*$)/, '')
   end
 end

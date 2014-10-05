@@ -31,10 +31,7 @@ xml.rss("version" => "2.0", "xmlns:dc" => "http://purl.org/dc/elements/1.1/") do
         xml.dc :title,      rss_dc_title(item)
         xml.dc :publisher,  rss_dc_publisher(item)
 
-        # appropriate description(s) elements will be determined
-        # since we call it without specifying
-        description_text = rss_dc_description(item)
-        if description_text
+        rss_dc_description_array(item).each do |description_text|
           xml.dc :description do
             xml.cdata! description_text
           end
@@ -70,7 +67,7 @@ xml.rss("version" => "2.0", "xmlns:dc" => "http://purl.org/dc/elements/1.1/") do
           # Build the anonymous fields that have no dc:* attributes.
           xml.dc(:description) do |inner_xml|
             anonymous_fields.each do |k, v|
-              inner_xml.tag!(escape_xml_name(k), v)
+              inner_xml.tag!(ExtendedContentParser.escape_xml_name(k), v)
             end
           end
         end

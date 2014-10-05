@@ -74,6 +74,7 @@ feature "RSS Feeds" do
     expect(page.html).to include    '<dc:identifier>http://www.example.com/en/site/documents/104-minutes-of-council-meeting-18-june-1906</dc:identifier>'
     expect(page.html).to include    '<dc:title>Minutes of Council Meeting 18 June 1906</dc:title>'
     expect(page.html).to include    '<dc:publisher>horowhenua.kete.net.nz</dc:publisher>'
+    expect(stripped_xml).to include '<dc:description><![CDATA[Minutes of meeting of Council held in the Council Chambers on Monday 18th June 1906.]]></dc:description>'
     expect(stripped_xml).to include '<dc:description><![CDATA[PRESENT :&nbsp; The Mayor (Mr B R Gardener) and Councillors Hall, Hankins, Hudson, I&nbsp; Prouse, Levy and Ryder.  &nbsp;   The Minutes of the previous meeting were read and confirmed.   &nbsp;   Ranger   Concerning the appointment of Ranger it was decided to let the question of salary stand over until next meeting but on the motion of Cr Ryder seconded by Cr Hankins it was carried &ldquo;that Mr Cecil Wilson be appointed Ranger to this Council with power to impound all stock found wandering in the streets and roads of the Borough and that this appointment date him from the 18th June 1906 and be advertised.&rdquo;   &nbsp;   Amended Estimates   The Mayor moved and Cr J Prouse seconded &ldquo;That the estimates for the year ending 31st March 1907 as amended and now presented to the Council showing the income estimated at &pound;886 and the expenditure estimated at &pound;865 , be now finally approved by this Council&rdquo;.&nbsp; This was carried Crs Hankins, Hall &amp; Hudson voting against the motion.   &nbsp;   Mr Seddon&rsquo;s Death   The Mayor moved &amp; Councillor Hudson seconded the following resolution:-   &ldquo;That the Mayor &amp; Councillors on behalf of the citizens of Levin &ldquo;desire to express deepest and heartfelt sympathy with Mrs Seddon &ldquo;and family in their sudden and irreparable loss, and to place on &ldquo;record the high appreciation of the many valued services rendered &ldquo;to the Town and district of the late illustrious Premier&rdquo;   This was carried in silence. The members of the Council standing the while.   &nbsp;   Funeral Arrangements   It was then explained by the Mayor that as there was to be a Memorial Service in Levin on the day of the funeral of the late Rt. Hon. R J Seddon it seemed to him best to attend the local function, he would therefore be unable to represent the Council at the funeral - he consequently moved and Cr Prouse seconded and it was carried &ldquo;That this Council respectfully requests Mr W H Field, M.H.R., together with any Councillors present in Wellington to represent the Council &amp; Borough at the funeral of the late Premier, the Rt. Hon. R J Seddon.&rdquo;   &nbsp;   The Mayor moved, Cr Ryder seconded and it was carried &ldquo;That this Council do now adjourn until Monday next 25th inst.&rdquo;   &nbsp;   &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Confirmed&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;[signature]   &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;June 25&nbsp; 1906  ]]></dc:description>'
     expect(page.html).to include    '<dc:source>http://horowhenua.kete.net.nz/documents/104/Meeting_6_compact_pdf.pdf</dc:source>'
     expect(page.html).to include    "<dc:date>#{item.updated_at.xmlschema}</dc:date>"
@@ -114,7 +115,7 @@ feature "RSS Feeds" do
     expect(page.html).to include    '<dc:format>image/jpeg</dc:format>'
   end
 
-  pending "for topics are available" do
+  it "for topics are available" do
     item = Topic.find(171)
     update_timestamp(item)
     
@@ -123,33 +124,30 @@ feature "RSS Feeds" do
 
     stripped_xml = page.html.gsub(/^\s*/, '').gsub(/[\n\r]/, '')
 
-    # expect(page.html).to include    '<guid isPermaLink="false">rss:horowhenua.kete.net.nz:site:Topic:171</guid>'
-    # expect(page.html).to include    '<title>Horowhenua Animal Rescue Society</title>'
-    # expect(page.html).to include    "<pubDate>#{item.updated_at.xmlschema}</pubDate>"
-    # expect(page.html).to include    '<link>http://www.example.com/en/site/topics/171-horowhenua-animal-rescue-society</link>'
+    expect(page.html).to include    '<guid isPermaLink="false">rss:horowhenua.kete.net.nz:site:Topic:171</guid>'
+    expect(page.html).to include    '<title>Horowhenua Animal Rescue Society</title>'
+    expect(page.html).to include    "<pubDate>#{item.updated_at.xmlschema}</pubDate>"
+    expect(page.html).to include    '<link>http://www.example.com/en/site/topics/171-horowhenua-animal-rescue-society</link>'
 
-    # expect(page.html).to include    '<dc:identifier>http://www.example.com/en/site/topics/171-horowhenua-animal-rescue-society</dc:identifier>'
-    # expect(page.html).to include    '<dc:title>Horowhenua Animal Rescue Society</dc:title>'
-    # expect(page.html).to include    '<dc:publisher>horowhenua.kete.net.nz</dc:publisher>'
-    # expect(stripped_xml).to include '<dc:description><![CDATA[Horowhenua Animal Rescue Society (Levin) is a voluntary group who provide a valuable service to the homeless animals of the Horowhenua. ]]></dc:description>'
-    # expect(stripped_xml).to include '<dc:description><![CDATA[Cindy Puketapu is the face of Horowhenua Animal Rescue.&nbsp;  Cindy has been involved in Animal rescue for around 20 years and moved the shelter on to her four-acre lifestyle block, in Ryder Crescent, 10 years ago after the death of Graeme Headley who had built it into a thriving organization.      The shelter cares for numerous dogs, cats and kittens until new homes can be found for them. Many find their new home as a result of the society&rsquo;s monthly newspaper advertising. Anyone wishing to adopt an animal can contact Cindy on 06-3688-569 or 027-2563-965.     Animal Rescue is run by a committee that works hard to provide funds to keep it going &ndash; committee contact is Ann (phone: 06 367 8552).]]></dc:description>'
-    # expect(page.html).to include    "<dc:date>#{item.updated_at.xmlschema}</dc:date>"
-    # expect(page.html).to include    '<dc:creator>Pippa</dc:creator>'
-    # expect(page.html).to include    '<dc:creator>pmc1</dc:creator>'
-    # expect(page.html).to include    '<dc:contributor>Joann Ransom</dc:contributor>'
-    # expect(page.html).to include    '<dc:contributor>ransomjo</dc:contributor>'
-    # expect(page.html).to include    '<dc:description><contact_phone_number>06-3688-569</contact_phone_number></dc:description>'
-    # expect(stripped_xml).to include '<dc:subject><![CDATA[Successful animal rehomes]]></dc:subject>'
-    # expect(page.html).to include    '<dc:relation>http://www.example.com/en/site/topics/184-successful-animal-rehomes</dc:relation>'
-    # expect(stripped_xml).to include '<dc:subject><![CDATA[Ohau We Love to Dance Group]]></dc:subject>'
-    # expect(page.html).to include    '<dc:relation>http://www.example.com/en/site/topics/103-ohau-we-love-to-dance-group</dc:relation>'
-    # expect(stripped_xml).to include '<dc:subject><![CDATA[Dr Doolittle\'s just a beginner compared to our Cindy]]></dc:subject>'
-    # expect(page.html).to include    '<dc:relation>http://www.example.com/en/site/documents/93-dr-doolittle-s-just-a-beginner-compared-to-our-cindy</dc:relation>'
-    # expect(page.html).to include    '<dc:type>InteractiveResource</dc:type>'
-    # expect(page.html).to include    '<dc:rights>http://creativecommons.org/licenses/by-nc-sa/3.0/nz/</dc:rights>'
-    # expect(page.html).to include    '<dc:format>text/html</dc:format>'
-    # expect(page.html).to include    '<dc:coverage>General</dc:coverage>'
-    # expect(page.html).to include    '<dc:coverage>Organisation</dc:coverage>'
+    expect(page.html).to include    '<dc:identifier>http://www.example.com/en/site/topics/171-horowhenua-animal-rescue-society</dc:identifier>'
+    expect(page.html).to include    '<dc:title>Horowhenua Animal Rescue Society</dc:title>'
+    expect(page.html).to include    '<dc:publisher>horowhenua.kete.net.nz</dc:publisher>'
+    expect(stripped_xml).to include '<dc:description><![CDATA[Horowhenua Animal Rescue Society (Levin) is a voluntary group who provide a valuable service to the homeless animals of the Horowhenua. ]]></dc:description>'
+    expect(stripped_xml).to include '<dc:description><![CDATA[Cindy Puketapu is the face of Horowhenua Animal Rescue.&nbsp;  Cindy has been involved in Animal rescue for around 20 years and moved the shelter on to her four-acre lifestyle block, in Ryder Crescent, 10 years ago after the death of Graeme Headley who had built it into a thriving organization.      The shelter cares for numerous dogs, cats and kittens until new homes can be found for them. Many find their new home as a result of the society&rsquo;s monthly newspaper advertising. Anyone wishing to adopt an animal can contact Cindy on 06-3688-569 or 027-2563-965.     Animal Rescue is run by a committee that works hard to provide funds to keep it going &ndash; committee contact is Ann (phone: 06 367 8552).]]></dc:description>'
+    expect(page.html).to include    "<dc:date>#{item.updated_at.xmlschema}</dc:date>"
+    expect(page.html).to include    '<dc:creator>Pippa</dc:creator>'
+    expect(page.html).to include    '<dc:creator>pmc1</dc:creator>'
+    expect(page.html).to include    '<dc:contributor>Joann Ransom</dc:contributor>'
+    expect(page.html).to include    '<dc:contributor>ransomjo</dc:contributor>'
+    expect(stripped_xml).to include '<dc:description><contact_phone_number>06-3688-569</contact_phone_number></dc:description>'
+    expect(page.html).to include    '<dc:relation>http://www.example.com/en/site/topics/184-successful-animal-rehomes</dc:relation>'
+    expect(page.html).to include    '<dc:relation>http://www.example.com/en/site/topics/103-ohau-we-love-to-dance-group</dc:relation>'
+    expect(page.html).to include    '<dc:relation>http://www.example.com/en/site/documents/93-dr-doolittles-just-a-beginner-compared-to-our-cindy</dc:relation>'
+    expect(page.html).to include    '<dc:type>InteractiveResource</dc:type>'
+    expect(page.html).to include    '<dc:rights>http://creativecommons.org/licenses/by-nc-sa/3.0/nz/</dc:rights>'
+    expect(page.html).to include    '<dc:format>text/html</dc:format>'
+    expect(page.html).to include    '<dc:coverage>General</dc:coverage>'
+    expect(page.html).to include    '<dc:coverage>Organisation</dc:coverage>'
   end
 
   it "for videos are available" do
@@ -195,8 +193,6 @@ feature "RSS Feeds" do
     expect(page).to have_selector('item', count: 1)
 
     stripped_xml = page.html.gsub(/^\s*/, '').gsub(/[\n\r]/, '')
-
-    # binding.pry
 
     expect(page.html).to include    '<guid isPermaLink="false">rss:horowhenua.kete.net.nz:site:WebLink:36</guid>'
     expect(page.html).to include    '<title>Tokomaru Steam Museum</title>'

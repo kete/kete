@@ -1,7 +1,7 @@
 # ROB: This is a possible candidate for converting to a presenter.
 
 module RssHelper
-  # ROB: Methods pulled from oai_dc_helper.rb and simplified to return strings/nil 
+  # ROB: Methods pulled from oai_dc_helpers.rb and simplified to return strings/nil 
   # So far only used for StillImages. May need some more tweaking for other content-types.
 
   def rss_dc_identifier(item)
@@ -17,17 +17,17 @@ module RssHelper
     SystemSetting.site_domain
   end
 
-  def rss_dc_description(item)
-    # ROB: embedded html is stripped out because this is what old oai sources do.
+  def rss_dc_description_array(item)
+    results = []
 
-    # ROB: Topic and Document have a short summary option. The old version listed this as
-    # the description giving two dc:description tags. We aren't doing this.
-
-    if item.description.present?
-      item.description.strip_tags
-    else
-      nil
+    if item.respond_to?(:short_summary)
+      results << item.short_summary if item.short_summary.present?
     end
+
+    # ROB: embedded html is stripped out because this is what old oai sources do.
+    results << item.description.strip_tags if item.description.present?
+
+    results
   end
 
   def rss_dc_source_for_file(item)
@@ -117,7 +117,7 @@ module RssHelper
 
     if item.is_a?(Topic)
       item.topic_type.ancestors.each do |ancestor|
-        array << item.ancestor.name
+        array << ancestor.name
       end
       array << item.topic_type.name
     end
