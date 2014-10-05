@@ -3,36 +3,36 @@ require 'spec_helper'
 feature "Page Header Basket-Links" do
   it "Adopt an Anzac can be followed" do
     visit "/"
-    within("#basket-list") do
-      click_link('Adopt an Anzac')
-    end
+    click_link "Baskets List"
+    click_link('Adopt an Anzac')
+
     expect(page.status_code).to be(200)
     expect(current_url).to end_with("/en/adopt_an_anzac")
   end
 
   it "Trevor Heath Photography can be followed" do
     visit "/"
-    within("#basket-list") do
-      click_link "Trevor Heath Photography"
-    end
+    click_link "Baskets List"
+    click_link "Trevor Heath Photography"
+
     expect(page.status_code).to be(200)
     expect(current_url).to end_with("/en/trevor_heath_photography")
   end
 
   it "Chinese Remembered can be followed" do
     visit "/"
-    within("#basket-list") do
-      click_link "Chinese Remembered"
-    end
+    click_link "Baskets List"
+    click_link "Chinese Remembered"
+
     expect(page.status_code).to be(200)
     expect(current_url).to end_with("/en/chinese_remembered")
   end
 
   it "Ricky can be followed" do
     visit "/"
-    within("#basket-list") do
-      click_link "Ricky"
-    end
+    click_link "Baskets List"
+    click_link "Ricky"
+
     expect(page.status_code).to be(200)
     expect(current_url).to end_with("/en/ricky")
   end
@@ -42,9 +42,9 @@ end
 feature "Links are not rendered as escaped html" do
   it "for basket Trevor Heath Photography basket" do
     visit "/"
-    within("#basket-list") do
-      click_link "Trevor Heath Photography"
-    end
+    click_link "Baskets List"
+    click_link "Trevor Heath Photography"
+
     expect(page).not_to have_content('<li ')
     expect(page).not_to have_content('<a ')
   end

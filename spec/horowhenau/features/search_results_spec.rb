@@ -52,9 +52,6 @@ feature "Browse search results" do
 
     click_on "Documents (2,677)"
     expect(first_result_text).to have_content "Scrapbook 6 Page 42"
-
-    click_on "Discussions (386)"
-    expect(first_result_text).to have_content "Pending Moderation"
   end
 end
 
@@ -83,8 +80,5 @@ feature "Search for a particular item" do
 
     click_on "Documents (193)"
     expect(first_result_text).to have_content "Reminiscences of an old colonist 1908"
-
-    click_on "Discussions (4)"
-    expect(first_result_text).to have_content "Grandmother and Granddaughters on Beach"
   end
 end
