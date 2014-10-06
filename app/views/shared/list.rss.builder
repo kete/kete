@@ -78,7 +78,7 @@ xml.rss("version" => "2.0", "xmlns:dc" => "http://purl.org/dc/elements/1.1/") do
         end
 
 
-        # # related topics and items should have dc:subject elem here with their title
+        # related topics and items should have dc:subject elem here with their title
         rss_dc_relations_array(item).each do |relation_string|
           xml.dc :relation, relation_string
         end

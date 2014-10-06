@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20141002085309) do
+ActiveRecord::Schema.define(:version => 20141006213453) do
 
   create_table "audio_recording_versions", :force => true do |t|
     t.integer  "audio_recording_id"
@@ -183,6 +183,7 @@ ActiveRecord::Schema.define(:version => 20141002085309) do
   add_index "content_item_relations", ["related_item_id"], :name => "index_content_item_relations_on_related_item_id"
   add_index "content_item_relations", ["related_item_type"], :name => "index_content_item_relations_on_related_item_type"
   add_index "content_item_relations", ["topic_id"], :name => "index_content_item_relations_on_topic_id"
+  add_index "content_item_relations", ["updated_at"], :name => "index_content_item_relations_on_updated_at"
 
   create_table "content_type_to_field_mappings", :force => true do |t|
     t.integer  "content_type_id",   :null => false
@@ -219,6 +220,7 @@ ActiveRecord::Schema.define(:version => 20141002085309) do
     t.text     "website_for_anonymous"
   end
 
+  add_index "contributions", ["updated_at"], :name => "index_contributions_on_updated_at"
   add_index "contributions", ["user_id"], :name => "contributions_user_id_idx"
 
   create_table "deleted_content_item_relations", :force => true do |t|
@@ -234,6 +236,7 @@ ActiveRecord::Schema.define(:version => 20141002085309) do
   add_index "deleted_content_item_relations", ["related_item_id"], :name => "index_deleted_content_item_relations_on_related_item_id"
   add_index "deleted_content_item_relations", ["related_item_type"], :name => "index_deleted_content_item_relations_on_related_item_type"
   add_index "deleted_content_item_relations", ["topic_id"], :name => "index_deleted_content_item_relations_on_topic_id"
+  add_index "deleted_content_item_relations", ["updated_at"], :name => "index_deleted_content_item_relations_on_updated_at"
 
   create_table "document_versions", :force => true do |t|
     t.integer  "document_id"
@@ -522,6 +525,7 @@ ActiveRecord::Schema.define(:version => 20141002085309) do
   end
 
   add_index "taggings", ["basket_id"], :name => "taggings_basket_id_idx"
+  add_index "taggings", ["created_at"], :name => "index_taggings_on_created_at"
   add_index "taggings", ["tag_id", "taggable_id", "taggable_type", "context", "tagger_id", "tagger_type"], :name => "taggings_idx", :unique => true
   add_index "taggings", ["taggable_id", "taggable_type", "context"], :name => "index_taggings_on_taggable_id_and_taggable_type_and_context"
 
@@ -598,6 +602,7 @@ ActiveRecord::Schema.define(:version => 20141002085309) do
   add_index "topics", ["basket_id"], :name => "topics_basket_id_idx"
   add_index "topics", ["index_for_basket_id"], :name => "topics_index_for_basket_id_idx"
   add_index "topics", ["topic_type_id"], :name => "topics_topic_type_id_idx"
+  add_index "topics", ["updated_at"], :name => "index_topics_on_updated_at"
 
   create_table "user_portrait_relations", :force => true do |t|
     t.integer  "position"
