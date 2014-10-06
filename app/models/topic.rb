@@ -82,7 +82,12 @@ class Topic < ActiveRecord::Base
       or( cir_2[:updated_at].gt(date) ).
       or( dcir_1[:updated_at].gt(date) ).
       or( dcir_2[:updated_at].gt(date) )
-    )
+    ).
+    # Speed up request with pre-loading of associations.
+    includes(:creators).
+    includes(:license).
+    includes(:topic_type)
+    includes(:basket)
 
     result.uniq   # Joins give us repeated results
   end

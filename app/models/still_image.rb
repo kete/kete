@@ -65,7 +65,13 @@ class StillImage < ActiveRecord::Base
       or( contributions[:updated_at].gt(date) ).
       or( content_item_relations[:updated_at].gt(date) ).
       or( deleted_content_item_relations[:updated_at].gt(date) )
-    )
+    ).
+    # Speed up request with pre-loading of associations.
+    includes(:creators).
+    includes(:original_file).
+    includes(:license).
+    includes(:baskets)
+
 
     result.uniq   # Joins give us repeated results
   end
