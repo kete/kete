@@ -70,8 +70,7 @@ class StillImage < ActiveRecord::Base
     includes(:creators).
     includes(:original_file).
     includes(:license).
-    includes(:baskets)
-
+    includes(:basket)
 
     result.uniq   # Joins give us repeated results
   end
