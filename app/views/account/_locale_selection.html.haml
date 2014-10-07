@@ -1,0 +1,13 @@
+- classes ||= Array.new
+- classes << 'language_choices_display'
+- if I18n.available_locales_with_labels.keys.size > 1
+  %div{:class => classes.join(' '), :id => "language_choices_#{SystemSetting.language_choices_display_type}"}
+    - if SystemSetting.language_choices_display_type == 'links'
+      %div= locale_links :default => I18n.locale
+    - else
+      = form_tag({:controller => 'account', :action => 'change_locale'}, {:method => :get}) do
+        %div
+          %noscript
+            %label= t 'account.locale_selection.language'
+          = locale_dropdown(nil, { :default => I18n.locale, :pre_text => t('account.locale_selection.choose_locale') })
+          %noscript= submit_tag t('account.locale_selection.change_locale')

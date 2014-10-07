@@ -18,17 +18,6 @@ module ProfilesHelper
         html += select_tag("#{input_name}[#{form_type}][rule_type]",
                            options_for_select(type_options, current_rule_for(form_type)),
                            :id => "record_rules_#{form_type}_rule_type")
-        html += javascript_tag("
-          $('record_rules_#{form_type}_rule_type').observe('change', function() {
-            value = $('record_rules_#{form_type}_rule_type').value;
-            // show the allow user choices section when ftype supports it
-            if ( value == 'some' ) {
-              $('record_rules_#{form_type}_form').show();
-            } else {
-              $('record_rules_#{form_type}_form').hide();
-            }
-          });
-        ")
         html += "<div id=\"record_rules_#{form_type}_form\"#{" style=\"display:none;\"" if current_rule_for(form_type) != 'some'}>"
         html += fetch_form_for(form_type, input_name)
         html += "</div>"
@@ -118,7 +107,7 @@ module ProfilesHelper
 
   # A text area tag. Wraps it in form-element div,
   # with label, and appropriate id and name
-  def rules_text_area_tag(name, label=nil, class_name='mceEditor')
+  def rules_text_area_tag(name, label=nil, class_name='tinymce')
     '<div class="form-element">' +
       (label ? content_tag('label', label, :for => rules_label_id(name), :class => 'inline') : '') +
       text_area_tag("#{@rule_locals[:values_field_prefix]}[#{name}]", current_value_for(name),
@@ -164,22 +153,4 @@ module ProfilesHelper
   def rules_fieldset_tag(name)
     "<fieldset id='#{rules_label_id(name)}_fieldset'#{" style='display:none;'" unless allowed_value?(name)}>"
   end
-
-  # Using the @profile_sections set for each allowed checkbox, run through and
-  # add javascript to expand/collapse the fieldset that it relates to
-  def rules_section_javascript
-    js = String.new
-    @profile_sections.each do |section|
-      # don't let the checkbox expand/collapse the section at the moment, because
-      # we don't have the javascript in place to affect the dropdown arrow
-      # js += toggle_elements_applicable(rules_allowed_id(section), '', '', "#{rules_label_id(section)}_fieldset", true, false)
-      js += javascript_tag("quickExpandCollapse('#{rules_allowed_id(section)}_expander',
-                                                '#{rules_label_id(section)}_fieldset',
-                                                '/images/icon_results_next_off.gif',
-                                                '/images/arrow_down.gif');")
-    end
-    @profile_sections = Array.new
-    js
-  end
-
 end

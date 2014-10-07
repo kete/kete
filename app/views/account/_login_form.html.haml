@@ -1,0 +1,16 @@
+%fieldset
+  - reg_link = link_to( t('.register_link'), { controller: 'account', action: 'signup', urlified_name: @site_basket.urlified_name }, tabindex: '1')
+  %p= raw t('.register', register_link: reg_link)
+
+.form-element
+  %label{for: "login"}= t('.login')
+  = text_field_tag 'login', nil, tabindex: '1'
+.form-element
+  %label{for: "password"}= t('.password')
+  = password_field_tag 'password', nil, tabindex: '1'
+.form-element
+  %label{for: "remember_me"}= t('.remember_me')
+  = check_box_tag 'remember_me', "1", false, tabindex: '1'
+  
+- forgot_pass_link = link_to(t('.forgot_password_link'), { :controller => 'account', :action => 'forgot_password', :urlified_name => @site_basket.urlified_name}, :tabindex => '1')
+%p= raw t('.forgot_password', forgot_password_link: forgot_pass_link)

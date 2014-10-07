@@ -1,0 +1,7 @@
+%h3= t 'configure.settings_complete.title'
+- if SystemSetting.is_configured?
+  %p= t 'configure.settings_complete.restart'
+- else
+  %p= t 'configure.settings_complete.next'
+  = form_tag({ :action => 'done_with_settings' }, :remote => true) do
+    = submit_tag t('configure.settings_complete.next_buton')

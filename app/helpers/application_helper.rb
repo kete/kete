@@ -10,9 +10,10 @@ module ApplicationHelper
 
   include OaiDcHelpers
 
-  include ZoomHelpers
+  # include ZoomHelpers
 
-  include OembedProviderHelper
+# !! Re-enable on switch to rails 3.2:
+#  include OembedProviderHelper
 
   def stripped_title
     h(strip_tags(@title))
@@ -20,69 +21,64 @@ module ApplicationHelper
 
   def title_with_context
     if @current_basket == @site_basket
-      "#{stripped_title} - #{Kete.pretty_site_name}"
+      "#{stripped_title} - #{SystemSetting.pretty_site_name}"
     else
-      "#{stripped_title} - #{@current_basket.name} - #{Kete.pretty_site_name}"
+      "#{stripped_title} - #{@current_basket.name} - #{SystemSetting.pretty_site_name}"
     end
   end
 
   # Get the integer of any given image size
   def image_size_of(string)
-    size = IMAGE_SIZES[string.to_sym].is_a?(String) ? \
-             IMAGE_SIZES[string.to_sym].split('x').first : \
-             IMAGE_SIZES[string.to_sym].first
-    size.gsub(/(!|>|<)/, '').to_i
+    if string.is_a? Numeric
+      string.to_i
+    else
+      size = SystemSetting.image_sizes[string.to_sym].is_a?(String) ? \
+               SystemSetting.image_sizes[string.to_sym].split('x').first : \
+               SystemSetting.image_sizes[string.to_sym].first
+      size.gsub(/(!|>|<)/, '').to_i
+    end
   end
 
   # Controls needed for Gravatar support throughout the site
   include Avatar::View::ActionViewSupport
   def avatar_for(user, options = {})
     # New installs use strings for the small_sq value, but we have to handle legacy settings containing arrays
-    image_dimension = IMAGE_SIZES[:small_sq].is_a?(String) ? \
-                        IMAGE_SIZES[:small_sq].gsub(/(!|>|<)/, '').split('x').first.to_i : \
-                        IMAGE_SIZES[:small_sq].first
+    image_dimension = SystemSetting.image_sizes[:small_sq].is_a?(String) ? \
+                        SystemSetting.image_sizes[:small_sq].gsub(/(!|>|<)/, '').split('x').first.to_i : \
+                        SystemSetting.image_sizes[:small_sq].first
     default_options = { :width => image_dimension,
                         :height => image_dimension,
                         :alt => t('application_helper.avatar_for.users_avatar',
                                   :user_name => user.user_name) }
     options = default_options.merge(options)
 
-    return nil if options[:return_portrait] && (!ENABLE_USER_PORTRAITS || user.avatar.nil?)
+    return nil if options[:return_portrait] && (!SystemSetting.enable_user_portraits? || user.avatar.nil?)
 
-    if ENABLE_USER_PORTRAITS && user.avatar
+    if SystemSetting.enable_user_portraits? && user.avatar
       if options[:return_portrait]
         return user.avatar
       else
         return image_tag(user.avatar.thumbnail_file.public_filename, options)
       end
-    elsif ENABLE_USER_PORTRAITS && !ENABLE_GRAVATAR_SUPPORT
-      return image_tag('no-avatar.png', options)
+    elsif SystemSetting.enable_user_portraits? && !SystemSetting.enable_gravatar_support?
+      return image_tag(image_path('no-avatar.png'), options)
     end
 
-    if ENABLE_GRAVATAR_SUPPORT
-      return avatar_tag(user, { :size => 50, :rating => 'G', :gravatar_default_url => "#{SITE_URL}images/no-avatar.png" }, options)
+    if SystemSetting.enable_gravatar_support?
+      default_img_url = URI.join(root_url, image_path("no-avatar.png")).to_s
+      avatar_options = {
+        size: 50,
+        rating: 'G',
+        gravatar_default_url: default_img_url
+      }
+      return avatar_tag(user, avatar_options, options)
     end
 
     return ''
   end
 
-  # Adds the necessary javascript to update a div with the id of user_avat
-  def avatar_updater_js(options = {})
-    options = options.merge({ :email_id => 'user_email', :avatar_id => 'user_avatar_img', :spinner_id => 'user_avatar_spinner' })
-    javascript_tag("
-      $('#{options[:email_id]}').observe('blur', function(event) {
-        new Ajax.Request('#{url_for(:controller => 'account', :action => 'fetch_gravatar')}', {
-          method: 'get',
-          parameters: { email: $('#{options[:email_id]}').value, avatar_id: '#{options[:avatar_id]}' },
-          onLoading: function(loading) { $('#{options[:spinner_id]}').show(); },
-          onComplete: function(complete) { $('#{options[:spinner_id]}').hide(); }
-        });
-      });
-    ")
-  end
-
   def page_keywords
-    return Kete.default_page_keywords if current_item.nil? || current_item.tags.blank?
+    return SystemSetting.default_page_keywords if current_item.nil? || current_item.tags.blank?
     current_item.tags.join(",").gsub(" ", "_").gsub("\"", "")
   end
 
@@ -92,9 +88,9 @@ module ApplicationHelper
   end
 
   def page_description
-    return Kete.default_page_description if current_item.nil?
+    return SystemSetting.default_page_description if current_item.nil?
     description_text = short_summary_or_description_of(current_item)
-    return Kete.default_page_description if description_text.blank?
+    return SystemSetting.default_page_description if description_text.blank?
     description_text
   end
 
@@ -118,9 +114,9 @@ module ApplicationHelper
       metadata += meta_tag(:name => 'DC.subject', :content => h(tag))
     end
 
-    metadata += meta_tag(:name => 'DC.creator', :content => h(item.creator.user_name))
+    metadata += meta_tag(:name => 'DC.creator', :content => h(item.creator.user_name)) if item.creator
     metadata += meta_tag(:name => 'DC.contributor', :content => h(item.contributors.last.user_name) + ", et al") if item.contributors.size > 1
-    metadata += meta_tag(:name => 'DC.publisher', :content => h(Kete.pretty_site_name))
+    metadata += meta_tag(:name => 'DC.publisher', :content => h(SystemSetting.pretty_site_name))
     metadata += meta_tag(:name => 'DC.type', :content => 'Text')
     metadata += meta_tag(:name => 'DC.rights', :content => h(item.license.name + " (" + item.license.url + ")")) if item.license
 
@@ -133,14 +129,14 @@ module ApplicationHelper
     # We don't have a published date at the moment
     # metadata += meta_tag(:name => 'DC.date', :content => item.created_at.to_date, :scheme => "IS08601")
 
-    metadata
+    metadata.html_safe
   end
 
   def opensearch_descriptions
     tag(:link, :rel => "search",
                :type => "application/opensearchdescription+xml",
-               :href => "#{SITE_URL}opensearchdescription.xml",
-               :title => "#{Kete.pretty_site_name} Web Search")
+               :href => "/opensearchdescription.xml",
+               :title => "#{SystemSetting.pretty_site_name} Web Search")
   end
 
   def open_search_metadata
@@ -152,49 +148,12 @@ module ApplicationHelper
     meta_tag(:name => "itemsPerPage", :content => @number_per_page)
   end
 
-  def initialize_gmap_headers?
-    (params[:controller] == 'search' &&
-     %w{all for}.include?(params[:action]) &&
-     (!params[:view_as].blank? && params[:view_as] == 'map')) ||
-      (params[:controller] == 'index_page' && params[:action] == 'index')||
-      (CACHES_CONTROLLERS.include?(params[:controller]) &&
-       GoogleMap::Mapper::ITEM_ACTIONS.include?(params[:action])) ||
-      (params[:controller] == 'baskets' && params[:action] == "choose_type")
-  end
-
   def header_links_to_baskets
-    baskets_limit = LIST_BASKETS_NUMBER
-    return unless baskets_limit > 0
+    html = '<div class="basket-list">'.html_safe
+    html += link_to "Baskets List", basket_path({ :urlified_name => @site_basket.urlified_name, :controller => 'baskets', :action => 'list', :id => '' })
+    html += '</div>'.html_safe
 
-    html = '<ul id="basket-list" class="nav-list">'
-
-    except_certain_baskets = @standard_baskets
-    except_certain_baskets += [@current_basket] if @current_basket != @site_basket
-
-    except_certain_baskets_args = { :conditions => ["id not in (?) AND status = 'approved'", except_certain_baskets] }
-
-    total_baskets_count = Basket.count(except_certain_baskets_args)
-
-    except_certain_baskets_args[:limit] = baskets_limit
-
-    basket_count = 0
-    Basket.find(:all, except_certain_baskets_args).each do |basket|
-      basket_count += 1
-      html += li_with_correct_class(basket_count) + link_to_index_for(basket) + '</li>'
-    end
-
-    if baskets_limit < total_baskets_count
-      html += '<li class="more-baskets">' + link_to_unless_current(t('application_helper.header_links_to_baskets.more_baskets'),
-                                              url_for(:urlified_name => @site_basket.urlified_name,
-                                                      :controller => 'baskets' ), {:tabindex => '2'}) + '</li>'
-    end
-
-    html += '</ul>'
-    if basket_count > 0
-      return html
-    else
-      return ''
-    end
+    html
   end
 
   def header_link_to_current_basket
@@ -206,30 +165,16 @@ module ApplicationHelper
   end
 
   def default_search_terms
-    search_location_name = Kete.pretty_site_name
+    search_location_name = SystemSetting.pretty_site_name
     search_text_key = 'search_value'
 
-    if SEARCH_SELECT_CURRENT_BASKET && @current_basket != @site_basket
+    if SystemSetting.search_select_current_basket && @current_basket != @site_basket
       search_location_name = @current_basket.name
       search_text_key = 'search_value_within'
     end
 
     search_text_key = "new_#{search_text_key}" if params[:controller] == 'search'
     t("layouts.application.#{search_text_key}", :search_location_name => search_location_name)
-  end
-
-  def default_search_terms_for_js
-    escape_javascript(default_search_terms)
-  end
-
-  def add_search_icon_and_default_text_to_search_box(id, trigger_id)
-    search_dropdown_link = link_to(image_tag('search.png', :width => 20, :height => 13), '#',
-                                   :onclick => "$('#{id}').toggle();
-                                                if($('search_terms').value == '#{default_search_terms_for_js}') {
-                                                  $('search_terms').value = '';
-                                                }", :title => t('application_helper.add_search_icon_and_default_text_to_search_box.more_search_options'))
-    javascript_tag("$('#{trigger_id}').insert('#{escape_javascript(search_dropdown_link)}');") +
-    javascript_tag("addDefaultValueToSearchTerms('#{default_search_terms_for_js}');")
   end
 
   # Clear any values that shouldn't be there when we make a new search or refine a search
@@ -256,10 +201,10 @@ module ApplicationHelper
     }
   end
 
-  def search_link_to_searched_basket
-    html = String.new
-    html += ' ' + link_to_index_for(@current_basket, { :class => 'basket' }) if @current_basket != @site_basket
-  end
+  # def search_link_to_searched_basket
+  #   html = String.new
+  #   html += ' ' + link_to_index_for(@current_basket, { :class => 'basket' }) if @current_basket != @site_basket
+  # end
 
   # making this a dedicated method so that it can be overwritten in add-ons
   def link_to_login(phrase, url_for_options, html_options)
@@ -275,39 +220,45 @@ module ApplicationHelper
     link_to basket.name, basket_index_url({ :urlified_name => basket.urlified_name }), options
   end
 
-  def header_browse_links
-    html = '<li id="header_browse">'
-
-    pre_text = String.new
-    site_link_text = String.new
-    current_basket_html = String.new
-    default_controller = zoom_class_controller(DEFAULT_SEARCH_CLASS)
-    if @current_basket != @site_basket
-      pre_text = "#{t('application_helper.header_browse_links.browse')}: "
-      site_link_text = @site_basket.name
-      privacy_type = (@current_basket.private_default_with_inheritance? && permitted_to_view_private_items?) ? 'private' : nil
-      current_basket_html = " #{t('application_helper.header_browse_links.browse_or')} "
-      current_basket_html += link_to_unless_current( @current_basket.name,
-                                                     { :controller => 'search',
-                                                       :action => 'all',
-                                                       :urlified_name => @current_basket.urlified_name,
-                                                       :controller_name_for_zoom_class => default_controller,
-                                                       :trailing_slash => true,
-                                                       :privacy_type => privacy_type,
-                                                       :view_as => @current_basket.browse_type_with_inheritance },
-                                                     { :tabindex => '2' } )
-    else
-      site_link_text = t('application_helper.header_browse_links.browse')
-    end
-
-    html += pre_text + link_to_unless_current( site_link_text,
-                                               {:controller => 'search',
-                                               :action => 'all',
-                                               :urlified_name => @site_basket.urlified_name,
-                                               :controller_name_for_zoom_class => default_controller,
-                                               :trailing_slash => true,
-                                               :view_as => @site_basket.browse_type_with_inheritance }, {:tabindex => '2'} ) + current_basket_html + '</li>'
+  def default_controller
+    # RABID: ROB: ContentItem to search by default when a users browses a basket.
+    # (is used in _main_nav view to generate URLs so needs to be upper case singular)
+    "Topic"
   end
+
+  # def header_browse_links
+  #   html = '<li id="header_browse">'
+
+  #   pre_text = String.new
+  #   site_link_text = String.new
+  #   current_basket_html = String.new
+  #   default_controller = "topics"  ### zoom_class_controller(SystemSetting.default_search_class)
+
+  #   if @current_basket != @site_basket
+  #     pre_text = "#{t('application_helper.header_browse_links.browse')}: "
+  #     site_link_text = @site_basket.name
+  #     privacy_type = (@current_basket.private_default_with_inheritance? && permitted_to_view_private_items?) ? 'private' : nil
+  #     current_basket_html = " #{t('application_helper.header_browse_links.browse_or')} "
+  #     current_basket_html += link_to_unless_current( @current_basket.name,
+  #                                                    { :controller => 'search',
+  #                                                      :action => 'all',
+  #                                                      :urlified_name => @current_basket.urlified_name,
+  #                                                      :controller_name_for_zoom_class => default_controller,
+  #                                                      :trailing_slash => true,
+  #                                                      :privacy_type => privacy_type,
+  #                                                      :view_as => @current_basket.browse_type_with_inheritance },
+  #                                                    { :tabindex => '2' } )
+  #   else
+  #     site_link_text = t('application_helper.header_browse_links.browse')
+  #   end
+
+  #   html += pre_text + link_to_unless_current( site_link_text, {:controller => 'search',
+  #                                                               :action => 'all',
+  #                                                               :urlified_name => @site_basket.urlified_name,
+  #                                                               :controller_name_for_zoom_class => default_controller,
+  #                                                               :trailing_slash => true,
+  #                                                               :view_as => @site_basket.browse_type_with_inheritance }, {:tabindex => '2'} ) + current_basket_html + '</li>'
+  # end
 
   def header_add_links(options={})
     return unless current_user_can_see_add_links?
@@ -348,13 +299,16 @@ module ApplicationHelper
       link += " - #{role[:role_name].humanize}" if options[:show_roles] && !role.blank?
       basket_options = options[:show_options] ? link_to_actions_available_for(basket, options) : ''
       basket_options = '<div class="profile_basket_options">[<ul>' + basket_options + '</ul>]</div>' unless basket_options.blank?
-      html += content_tag('li', basket_options + link, :class => css_class)
+      html += content_tag('li', basket_options.html_safe + link.html_safe, :class => css_class)
       css_class = css_class == row1 ? row2 : row1
     end
-    html
+    html.html_safe
   end
 
   def header_add_basket_link
+    # ROB: we're not going to let people create baskets, so we hide the link.
+    return
+
     return unless current_user_can_add_or_request_basket?
 
     if basket_policy_request_with_permissions?
@@ -363,18 +317,18 @@ module ApplicationHelper
       basket_text = t('application_helper.header_add_basket_link.add_basket')
     end
 
-    link_to_unless_current( basket_text,
-                            :controller => 'baskets',
-                            :action => 'new',
-                            :urlified_name => @site_basket.urlified_name)
+    html = link_to_unless_current( basket_text,
+                                   :controller => 'baskets',
+                                   :action => 'new',
+                                   :urlified_name => @site_basket.urlified_name)
+    html.html_safe
   end
 
   def render_baskets_as_menu
     html = '<ul id="sub-menu" class="menu basket-list-menu">'
-    except_certain_baskets_args = { :conditions => ["id not in (?) AND status = 'approved'", @standard_baskets] }
 
     basket_count = 0
-    Basket.find(:all, except_certain_baskets_args).each do |basket|
+    Basket.except_certain_baskets(@standard_baskets).all.each do |basket|
       basket_count += 1
       if basket == @current_basket
 
@@ -383,8 +337,8 @@ module ApplicationHelper
         html += '<ul>'
         topic_count = 0
 
-        order_with_inheritence = basket.settings[:side_menu_ordering_of_topics] || @site_basket.settings[:side_menu_ordering_of_topics]
-        direction_with_inheritence = basket.settings[:side_menu_direction_of_topics] || @site_basket.settings[:side_menu_direction_of_topics]
+        order_with_inheritence = basket.setting(:side_menu_ordering_of_topics) || @site_basket.setting(:side_menu_ordering_of_topics)
+        direction_with_inheritence = basket.setting(:side_menu_direction_of_topics) || @site_basket.setting(:side_menu_direction_of_topics)
 
         order = case order_with_inheritence
                 when "alphabetical"
@@ -403,17 +357,17 @@ module ApplicationHelper
                   end
                 end
 
-        if !basket.settings[:side_menu_number_of_topics].blank?
-          limit = basket.settings[:side_menu_number_of_topics].to_i
-        elsif !@site_basket.settings[:side_menu_number_of_topics].blank?
-          limit = @site_basket.settings[:side_menu_number_of_topics].to_i
+        if !basket.setting(:side_menu_number_of_topics).blank?
+          limit = basket.setting(:side_menu_number_of_topics).to_i
+        elsif !@site_basket.setting(:side_menu_number_of_topics).blank?
+          limit = @site_basket.setting(:side_menu_number_of_topics).to_i
         else
           limit = 10
         end
 
         basket_topic_count = 0
 
-        for topic in basket.topics.find(:all, :limit => limit, :order => order).reject { |t| t.disputed_or_not_available? }
+        for topic in basket.topics.order(order).limit(limit).all.reject { |t| t.disputed_or_not_available? }
           if topic != basket.index_topic
             html += li_with_correct_class(topic_count) + link_to_item(topic) + '</li>'
             basket_topic_count += 1
@@ -439,17 +393,14 @@ module ApplicationHelper
     html += '</ul>'
   end
 
-  def current_user_can_see_flagging?
-    if @current_basket.settings[:show_flagging] == "at least moderator"
-        can_see_flagging = logged_in? && @at_least_a_moderator
-    else
-        can_see_flagging = true
-    end
-    can_see_flagging
+  def current_user_can_see_contributors?
+    # ROB:  Was previously current_user_can_see_flagging?(). Hiding the contributors
+    #       lumped with flagging makes less sense.
+    true
   end
 
   def current_user_can_see_add_links?
-    if @current_basket.settings[:show_add_links] == "at least moderator"
+    if @current_basket.setting(:show_add_links) == "at least moderator"
         can_see_add_links = logged_in? && @at_least_a_moderator
     else
         can_see_add_links = true
@@ -458,7 +409,8 @@ module ApplicationHelper
   end
 
   def current_user_can_see_action_menu?
-    if @current_basket.settings[:show_action_menu] == "at least moderator"
+    #return true
+    if @current_basket.setting(:show_action_menu) == "at least moderator"
         can_see_action_menu = logged_in? && @at_least_a_moderator
     else
         can_see_action_menu = true
@@ -467,7 +419,7 @@ module ApplicationHelper
   end
 
   def current_user_can_see_discussion?
-    if @current_basket.settings[:show_discussion] == "at least moderator"
+    if @current_basket.setting(:show_discussion) == "at least moderator"
         can_see_discussion = logged_in? && @at_least_a_moderator
     else
         can_see_discussion = true
@@ -557,12 +509,13 @@ module ApplicationHelper
 
     html = "<li class='#{options[:class]}'>#{html}</li>" if !html.blank? && options[:as_list_element]
     html += options[:plus_divider]
+    html.html_safe
   end
 
   def link_to_basket_contact_for(basket, include_name = true)
     link_text = t('application_helper.link_to_basket_contact_for.contact')
     if include_name
-      name = (basket == @site_basket || basket == @about_basket) ? Kete.pretty_site_name : basket.name
+      name = (basket == @site_basket || basket == @about_basket) ? SystemSetting.pretty_site_name : basket.name
       link_text += ' ' + name
     end
     link_to link_text, basket_contact_path(:urlified_name => basket.urlified_name)
@@ -575,7 +528,7 @@ module ApplicationHelper
     options[:class] = nil unless html.blank?
     html += link_to_members_of(basket, options)
     html += "<li>" + link_to_basket_contact_for(basket, false) + "</li>" if @current_basket.allows_contact_with_inheritance?
-    html
+    html.html_safe
   end
 
   def link_to_cancel(from_form = "")
@@ -606,14 +559,17 @@ module ApplicationHelper
     if options[:with_avatar]
       display_html = avatar_for(user, { :class => 'user_contribution_link_avatar' })
       display_html += h(user.user_name)
-      display_html += '<div class="clear"></div>'
     else
       display_html = h(user.user_name)
     end
 
-    contributions_instead_of_website_for_anonymous = options[:show_anonymous_contribs].present? ? options[:show_anonymous_contribs] : false
-
-    url = user.anonymous? && !contributions_instead_of_website_for_anonymous ? user.website : url_for_contributions_of(user, zoom_class)
+    options = {
+      :controller => 'search',
+      :action => 'contributed_by',
+      :user_id => user.id,
+      :controller_name_for_zoom_class => zoom_class,
+    }
+    url = basket_search_contributed_by_path(options)
 
     url.blank? ? display_html : link_to(display_html, url)
   end
@@ -627,12 +583,12 @@ module ApplicationHelper
       display_html += '<div class="stylish_user_contribution_link_avatar">' + avatar_for(user) + '</div>' unless avatar.blank?
     end
     user_link = link_to_contributions_of(user, zoom_class)
-    link_text = (options[:link_text] || user_link).gsub('|user_name_link|', user_link)
+    link_text = (options[:link_text] || user_link).gsub('|user_name_link|', user_link).html_safe
     display_html += content_tag('div', link_text, :class => 'stylish_user_contribution_link_extra')
     display_html += options[:additional_html] if options[:additional_html]
     display_html += '<div style="clear:both;"></div>'
     display_html += '</div>'
-    display_html
+    display_html.html_safe
   end
 
   def add_to_stylish_display_with(content)
@@ -650,19 +606,19 @@ module ApplicationHelper
     link_to phrase, url_for_profile_of(user), link_options
   end
 
-  def link_to_add_item(options={})
-    phrase = options[:phrase]
-    item_class = options[:item_class]
+  # def link_to_add_item(options={})
+  #   phrase = options[:phrase]
+  #   item_class = options[:item_class]
 
-    phrase += ' ' + content_tag('span', zoom_class_humanize(item_class), :class => 'current_zoom_class')
+  #   phrase += ' ' + content_tag('span', zoom_class_humanize(item_class), :class => 'current_zoom_class')
 
-    if @current_basket != @site_basket
-      phrase += t('application_helper.link_to_add_item.in_basket',
-                  :basket_name => @current_basket.name)
-    end
+  #   if @current_basket != @site_basket
+  #     phrase += t('application_helper.link_to_add_item.in_basket',
+  #                 :basket_name => @current_basket.name)
+  #   end
 
-    return link_to(phrase, {:controller => zoom_class_controller(item_class), :action => :new}, :tabindex => '1')
-  end
+  #   return link_to(phrase, {:controller => zoom_class_controller(item_class), :action => :new}, :tabindex => '1')
+  # end
 
   #
   # START RELATED ITEM HELPERS
@@ -687,18 +643,38 @@ module ApplicationHelper
     end
   end
 
-  def class_and_styles_from(position = nil, count = nil)
-    class_names, styles = Array.new, Array.new
-
+  def related_items_class_from(position = nil, count = nil)
+    class_names = Array.new
     class_names << position if position
-    styles << "width: #{(image_size_of(IMAGE_SLIDESHOW_SIZE) + 30)}px;" if position && position == 'inset'
 
     # Used to hide the empty, thin related items box on inset or sidebar display when no related items
     # are present. Only apply this if no items are present and only if we are on non-topic controller
     # (topic page related items have create/link etc controls that we don't want to hide)
     class_names << "no-items" if count && count == 0 && params[:controller] != 'topics'
 
-    " class='#{class_names.join(' ')}' style='#{styles.join}'"
+    class_names.join(' ')
+  end
+
+  def related_items_styles_from(position = nil, count = nil)
+    styles = Array.new
+
+    styles << "width: #{(image_size_of(SystemSetting.image_slideshow_size) + 30)}px;" if position && position == 'inset'
+
+    styles.join
+  end
+
+  def class_and_styless_from(position = nil, count = nil)
+    class_names, styles = Array.new, Array.new
+
+    class_names << position if position
+    styles << "width: #{(image_size_of(SystemSetting.image_slideshow_size) + 30)}px;" if position && position == 'inset'
+
+    # Used to hide the empty, thin related items box on inset or sidebar display when no related items
+    # are present. Only apply this if no items are present and only if we are on non-topic controller
+    # (topic page related items have create/link etc controls that we don't want to hide)
+    class_names << "no-items" if count && count == 0 && params[:controller] != 'topics'
+
+    {class: class_names.join(' '), style: styles.join }
   end
 
   def related_items_count_for_current_item
@@ -740,24 +716,31 @@ module ApplicationHelper
 
   # Gets the total amount of related items for a specific zoom class
   def related_items_count_of(zoom_class)
-    (@public_item_counts[zoom_class] + @private_item_counts[zoom_class])
+    # EOIN: (@public_item_counts[zoom_class] + @private_item_counts[zoom_class])
+    0
   end
 
   # Returns true if only public items exist, else false of private ones are present
   def only_public_related_items_of?(zoom_class)
-    (@public_item_counts[zoom_class] > 0 && @private_item_counts[zoom_class] < 1)
+    # EOIN: (@public_item_counts[zoom_class] > 0 && @private_item_counts[zoom_class] < 1)
+    0
   end
 
   # Link to the related items of a certain item
   def link_to_related_items_of(item, zoom_class, options={}, location={})
-    options = { :link_text => t('application_helper.link_to_related_items_of.link_text',
-                                :item_title => item.title) }.merge(options)
-    location = { :urlified_name => @site_basket.urlified_name,
-                 :controller_name_for_zoom_class => zoom_class_controller(zoom_class),
-                 :source_controller_singular => zoom_class_controller(item.class.name).singularize,
-                 :source_item => item }.merge(location)
-    related_item_url = (location[:privacy_type] == 'private') ? basket_all_private_related_to_path(location) :
-                                                                basket_all_related_to_path(location)
+    options = {
+      :link_text => t('application_helper.link_to_related_items_of.link_text', :item_title => item.title)
+    }.merge(options)
+
+    path_options =  {
+      :related_item_id => item.id,
+      :related_item_type => item.class.name,
+      :urlified_name => @site_basket.urlified_name,
+      :controller_name_for_zoom_class => zoom_class,
+    }.merge(location)
+
+    related_item_url = basket_search_related_to_path(path_options)
+
     link_to options[:link_text], related_item_url, { :class => 'small' }
   end
 
@@ -837,8 +820,8 @@ module ApplicationHelper
       disabled = true if restore_count < 1
       link_text += " (#{restore_count})"
     end
-    link = disabled ? link_text : link_to(link_text, { :controller => 'search', :action => 'find_related' }.merge(options),
-                                                     { :popup => ['links', 'height=500,width=500,scrollbars=yes,top=100,left=100,resizable=yes'] })
+    # EOIN: re-enable when we have decided how to implement related items
+    link = disabled ? link_text : link_to(link_text, { :controller => 'search', :action => 'find_related' }.merge(options), { :onclick => "window.open(this.href,'links','height=500,width=500,scrollbars=yes,top=100,left=100,resizable=yes');return false;" })
     content_tag('li', link)
   end
 
@@ -856,20 +839,24 @@ module ApplicationHelper
   #
 
 
-  # tag related helpers
-  def link_to_tagged(tag, zoom_class = nil, basket = @site_basket, options = {})
-    zoom_class = zoom_class || tag[:zoom_class]
-    tag_for_url = !tag[:to_param].blank? ? tag[:to_param] : tag.to_param
+  # Tag helpers
+  # ###########
+  #
+
+  def link_to_tagged(tag, basket = @site_basket, options = {})
+    # tag = { name: ..., id: ... , to_param: ..., css_class: ... }
+    tag_for_url = tag[:name]
     link_text = options[:link_text] || tag[:name]
-    link_to h(link_text),
-            { :controller => 'search',
-              :action => 'all',
-              :tag => tag_for_url,
-              :trailing_slash => true,
-              :controller_name_for_zoom_class => zoom_class_controller(zoom_class),
-              :urlified_name => basket.urlified_name,
-              :privacy_type => get_acceptable_privacy_type_for(nil, nil, "private") },
-            :class => tag[:css_class]
+
+    options = {
+      :controller => 'search',
+      :action => 'tagged',
+      :tag => tag_for_url,
+      :trailing_slash => true, # ?
+      #:controller_name_for_zoom_class => zoom_class,
+      :urlified_name => basket,
+    }
+    link_to h(link_text), basket_search_tagged_path(options), :class => tag[:css_class]
   end
   alias :link_to_tagged_in_basket :link_to_tagged
 
@@ -898,7 +885,7 @@ module ApplicationHelper
     item_tags = item.tags
     logger.debug("what are item_tags: " + item_tags.inspect)
     item_tags.each_with_index do |tag,index|
-      html_string += link_to_tagged(tag, item.class.name)
+      html_string += link_to_tagged(tag, item.basket)
       html_string += ", " unless item_tags.size == (index + 1)
     end
     html_string += "</p>"
@@ -920,87 +907,23 @@ module ApplicationHelper
   end
 
   def topic_type_useful_here?(type)
-    display_search_field_for?(type, DISPLAY_TOPIC_TYPE_FIELD) || params[:controller_name_for_zoom_class] == 'topics'
-  end
-
-  def toggle_topic_types_field_js_helper_for(parent_id)
-    javascript_tag "
-    if ($$('##{parent_id} #controller_name_for_zoom_class').first() && $$('##{parent_id} #topic_type').first().up('tr')) {
-      if ($$('##{parent_id} #controller_name_for_zoom_class').first().value != 'topics') {
-        $$('##{parent_id} #topic_type').first().up('tr').hide();
-      }
-      $$('##{parent_id} #controller_name_for_zoom_class').first().observe('change', function(event) {
-        if (this.value == 'topics') {
-          $$('##{parent_id} #topic_type').first().up('tr').show();
-        } else {
-          $$('##{parent_id} #topic_type').first().up('tr').hide();
-        }
-      });
-    }
-    "
+    display_search_field_for?(type, SystemSetting.display_topic_type_field) || params[:controller_name_for_zoom_class] == 'topics'
   end
 
   def current_sort_type
     if params[:sort_type].present?
       params[:sort_type]
-    elsif @current_basket.settings[:sort_order_default].present?
-      @current_basket.settings[:sort_order_default]
+    elsif @current_basket.setting(:sort_order_default).present?
+      @current_basket.setting(:sort_order_default)
     end
   end
 
   def current_sort_direction
     if params[:sort_direction].present?
       params[:sort_direction]
-    elsif @current_basket.settings[:sort_direction_reversed_default].present?
-      @current_basket.settings[:sort_direction_reversed_default]
+    elsif @current_basket.setting(:sort_direction_reversed_default).present?
+      @current_basket.setting(:sort_direction_reversed_default)
     end
-  end
-
-  def toggle_relevance_field_js_helper_for(parent_id)
-    js = "
-    function #{parent_id}_any_fields_provided() {
-      if ($$('##{parent_id} #search_terms').first() && $$('##{parent_id} #search_terms').first().value != '') { return true; }
-      if ($$('##{parent_id} #date_since').first() && $$('##{parent_id} #date_since').first().value != '') { return true; }
-      if ($$('##{parent_id} #date_until').first() && $$('##{parent_id} #date_until').first().value != '') { return true; }
-      return false;
-    }
-    function #{parent_id}_reset_relevance(force) {
-      if (!force && (#{parent_id}_any_fields_provided() || !$$('##{parent_id} #sort_type').first())) { return; }
-      if ($$('##{parent_id} #sort_type').first().down('.title')) { $$('##{parent_id} #sort_type').first().down('.title').selected = true; }
-      if ($$('##{parent_id} #sort_direction_field').first()) { $$('##{parent_id} #sort_direction_field').first().show(); }
-      if ($$('##{parent_id} #sort_type').first().down('.none')) { $$('##{parent_id} #sort_type').first().down('.none').hide(); }
-    }
-    function #{parent_id}_show_relevance(force) {
-      if (!force && (!#{parent_id}_any_fields_provided() || !$$('##{parent_id} #sort_type').first())) { return; }
-      if ($$('##{parent_id} #sort_type').first().down('.none')) { $$('##{parent_id} #sort_type').first().down('.none').show(); }
-    }
-    #{parent_id}_reset_relevance();
-    "
-    %w{ search_terms date_since date_until }.each do |field|
-      js += "
-      if ($$('##{parent_id} ##{field}').first()) { $$('##{parent_id} ##{field}').first().observe('change', function(event) {
-        if (this.value == '') { #{parent_id}_reset_relevance(); } else { #{parent_id}_show_relevance(); }
-      }); }
-      "
-    end
-    javascript_tag(js)
-  end
-
-  def toggle_in_reverse_field_js_helper_for(parent_id)
-    javascript_tag "
-    if ($$('##{parent_id} #sort_type').first() && $$('##{parent_id} #sort_direction_field').first()) {
-      if ($$('##{parent_id} #sort_type').first().value == 'none') {
-        $$('##{parent_id} #sort_direction_field').first().hide();
-      }
-      $$('##{parent_id} #sort_type').first().observe('change', function(event) {
-        if (this.value == 'none') {
-          $$('##{parent_id} #sort_direction_field').first().hide();
-        } else {
-          $$('##{parent_id} #sort_direction_field').first().show();
-        }
-      });
-    }
-    "
   end
 
   def basket_option_for(basket, options = {})
@@ -1009,32 +932,6 @@ module ApplicationHelper
       :class => ('not_member' unless @basket_access_hash.key?(basket.urlified_name.to_sym)),
       :selected => ('selected' if options[:selected] && basket.urlified_name.to_sym == options[:selected].to_sym)
     })
-  end
-
-  def adjust_target_basket_options_for_privacy(privacy)
-    return unless privacy
-    html = javascript_tag("
-      function show_all_target_baskets() {
-        $$('#target_basket option').each(function(element) { element.show(); });
-      }
-
-      function hide_all_non_member_target_baskets() {
-        $$('#target_basket option.not_member').each(function(element) { element.hide(); });
-        var current_selection = $('target_basket').options[$('target_basket').selectedIndex];
-        // TODO: take this IE specific code out when it is no longer needed
-        var agent = navigator.userAgent.toLowerCase ();
-        if (agent.search ('msie') > -1) {
-          if (!current_selection.style.visibility == 'hidden') { $('target_basket').options[0].selected = true; }
-        } else {
-          if (!current_selection.visible()) { $('target_basket').options[0].selected = true; }
-        }
-      }
-
-      $('privacy_type_public').observe('click', function() { show_all_target_baskets(); });
-      $('privacy_type_private').observe('click', function() { hide_all_non_member_target_baskets(); });
-    ")
-    html += javascript_tag("hide_all_non_member_target_baskets();") if privacy.to_sym == :private
-    html
   end
 
   #
@@ -1080,8 +977,11 @@ module ApplicationHelper
     raq = " &raquo; "
     html = []
 
-    mappings = item.is_a?(Topic) ? item.all_field_mappings : \
-      ContentType.find_by_class_name(item.class.name).content_type_to_field_mappings
+    if item.is_a?(Topic)
+      mappings = item.all_field_mappings
+    else
+      mappings = ContentType.find_by_class_name(item.class.name).content_type_to_field_mappings
+    end
 
     content = item.extended_content_pairs
 
@@ -1103,6 +1003,8 @@ module ApplicationHelper
 
       value = formatted_extended_content_value(field, field_name, value, item, mapping)
 
+      value = value.html_safe
+
       if field.ftype == 'map' || field.ftype == 'map_address'
         next if value.blank?
         td = content_tag("td", "#{display_label_for(field)}:<br />#{value}", :class => "detail-extended-field-label", :colspan => 2)
@@ -1114,8 +1016,10 @@ module ApplicationHelper
       html << content_tag("tr", td)
     end
 
+    html = html.join.html_safe
+
     unless html.empty?
-      content_tag("table", content_tag("tbody", html.join), :class => "detail-extended-field-table", :summary => "Extended details")
+      content_tag("table", content_tag("tbody", html), :class => "detail-extended-field-table", :summary => "Extended details")
     end
 
   end
@@ -1322,22 +1226,13 @@ module ApplicationHelper
 
   # related to comments
   def show_comments_for(item)
-    html_string = "<p>#{t('application_helper.show_comments_for.comment_count',
-                          :count => @comments.size)}</p>\n<p>"
+    html_string = "<p>#{t('application_helper.show_comments_for.comment_count', :count => @comments.size)}</p><p>"
 
-    logger.debug("what are comments: " + @comments.inspect)
     if @comments.size > 0
       html_string += t('application_helper.show_comments_for.read_and')
     end
 
-    html_string += link_to(t('application_helper.show_comments_for.join_discussion'),
-                           { :action => 'new',
-                             :controller => 'comments',
-                             :commentable_id => item,
-                             :commentable_type => item.class.name,
-                             :commentable_private => (item.respond_to?(:private) && item.private?) ? 1 : 0 })
-
-    html_string += "</p>\n"
+    html_string += "</p>"
 
     if @comments.size > 0
       @comments.each do |comment|
@@ -1349,7 +1244,6 @@ module ApplicationHelper
         comment_string += "#{tags_for_comment}\n" unless tags_for_comment.blank?
         comment_string += pending_review(comment) + "\n"
         comment_string += "<div class=\"comment-tools\">\n"
-        comment_string += flagging_links_for(comment,true,'comments')
         comment_string += "<div class=\"comment-date\">
                             #{t('application_helper.show_comments_for.posted_on')} #{comment.created_at.to_s(:natural)}
                           </div>"
@@ -1399,7 +1293,7 @@ module ApplicationHelper
                                        :commentable_private => (item.respond_to?(:private) && item.private?) ? 1 : 0 }) + "</p>"
     end
 
-    return html_string
+    return html_string.html_safe
   end
 
   # Calculate the comment depth (how many ancestors)
@@ -1425,46 +1319,6 @@ module ApplicationHelper
       classes << "comment-depth-#{depth}"
     end
     classes.join(' ')
-  end
-
-  def flagging_links_for(item, first = false, controller = nil)
-    html_string = String.new
-    if Kete.flagging_tags.size > 0 and !item.already_at_blank_version?
-      if first
-        html_string = "<ul><li class=\"first flag\">#{t('application_helper.flagging_links_for.flag_as')}</li>\n"
-      else
-        html_string = "<ul><li class=\"flag\">#{t('application_helper.flagging_links_for.flag_as')}</li>\n"
-      end
-      html_string += "<li class=\"first\"><ul>\n"
-      flag_count = 1
-      Kete.flagging_tags.each do |flag|
-        if flag_count == 1
-          html_string += "<li class=\"first\">"
-        else
-          html_string += "<li>"
-        end
-        if !controller.nil?
-          html_string += link_to(flag,
-                                 { :controller => controller,
-                                   :action => 'flag_form',
-                                   :flag => flag,
-                                   :id => item,
-                                   :version => item.version },
-                                 :confirm => t('application_helper.flagging_links_for.can_you_edit')) + "</li>\n"
-        else
-          html_string += link_to(flag,
-                                 { :action => 'flag_form',
-                                   :flag => flag,
-                                   :id => item,
-                                   :version => item.version },
-                                 :confirm => t('application_helper.flagging_links_for.can_you_edit')) + "</li>\n"
-        end
-
-        flag_count += 1
-      end
-      html_string += "                                            </ul>
-                                        </li></ul>\n"
-    end
   end
 
   def pending_review(item)
@@ -1519,34 +1373,28 @@ module ApplicationHelper
       html_string += ' class="first"'
     end
     html_string += ">"
+    html_string.html_safe
   end
 
   def link_to_original_of(item, phrase=t('application_helper.link_to_original_of.phrase'), skip_warning=false)
     item_file_url = item.is_a?(StillImage) ? item.original_file.public_filename : item.public_filename
-    if Kete.download_warning.blank? || skip_warning
+    if SystemSetting.download_warning.blank? || skip_warning
       link_to phrase, item_file_url
     else
-      link_to phrase, item_file_url, :confirm => Kete.download_warning
+      link_to phrase, item_file_url, :confirm => SystemSetting.download_warning
     end
   end
 
-  # link to action menu helper methods
-  # destroy skipped, as it is more of a special case
-  %w(edit history).each do |action|
-    code = lambda { |item|
-      args = { :action => action.to_sym,
-        :id => item }
+  def link_to_edit_for(item)
+      link_to("<span class=\"edit-link\">#{t("topics.actions_menu.edit")}</span>".html_safe,
+              { :action => :edit, :id => item, :private => params[:private] },
+              :tabindex => '1')
+  end
 
-      args[:private] = params[:private] if action == 'edit'
-
-      t_key = t("topics.actions_menu.#{action}")
-
-      link_to("<span class=\"#{action}-link\">#{t_key}</span>",
-              args,
-              :tabindex => '1')  
-    }
-
-    define_method('link_to_' + action + '_for', &code)
+  def link_to_history_for(item)
+      link_to("<span class=\"history-link\">#{t("topics.actions_menu.history")}</span>".html_safe,
+              { :action => :history, :id => item },
+              :tabindex => '1')
   end
 
   # we use this in imports, too
@@ -1590,35 +1438,36 @@ module ApplicationHelper
     end
   end
 
-  def load_styles(theme)
-    theme_styles = Array.new
-    theme_styles_path = theme + '/stylesheets/'
-    theme_styles_full_path = THEMES_ROOT + '/' + theme_styles_path
-    theme_styles_dir = Dir.new(theme_styles_full_path)
-    theme_styles_dir.each do |file|
-      file_full_path = theme_styles_full_path + file.to_s
-      if !File.directory?(file_full_path) and File.extname(file_full_path) == '.css'
-        web_root_to_file = '/' + THEMES_DIR_NAME + '/' + theme_styles_path + file
-        theme_styles << web_root_to_file unless stylesheet_for_ie?(web_root_to_file)
-      end
-    end
-    theme_styles
-  end
+  # def load_styles(theme)
+  #   theme_styles = Array.new
+  #   # RABID: disable this until we get around to integrating it with the Asset Pipeline
+  #   # theme_styles_path = theme + '/stylesheets/'
+  #   # theme_styles_full_path = THEMES_ROOT + '/' + theme_styles_path
+  #   # theme_styles_dir = Dir.new(theme_styles_full_path)
+  #   # theme_styles_dir.each do |file|
+  #   #   file_full_path = theme_styles_full_path + file.to_s
+  #   #   if !File.directory?(file_full_path) and File.extname(file_full_path) == '.css'
+  #   #     web_root_to_file = '/' + THEMES_DIR_NAME + '/' + theme_styles_path + file
+  #   #     theme_styles << web_root_to_file unless stylesheet_for_ie?(web_root_to_file)
+  #   #   end
+  #   # end
+  #   theme_styles
+  # end
 
-  def stylesheet_for_ie?(stylesheet_path)
-    @ie_stylesheet_paths ||= Hash.new
-    if stylesheet_path.split('/').last =~ /^ie([0-9]+)/
-      @ie_stylesheet_paths[$1.to_i] ||= Array.new
-      @ie_stylesheet_paths[$1.to_i] << stylesheet_path
-      true
-    elsif stylesheet_path.split('/').last =~ /^ie/
-      @ie_stylesheet_paths[:all] ||= Array.new
-      @ie_stylesheet_paths[:all] << stylesheet_path
-      true
-    else
-      false
-    end
-  end
+  # def stylesheet_for_ie?(stylesheet_path)
+  #   @ie_stylesheet_paths ||= Hash.new
+  #   if stylesheet_path.split('/').last =~ /^ie([0-9]+)/
+  #     @ie_stylesheet_paths[$1.to_i] ||= Array.new
+  #     @ie_stylesheet_paths[$1.to_i] << stylesheet_path
+  #     true
+  #   elsif stylesheet_path.split('/').last =~ /^ie/
+  #     @ie_stylesheet_paths[:all] ||= Array.new
+  #     @ie_stylesheet_paths[:all] << stylesheet_path
+  #     true
+  #   else
+  #     false
+  #   end
+  # end
 
   # Kieran Pilkington, 2008/07/28
   # DEPRECATED, points to cache_with_privacy
@@ -1699,12 +1548,15 @@ module ApplicationHelper
       link_to_text = "#{sort_text}"
     end
 
+    link_to_text = link_to_text.html_safe
+
     # create the link with text, current direction image (if needed), and pointing to opposite direction (if needed)
     if remote_link
       # create a remote to link
-      link_to_remote link_to_text, { :url => location_hash,
+      link_to link_to_text, { :url => location_hash,
                                      :before => "Element.show('data_spinner')",
                                      :complete => "Element.hide('data_spinner')" },
+                                      :remote => true,
                                    :href => url_for(location_hash)
     else
       # create a plain link
@@ -1748,7 +1600,7 @@ module ApplicationHelper
   # oriented towards imports at this point, but maybe refined to be generally useful
   def embedded_enabled_message(start_html, end_html)
     html = String.new
-    if ENABLE_EMBEDDED_SUPPORT
+    if SystemSetting.enable_embedded_support
       html += start_html
       html += t('application_helper.embedded_enabled_message.harvesting')
       html += end_html
@@ -1822,7 +1674,6 @@ module ApplicationHelper
     end
 
     html += "<div style='clear:both;'></div>"
-    #html += javascript_tag("enableCategoryListUpdater('#{params[:controller_name_for_zoom_class]}');")
 
     html
 
@@ -1869,7 +1720,7 @@ module ApplicationHelper
   end
 
   def display_search_sources_for(item)
-    display_search_sources(item.title, :target => [:all, :items])
+    display_search_sources(item.title, :target => [:all, :items]).html_safe
   end
 
   def link_for_rss(options)

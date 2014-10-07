@@ -1,0 +1,30 @@
+%h3= t 'configure.link_to_site.title'
+- if @site_listing.blank?
+  #send_information
+    #top_message
+      %p
+        = t 'configure.link_to_site.description'
+    = form_tag ({ :action => 'send_information' }, :remote => true, :id => 'send_information_form') do
+      #form_fields
+        #linking_errors
+        %p
+          %label{:for => "site_description"}
+            = t 'configure.link_to_site.site_description'
+            %small= t 'configure.link_to_site.site_fields_optional'
+          %br/
+          %input#site_description{:name => "site_description", :size => "45", :type => "text"}/
+        %p
+          %label{:for => "site_publisher_address"}
+            = t 'configure.link_to_site.site_publisher_address'
+            %small= t 'configure.link_to_site.site_fields_optional'
+          %br/
+          %input#site_publisher_address{:name => "site_publisher_address", :size => "45", :type => "text"}/
+          %br/
+          %small= t 'configure.link_to_site.site_publisher_address_description'
+        %div= submit_tag t('configure.link_to_site.send_information'), :id => 'data-button'
+  #updater
+  #spinner{:style => "display:none;"}
+    %img{:alt => t 'configure.link_to_site.completed', :height => "16", :src => "#{image_path('indicator.gif')}", :width => "16"}/
+- else
+  #site_is_listed
+    = t 'configure.link_to_site.already_listed', :listing_link => link_to(@site_listing, @site_listing)

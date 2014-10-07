@@ -1,0 +1,1507 @@
+# See http://www.robotstxt.org/wc/norobots.html for documentation on how to use the robots.txt file
+User-agent: *
+# can have blank lines or it's interpreted as new rule set (i.e. new User-agent rule must be declared)
+#
+# per basket
+#
+##  per locale
+#
+### per controller
+#
+#### per action
+Disallow: /en/site/topics/new
+Disallow: /en/site/topics/edit
+Disallow: /en/site/topics/flag_version
+Disallow: /en/site/topics/flag_form
+Disallow: /en/site/topics/history
+Disallow: /en/site/topics/preview
+Disallow: /en/site/topics/selected_image
+Disallow: /en/site/topics/auto_complete_for_topic_tag_list
+Disallow: /en/site/topics/auto_complete_for_still_image_tag_list
+Disallow: /en/site/topics/auto_complete_for_audio_recording_tag_list
+Disallow: /en/site/topics/auto_complete_for_video_tag_list
+Disallow: /en/site/topics/auto_complete_for_web_link_tag_list
+Disallow: /en/site/topics/auto_complete_for_document_tag_list
+Disallow: /en/site/topics/auto_complete_for_comment_tag_list
+#
+#### per all action
+Disallow: /en/site/all/topics/rss
+Disallow: /en/site/all/topics/rss.xml
+Disallow: /en/site/all/topics/contributed_by
+Disallow: /en/site/all/topics/tagged
+Disallow: /en/site/all/topics/related_to
+#
+#
+#### per action
+Disallow: /en/site/images/new
+Disallow: /en/site/images/edit
+Disallow: /en/site/images/flag_version
+Disallow: /en/site/images/flag_form
+Disallow: /en/site/images/history
+Disallow: /en/site/images/preview
+Disallow: /en/site/images/selected_image
+Disallow: /en/site/images/auto_complete_for_topic_tag_list
+Disallow: /en/site/images/auto_complete_for_still_image_tag_list
+Disallow: /en/site/images/auto_complete_for_audio_recording_tag_list
+Disallow: /en/site/images/auto_complete_for_video_tag_list
+Disallow: /en/site/images/auto_complete_for_web_link_tag_list
+Disallow: /en/site/images/auto_complete_for_document_tag_list
+Disallow: /en/site/images/auto_complete_for_comment_tag_list
+#
+#### per all action
+Disallow: /en/site/all/images/rss
+Disallow: /en/site/all/images/rss.xml
+Disallow: /en/site/all/images/contributed_by
+Disallow: /en/site/all/images/tagged
+Disallow: /en/site/all/images/related_to
+#
+#
+#### per action
+Disallow: /en/site/audio/new
+Disallow: /en/site/audio/edit
+Disallow: /en/site/audio/flag_version
+Disallow: /en/site/audio/flag_form
+Disallow: /en/site/audio/history
+Disallow: /en/site/audio/preview
+Disallow: /en/site/audio/selected_image
+Disallow: /en/site/audio/auto_complete_for_topic_tag_list
+Disallow: /en/site/audio/auto_complete_for_still_image_tag_list
+Disallow: /en/site/audio/auto_complete_for_audio_recording_tag_list
+Disallow: /en/site/audio/auto_complete_for_video_tag_list
+Disallow: /en/site/audio/auto_complete_for_web_link_tag_list
+Disallow: /en/site/audio/auto_complete_for_document_tag_list
+Disallow: /en/site/audio/auto_complete_for_comment_tag_list
+#
+#### per all action
+Disallow: /en/site/all/audio/rss
+Disallow: /en/site/all/audio/rss.xml
+Disallow: /en/site/all/audio/contributed_by
+Disallow: /en/site/all/audio/tagged
+Disallow: /en/site/all/audio/related_to
+#
+#
+#### per action
+Disallow: /en/site/video/new
+Disallow: /en/site/video/edit
+Disallow: /en/site/video/flag_version
+Disallow: /en/site/video/flag_form
+Disallow: /en/site/video/history
+Disallow: /en/site/video/preview
+Disallow: /en/site/video/selected_image
+Disallow: /en/site/video/auto_complete_for_topic_tag_list
+Disallow: /en/site/video/auto_complete_for_still_image_tag_list
+Disallow: /en/site/video/auto_complete_for_audio_recording_tag_list
+Disallow: /en/site/video/auto_complete_for_video_tag_list
+Disallow: /en/site/video/auto_complete_for_web_link_tag_list
+Disallow: /en/site/video/auto_complete_for_document_tag_list
+Disallow: /en/site/video/auto_complete_for_comment_tag_list
+#
+#### per all action
+Disallow: /en/site/all/video/rss
+Disallow: /en/site/all/video/rss.xml
+Disallow: /en/site/all/video/contributed_by
+Disallow: /en/site/all/video/tagged
+Disallow: /en/site/all/video/related_to
+#
+#
+#### per action
+Disallow: /en/site/web_links/new
+Disallow: /en/site/web_links/edit
+Disallow: /en/site/web_links/flag_version
+Disallow: /en/site/web_links/flag_form
+Disallow: /en/site/web_links/history
+Disallow: /en/site/web_links/preview
+Disallow: /en/site/web_links/selected_image
+Disallow: /en/site/web_links/auto_complete_for_topic_tag_list
+Disallow: /en/site/web_links/auto_complete_for_still_image_tag_list
+Disallow: /en/site/web_links/auto_complete_for_audio_recording_tag_list
+Disallow: /en/site/web_links/auto_complete_for_video_tag_list
+Disallow: /en/site/web_links/auto_complete_for_web_link_tag_list
+Disallow: /en/site/web_links/auto_complete_for_document_tag_list
+Disallow: /en/site/web_links/auto_complete_for_comment_tag_list
+#
+#### per all action
+Disallow: /en/site/all/web_links/rss
+Disallow: /en/site/all/web_links/rss.xml
+Disallow: /en/site/all/web_links/contributed_by
+Disallow: /en/site/all/web_links/tagged
+Disallow: /en/site/all/web_links/related_to
+#
+#
+#### per action
+Disallow: /en/site/documents/new
+Disallow: /en/site/documents/edit
+Disallow: /en/site/documents/flag_version
+Disallow: /en/site/documents/flag_form
+Disallow: /en/site/documents/history
+Disallow: /en/site/documents/preview
+Disallow: /en/site/documents/selected_image
+Disallow: /en/site/documents/auto_complete_for_topic_tag_list
+Disallow: /en/site/documents/auto_complete_for_still_image_tag_list
+Disallow: /en/site/documents/auto_complete_for_audio_recording_tag_list
+Disallow: /en/site/documents/auto_complete_for_video_tag_list
+Disallow: /en/site/documents/auto_complete_for_web_link_tag_list
+Disallow: /en/site/documents/auto_complete_for_document_tag_list
+Disallow: /en/site/documents/auto_complete_for_comment_tag_list
+#
+#### per all action
+Disallow: /en/site/all/documents/rss
+Disallow: /en/site/all/documents/rss.xml
+Disallow: /en/site/all/documents/contributed_by
+Disallow: /en/site/all/documents/tagged
+Disallow: /en/site/all/documents/related_to
+#
+#
+#### per action
+Disallow: /en/site/comments/new
+Disallow: /en/site/comments/edit
+Disallow: /en/site/comments/flag_version
+Disallow: /en/site/comments/flag_form
+Disallow: /en/site/comments/history
+Disallow: /en/site/comments/preview
+Disallow: /en/site/comments/selected_image
+Disallow: /en/site/comments/auto_complete_for_topic_tag_list
+Disallow: /en/site/comments/auto_complete_for_still_image_tag_list
+Disallow: /en/site/comments/auto_complete_for_audio_recording_tag_list
+Disallow: /en/site/comments/auto_complete_for_video_tag_list
+Disallow: /en/site/comments/auto_complete_for_web_link_tag_list
+Disallow: /en/site/comments/auto_complete_for_document_tag_list
+Disallow: /en/site/comments/auto_complete_for_comment_tag_list
+#
+#### per all action
+Disallow: /en/site/all/comments/rss
+Disallow: /en/site/all/comments/rss.xml
+Disallow: /en/site/all/comments/contributed_by
+Disallow: /en/site/all/comments/tagged
+Disallow: /en/site/all/comments/related_to
+#
+### end controllers
+#
+### Disallow specific controllers themselves
+Disallow: /en/site/account/
+Disallow: /en/site/baskets/
+Disallow: /en/site/members/
+Disallow: /en/site/extended_fields/
+Disallow: /en/site/topic_types/
+Disallow: /en/site/content_types/
+Disallow: /en/site/zoom_dbs/
+Disallow: /en/site/importers/
+Disallow: /en/site/search/
+### end disallow specific controllers
+#
+# Other
+Disallow: /en/site/index_page/help_file
+#
+### per controller
+#
+#### per action
+Disallow: /site/topics/new
+Disallow: /site/topics/edit
+Disallow: /site/topics/flag_version
+Disallow: /site/topics/flag_form
+Disallow: /site/topics/history
+Disallow: /site/topics/preview
+Disallow: /site/topics/selected_image
+Disallow: /site/topics/auto_complete_for_topic_tag_list
+Disallow: /site/topics/auto_complete_for_still_image_tag_list
+Disallow: /site/topics/auto_complete_for_audio_recording_tag_list
+Disallow: /site/topics/auto_complete_for_video_tag_list
+Disallow: /site/topics/auto_complete_for_web_link_tag_list
+Disallow: /site/topics/auto_complete_for_document_tag_list
+Disallow: /site/topics/auto_complete_for_comment_tag_list
+#
+#### per all action
+Disallow: /site/all/topics/rss
+Disallow: /site/all/topics/rss.xml
+Disallow: /site/all/topics/contributed_by
+Disallow: /site/all/topics/tagged
+Disallow: /site/all/topics/related_to
+#
+#
+#### per action
+Disallow: /site/images/new
+Disallow: /site/images/edit
+Disallow: /site/images/flag_version
+Disallow: /site/images/flag_form
+Disallow: /site/images/history
+Disallow: /site/images/preview
+Disallow: /site/images/selected_image
+Disallow: /site/images/auto_complete_for_topic_tag_list
+Disallow: /site/images/auto_complete_for_still_image_tag_list
+Disallow: /site/images/auto_complete_for_audio_recording_tag_list
+Disallow: /site/images/auto_complete_for_video_tag_list
+Disallow: /site/images/auto_complete_for_web_link_tag_list
+Disallow: /site/images/auto_complete_for_document_tag_list
+Disallow: /site/images/auto_complete_for_comment_tag_list
+#
+#### per all action
+Disallow: /site/all/images/rss
+Disallow: /site/all/images/rss.xml
+Disallow: /site/all/images/contributed_by
+Disallow: /site/all/images/tagged
+Disallow: /site/all/images/related_to
+#
+#
+#### per action
+Disallow: /site/audio/new
+Disallow: /site/audio/edit
+Disallow: /site/audio/flag_version
+Disallow: /site/audio/flag_form
+Disallow: /site/audio/history
+Disallow: /site/audio/preview
+Disallow: /site/audio/selected_image
+Disallow: /site/audio/auto_complete_for_topic_tag_list
+Disallow: /site/audio/auto_complete_for_still_image_tag_list
+Disallow: /site/audio/auto_complete_for_audio_recording_tag_list
+Disallow: /site/audio/auto_complete_for_video_tag_list
+Disallow: /site/audio/auto_complete_for_web_link_tag_list
+Disallow: /site/audio/auto_complete_for_document_tag_list
+Disallow: /site/audio/auto_complete_for_comment_tag_list
+#
+#### per all action
+Disallow: /site/all/audio/rss
+Disallow: /site/all/audio/rss.xml
+Disallow: /site/all/audio/contributed_by
+Disallow: /site/all/audio/tagged
+Disallow: /site/all/audio/related_to
+#
+#
+#### per action
+Disallow: /site/video/new
+Disallow: /site/video/edit
+Disallow: /site/video/flag_version
+Disallow: /site/video/flag_form
+Disallow: /site/video/history
+Disallow: /site/video/preview
+Disallow: /site/video/selected_image
+Disallow: /site/video/auto_complete_for_topic_tag_list
+Disallow: /site/video/auto_complete_for_still_image_tag_list
+Disallow: /site/video/auto_complete_for_audio_recording_tag_list
+Disallow: /site/video/auto_complete_for_video_tag_list
+Disallow: /site/video/auto_complete_for_web_link_tag_list
+Disallow: /site/video/auto_complete_for_document_tag_list
+Disallow: /site/video/auto_complete_for_comment_tag_list
+#
+#### per all action
+Disallow: /site/all/video/rss
+Disallow: /site/all/video/rss.xml
+Disallow: /site/all/video/contributed_by
+Disallow: /site/all/video/tagged
+Disallow: /site/all/video/related_to
+#
+#
+#### per action
+Disallow: /site/web_links/new
+Disallow: /site/web_links/edit
+Disallow: /site/web_links/flag_version
+Disallow: /site/web_links/flag_form
+Disallow: /site/web_links/history
+Disallow: /site/web_links/preview
+Disallow: /site/web_links/selected_image
+Disallow: /site/web_links/auto_complete_for_topic_tag_list
+Disallow: /site/web_links/auto_complete_for_still_image_tag_list
+Disallow: /site/web_links/auto_complete_for_audio_recording_tag_list
+Disallow: /site/web_links/auto_complete_for_video_tag_list
+Disallow: /site/web_links/auto_complete_for_web_link_tag_list
+Disallow: /site/web_links/auto_complete_for_document_tag_list
+Disallow: /site/web_links/auto_complete_for_comment_tag_list
+#
+#### per all action
+Disallow: /site/all/web_links/rss
+Disallow: /site/all/web_links/rss.xml
+Disallow: /site/all/web_links/contributed_by
+Disallow: /site/all/web_links/tagged
+Disallow: /site/all/web_links/related_to
+#
+#
+#### per action
+Disallow: /site/documents/new
+Disallow: /site/documents/edit
+Disallow: /site/documents/flag_version
+Disallow: /site/documents/flag_form
+Disallow: /site/documents/history
+Disallow: /site/documents/preview
+Disallow: /site/documents/selected_image
+Disallow: /site/documents/auto_complete_for_topic_tag_list
+Disallow: /site/documents/auto_complete_for_still_image_tag_list
+Disallow: /site/documents/auto_complete_for_audio_recording_tag_list
+Disallow: /site/documents/auto_complete_for_video_tag_list
+Disallow: /site/documents/auto_complete_for_web_link_tag_list
+Disallow: /site/documents/auto_complete_for_document_tag_list
+Disallow: /site/documents/auto_complete_for_comment_tag_list
+#
+#### per all action
+Disallow: /site/all/documents/rss
+Disallow: /site/all/documents/rss.xml
+Disallow: /site/all/documents/contributed_by
+Disallow: /site/all/documents/tagged
+Disallow: /site/all/documents/related_to
+#
+#
+#### per action
+Disallow: /site/comments/new
+Disallow: /site/comments/edit
+Disallow: /site/comments/flag_version
+Disallow: /site/comments/flag_form
+Disallow: /site/comments/history
+Disallow: /site/comments/preview
+Disallow: /site/comments/selected_image
+Disallow: /site/comments/auto_complete_for_topic_tag_list
+Disallow: /site/comments/auto_complete_for_still_image_tag_list
+Disallow: /site/comments/auto_complete_for_audio_recording_tag_list
+Disallow: /site/comments/auto_complete_for_video_tag_list
+Disallow: /site/comments/auto_complete_for_web_link_tag_list
+Disallow: /site/comments/auto_complete_for_document_tag_list
+Disallow: /site/comments/auto_complete_for_comment_tag_list
+#
+#### per all action
+Disallow: /site/all/comments/rss
+Disallow: /site/all/comments/rss.xml
+Disallow: /site/all/comments/contributed_by
+Disallow: /site/all/comments/tagged
+Disallow: /site/all/comments/related_to
+#
+### end controllers
+#
+### Disallow specific controllers themselves
+Disallow: /site/account/
+Disallow: /site/baskets/
+Disallow: /site/members/
+Disallow: /site/extended_fields/
+Disallow: /site/topic_types/
+Disallow: /site/content_types/
+Disallow: /site/zoom_dbs/
+Disallow: /site/importers/
+Disallow: /site/search/
+### end disallow specific controllers
+#
+# Other
+Disallow: /site/index_page/help_file
+#
+##  per locale
+#
+### per controller
+#
+#### per action
+Disallow: /en/help/topics/new
+Disallow: /en/help/topics/edit
+Disallow: /en/help/topics/flag_version
+Disallow: /en/help/topics/flag_form
+Disallow: /en/help/topics/history
+Disallow: /en/help/topics/preview
+Disallow: /en/help/topics/selected_image
+Disallow: /en/help/topics/auto_complete_for_topic_tag_list
+Disallow: /en/help/topics/auto_complete_for_still_image_tag_list
+Disallow: /en/help/topics/auto_complete_for_audio_recording_tag_list
+Disallow: /en/help/topics/auto_complete_for_video_tag_list
+Disallow: /en/help/topics/auto_complete_for_web_link_tag_list
+Disallow: /en/help/topics/auto_complete_for_document_tag_list
+Disallow: /en/help/topics/auto_complete_for_comment_tag_list
+#
+#### per all action
+Disallow: /en/help/all/topics/rss
+Disallow: /en/help/all/topics/rss.xml
+Disallow: /en/help/all/topics/contributed_by
+Disallow: /en/help/all/topics/tagged
+Disallow: /en/help/all/topics/related_to
+#
+#
+#### per action
+Disallow: /en/help/images/new
+Disallow: /en/help/images/edit
+Disallow: /en/help/images/flag_version
+Disallow: /en/help/images/flag_form
+Disallow: /en/help/images/history
+Disallow: /en/help/images/preview
+Disallow: /en/help/images/selected_image
+Disallow: /en/help/images/auto_complete_for_topic_tag_list
+Disallow: /en/help/images/auto_complete_for_still_image_tag_list
+Disallow: /en/help/images/auto_complete_for_audio_recording_tag_list
+Disallow: /en/help/images/auto_complete_for_video_tag_list
+Disallow: /en/help/images/auto_complete_for_web_link_tag_list
+Disallow: /en/help/images/auto_complete_for_document_tag_list
+Disallow: /en/help/images/auto_complete_for_comment_tag_list
+#
+#### per all action
+Disallow: /en/help/all/images/rss
+Disallow: /en/help/all/images/rss.xml
+Disallow: /en/help/all/images/contributed_by
+Disallow: /en/help/all/images/tagged
+Disallow: /en/help/all/images/related_to
+#
+#
+#### per action
+Disallow: /en/help/audio/new
+Disallow: /en/help/audio/edit
+Disallow: /en/help/audio/flag_version
+Disallow: /en/help/audio/flag_form
+Disallow: /en/help/audio/history
+Disallow: /en/help/audio/preview
+Disallow: /en/help/audio/selected_image
+Disallow: /en/help/audio/auto_complete_for_topic_tag_list
+Disallow: /en/help/audio/auto_complete_for_still_image_tag_list
+Disallow: /en/help/audio/auto_complete_for_audio_recording_tag_list
+Disallow: /en/help/audio/auto_complete_for_video_tag_list
+Disallow: /en/help/audio/auto_complete_for_web_link_tag_list
+Disallow: /en/help/audio/auto_complete_for_document_tag_list
+Disallow: /en/help/audio/auto_complete_for_comment_tag_list
+#
+#### per all action
+Disallow: /en/help/all/audio/rss
+Disallow: /en/help/all/audio/rss.xml
+Disallow: /en/help/all/audio/contributed_by
+Disallow: /en/help/all/audio/tagged
+Disallow: /en/help/all/audio/related_to
+#
+#
+#### per action
+Disallow: /en/help/video/new
+Disallow: /en/help/video/edit
+Disallow: /en/help/video/flag_version
+Disallow: /en/help/video/flag_form
+Disallow: /en/help/video/history
+Disallow: /en/help/video/preview
+Disallow: /en/help/video/selected_image
+Disallow: /en/help/video/auto_complete_for_topic_tag_list
+Disallow: /en/help/video/auto_complete_for_still_image_tag_list
+Disallow: /en/help/video/auto_complete_for_audio_recording_tag_list
+Disallow: /en/help/video/auto_complete_for_video_tag_list
+Disallow: /en/help/video/auto_complete_for_web_link_tag_list
+Disallow: /en/help/video/auto_complete_for_document_tag_list
+Disallow: /en/help/video/auto_complete_for_comment_tag_list
+#
+#### per all action
+Disallow: /en/help/all/video/rss
+Disallow: /en/help/all/video/rss.xml
+Disallow: /en/help/all/video/contributed_by
+Disallow: /en/help/all/video/tagged
+Disallow: /en/help/all/video/related_to
+#
+#
+#### per action
+Disallow: /en/help/web_links/new
+Disallow: /en/help/web_links/edit
+Disallow: /en/help/web_links/flag_version
+Disallow: /en/help/web_links/flag_form
+Disallow: /en/help/web_links/history
+Disallow: /en/help/web_links/preview
+Disallow: /en/help/web_links/selected_image
+Disallow: /en/help/web_links/auto_complete_for_topic_tag_list
+Disallow: /en/help/web_links/auto_complete_for_still_image_tag_list
+Disallow: /en/help/web_links/auto_complete_for_audio_recording_tag_list
+Disallow: /en/help/web_links/auto_complete_for_video_tag_list
+Disallow: /en/help/web_links/auto_complete_for_web_link_tag_list
+Disallow: /en/help/web_links/auto_complete_for_document_tag_list
+Disallow: /en/help/web_links/auto_complete_for_comment_tag_list
+#
+#### per all action
+Disallow: /en/help/all/web_links/rss
+Disallow: /en/help/all/web_links/rss.xml
+Disallow: /en/help/all/web_links/contributed_by
+Disallow: /en/help/all/web_links/tagged
+Disallow: /en/help/all/web_links/related_to
+#
+#
+#### per action
+Disallow: /en/help/documents/new
+Disallow: /en/help/documents/edit
+Disallow: /en/help/documents/flag_version
+Disallow: /en/help/documents/flag_form
+Disallow: /en/help/documents/history
+Disallow: /en/help/documents/preview
+Disallow: /en/help/documents/selected_image
+Disallow: /en/help/documents/auto_complete_for_topic_tag_list
+Disallow: /en/help/documents/auto_complete_for_still_image_tag_list
+Disallow: /en/help/documents/auto_complete_for_audio_recording_tag_list
+Disallow: /en/help/documents/auto_complete_for_video_tag_list
+Disallow: /en/help/documents/auto_complete_for_web_link_tag_list
+Disallow: /en/help/documents/auto_complete_for_document_tag_list
+Disallow: /en/help/documents/auto_complete_for_comment_tag_list
+#
+#### per all action
+Disallow: /en/help/all/documents/rss
+Disallow: /en/help/all/documents/rss.xml
+Disallow: /en/help/all/documents/contributed_by
+Disallow: /en/help/all/documents/tagged
+Disallow: /en/help/all/documents/related_to
+#
+#
+#### per action
+Disallow: /en/help/comments/new
+Disallow: /en/help/comments/edit
+Disallow: /en/help/comments/flag_version
+Disallow: /en/help/comments/flag_form
+Disallow: /en/help/comments/history
+Disallow: /en/help/comments/preview
+Disallow: /en/help/comments/selected_image
+Disallow: /en/help/comments/auto_complete_for_topic_tag_list
+Disallow: /en/help/comments/auto_complete_for_still_image_tag_list
+Disallow: /en/help/comments/auto_complete_for_audio_recording_tag_list
+Disallow: /en/help/comments/auto_complete_for_video_tag_list
+Disallow: /en/help/comments/auto_complete_for_web_link_tag_list
+Disallow: /en/help/comments/auto_complete_for_document_tag_list
+Disallow: /en/help/comments/auto_complete_for_comment_tag_list
+#
+#### per all action
+Disallow: /en/help/all/comments/rss
+Disallow: /en/help/all/comments/rss.xml
+Disallow: /en/help/all/comments/contributed_by
+Disallow: /en/help/all/comments/tagged
+Disallow: /en/help/all/comments/related_to
+#
+### end controllers
+#
+### Disallow specific controllers themselves
+Disallow: /en/help/account/
+Disallow: /en/help/baskets/
+Disallow: /en/help/members/
+Disallow: /en/help/extended_fields/
+Disallow: /en/help/topic_types/
+Disallow: /en/help/content_types/
+Disallow: /en/help/zoom_dbs/
+Disallow: /en/help/importers/
+Disallow: /en/help/search/
+### end disallow specific controllers
+#
+# Other
+Disallow: /en/help/index_page/help_file
+#
+### per controller
+#
+#### per action
+Disallow: /help/topics/new
+Disallow: /help/topics/edit
+Disallow: /help/topics/flag_version
+Disallow: /help/topics/flag_form
+Disallow: /help/topics/history
+Disallow: /help/topics/preview
+Disallow: /help/topics/selected_image
+Disallow: /help/topics/auto_complete_for_topic_tag_list
+Disallow: /help/topics/auto_complete_for_still_image_tag_list
+Disallow: /help/topics/auto_complete_for_audio_recording_tag_list
+Disallow: /help/topics/auto_complete_for_video_tag_list
+Disallow: /help/topics/auto_complete_for_web_link_tag_list
+Disallow: /help/topics/auto_complete_for_document_tag_list
+Disallow: /help/topics/auto_complete_for_comment_tag_list
+#
+#### per all action
+Disallow: /help/all/topics/rss
+Disallow: /help/all/topics/rss.xml
+Disallow: /help/all/topics/contributed_by
+Disallow: /help/all/topics/tagged
+Disallow: /help/all/topics/related_to
+#
+#
+#### per action
+Disallow: /help/images/new
+Disallow: /help/images/edit
+Disallow: /help/images/flag_version
+Disallow: /help/images/flag_form
+Disallow: /help/images/history
+Disallow: /help/images/preview
+Disallow: /help/images/selected_image
+Disallow: /help/images/auto_complete_for_topic_tag_list
+Disallow: /help/images/auto_complete_for_still_image_tag_list
+Disallow: /help/images/auto_complete_for_audio_recording_tag_list
+Disallow: /help/images/auto_complete_for_video_tag_list
+Disallow: /help/images/auto_complete_for_web_link_tag_list
+Disallow: /help/images/auto_complete_for_document_tag_list
+Disallow: /help/images/auto_complete_for_comment_tag_list
+#
+#### per all action
+Disallow: /help/all/images/rss
+Disallow: /help/all/images/rss.xml
+Disallow: /help/all/images/contributed_by
+Disallow: /help/all/images/tagged
+Disallow: /help/all/images/related_to
+#
+#
+#### per action
+Disallow: /help/audio/new
+Disallow: /help/audio/edit
+Disallow: /help/audio/flag_version
+Disallow: /help/audio/flag_form
+Disallow: /help/audio/history
+Disallow: /help/audio/preview
+Disallow: /help/audio/selected_image
+Disallow: /help/audio/auto_complete_for_topic_tag_list
+Disallow: /help/audio/auto_complete_for_still_image_tag_list
+Disallow: /help/audio/auto_complete_for_audio_recording_tag_list
+Disallow: /help/audio/auto_complete_for_video_tag_list
+Disallow: /help/audio/auto_complete_for_web_link_tag_list
+Disallow: /help/audio/auto_complete_for_document_tag_list
+Disallow: /help/audio/auto_complete_for_comment_tag_list
+#
+#### per all action
+Disallow: /help/all/audio/rss
+Disallow: /help/all/audio/rss.xml
+Disallow: /help/all/audio/contributed_by
+Disallow: /help/all/audio/tagged
+Disallow: /help/all/audio/related_to
+#
+#
+#### per action
+Disallow: /help/video/new
+Disallow: /help/video/edit
+Disallow: /help/video/flag_version
+Disallow: /help/video/flag_form
+Disallow: /help/video/history
+Disallow: /help/video/preview
+Disallow: /help/video/selected_image
+Disallow: /help/video/auto_complete_for_topic_tag_list
+Disallow: /help/video/auto_complete_for_still_image_tag_list
+Disallow: /help/video/auto_complete_for_audio_recording_tag_list
+Disallow: /help/video/auto_complete_for_video_tag_list
+Disallow: /help/video/auto_complete_for_web_link_tag_list
+Disallow: /help/video/auto_complete_for_document_tag_list
+Disallow: /help/video/auto_complete_for_comment_tag_list
+#
+#### per all action
+Disallow: /help/all/video/rss
+Disallow: /help/all/video/rss.xml
+Disallow: /help/all/video/contributed_by
+Disallow: /help/all/video/tagged
+Disallow: /help/all/video/related_to
+#
+#
+#### per action
+Disallow: /help/web_links/new
+Disallow: /help/web_links/edit
+Disallow: /help/web_links/flag_version
+Disallow: /help/web_links/flag_form
+Disallow: /help/web_links/history
+Disallow: /help/web_links/preview
+Disallow: /help/web_links/selected_image
+Disallow: /help/web_links/auto_complete_for_topic_tag_list
+Disallow: /help/web_links/auto_complete_for_still_image_tag_list
+Disallow: /help/web_links/auto_complete_for_audio_recording_tag_list
+Disallow: /help/web_links/auto_complete_for_video_tag_list
+Disallow: /help/web_links/auto_complete_for_web_link_tag_list
+Disallow: /help/web_links/auto_complete_for_document_tag_list
+Disallow: /help/web_links/auto_complete_for_comment_tag_list
+#
+#### per all action
+Disallow: /help/all/web_links/rss
+Disallow: /help/all/web_links/rss.xml
+Disallow: /help/all/web_links/contributed_by
+Disallow: /help/all/web_links/tagged
+Disallow: /help/all/web_links/related_to
+#
+#
+#### per action
+Disallow: /help/documents/new
+Disallow: /help/documents/edit
+Disallow: /help/documents/flag_version
+Disallow: /help/documents/flag_form
+Disallow: /help/documents/history
+Disallow: /help/documents/preview
+Disallow: /help/documents/selected_image
+Disallow: /help/documents/auto_complete_for_topic_tag_list
+Disallow: /help/documents/auto_complete_for_still_image_tag_list
+Disallow: /help/documents/auto_complete_for_audio_recording_tag_list
+Disallow: /help/documents/auto_complete_for_video_tag_list
+Disallow: /help/documents/auto_complete_for_web_link_tag_list
+Disallow: /help/documents/auto_complete_for_document_tag_list
+Disallow: /help/documents/auto_complete_for_comment_tag_list
+#
+#### per all action
+Disallow: /help/all/documents/rss
+Disallow: /help/all/documents/rss.xml
+Disallow: /help/all/documents/contributed_by
+Disallow: /help/all/documents/tagged
+Disallow: /help/all/documents/related_to
+#
+#
+#### per action
+Disallow: /help/comments/new
+Disallow: /help/comments/edit
+Disallow: /help/comments/flag_version
+Disallow: /help/comments/flag_form
+Disallow: /help/comments/history
+Disallow: /help/comments/preview
+Disallow: /help/comments/selected_image
+Disallow: /help/comments/auto_complete_for_topic_tag_list
+Disallow: /help/comments/auto_complete_for_still_image_tag_list
+Disallow: /help/comments/auto_complete_for_audio_recording_tag_list
+Disallow: /help/comments/auto_complete_for_video_tag_list
+Disallow: /help/comments/auto_complete_for_web_link_tag_list
+Disallow: /help/comments/auto_complete_for_document_tag_list
+Disallow: /help/comments/auto_complete_for_comment_tag_list
+#
+#### per all action
+Disallow: /help/all/comments/rss
+Disallow: /help/all/comments/rss.xml
+Disallow: /help/all/comments/contributed_by
+Disallow: /help/all/comments/tagged
+Disallow: /help/all/comments/related_to
+#
+### end controllers
+#
+### Disallow specific controllers themselves
+Disallow: /help/account/
+Disallow: /help/baskets/
+Disallow: /help/members/
+Disallow: /help/extended_fields/
+Disallow: /help/topic_types/
+Disallow: /help/content_types/
+Disallow: /help/zoom_dbs/
+Disallow: /help/importers/
+Disallow: /help/search/
+### end disallow specific controllers
+#
+# Other
+Disallow: /help/index_page/help_file
+#
+##  per locale
+#
+### per controller
+#
+#### per action
+Disallow: /en/about/topics/new
+Disallow: /en/about/topics/edit
+Disallow: /en/about/topics/flag_version
+Disallow: /en/about/topics/flag_form
+Disallow: /en/about/topics/history
+Disallow: /en/about/topics/preview
+Disallow: /en/about/topics/selected_image
+Disallow: /en/about/topics/auto_complete_for_topic_tag_list
+Disallow: /en/about/topics/auto_complete_for_still_image_tag_list
+Disallow: /en/about/topics/auto_complete_for_audio_recording_tag_list
+Disallow: /en/about/topics/auto_complete_for_video_tag_list
+Disallow: /en/about/topics/auto_complete_for_web_link_tag_list
+Disallow: /en/about/topics/auto_complete_for_document_tag_list
+Disallow: /en/about/topics/auto_complete_for_comment_tag_list
+#
+#### per all action
+Disallow: /en/about/all/topics/rss
+Disallow: /en/about/all/topics/rss.xml
+Disallow: /en/about/all/topics/contributed_by
+Disallow: /en/about/all/topics/tagged
+Disallow: /en/about/all/topics/related_to
+#
+#
+#### per action
+Disallow: /en/about/images/new
+Disallow: /en/about/images/edit
+Disallow: /en/about/images/flag_version
+Disallow: /en/about/images/flag_form
+Disallow: /en/about/images/history
+Disallow: /en/about/images/preview
+Disallow: /en/about/images/selected_image
+Disallow: /en/about/images/auto_complete_for_topic_tag_list
+Disallow: /en/about/images/auto_complete_for_still_image_tag_list
+Disallow: /en/about/images/auto_complete_for_audio_recording_tag_list
+Disallow: /en/about/images/auto_complete_for_video_tag_list
+Disallow: /en/about/images/auto_complete_for_web_link_tag_list
+Disallow: /en/about/images/auto_complete_for_document_tag_list
+Disallow: /en/about/images/auto_complete_for_comment_tag_list
+#
+#### per all action
+Disallow: /en/about/all/images/rss
+Disallow: /en/about/all/images/rss.xml
+Disallow: /en/about/all/images/contributed_by
+Disallow: /en/about/all/images/tagged
+Disallow: /en/about/all/images/related_to
+#
+#
+#### per action
+Disallow: /en/about/audio/new
+Disallow: /en/about/audio/edit
+Disallow: /en/about/audio/flag_version
+Disallow: /en/about/audio/flag_form
+Disallow: /en/about/audio/history
+Disallow: /en/about/audio/preview
+Disallow: /en/about/audio/selected_image
+Disallow: /en/about/audio/auto_complete_for_topic_tag_list
+Disallow: /en/about/audio/auto_complete_for_still_image_tag_list
+Disallow: /en/about/audio/auto_complete_for_audio_recording_tag_list
+Disallow: /en/about/audio/auto_complete_for_video_tag_list
+Disallow: /en/about/audio/auto_complete_for_web_link_tag_list
+Disallow: /en/about/audio/auto_complete_for_document_tag_list
+Disallow: /en/about/audio/auto_complete_for_comment_tag_list
+#
+#### per all action
+Disallow: /en/about/all/audio/rss
+Disallow: /en/about/all/audio/rss.xml
+Disallow: /en/about/all/audio/contributed_by
+Disallow: /en/about/all/audio/tagged
+Disallow: /en/about/all/audio/related_to
+#
+#
+#### per action
+Disallow: /en/about/video/new
+Disallow: /en/about/video/edit
+Disallow: /en/about/video/flag_version
+Disallow: /en/about/video/flag_form
+Disallow: /en/about/video/history
+Disallow: /en/about/video/preview
+Disallow: /en/about/video/selected_image
+Disallow: /en/about/video/auto_complete_for_topic_tag_list
+Disallow: /en/about/video/auto_complete_for_still_image_tag_list
+Disallow: /en/about/video/auto_complete_for_audio_recording_tag_list
+Disallow: /en/about/video/auto_complete_for_video_tag_list
+Disallow: /en/about/video/auto_complete_for_web_link_tag_list
+Disallow: /en/about/video/auto_complete_for_document_tag_list
+Disallow: /en/about/video/auto_complete_for_comment_tag_list
+#
+#### per all action
+Disallow: /en/about/all/video/rss
+Disallow: /en/about/all/video/rss.xml
+Disallow: /en/about/all/video/contributed_by
+Disallow: /en/about/all/video/tagged
+Disallow: /en/about/all/video/related_to
+#
+#
+#### per action
+Disallow: /en/about/web_links/new
+Disallow: /en/about/web_links/edit
+Disallow: /en/about/web_links/flag_version
+Disallow: /en/about/web_links/flag_form
+Disallow: /en/about/web_links/history
+Disallow: /en/about/web_links/preview
+Disallow: /en/about/web_links/selected_image
+Disallow: /en/about/web_links/auto_complete_for_topic_tag_list
+Disallow: /en/about/web_links/auto_complete_for_still_image_tag_list
+Disallow: /en/about/web_links/auto_complete_for_audio_recording_tag_list
+Disallow: /en/about/web_links/auto_complete_for_video_tag_list
+Disallow: /en/about/web_links/auto_complete_for_web_link_tag_list
+Disallow: /en/about/web_links/auto_complete_for_document_tag_list
+Disallow: /en/about/web_links/auto_complete_for_comment_tag_list
+#
+#### per all action
+Disallow: /en/about/all/web_links/rss
+Disallow: /en/about/all/web_links/rss.xml
+Disallow: /en/about/all/web_links/contributed_by
+Disallow: /en/about/all/web_links/tagged
+Disallow: /en/about/all/web_links/related_to
+#
+#
+#### per action
+Disallow: /en/about/documents/new
+Disallow: /en/about/documents/edit
+Disallow: /en/about/documents/flag_version
+Disallow: /en/about/documents/flag_form
+Disallow: /en/about/documents/history
+Disallow: /en/about/documents/preview
+Disallow: /en/about/documents/selected_image
+Disallow: /en/about/documents/auto_complete_for_topic_tag_list
+Disallow: /en/about/documents/auto_complete_for_still_image_tag_list
+Disallow: /en/about/documents/auto_complete_for_audio_recording_tag_list
+Disallow: /en/about/documents/auto_complete_for_video_tag_list
+Disallow: /en/about/documents/auto_complete_for_web_link_tag_list
+Disallow: /en/about/documents/auto_complete_for_document_tag_list
+Disallow: /en/about/documents/auto_complete_for_comment_tag_list
+#
+#### per all action
+Disallow: /en/about/all/documents/rss
+Disallow: /en/about/all/documents/rss.xml
+Disallow: /en/about/all/documents/contributed_by
+Disallow: /en/about/all/documents/tagged
+Disallow: /en/about/all/documents/related_to
+#
+#
+#### per action
+Disallow: /en/about/comments/new
+Disallow: /en/about/comments/edit
+Disallow: /en/about/comments/flag_version
+Disallow: /en/about/comments/flag_form
+Disallow: /en/about/comments/history
+Disallow: /en/about/comments/preview
+Disallow: /en/about/comments/selected_image
+Disallow: /en/about/comments/auto_complete_for_topic_tag_list
+Disallow: /en/about/comments/auto_complete_for_still_image_tag_list
+Disallow: /en/about/comments/auto_complete_for_audio_recording_tag_list
+Disallow: /en/about/comments/auto_complete_for_video_tag_list
+Disallow: /en/about/comments/auto_complete_for_web_link_tag_list
+Disallow: /en/about/comments/auto_complete_for_document_tag_list
+Disallow: /en/about/comments/auto_complete_for_comment_tag_list
+#
+#### per all action
+Disallow: /en/about/all/comments/rss
+Disallow: /en/about/all/comments/rss.xml
+Disallow: /en/about/all/comments/contributed_by
+Disallow: /en/about/all/comments/tagged
+Disallow: /en/about/all/comments/related_to
+#
+### end controllers
+#
+### Disallow specific controllers themselves
+Disallow: /en/about/account/
+Disallow: /en/about/baskets/
+Disallow: /en/about/members/
+Disallow: /en/about/extended_fields/
+Disallow: /en/about/topic_types/
+Disallow: /en/about/content_types/
+Disallow: /en/about/zoom_dbs/
+Disallow: /en/about/importers/
+Disallow: /en/about/search/
+### end disallow specific controllers
+#
+# Other
+Disallow: /en/about/index_page/help_file
+#
+### per controller
+#
+#### per action
+Disallow: /about/topics/new
+Disallow: /about/topics/edit
+Disallow: /about/topics/flag_version
+Disallow: /about/topics/flag_form
+Disallow: /about/topics/history
+Disallow: /about/topics/preview
+Disallow: /about/topics/selected_image
+Disallow: /about/topics/auto_complete_for_topic_tag_list
+Disallow: /about/topics/auto_complete_for_still_image_tag_list
+Disallow: /about/topics/auto_complete_for_audio_recording_tag_list
+Disallow: /about/topics/auto_complete_for_video_tag_list
+Disallow: /about/topics/auto_complete_for_web_link_tag_list
+Disallow: /about/topics/auto_complete_for_document_tag_list
+Disallow: /about/topics/auto_complete_for_comment_tag_list
+#
+#### per all action
+Disallow: /about/all/topics/rss
+Disallow: /about/all/topics/rss.xml
+Disallow: /about/all/topics/contributed_by
+Disallow: /about/all/topics/tagged
+Disallow: /about/all/topics/related_to
+#
+#
+#### per action
+Disallow: /about/images/new
+Disallow: /about/images/edit
+Disallow: /about/images/flag_version
+Disallow: /about/images/flag_form
+Disallow: /about/images/history
+Disallow: /about/images/preview
+Disallow: /about/images/selected_image
+Disallow: /about/images/auto_complete_for_topic_tag_list
+Disallow: /about/images/auto_complete_for_still_image_tag_list
+Disallow: /about/images/auto_complete_for_audio_recording_tag_list
+Disallow: /about/images/auto_complete_for_video_tag_list
+Disallow: /about/images/auto_complete_for_web_link_tag_list
+Disallow: /about/images/auto_complete_for_document_tag_list
+Disallow: /about/images/auto_complete_for_comment_tag_list
+#
+#### per all action
+Disallow: /about/all/images/rss
+Disallow: /about/all/images/rss.xml
+Disallow: /about/all/images/contributed_by
+Disallow: /about/all/images/tagged
+Disallow: /about/all/images/related_to
+#
+#
+#### per action
+Disallow: /about/audio/new
+Disallow: /about/audio/edit
+Disallow: /about/audio/flag_version
+Disallow: /about/audio/flag_form
+Disallow: /about/audio/history
+Disallow: /about/audio/preview
+Disallow: /about/audio/selected_image
+Disallow: /about/audio/auto_complete_for_topic_tag_list
+Disallow: /about/audio/auto_complete_for_still_image_tag_list
+Disallow: /about/audio/auto_complete_for_audio_recording_tag_list
+Disallow: /about/audio/auto_complete_for_video_tag_list
+Disallow: /about/audio/auto_complete_for_web_link_tag_list
+Disallow: /about/audio/auto_complete_for_document_tag_list
+Disallow: /about/audio/auto_complete_for_comment_tag_list
+#
+#### per all action
+Disallow: /about/all/audio/rss
+Disallow: /about/all/audio/rss.xml
+Disallow: /about/all/audio/contributed_by
+Disallow: /about/all/audio/tagged
+Disallow: /about/all/audio/related_to
+#
+#
+#### per action
+Disallow: /about/video/new
+Disallow: /about/video/edit
+Disallow: /about/video/flag_version
+Disallow: /about/video/flag_form
+Disallow: /about/video/history
+Disallow: /about/video/preview
+Disallow: /about/video/selected_image
+Disallow: /about/video/auto_complete_for_topic_tag_list
+Disallow: /about/video/auto_complete_for_still_image_tag_list
+Disallow: /about/video/auto_complete_for_audio_recording_tag_list
+Disallow: /about/video/auto_complete_for_video_tag_list
+Disallow: /about/video/auto_complete_for_web_link_tag_list
+Disallow: /about/video/auto_complete_for_document_tag_list
+Disallow: /about/video/auto_complete_for_comment_tag_list
+#
+#### per all action
+Disallow: /about/all/video/rss
+Disallow: /about/all/video/rss.xml
+Disallow: /about/all/video/contributed_by
+Disallow: /about/all/video/tagged
+Disallow: /about/all/video/related_to
+#
+#
+#### per action
+Disallow: /about/web_links/new
+Disallow: /about/web_links/edit
+Disallow: /about/web_links/flag_version
+Disallow: /about/web_links/flag_form
+Disallow: /about/web_links/history
+Disallow: /about/web_links/preview
+Disallow: /about/web_links/selected_image
+Disallow: /about/web_links/auto_complete_for_topic_tag_list
+Disallow: /about/web_links/auto_complete_for_still_image_tag_list
+Disallow: /about/web_links/auto_complete_for_audio_recording_tag_list
+Disallow: /about/web_links/auto_complete_for_video_tag_list
+Disallow: /about/web_links/auto_complete_for_web_link_tag_list
+Disallow: /about/web_links/auto_complete_for_document_tag_list
+Disallow: /about/web_links/auto_complete_for_comment_tag_list
+#
+#### per all action
+Disallow: /about/all/web_links/rss
+Disallow: /about/all/web_links/rss.xml
+Disallow: /about/all/web_links/contributed_by
+Disallow: /about/all/web_links/tagged
+Disallow: /about/all/web_links/related_to
+#
+#
+#### per action
+Disallow: /about/documents/new
+Disallow: /about/documents/edit
+Disallow: /about/documents/flag_version
+Disallow: /about/documents/flag_form
+Disallow: /about/documents/history
+Disallow: /about/documents/preview
+Disallow: /about/documents/selected_image
+Disallow: /about/documents/auto_complete_for_topic_tag_list
+Disallow: /about/documents/auto_complete_for_still_image_tag_list
+Disallow: /about/documents/auto_complete_for_audio_recording_tag_list
+Disallow: /about/documents/auto_complete_for_video_tag_list
+Disallow: /about/documents/auto_complete_for_web_link_tag_list
+Disallow: /about/documents/auto_complete_for_document_tag_list
+Disallow: /about/documents/auto_complete_for_comment_tag_list
+#
+#### per all action
+Disallow: /about/all/documents/rss
+Disallow: /about/all/documents/rss.xml
+Disallow: /about/all/documents/contributed_by
+Disallow: /about/all/documents/tagged
+Disallow: /about/all/documents/related_to
+#
+#
+#### per action
+Disallow: /about/comments/new
+Disallow: /about/comments/edit
+Disallow: /about/comments/flag_version
+Disallow: /about/comments/flag_form
+Disallow: /about/comments/history
+Disallow: /about/comments/preview
+Disallow: /about/comments/selected_image
+Disallow: /about/comments/auto_complete_for_topic_tag_list
+Disallow: /about/comments/auto_complete_for_still_image_tag_list
+Disallow: /about/comments/auto_complete_for_audio_recording_tag_list
+Disallow: /about/comments/auto_complete_for_video_tag_list
+Disallow: /about/comments/auto_complete_for_web_link_tag_list
+Disallow: /about/comments/auto_complete_for_document_tag_list
+Disallow: /about/comments/auto_complete_for_comment_tag_list
+#
+#### per all action
+Disallow: /about/all/comments/rss
+Disallow: /about/all/comments/rss.xml
+Disallow: /about/all/comments/contributed_by
+Disallow: /about/all/comments/tagged
+Disallow: /about/all/comments/related_to
+#
+### end controllers
+#
+### Disallow specific controllers themselves
+Disallow: /about/account/
+Disallow: /about/baskets/
+Disallow: /about/members/
+Disallow: /about/extended_fields/
+Disallow: /about/topic_types/
+Disallow: /about/content_types/
+Disallow: /about/zoom_dbs/
+Disallow: /about/importers/
+Disallow: /about/search/
+### end disallow specific controllers
+#
+# Other
+Disallow: /about/index_page/help_file
+#
+##  per locale
+#
+### per controller
+#
+#### per action
+Disallow: /en/documentation/topics/new
+Disallow: /en/documentation/topics/edit
+Disallow: /en/documentation/topics/flag_version
+Disallow: /en/documentation/topics/flag_form
+Disallow: /en/documentation/topics/history
+Disallow: /en/documentation/topics/preview
+Disallow: /en/documentation/topics/selected_image
+Disallow: /en/documentation/topics/auto_complete_for_topic_tag_list
+Disallow: /en/documentation/topics/auto_complete_for_still_image_tag_list
+Disallow: /en/documentation/topics/auto_complete_for_audio_recording_tag_list
+Disallow: /en/documentation/topics/auto_complete_for_video_tag_list
+Disallow: /en/documentation/topics/auto_complete_for_web_link_tag_list
+Disallow: /en/documentation/topics/auto_complete_for_document_tag_list
+Disallow: /en/documentation/topics/auto_complete_for_comment_tag_list
+#
+#### per all action
+Disallow: /en/documentation/all/topics/rss
+Disallow: /en/documentation/all/topics/rss.xml
+Disallow: /en/documentation/all/topics/contributed_by
+Disallow: /en/documentation/all/topics/tagged
+Disallow: /en/documentation/all/topics/related_to
+#
+#
+#### per action
+Disallow: /en/documentation/images/new
+Disallow: /en/documentation/images/edit
+Disallow: /en/documentation/images/flag_version
+Disallow: /en/documentation/images/flag_form
+Disallow: /en/documentation/images/history
+Disallow: /en/documentation/images/preview
+Disallow: /en/documentation/images/selected_image
+Disallow: /en/documentation/images/auto_complete_for_topic_tag_list
+Disallow: /en/documentation/images/auto_complete_for_still_image_tag_list
+Disallow: /en/documentation/images/auto_complete_for_audio_recording_tag_list
+Disallow: /en/documentation/images/auto_complete_for_video_tag_list
+Disallow: /en/documentation/images/auto_complete_for_web_link_tag_list
+Disallow: /en/documentation/images/auto_complete_for_document_tag_list
+Disallow: /en/documentation/images/auto_complete_for_comment_tag_list
+#
+#### per all action
+Disallow: /en/documentation/all/images/rss
+Disallow: /en/documentation/all/images/rss.xml
+Disallow: /en/documentation/all/images/contributed_by
+Disallow: /en/documentation/all/images/tagged
+Disallow: /en/documentation/all/images/related_to
+#
+#
+#### per action
+Disallow: /en/documentation/audio/new
+Disallow: /en/documentation/audio/edit
+Disallow: /en/documentation/audio/flag_version
+Disallow: /en/documentation/audio/flag_form
+Disallow: /en/documentation/audio/history
+Disallow: /en/documentation/audio/preview
+Disallow: /en/documentation/audio/selected_image
+Disallow: /en/documentation/audio/auto_complete_for_topic_tag_list
+Disallow: /en/documentation/audio/auto_complete_for_still_image_tag_list
+Disallow: /en/documentation/audio/auto_complete_for_audio_recording_tag_list
+Disallow: /en/documentation/audio/auto_complete_for_video_tag_list
+Disallow: /en/documentation/audio/auto_complete_for_web_link_tag_list
+Disallow: /en/documentation/audio/auto_complete_for_document_tag_list
+Disallow: /en/documentation/audio/auto_complete_for_comment_tag_list
+#
+#### per all action
+Disallow: /en/documentation/all/audio/rss
+Disallow: /en/documentation/all/audio/rss.xml
+Disallow: /en/documentation/all/audio/contributed_by
+Disallow: /en/documentation/all/audio/tagged
+Disallow: /en/documentation/all/audio/related_to
+#
+#
+#### per action
+Disallow: /en/documentation/video/new
+Disallow: /en/documentation/video/edit
+Disallow: /en/documentation/video/flag_version
+Disallow: /en/documentation/video/flag_form
+Disallow: /en/documentation/video/history
+Disallow: /en/documentation/video/preview
+Disallow: /en/documentation/video/selected_image
+Disallow: /en/documentation/video/auto_complete_for_topic_tag_list
+Disallow: /en/documentation/video/auto_complete_for_still_image_tag_list
+Disallow: /en/documentation/video/auto_complete_for_audio_recording_tag_list
+Disallow: /en/documentation/video/auto_complete_for_video_tag_list
+Disallow: /en/documentation/video/auto_complete_for_web_link_tag_list
+Disallow: /en/documentation/video/auto_complete_for_document_tag_list
+Disallow: /en/documentation/video/auto_complete_for_comment_tag_list
+#
+#### per all action
+Disallow: /en/documentation/all/video/rss
+Disallow: /en/documentation/all/video/rss.xml
+Disallow: /en/documentation/all/video/contributed_by
+Disallow: /en/documentation/all/video/tagged
+Disallow: /en/documentation/all/video/related_to
+#
+#
+#### per action
+Disallow: /en/documentation/web_links/new
+Disallow: /en/documentation/web_links/edit
+Disallow: /en/documentation/web_links/flag_version
+Disallow: /en/documentation/web_links/flag_form
+Disallow: /en/documentation/web_links/history
+Disallow: /en/documentation/web_links/preview
+Disallow: /en/documentation/web_links/selected_image
+Disallow: /en/documentation/web_links/auto_complete_for_topic_tag_list
+Disallow: /en/documentation/web_links/auto_complete_for_still_image_tag_list
+Disallow: /en/documentation/web_links/auto_complete_for_audio_recording_tag_list
+Disallow: /en/documentation/web_links/auto_complete_for_video_tag_list
+Disallow: /en/documentation/web_links/auto_complete_for_web_link_tag_list
+Disallow: /en/documentation/web_links/auto_complete_for_document_tag_list
+Disallow: /en/documentation/web_links/auto_complete_for_comment_tag_list
+#
+#### per all action
+Disallow: /en/documentation/all/web_links/rss
+Disallow: /en/documentation/all/web_links/rss.xml
+Disallow: /en/documentation/all/web_links/contributed_by
+Disallow: /en/documentation/all/web_links/tagged
+Disallow: /en/documentation/all/web_links/related_to
+#
+#
+#### per action
+Disallow: /en/documentation/documents/new
+Disallow: /en/documentation/documents/edit
+Disallow: /en/documentation/documents/flag_version
+Disallow: /en/documentation/documents/flag_form
+Disallow: /en/documentation/documents/history
+Disallow: /en/documentation/documents/preview
+Disallow: /en/documentation/documents/selected_image
+Disallow: /en/documentation/documents/auto_complete_for_topic_tag_list
+Disallow: /en/documentation/documents/auto_complete_for_still_image_tag_list
+Disallow: /en/documentation/documents/auto_complete_for_audio_recording_tag_list
+Disallow: /en/documentation/documents/auto_complete_for_video_tag_list
+Disallow: /en/documentation/documents/auto_complete_for_web_link_tag_list
+Disallow: /en/documentation/documents/auto_complete_for_document_tag_list
+Disallow: /en/documentation/documents/auto_complete_for_comment_tag_list
+#
+#### per all action
+Disallow: /en/documentation/all/documents/rss
+Disallow: /en/documentation/all/documents/rss.xml
+Disallow: /en/documentation/all/documents/contributed_by
+Disallow: /en/documentation/all/documents/tagged
+Disallow: /en/documentation/all/documents/related_to
+#
+#
+#### per action
+Disallow: /en/documentation/comments/new
+Disallow: /en/documentation/comments/edit
+Disallow: /en/documentation/comments/flag_version
+Disallow: /en/documentation/comments/flag_form
+Disallow: /en/documentation/comments/history
+Disallow: /en/documentation/comments/preview
+Disallow: /en/documentation/comments/selected_image
+Disallow: /en/documentation/comments/auto_complete_for_topic_tag_list
+Disallow: /en/documentation/comments/auto_complete_for_still_image_tag_list
+Disallow: /en/documentation/comments/auto_complete_for_audio_recording_tag_list
+Disallow: /en/documentation/comments/auto_complete_for_video_tag_list
+Disallow: /en/documentation/comments/auto_complete_for_web_link_tag_list
+Disallow: /en/documentation/comments/auto_complete_for_document_tag_list
+Disallow: /en/documentation/comments/auto_complete_for_comment_tag_list
+#
+#### per all action
+Disallow: /en/documentation/all/comments/rss
+Disallow: /en/documentation/all/comments/rss.xml
+Disallow: /en/documentation/all/comments/contributed_by
+Disallow: /en/documentation/all/comments/tagged
+Disallow: /en/documentation/all/comments/related_to
+#
+### end controllers
+#
+### Disallow specific controllers themselves
+Disallow: /en/documentation/account/
+Disallow: /en/documentation/baskets/
+Disallow: /en/documentation/members/
+Disallow: /en/documentation/extended_fields/
+Disallow: /en/documentation/topic_types/
+Disallow: /en/documentation/content_types/
+Disallow: /en/documentation/zoom_dbs/
+Disallow: /en/documentation/importers/
+Disallow: /en/documentation/search/
+### end disallow specific controllers
+#
+# Other
+Disallow: /en/documentation/index_page/help_file
+#
+### per controller
+#
+#### per action
+Disallow: /documentation/topics/new
+Disallow: /documentation/topics/edit
+Disallow: /documentation/topics/flag_version
+Disallow: /documentation/topics/flag_form
+Disallow: /documentation/topics/history
+Disallow: /documentation/topics/preview
+Disallow: /documentation/topics/selected_image
+Disallow: /documentation/topics/auto_complete_for_topic_tag_list
+Disallow: /documentation/topics/auto_complete_for_still_image_tag_list
+Disallow: /documentation/topics/auto_complete_for_audio_recording_tag_list
+Disallow: /documentation/topics/auto_complete_for_video_tag_list
+Disallow: /documentation/topics/auto_complete_for_web_link_tag_list
+Disallow: /documentation/topics/auto_complete_for_document_tag_list
+Disallow: /documentation/topics/auto_complete_for_comment_tag_list
+#
+#### per all action
+Disallow: /documentation/all/topics/rss
+Disallow: /documentation/all/topics/rss.xml
+Disallow: /documentation/all/topics/contributed_by
+Disallow: /documentation/all/topics/tagged
+Disallow: /documentation/all/topics/related_to
+#
+#
+#### per action
+Disallow: /documentation/images/new
+Disallow: /documentation/images/edit
+Disallow: /documentation/images/flag_version
+Disallow: /documentation/images/flag_form
+Disallow: /documentation/images/history
+Disallow: /documentation/images/preview
+Disallow: /documentation/images/selected_image
+Disallow: /documentation/images/auto_complete_for_topic_tag_list
+Disallow: /documentation/images/auto_complete_for_still_image_tag_list
+Disallow: /documentation/images/auto_complete_for_audio_recording_tag_list
+Disallow: /documentation/images/auto_complete_for_video_tag_list
+Disallow: /documentation/images/auto_complete_for_web_link_tag_list
+Disallow: /documentation/images/auto_complete_for_document_tag_list
+Disallow: /documentation/images/auto_complete_for_comment_tag_list
+#
+#### per all action
+Disallow: /documentation/all/images/rss
+Disallow: /documentation/all/images/rss.xml
+Disallow: /documentation/all/images/contributed_by
+Disallow: /documentation/all/images/tagged
+Disallow: /documentation/all/images/related_to
+#
+#
+#### per action
+Disallow: /documentation/audio/new
+Disallow: /documentation/audio/edit
+Disallow: /documentation/audio/flag_version
+Disallow: /documentation/audio/flag_form
+Disallow: /documentation/audio/history
+Disallow: /documentation/audio/preview
+Disallow: /documentation/audio/selected_image
+Disallow: /documentation/audio/auto_complete_for_topic_tag_list
+Disallow: /documentation/audio/auto_complete_for_still_image_tag_list
+Disallow: /documentation/audio/auto_complete_for_audio_recording_tag_list
+Disallow: /documentation/audio/auto_complete_for_video_tag_list
+Disallow: /documentation/audio/auto_complete_for_web_link_tag_list
+Disallow: /documentation/audio/auto_complete_for_document_tag_list
+Disallow: /documentation/audio/auto_complete_for_comment_tag_list
+#
+#### per all action
+Disallow: /documentation/all/audio/rss
+Disallow: /documentation/all/audio/rss.xml
+Disallow: /documentation/all/audio/contributed_by
+Disallow: /documentation/all/audio/tagged
+Disallow: /documentation/all/audio/related_to
+#
+#
+#### per action
+Disallow: /documentation/video/new
+Disallow: /documentation/video/edit
+Disallow: /documentation/video/flag_version
+Disallow: /documentation/video/flag_form
+Disallow: /documentation/video/history
+Disallow: /documentation/video/preview
+Disallow: /documentation/video/selected_image
+Disallow: /documentation/video/auto_complete_for_topic_tag_list
+Disallow: /documentation/video/auto_complete_for_still_image_tag_list
+Disallow: /documentation/video/auto_complete_for_audio_recording_tag_list
+Disallow: /documentation/video/auto_complete_for_video_tag_list
+Disallow: /documentation/video/auto_complete_for_web_link_tag_list
+Disallow: /documentation/video/auto_complete_for_document_tag_list
+Disallow: /documentation/video/auto_complete_for_comment_tag_list
+#
+#### per all action
+Disallow: /documentation/all/video/rss
+Disallow: /documentation/all/video/rss.xml
+Disallow: /documentation/all/video/contributed_by
+Disallow: /documentation/all/video/tagged
+Disallow: /documentation/all/video/related_to
+#
+#
+#### per action
+Disallow: /documentation/web_links/new
+Disallow: /documentation/web_links/edit
+Disallow: /documentation/web_links/flag_version
+Disallow: /documentation/web_links/flag_form
+Disallow: /documentation/web_links/history
+Disallow: /documentation/web_links/preview
+Disallow: /documentation/web_links/selected_image
+Disallow: /documentation/web_links/auto_complete_for_topic_tag_list
+Disallow: /documentation/web_links/auto_complete_for_still_image_tag_list
+Disallow: /documentation/web_links/auto_complete_for_audio_recording_tag_list
+Disallow: /documentation/web_links/auto_complete_for_video_tag_list
+Disallow: /documentation/web_links/auto_complete_for_web_link_tag_list
+Disallow: /documentation/web_links/auto_complete_for_document_tag_list
+Disallow: /documentation/web_links/auto_complete_for_comment_tag_list
+#
+#### per all action
+Disallow: /documentation/all/web_links/rss
+Disallow: /documentation/all/web_links/rss.xml
+Disallow: /documentation/all/web_links/contributed_by
+Disallow: /documentation/all/web_links/tagged
+Disallow: /documentation/all/web_links/related_to
+#
+#
+#### per action
+Disallow: /documentation/documents/new
+Disallow: /documentation/documents/edit
+Disallow: /documentation/documents/flag_version
+Disallow: /documentation/documents/flag_form
+Disallow: /documentation/documents/history
+Disallow: /documentation/documents/preview
+Disallow: /documentation/documents/selected_image
+Disallow: /documentation/documents/auto_complete_for_topic_tag_list
+Disallow: /documentation/documents/auto_complete_for_still_image_tag_list
+Disallow: /documentation/documents/auto_complete_for_audio_recording_tag_list
+Disallow: /documentation/documents/auto_complete_for_video_tag_list
+Disallow: /documentation/documents/auto_complete_for_web_link_tag_list
+Disallow: /documentation/documents/auto_complete_for_document_tag_list
+Disallow: /documentation/documents/auto_complete_for_comment_tag_list
+#
+#### per all action
+Disallow: /documentation/all/documents/rss
+Disallow: /documentation/all/documents/rss.xml
+Disallow: /documentation/all/documents/contributed_by
+Disallow: /documentation/all/documents/tagged
+Disallow: /documentation/all/documents/related_to
+#
+#
+#### per action
+Disallow: /documentation/comments/new
+Disallow: /documentation/comments/edit
+Disallow: /documentation/comments/flag_version
+Disallow: /documentation/comments/flag_form
+Disallow: /documentation/comments/history
+Disallow: /documentation/comments/preview
+Disallow: /documentation/comments/selected_image
+Disallow: /documentation/comments/auto_complete_for_topic_tag_list
+Disallow: /documentation/comments/auto_complete_for_still_image_tag_list
+Disallow: /documentation/comments/auto_complete_for_audio_recording_tag_list
+Disallow: /documentation/comments/auto_complete_for_video_tag_list
+Disallow: /documentation/comments/auto_complete_for_web_link_tag_list
+Disallow: /documentation/comments/auto_complete_for_document_tag_list
+Disallow: /documentation/comments/auto_complete_for_comment_tag_list
+#
+#### per all action
+Disallow: /documentation/all/comments/rss
+Disallow: /documentation/all/comments/rss.xml
+Disallow: /documentation/all/comments/contributed_by
+Disallow: /documentation/all/comments/tagged
+Disallow: /documentation/all/comments/related_to
+#
+### end controllers
+#
+### Disallow specific controllers themselves
+Disallow: /documentation/account/
+Disallow: /documentation/baskets/
+Disallow: /documentation/members/
+Disallow: /documentation/extended_fields/
+Disallow: /documentation/topic_types/
+Disallow: /documentation/content_types/
+Disallow: /documentation/zoom_dbs/
+Disallow: /documentation/importers/
+Disallow: /documentation/search/
+### end disallow specific controllers
+#
+# Other
+Disallow: /documentation/index_page/help_file
+## end per locale
+# end per basket
+#
+# Global
+#
+Disallow: /*number_of_results_per_page*

@@ -1,0 +1,10 @@
+#content-tabs
+  %ul.nav-list
+    %li.first.selected
+      %a{:href => "#", :tabindex => "1"}
+        %span.view-link= t 'topics.actions_menu.item_details'
+    %li= link_to_edit_for(item)
+    %li= link_to_history_for(item)
+    - if logged_in? and @at_least_a_moderator
+      %li= link_to t('topics.actions_menu.delete'), { action: :destroy, id: @cache_id }, method: :delete, confirm: t('topics.actions_menu.delete_confirm'), tabindex: '1'
+    = render :partial => 'topics/privacy_chooser', :locals => { :item => item } if @show_privacy_chooser

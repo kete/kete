@@ -4,13 +4,14 @@ module ConfigureAsKeteContentItem
       # each topic or content item lives in exactly one basket
       klass.send :belongs_to, :basket
 
-      klass.send :named_scope, :in_basket, lambda { |basket| { :conditions => { :basket_id => basket } } }
+      klass.send :scope, :in_basket, lambda { |basket| { :conditions => { :basket_id => basket } } }
       
       # where we handle creator and contributor tracking
       klass.send :include, HasContributors
 
       # all our ZOOM_CLASSES need this to be searchable by zebra
-      klass.send :include, ConfigureActsAsZoomForKete
+      # RABID: disable to get stuff working
+      # klass.send :include, ConfigureActsAsZoomForKete
 
       # methods related to handling the xml kept in extended_content column
       klass.send :include, ExtendedContent
@@ -32,12 +33,6 @@ module ConfigureAsKeteContentItem
       # methods for merging values from versions together
       klass.send :include, Merge
 
-      # sanitize our descriptions and extended_content for security
-      # see validate_as_sanitized_html below, too
-      # but allow site admin to override
-      klass.send :attr_accessor, :do_not_sanitize
-      klass.send :acts_as_sanitized, :fields => [:description]
-
       # this allows us to turn on/off email notification per item
       klass.send :attr_accessor, :skip_email_notification
 
@@ -50,9 +45,9 @@ module ConfigureAsKeteContentItem
       klass.send :acts_as_taggable_on, :public_tags
       klass.send :acts_as_taggable_on, :private_tags
 
-      # we override acts_as_versioned dependent => delete_all
-      # because of the complexity our relationships of our models
-      # delete_all won't do the right thing (at least not in migrations)
+      # # we override acts_as_versioned dependent => delete_all
+      # # because of the complexity our relationships of our models
+      # # delete_all won't do the right thing (at least not in migrations)
       klass.send :acts_as_versioned, :association_options => { :dependent => :destroy }
 
       # this is a little tricky
@@ -61,7 +56,7 @@ module ConfigureAsKeteContentItem
       # where we use it for flagging moderator options, like 'flag as inappropriate'
       # where 'inappropriate' is actually a tag on that particular version
 
-      # Moderation flags are tracked in a separate context.
+      # # Moderation flags are tracked in a separate context.
       Module.class_eval("#{klass.name}::Version").class_eval <<-RUBY
         acts_as_taggable_on :flags
         alias_method :tags, :flags
@@ -78,7 +73,7 @@ module ConfigureAsKeteContentItem
           latest_version.first_related_image
         end
         def disputed_or_not_available?
-          (title == Kete.no_public_version_title) || (title == Kete.blank_title)
+          (title == SystemSetting.no_public_version_title) || (title == SystemSetting.blank_title)
         end
         include FriendlyUrls
         def to_param; format_for_friendly_urls(true); end
@@ -88,8 +83,6 @@ module ConfigureAsKeteContentItem
       klass.send :include, Flagging
 
       klass.send :validates_presence_of, :title
-
-      klass.send :validates_as_sanitized_html, [:description, :extended_content]
 
       klass.send :after_save, :update_taggings_basket_id
 
@@ -138,5 +131,9 @@ module ConfigureAsKeteContentItem
         RedirectRegistration.create!(:source_url_pattern => old_url, :target_url_pattern => new_url)
       end
     end
+  end
+
+  def basket_or_default
+    basket.present? ? basket : Basket.find_by_urlified_name(SystemSetting.default_basket)
   end
 end

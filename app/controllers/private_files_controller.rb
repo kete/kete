@@ -37,7 +37,7 @@ class PrivateFilesController < ApplicationController
       
       # If we're using Nginx's send_file method, send the X-Accel-Redirect header.
       if SENDFILE_METHOD == "nginx"
-        path = @record.full_filename.gsub(RAILS_ROOT, '')
+        path = @record.full_filename.gsub(Rails.root, '')
         logger.info "Sending X-Accel-Redirect header #{path}" if logger
         head send_file_options[:status], "X-Accel-Redirect" => path, "Content-Type" => send_file_options[:type]
         
@@ -57,7 +57,7 @@ class PrivateFilesController < ApplicationController
       # the image gets requested, append show_placeholder to the URL, so if
       # the image is not authorized, we dont get a broken image because we
       # return one here
-      no_public_version = File.join(RAILS_ROOT, 'public', 'images', 'no_public_version.gif')
+      no_public_version = File.join(Rails.root, 'public', 'images', 'no_public_version.gif')
       send_file_options = {
         :type => 'image/gif',
         :length => File.size(no_public_version),

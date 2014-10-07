@@ -8,55 +8,60 @@ module AccountHelper
     #Define an array of words for generation
     #words = ['captcha', 'is', 'the', 'way']
     #Pick one from random to use in captcha image
-    captchatext = String.random_alphanumeric(6).upcase # words[rand(words.size)]
+    # captchatext = String.random_alphanumeric(6).upcase # words[rand(words.size)]
 
-    #Generate text layer
-    text = Magick::Draw.new
-    text.pointsize = 25
-    # see comment below around pushing new image to canvas
-    text.fill = 'darkblue'
-    text.gravity = Magick::CenterGravity
-    #Rotate text 5 degrees up or down
-    text.rotation = (rand(2)==1 ? 5 : -5)
+    # #Generate text layer
+    # text = Magick::Draw.new
+    # text.pointsize = 25
+    # # see comment below around pushing new image to canvas
+    # text.fill = 'darkblue'
+    # text.gravity = Magick::CenterGravity
+    # #Rotate text 5 degrees up or down
+    # text.rotation = (rand(2)==1 ? 5 : -5)
 
-    #Provide the text
-    metric = text.get_type_metrics(captchatext)
+    # #Provide the text
+    # metric = text.get_type_metrics(captchatext)
 
-    #Define image list
-    canvas = Magick::ImageList.new
+    # #Define image list
+    # canvas = Magick::ImageList.new
 
-    #Add bg image to image list
-    canvas << Magick::Image.new(metric.width, metric.height){
-      self.background_color = '#fff'
-    }
+    # #Add bg image to image list
+    # canvas << Magick::Image.new(metric.width, metric.height){
+    #   self.background_color = '#fff'
+    # }
 
-    # Add text to image list
-    # Walter McGinnis, 2008-03-27
-    # thanks to Mark de Reeper at Sun
-    # for pointing in the direction of a fix for making this work across platforms
-    # by setting the background to white and the text to darkblue
-    # this should be explictly readable
-    canvas << Magick::Image.new(metric.width, metric.height){
-      self.background_color = 'white'
-    }.annotate(text, 0, 0, 0, 0, captchatext).wave(3, 100)
+    # # Add text to image list
+    # # Walter McGinnis, 2008-03-27
+    # # thanks to Mark de Reeper at Sun
+    # # for pointing in the direction of a fix for making this work across platforms
+    # # by setting the background to white and the text to darkblue
+    # # this should be explictly readable
+    # canvas << Magick::Image.new(metric.width, metric.height){
+    #   self.background_color = 'white'
+    # }.annotate(text, 0, 0, 0, 0, captchatext).wave(3, 100)
 
-    #Add noise and opacity to image
-    canvas << Magick::Image.new(metric.width, metric.height){
-      p = Magick::Pixel.from_color('#fff')
-      p.opacity = Magick::MaxRGB/2
-      self.background_color = p
-    }.add_noise(Magick::LaplacianNoise)
+    # #Add noise and opacity to image
+    # canvas << Magick::Image.new(metric.width, metric.height){
+    #   p = Magick::Pixel.from_color('#fff')
+    #   p.opacity = Magick::MaxRGB/2
+    #   self.background_color = p
+    # }.add_noise(Magick::LaplacianNoise)
 
-    #Create image resource
-    image = canvas.flatten_images.blur_image(1)
-    image.format = "JPG"
-    captchablob = image.to_blob
+    # #Create image resource
+    # image = canvas.flatten_images.blur_image(1)
+    # image.format = "JPG"
+    # captchablob = image.to_blob
 
-    captcha = Captcha.new()
-    captcha.text = captchatext.to_s()
-    captcha.imageblob = captchablob
-    captcha.save()
-    return captcha.id
+    # captcha = Captcha.new()
+    # captcha.text = captchatext.to_s()
+    # captcha.imageblob = captchablob
+    # captcha.save()
+    # return captcha.id
+
+    # EOIN:
+    # * this method seems to crash somewhere in ImageMagick - this might take a while to track down so
+    #   I commented this method out until we can figure out a better way of making captchas (if they are required at all)
+    return 1
   end
 
   def captcha_url(id)

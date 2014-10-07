@@ -1,0 +1,8 @@
+%fieldset
+  .form-element
+    %label{:for => "contact_subject"}= t 'email.contact_form.subject'
+    = text_field_tag 'contact[subject]', (params[:contact][:subject] unless params[:contact].nil?), :id => "contact_subject"
+  .form-element
+    %label{:for => "contact_message"}= t 'email.contact_form.message'
+    = text_area_tag 'contact[message]', (params[:contact][:message] unless params[:contact].nil?), :id => "contact_message", :rows => 10, :cols => 10, :style => "width:500px;"
+  %p= t 'email.contact_form.email_shared'

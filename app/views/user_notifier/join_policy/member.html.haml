@@ -1,0 +1,12 @@
+= @recipient.user_name
+,
+
+\#{t 'user_notifier.join_policy.member.joined', :user_name => @sender.user_name, :basket_name => @basket.name}
+
+\#{t 'user_notifier.join_policy.member.youre_an_admin'}
+
+\#{t 'user_notifier.join_policy.member.view_memberlist_at'}
+
+\#{SystemSetting.full_site_url}#{@basket.urlified_name}/members/list
+
+\#{render 'user_notifier/email_footer'}

@@ -13,7 +13,7 @@ class ImportersController < ApplicationController
   before_filter :permitted_to_create_imports, :only => [:new_related_set_from_archive_file, :create]
 
   ### TinyMCE WYSIWYG editor stuff
-  uses_tiny_mce :only => VALID_TINYMCE_ACTIONS
+  # uses_tiny_mce :only => VALID_TINYMCE_ACTIONS
   ### end TinyMCE WYSIWYG editor stuff
 
   # Get the Privacy Controls helper
@@ -33,8 +33,7 @@ class ImportersController < ApplicationController
   end
 
   def choose_contributing_user
-    @potential_contributing_users = User.all(:joins => "join roles_users on users.id = roles_users.user_id",
-                                             :conditions => ["roles_users.role_id in (?)", @current_basket.accepted_roles])
+    @potential_contributing_users = User.joins(:roles_user).where("roles_users.role_id in (?)", @current_basket.accepted_roles)
     @user_options = @potential_contributing_users.map { |u| [u.user_name, u.id] }
   end
 
@@ -95,7 +94,7 @@ class ImportersController < ApplicationController
       # only run one import at a time for the moment
       unless backgroundrb_is_running?(@worker_type)
         MiddleMan.new_worker( :worker => @worker_type, :worker_key => @worker_key )
-        import_request = { :host => request.host, :protocol => request.protocol, :request_uri => request.request_uri }
+        import_request = { :host => request.host, :protocol => request.protocol, :request_uri => request.original_url }
         MiddleMan.worker(@worker_type, @worker_key).async_do_work( :arg => { :zoom_class => @zoom_class,
                                                                                    :import => @import.id,
                                                                                    :params => params,
@@ -158,7 +157,6 @@ class ImportersController < ApplicationController
               end
             end
           end
-          expire_related_caches_for(related_topic) if !params[:related_topic].blank? && (status[:done_with_do_work] == true or !status[:error].blank?)
         else
           message = t('importers_controller.get_progress.import_failed')
           flash[:notice] = message

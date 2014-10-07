@@ -7,11 +7,26 @@ class DocumentsController < ApplicationController
   end
 
   def list
-    index
+    respond_to do |format|
+      format.html { redirect_to basket_documents_path } 
+      format.rss do 
+        date = DateTime.parse(params[:updated_since]) if params[:updated_since]
+        date = DateTime.now.beginning_of_month        if date.nil?
+
+        @items = Document.updated_since(date)
+        render 'shared/list'
+      end
+    end
   end
 
   def show
     @document = prepare_item_and_vars
+    @comments = @document.non_pending_comments
+
+    @creator = @document.creator
+    @last_contributor = @document.contributors.last || @creator
+
+    @related_item_topics = @document.related_items.select {|ri| ri.is_a? Topic}
 
     respond_to do |format|
       format.html
@@ -49,9 +64,8 @@ class DocumentsController < ApplicationController
 
     version_after_update = @document.max_version + 1
 
-    @successful = ensure_no_new_insecure_elements_in('document')
     @document.attributes = params[:document]
-    @successful = @document.save if @successful
+    @successful = @document.save
 
     if @successful
 

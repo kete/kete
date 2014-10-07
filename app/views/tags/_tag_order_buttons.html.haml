@@ -1,0 +1,19 @@
+-number_class = "first"
+-if @order == "number"
+  - number_class = "first selected"
+-elsif @order == "alphabetical"
+  - alphabetical_class = "selected"
+-elsif @order == "latest"
+  - latest_class = "selected"
+-elsif @order == "random"
+  - random_class = "selected"
+
+%ul.nav-list
+  %li{class: number_class}
+    %a(href="/en/site/tags/list?direction=desc&order=number&page=#{@current_page}") Most Popular #{@order}
+  %li{class: alphabetical_class}
+    %a(href="/en/site/tags/list?direction=desc&order=alphabetical&page=#{@current_page}") By Name 
+  %li{class: latest_class}
+    %a(href="/en/site/tags/list?direction=desc&order=latest&page=#{@current_page}") Latest 
+  %li{class: random_class}
+    %a(href="/en/site/tags/list?direction=asc&order=random&page=#{@current_page}") Random

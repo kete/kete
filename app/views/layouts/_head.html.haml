@@ -1,0 +1,55 @@
+%head
+  -# Tell google not to index our site
+  -# FIXME: This just for the staging server - it must be removed when we go live
+  %meta{content: "noindex, nofollow", name: "robots"}/
+  -### meta tags ###
+  -#################
+
+  %meta{content: "text/html; charset=utf-8", "http-equiv" => "Content-Type"}/
+  %meta{content: page_keywords,    name: "keywords"}/
+  %meta{content: page_description, name: "description"}/
+  = csrf_meta_tag
+
+
+  -### title ###
+  -#############
+
+  %title= title_with_context
+
+
+  -### DC Meta tags ###
+  -####################
+
+  = dc_metadata_for(current_item) if current_item && !current_item.private?
+  = opensearch_descriptions
+  = open_search_metadata if params[:controller] == 'search' && %w{ all for }.include?(params[:action])
+  - if %w(images topics).include?(params[:controller]) && params[:action] == "show"
+    = oembed_provider_links
+
+
+  -### Stylesheets ###
+  -###################
+
+  = stylesheet_link_tag 'application'
+  = stylesheet_link_tag 'left-hand-column' if show_basket_list_naviation_menu?
+
+  /[if IE]
+    = stylesheet_link_tag 'ie'
+
+
+  -### javascript ###
+  -##################
+
+  = javascript_include_tag 'application'
+
+
+  -### Feeds ###
+  -#############
+
+  -# Disable RSS feed for the moment
+  -# - combined_rss_url = nil
+  -# -# combined_rss_url = basket_all_rss_url( :urlified_name => @site_basket.urlified_name, :controller_name_for_zoom_class => 'combined' )
+  -# - rss_tag_autos.each do |rss_tag_auto|
+  -#   = rss_tag_auto.sub("title=\"RSS\"", "title=\"RSS #{stripped_title}\"").html_safe
+  -#
+  -# %link{href: combined_rss_url, rel: "alternate", title: t('layouts.application.combined_rss'), type: "application/rss+xml"}

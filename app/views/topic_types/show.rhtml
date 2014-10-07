@@ -1,8 +1,0 @@
-<% for column in TopicType.content_columns %>
-<p>
-  <b><%= column.human_name %>:</b> <%=h @topic_type.send(column.name) %>
-</p>
-<% end %>
-
-<%= link_to t('topic_types.show.edit'), :action => 'edit', :id => @topic_type %> |
-<%= link_to t('topic_types.show.back'), :action => 'list' %>

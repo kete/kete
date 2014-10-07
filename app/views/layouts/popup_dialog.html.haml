@@ -1,0 +1,12 @@
+!!!
+%html{lang: "en", xmlns: "http://www.w3.org/1999/xhtml"}
+  %head
+    %title= h(@title)
+    = javascript_include_tag 'application'
+    = csrf_meta_tag
+  %body{id: @current_basket.urlified_name}
+    - if flash[:notice]
+      #notice= flash[:notice]
+    - if flash[:error]
+      #error= flash[:error]
+    = yield

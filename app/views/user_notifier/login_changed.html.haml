@@ -1,0 +1,10 @@
+= @user.user_name
+,
+
+\#{t 'user_notifier.login_changed.description', :site_name => Kete.pretty_site_name}
+
+\#{t 'user_notifier.login_changed.login_using'}
+
+\#{@user.login}
+
+\#{render 'email_footer'}
