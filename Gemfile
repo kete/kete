@@ -189,6 +189,7 @@ gem 'validates_xml',                '1.0.3' # >> 2007-06-06
 gem 'authorization', github: 'kete/rails-authorization-plugin'
 
 
+
 # ######
 # Assets
 # ######
@@ -207,6 +208,8 @@ gem 'uglifier', '>= 1.0.3'
 group :development do
   gem 'quiet_assets'
   gem 'rails-erd'
+  gem 'capistrano',  '~> 3.2.1'
+  gem 'capistrano-rails', '~> 1.1.2'
 end
 
 group :development, :test do

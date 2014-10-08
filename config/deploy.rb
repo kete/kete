@@ -1,56 +1,58 @@
-# support multi-stage deployment
-# (requires capistrano-ext gem)
-# require 'capistrano/ext/multistage'
+# config valid only for Capistrano 3.1
+lock '3.2.1'
 
-# support for ruby defined application configurations
-# (requires capistrano-configuration)
-# require 'capistrano-configuration'
+set :application, 'my_app_name'
+set :repo_url, 'git@example.com:me/my_repo.git'
 
-# What is your application called and where are you getting it from?
-set :application, "set your application name here"
-set :repository,  "set your repository location here"
+# Default branch is :master
+# ask :branch, proc { `git rev-parse --abbrev-ref HEAD`.chomp }.call
 
-# Where are your deployed applications?
-# change this if you deploy to a different directory
-# than what we outline in Kete installation guide
-set :path_to_apps, "/home/kete/apps"
+# Default deploy_to directory is /var/www/my_app
+# set :deploy_to, '/var/www/my_app'
 
-# Where on the server should this application reside?
-set :deploy_to, "#{path_to_apps}/#{application}"
+# Default value for :scm is :git
+# set :scm, :git
 
-# If you aren't using Git to manage your source code
-# change :git to the prefered SCM system (:subversion)
-# Example
-# set :scm, :subversion
-set :scm, :git
-set :branch, "master"
-set :scm_username, "username"
-set :scm_password, "password"
+# Default value for :format is :pretty
+# set :format, :pretty
 
-# Which user/group on the server will be running the application?
-set :user, "kete"
-set :group, "kete"
+# Default value for :log_level is :debug
+# set :log_level, :debug
 
-# Which server should we deploy to?
-role :app, "your app-server here"
-role :web, "your web-server here"
-role :db,  "your db-server here", :primary => true
+# Default value for :pty is false
+# set :pty, true
 
-set :config_files, []
+# Default value for :linked_files is []
+# set :linked_files, %w{config/database.yml}
 
-# keeps a checked out/cloned copy of the site on the deployed server so next time
-# it updates the codebase, instead of redownloading the whole app (faster this way)
-set :deploy_via, :remote_cache
+# Default value for linked_dirs is []
+# set :linked_dirs, %w{bin log tmp/pids tmp/cache tmp/sockets vendor/bundle public/system}
 
-# Uncomment and configure the rest if you use Mongrel, otherwise, if you use Apache
-# these settings won't apply to you
+# Default value for default_env is {}
+# set :default_env, { path: "/opt/ruby/bin:$PATH" }
 
-# ======================================================================
-# Mongrel Settings (assumes Linux distribution for config file location)
-# ======================================================================
-#set :mongrel_servers, 1
-#set :mongrel_port, 8000
-#set :mongrel_environment, 'production'
-#set :mongrel_address, '127.0.0.1'
-#set :mongrel_conf, "/etc/mongrel_cluster/#{application}.yml"
+# Default value for keep_releases is 5
+# set :keep_releases, 5
 
+namespace :deploy do
+
+  desc 'Restart application'
+  task :restart do
+    on roles(:app), in: :sequence, wait: 5 do
+      # Your restart mechanism here, for example:
+      # execute :touch, release_path.join('tmp/restart.txt')
+    end
+  end
+
+  after :publishing, :restart
+
+  after :restart, :clear_cache do
+    on roles(:web), in: :groups, limit: 3, wait: 10 do
+      # Here we can do anything such as:
+      # within release_path do
+      #   execute :rake, 'cache:clear'
+      # end
+    end
+  end
+
+end
