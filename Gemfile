@@ -209,7 +209,10 @@ group :development do
   gem 'quiet_assets'
   gem 'rails-erd'
   gem 'capistrano',  '~> 3.2.1'
+  gem 'capistrano-rbenv', '~> 2.0.2'
   gem 'capistrano-rails', '~> 1.1.2'
+  gem 'capistrano-bundler', '~> 1.1.3'
+  
 end
 
 group :development, :test do
