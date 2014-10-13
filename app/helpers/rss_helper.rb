@@ -31,7 +31,9 @@ module RssHelper
   end
 
   def rss_dc_source_for_file(item)
-    if ::Import::VALID_ARCHIVE_CLASSES.include?(item.class.name)
+    if item.is_a?(StillImage) && item.original_file.nil?
+      nil
+    elsif ::Import::VALID_ARCHIVE_CLASSES.include?(item.class.name)
       file_url_from_bits_for(item, request[:host])
     else
       nil

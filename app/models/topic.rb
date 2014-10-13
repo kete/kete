@@ -50,41 +50,29 @@ class Topic < ActiveRecord::Base
   def self.updated_since(date)
     # Topic.where( <Topic or its join tables is newer than date>  )
 
-    topics =         Topic.arel_table
-    taggings =       Tagging.arel_table
-    contributions =  Contribution.arel_table
-    cir_1 =          Arel::Table.new(:content_item_relations, as: 'cir_1')
-    cir_2 =          Arel::Table.new(:content_item_relations, as: 'cir_2')
-    dcir_1 =         Arel::Table.new(:deleted_content_item_relations, as: 'dcir_1')
-    dcir_2 =         Arel::Table.new(:deleted_content_item_relations, as: 'dcir_2')
+    taggings_sql =                         Tagging.uniq.select(:taggable_id).where(taggable_type: 'Topic').where("created_at > ?", date).to_sql
+    contributions_sql =                    Contribution.uniq.select(:contributed_item_id).where(contributed_item_type: 'Topic').where("updated_at > ?", date).to_sql
+    content_item_relations_sql_1 =         ContentItemRelation.uniq.select(:related_item_id).where(related_item_type: 'Topic').where("updated_at > ?", date).to_sql
+    content_item_relations_sql_2 =         ContentItemRelation.uniq.select(:topic_id).where("updated_at > ?", date).to_sql
+    deleted_content_item_relations_sql_1 = "SELECT DISTINCT related_item_id FROM deleted_content_item_relations WHERE related_item_type = 'Topic' AND updated_at > ?"
+    deleted_content_item_relations_sql_2 = "SELECT DISTINCT topic_id FROM deleted_content_item_relations WHERE updated_at > ?"
 
+    and_query = Topic.where("topics.  updated_at > ?", date).
+                      where("topics.id IN ( #{taggings_sql} )"). # Tagging doesn't have an updated_at column.
+                      where("topics.id IN ( #{contributions_sql} )").
+                      where("topics.id IN ( #{content_item_relations_sql_1} )").
+                      where("topics.id IN ( #{content_item_relations_sql_2} )").
+                      where("topics.id IN ( #{deleted_content_item_relations_sql_1} )", date).
+                      where("topics.id IN ( #{deleted_content_item_relations_sql_2} )", date)
 
-    join_table = Topic.outer_joins(:taggings).
-                       outer_joins(:contributions).
-                       # On a topic the content_item_relations/deleted_content_item_relations 
-                       # joins are a bit more complex because it can be the parent or the child.
-                       joins("LEFT OUTER JOIN content_item_relations cir_1 "+
-                             "ON cir_1.related_item_id = topics.id "+
-                             "AND cir_1.related_item_type = 'Topic'").
-                       joins("LEFT OUTER JOIN content_item_relations cir_2 "+
-                             "ON cir_2.topic_id = topics.id").
-                       joins("LEFT OUTER JOIN deleted_content_item_relations dcir_1 "+
-                             "ON dcir_1.related_item_id = topics.id "+
-                             "AND dcir_1.related_item_type = 'Topic'").
-                       joins("LEFT OUTER JOIN deleted_content_item_relations dcir_2 "+
-                             "ON dcir_2.topic_id = topics.id")
+    or_query = and_query.where_values.join(" OR ")
 
-    result = join_table.where(
-      topics[:updated_at].gt(date).
-      or( taggings[:created_at].gt(date) ). # Tagging doesn't have a updated_at column.
-      or( contributions[:updated_at].gt(date) ).
-      or( cir_1[:updated_at].gt(date) ).
-      or( cir_2[:updated_at].gt(date) ).
-      or( dcir_1[:updated_at].gt(date) ).
-      or( dcir_2[:updated_at].gt(date) )
-    )
+    Topic.where(or_query).uniq    # avoid repeated results from repeating ids.
+  end
 
-    result.uniq   # Joins give us repeated results
+  def self.pre_load_associations
+    # Speed up request with pre-loading of associations.
+    includes(:creators).includes(:license).includes(:topic_type).includes(:basket)
   end
 
   def child_topic_content_relations

@@ -43,31 +43,27 @@ class StillImage < ActiveRecord::Base
   def self.updated_since(date)
     # StillImage.where( <StillImage or its join tables is newer than date>  )
 
-    still_images =                    StillImage.arel_table
-    taggings =                        Tagging.arel_table
-    contributions =                   Contribution.arel_table
-    content_item_relations =          ContentItemRelation.arel_table
-    deleted_content_item_relations =  Arel::Table.new(:deleted_content_item_relations)
+    taggings_sql =                       Tagging.uniq.select(:taggable_id).where(taggable_type: 'StillImage').where("created_at > ?", date).to_sql
+    contributions_sql =                  Contribution.uniq.select(:contributed_item_id).where(contributed_item_type: 'StillImage').where("updated_at > ?", date).to_sql
+    content_item_relations_sql =         ContentItemRelation.uniq.select(:related_item_id).where(related_item_type: 'StillImage').where("updated_at > ?", date).to_sql
+    deleted_content_item_relations_sql = "SELECT DISTINCT related_item_id FROM deleted_content_item_relations WHERE related_item_type = 'StillImage' AND updated_at > ?"
 
+    and_query = StillImage.where("still_images.updated_at > ?", date).
+                           where("still_images.id IN ( #{taggings_sql} )"). # Tagging doesn't have an updated_at column.
+                           where("still_images.id IN ( #{contributions_sql} )").
+                           where("still_images.id IN ( #{content_item_relations_sql} )").
+                           where("still_images.id IN ( #{deleted_content_item_relations_sql} )", date)
+                           # I would liked to have searched for changed ImageFiles too
+                           # but the table doesnt have created_at/updated_at.
 
-    join_table = StillImage.outer_joins(:taggings).
-                            outer_joins(:contributions).
-                            outer_joins(:content_item_relations).
-                            joins("LEFT OUTER JOIN  deleted_content_item_relations " +
-                                  "ON deleted_content_item_relations.related_item_id = still_images.id " +
-                                  "AND deleted_content_item_relations.related_item_type = 'StillImage'")
-                            # I would liked to have searched for changed ImageFiles too
-                            # but the table doesnt have created_at/updated_at.
+    or_query = and_query.where_values.join(" OR ")
 
-    result = join_table.where(
-      still_images[:updated_at].gt(date).
-      or( taggings[:created_at].gt(date) ). # Tagging doesn't have a updated_at column.
-      or( contributions[:updated_at].gt(date) ).
-      or( content_item_relations[:updated_at].gt(date) ).
-      or( deleted_content_item_relations[:updated_at].gt(date) )
-    )
+    StillImage.where(or_query).uniq    # avoid repeated results from repeating ids.
+  end
 
-    result.uniq   # Joins give us repeated results
+  def self.pre_load_associations
+    # Speed up request with pre-loading of associations.
+    includes(:creators).includes(:original_file).includes(:license).includes(:basket)
   end
 
   # acts as licensed but this is not versionable (cant change a license once it is applied)
