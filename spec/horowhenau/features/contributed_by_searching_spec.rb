@@ -34,7 +34,5 @@ feature "Contributed By Searching" do
 
     click_on "Documents (4)"
     expect(first_result_text).to have_content "June Gillies"
-
-    expect(page).to have_content "Discussions (0)"
   end
 end

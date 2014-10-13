@@ -33,7 +33,7 @@ feature "Home Tag list" do
     end
 
     expect(current_url).to have_content "/en/site/search/tagged/?tag="
-    expect(page).not_to have_content "Topics (0) Images (0) Audio (0) Video (0) Web links (0) Documents (0) Discussions (0)"
+    expect(page).not_to have_content "Topics (0) Images (0) Audio (0) Video (0) Web links (0) Documents (0)"
   end
 end
 
@@ -61,6 +61,5 @@ feature "Content-Item list" do
 
     expect(page).to have_content "Audio (0)"
     expect(page).to have_content "Web links (0)"
-    expect(page).to have_content "Discussions (0)"
   end
 end
