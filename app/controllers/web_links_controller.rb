@@ -9,7 +9,16 @@ class WebLinksController < ApplicationController
   end
 
   def list
-    index
+    respond_to do |format|
+      format.html { redirect_to basket_web_links_path }
+      format.rss do
+        date = DateTime.parse(params[:updated_since]) if params[:updated_since]
+        date = DateTime.now.beginning_of_month        if date.nil?
+
+        @items = WebLink.updated_since(date)
+        render 'shared/list'
+      end
+    end
   end
 
   def show

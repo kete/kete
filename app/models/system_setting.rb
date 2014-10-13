@@ -315,6 +315,10 @@ class SystemSetting
       "horowhenua.kete.net.nz/"
     end
 
+    def site_domain
+      "horowhenua.kete.net.nz"
+    end
+
     def notifier_email
       "kete@library.org.nz"
     end
@@ -439,6 +443,7 @@ class SystemSetting
     alias_method :uses_basket_list_navigation_menu_on_every_page?, :uses_basket_list_navigation_menu_on_every_page
     alias_method :enable_user_portraits?, :enable_user_portraits
     alias_method :enable_gravatar_support?, :enable_gravatar_support
+    alias_method :add_date_created_to_item_search_record?, :add_date_created_to_item_search_record
   end
 
   def self.uses_basket_list_navigation_menu_on_every_page?

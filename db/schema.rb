@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20140803220837) do
+ActiveRecord::Schema.define(:version => 20141002085309) do
 
   create_table "audio_recording_versions", :force => true do |t|
     t.integer  "audio_recording_id"
@@ -180,6 +180,10 @@ ActiveRecord::Schema.define(:version => 20140803220837) do
     t.datetime "updated_at",                       :null => false
   end
 
+  add_index "content_item_relations", ["related_item_id"], :name => "index_content_item_relations_on_related_item_id"
+  add_index "content_item_relations", ["related_item_type"], :name => "index_content_item_relations_on_related_item_type"
+  add_index "content_item_relations", ["topic_id"], :name => "index_content_item_relations_on_topic_id"
+
   create_table "content_type_to_field_mappings", :force => true do |t|
     t.integer  "content_type_id",   :null => false
     t.integer  "extended_field_id", :null => false
@@ -226,6 +230,10 @@ ActiveRecord::Schema.define(:version => 20140803220837) do
     t.datetime "created_at"
     t.datetime "updated_at"
   end
+
+  add_index "deleted_content_item_relations", ["related_item_id"], :name => "index_deleted_content_item_relations_on_related_item_id"
+  add_index "deleted_content_item_relations", ["related_item_type"], :name => "index_deleted_content_item_relations_on_related_item_type"
+  add_index "deleted_content_item_relations", ["topic_id"], :name => "index_deleted_content_item_relations_on_topic_id"
 
   create_table "document_versions", :force => true do |t|
     t.integer  "document_id"

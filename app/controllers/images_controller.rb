@@ -7,7 +7,16 @@ class ImagesController < ApplicationController
   end
 
   def list
-    index
+    respond_to do |format|
+      format.html { redirect_to basket_still_image_index_path }
+      format.rss do 
+        date = DateTime.parse(params[:updated_since]) if params[:updated_since]
+        date = DateTime.now.beginning_of_month        if date.nil?
+
+        @items = StillImage.updated_since(date)
+        render 'shared/list'
+      end
+    end
   end
 
   def show
