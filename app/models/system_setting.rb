@@ -13,7 +13,7 @@ class SystemSetting
 
 
     def contact_email
-      "kete@example.com"
+      "kete@library.org.nz"
     end
 
     #def default_number_of_multiples
@@ -268,7 +268,7 @@ class SystemSetting
     end
 
     def admin_email
-      "foo@example.com"
+      "kete@library.org.nz"
     end
 
     def pretty_site_name

@@ -15,8 +15,7 @@ dump_and_convert() {
 
    python db_converter.py "$DB.mysql" "$DB.pgsql"
 
-  #sed -i "" "s/0x\([0-9,A-F]*\))/decode('\1','hex'))/g" "$DB.pgsql" 
-   sed -i "" "s/0x\([0-9A-F]*\)/decode('\1','hex')/g" "$DB.pgsql"
+   sed -i "" "s/[(,]0x\([0-9A-F]*\)/,decode('\1','hex')/g" "$DB.pgsql"
    sed -i "" "s/ COLLATE utf8_unicode_ci//g" "$DB.pgsql"
 
    rm -f "$DB.mysql"

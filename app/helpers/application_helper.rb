@@ -1438,37 +1438,6 @@ module ApplicationHelper
     end
   end
 
-  # def load_styles(theme)
-  #   theme_styles = Array.new
-  #   # RABID: disable this until we get around to integrating it with the Asset Pipeline
-  #   # theme_styles_path = theme + '/stylesheets/'
-  #   # theme_styles_full_path = THEMES_ROOT + '/' + theme_styles_path
-  #   # theme_styles_dir = Dir.new(theme_styles_full_path)
-  #   # theme_styles_dir.each do |file|
-  #   #   file_full_path = theme_styles_full_path + file.to_s
-  #   #   if !File.directory?(file_full_path) and File.extname(file_full_path) == '.css'
-  #   #     web_root_to_file = '/' + THEMES_DIR_NAME + '/' + theme_styles_path + file
-  #   #     theme_styles << web_root_to_file unless stylesheet_for_ie?(web_root_to_file)
-  #   #   end
-  #   # end
-  #   theme_styles
-  # end
-
-  # def stylesheet_for_ie?(stylesheet_path)
-  #   @ie_stylesheet_paths ||= Hash.new
-  #   if stylesheet_path.split('/').last =~ /^ie([0-9]+)/
-  #     @ie_stylesheet_paths[$1.to_i] ||= Array.new
-  #     @ie_stylesheet_paths[$1.to_i] << stylesheet_path
-  #     true
-  #   elsif stylesheet_path.split('/').last =~ /^ie/
-  #     @ie_stylesheet_paths[:all] ||= Array.new
-  #     @ie_stylesheet_paths[:all] << stylesheet_path
-  #     true
-  #   else
-  #     false
-  #   end
-  # end
-
   # Kieran Pilkington, 2008/07/28
   # DEPRECATED, points to cache_with_privacy
   def cache_if_public(item, name = {}, options = nil, &block)
