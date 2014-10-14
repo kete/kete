@@ -1,5 +1,6 @@
 # Deployment Considerations #
 
+  * Look for info that needs updating in `app/models/system_setting.rb`, especially server names, URLs and email addresses.
 
   * We've told google not to index our dev site, you need to turn this off by removing `%meta{content: "noindex, nofollow", name: "robots"}/` from app/views/layouts/_head.html.haml.
 
