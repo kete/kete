@@ -182,12 +182,33 @@ a {
         padding-top: 20px;
 }
 
+%home-feature-box {
+  width: 265px;
+  height: 390px;
+
+  a {
+    font-size: medium;
+    color: #005e5e;
+  }
+
+  h3 a {
+    font-weight: bold;
+    font-style: normal;
+  }
+
+  p a {
+    font-weight: normal;
+    font-style: italic;
+    }
+}
+
 .home-feature-left {
         background: #D7EEF2;
         float: left;
         padding: 4px;
-        margin:10px 20px 10px 0; /*comment out for two row table */
+        margin: 10px 47px 10px 30px; /*comment out for two row table */
         position:relative;
+        @extend %home-feature-box;
 }
 .home-feature-left img {
         padding: 0 10px 0 10px;
@@ -199,6 +220,7 @@ a {
         margin:10px 20px 10px 0; /*comment out for two row table */
         padding: 4px;
         position:relative;
+        @extend %home-feature-box;
 }
 .home-feature-right img {
         padding: 0 10px 0 10px;
