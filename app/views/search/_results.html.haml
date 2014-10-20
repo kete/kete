@@ -43,7 +43,7 @@
             - marker_options = { 'title' => result[:title] }
             - summary_for_info_window = result[:short_summary].present? ? result[:short_summary] : String.new
             - marker_options['description'] = link_to(h(result[:title]), result[:url], :tabindex => '1') + '<br />' + summary_for_info_window
-            - if result.class == 'StillImage'
+            - if result.class == StillImage
               - marker_options['description'] += '<br />' + image_tag(result[:thumbnail][:src], result[:thumbnail])
               - marker_options['picture'] = result[:thumbnail][:src]
               - marker_options['width'] = 50
@@ -64,7 +64,7 @@
               - marker_options['lng'] = location[:longitude]
               - markers << marker_options
           - else
-            - if result.class == 'StillImage'
+            - if result.class == StillImage
               = render partial: "image", locals: { result: result, scope: scope }
             - else
               = render partial: "generic", locals: { result: result, scope: scope }

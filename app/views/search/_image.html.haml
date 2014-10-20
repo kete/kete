@@ -1,21 +1,22 @@
-- unless result.thumbnail.nil?
-  - thumb_src = result.thumbnail[:src]
-  - thumb_src = thumb_src.sub(SystemSetting.site_url, '/') if locally_hosted
-  - result.thumbnail.delete(:src)
-  - result.thumbnail.delete(:size)
-  - thumb_options = result.thumbnail
-
-%div{:class => "image-result-wrapper#{' first' if first_result}", :id => "item_#{result.id}_wrapper"}
+%div{:class => "image-result-wrapper", :id => "item_#{result.id}_wrapper"}
   .image-result-thumb
-    - link_text = result.thumbnail.nil? ? t('search.image.view_image') :
-    - image_tag("#{thumb_src}?show_placeholder=true", thumb_options.merge(:alt => altify(title)))
-    = link_to link_text, url_for(result.model)
+    -if result.thumbnail_file.nil?
+      = link_to t('search.image.view_image'), basket_aware_url_for(result.model)
+    -else
+      = link_to image_tag(result.thumbnail_file.public_filename, alt: result.title), basket_aware_url_for(result.model)
   .image-result-header
-    %h4= link_to h(result.title), url_for(result.model), :tabindex => '1'
+    %h4= link_to h(result.title), basket_aware_url_for(result.model), :tabindex => '1'
   .image-result-description
     = strip_tags(result.short_summary)
-    .image-result-more
-      = link_to(t('search.image.more'), url_for(result.model), { :title => t('search.image.more_on', :title => title), :tabindex => '1' })
-  = render('related', :related => related, :source_url => url_for(result.model), :title => title) if result.related
+    .image-result-morej
+      = link_to(t('search.image.more').html_safe, basket_aware_url_for(result.model), { :title => t('search.image.more_on', :title => result.title), :tabindex => '1' })
+
+  - if result.has_related_items?
+    = render 'related', related: result.related,
+                        related_items_summary: result.related_items_summary,
+                        locally_hosted: result.locally_hosted,
+                        source_url: basket_aware_url_for(result.model),
+                        title: result.title    
+
   = dc_date_display_of(result.dc_dates)
   %div{:style => "clear:left;"}
