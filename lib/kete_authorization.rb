@@ -44,8 +44,7 @@ module KeteAuthorization
     end
 
     def load_site_admin
-      session[:site_admin] = site_admin? if session[:site_admin].nil?
-      @site_admin ||= session[:site_admin]
+      @site_admin = site_admin?
       return true
     end
 

@@ -112,6 +112,10 @@ class Basket < ActiveRecord::Base
     [site_basket.id, help_basket.id, about_basket.id, documentation_basket.id]
   end
 
+  def role(name)
+    Role.where(name: name).where(authorizable_type: "Basket").where(authorizable_id: id).last
+  end
+
   def documentation_basket
     Basket.documentation_basket
   end
