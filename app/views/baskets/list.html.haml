@@ -26,7 +26,11 @@
             %td.basket_name= link_to_index_for(basket)
           %td.basket_created= basket.created_at.to_s(:long)
           %td.basket_options
-            %ul= link_to_actions_available_for(basket)
+            -if @site_admin || ( logged_in? && current_user.roles.include?(basket.role("admin")) )
+              %ul= link_to_actions_available_for(basket)
+            /end
+          / end
+
   #prev-next= will_paginate @baskets
   %h4= header_add_basket_link
 

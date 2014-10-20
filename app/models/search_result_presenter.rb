@@ -82,6 +82,10 @@ class SearchResultPresenter
     (model.respond_to? :thumbnail) ? model.thumbnail : ""
   end
 
+  def thumbnail_file
+    (model.respond_to? :thumbnail_file) ? model.thumbnail_file : ""
+  end  
+
   private
 
   def dereference_content_item_relation(model, searched_topic_id)

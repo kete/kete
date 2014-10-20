@@ -8,6 +8,15 @@ def first_result_text
   first_result.find(".generic-result-header")
 end
 
+def first_image
+  find('.image-result-wrapper', match: :first)
+end
+
+def first_image_text
+  first_image.find(".image-result-header")
+end
+
+
 feature "Browse search results" do
 
   before(:each) do
@@ -39,7 +48,7 @@ feature "Browse search results" do
     expect(first_result_text).to have_content "Manakau School 125th Jubilee 2013 and Dedication Ceremony at the completion of the Jubilee"
 
     click_on "Images (21,792)"
-    expect(first_result_text).to have_content "Manakau School 125th Jubilee Rev Kahira Rau blessing the totem poles"
+    expect(first_image_text).to have_content "Manakau School 125th Jubilee Rev Kahira Rau blessing the totem poles"
 
     click_on "Audio (106)"
     expect(first_result_text).to have_content "Paraparaumu, 1942 by Bernard Smith 22 April 2012"
@@ -67,7 +76,7 @@ feature "Search for a particular item" do
     expect(first_result_text).to have_content "Houses of the Horowhenua 2011"
 
     click_on "Images (645)"
-    expect(first_result_text).to have_content "Waikawa Beach Road to Waikawa Beach settlement, 1965"
+    expect(first_image_text).to have_content "Waikawa Beach Road to Waikawa Beach settlement, 1965"
 
     click_on "Audio (3)"
     expect(first_result_text).to have_content "Ash Bell The Country Boy 6 May 2012"

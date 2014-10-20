@@ -18,7 +18,7 @@
       = render(:partial => "details", :locals => { :item => @document }) if show_attached_files_for?(@document)
 
       - cache_with_privacy(@document, { :part => 'details_second' }) do
-        %p= @document.description
+        %p= @document.description.html_safe
         = pending_review(@document)
 
       = render(:partial => "topics/extended_fields", :locals => { :item => @document, :embedded => true })

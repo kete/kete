@@ -77,6 +77,7 @@
             -#- if @current_basket != @site_basket
             -#  |
             -#  = link_to_unless_current t('layouts.application.delete'), { :controller => 'baskets', :action => 'destroy', :id => @current_basket, }, :confirm => t('layouts.application.delete_confirmation'), :method => 'post', :tabindex => '2'
+            /end
 
           -# - if logged_in? && @site_admin && !@displaying_error
           -#   #adminToolbox
@@ -116,6 +117,7 @@
           -#     %p
           -#       = t 'layouts.application.support'
           -#       = link_to_unless_current t('layouts.application.documentation'), basket_index_url(:urlified_name => @documentation_basket.urlified_name), :tabindex => '2'
+          /end
 
         #footer_custom.footer_div
         - unless @current_basket.additional_footer_content_with_inheritance.nil? || @current_basket.additional_footer_content_with_inheritance.squish.blank?

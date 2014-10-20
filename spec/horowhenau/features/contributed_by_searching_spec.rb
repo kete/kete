@@ -8,6 +8,14 @@ def first_result_text
   first_result.find(".generic-result-header")
 end
 
+def first_image
+  find('.image-result-wrapper', match: :first)
+end
+
+def first_image_text
+  first_image.find(".image-result-header")
+end
+
 def within_contributor_area
   find("#content-tools")
 end
@@ -21,7 +29,7 @@ feature "Contributed By Searching" do
     expect(first_result_text).to have_content "The Petersen Estate"
 
     click_on "Images (258)"
-    expect(first_result_text).to have_content "Dame Silvia Cartwright unveiling the Icon"
+    expect(first_image_text).to have_content "Dame Silvia Cartwright unveiling the Icon"
 
     click_on "Audio (1)"
     expect(first_result_text).to have_content "Horowhenua song"
