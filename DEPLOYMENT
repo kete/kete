@@ -1,5 +1,15 @@
 # Deployment Considerations #
 
+  * Prevent 502 errors from Nginx from huge cookies. `/etc/nginx/nginx.conf`:
+
+        proxy_buffer_size   32k;
+        proxy_buffers   6 32k;
+
+  * fix bad links to image assets with Nginx. `etc/nginx/sites-enabled/default`: 
+
+        # Kete tends to generate incorrect links to images: fix this.
+        rewrite ^/image_files/(.*)$ /system/image_files/$1;
+
   * Look for info that needs updating in `app/models/system_setting.rb`, especially server names, URLs and email addresses.
 
   * When we updated the site-style we made changes to both the CSS and html displayed on the front page. On every new site you'll need to re-add the main page's html (by editing this topic).
