@@ -90,6 +90,6 @@ KeteApp::Application.configure do
   # config.active_record.auto_explain_threshold_in_seconds = 0.5
 
   # Attachments (images/audio) link files on the local disk.
-  # config.attachments_overide_url = nil
-  config.attachments_overide_url = 'http://horowhenua.kete.net.nz'
+  config.attachments_overide_url = nil
+  # config.attachments_overide_url = 'http://horowhenua.kete.net.nz'
 end
