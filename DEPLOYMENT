@@ -1,5 +1,7 @@
 # Deployment Considerations #
 
+  * Note the two following nginx settings will be wiped by doing a chef-update, and will need to be re-added.
+
   * Prevent 502 errors from Nginx from huge cookies. `/etc/nginx/nginx.conf`:
 
         proxy_buffer_size   32k;
