@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20141006213453) do
+ActiveRecord::Schema.define(:version => 20141022035342) do
 
   create_table "audio_recording_versions", :force => true do |t|
     t.integer  "audio_recording_id"
@@ -474,6 +474,16 @@ ActiveRecord::Schema.define(:version => 20141006213453) do
   end
 
   add_index "searches", ["user_id"], :name => "searches_user_id_idx"
+
+  create_table "sessions", :force => true do |t|
+    t.string   "session_id", :null => false
+    t.text     "data"
+    t.datetime "created_at", :null => false
+    t.datetime "updated_at", :null => false
+  end
+
+  add_index "sessions", ["session_id"], :name => "index_sessions_on_session_id"
+  add_index "sessions", ["updated_at"], :name => "index_sessions_on_updated_at"
 
   create_table "still_image_versions", :force => true do |t|
     t.integer  "still_image_id"
