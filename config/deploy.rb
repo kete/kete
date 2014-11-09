@@ -28,7 +28,7 @@ set :deploy_to, '/home/deploy/kete'
 set :linked_files, %w{config/database.yml config/secrets.yml config/initializers/secret_token.rb}
 
 # Default value for linked_dirs is []
-set :linked_dirs, %w{bin log tmp/pids tmp/cache tmp/sockets vendor/bundle public/system public/uploads}
+set :linked_dirs, %w{bin log tmp/pids tmp/cache tmp/sockets vendor/bundle public/audio public/documents public/image_files public/video public/system public/uploads}
 
 
 # Default value for default_env is {}

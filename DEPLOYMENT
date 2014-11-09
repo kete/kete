@@ -7,10 +7,9 @@
         proxy_buffer_size   32k;
         proxy_buffers   6 32k;
 
-  * fix bad links to image assets with Nginx. `etc/nginx/sites-enabled/default`: 
+  * Make sure the static assets are served with caching headers. `etc/nginx/sites-enabled/default`: 
 
-        # Kete tends to generate incorrect links to images: fix this.
-        rewrite ^/image_files/(.*)$ /system/image_files/$1;
+        location ~ ^/(system|assets|image_files|audio|video|documents)/  {
 
   * Look for info that needs updating in `app/models/system_setting.rb`, especially server names, URLs and email addresses.
 
