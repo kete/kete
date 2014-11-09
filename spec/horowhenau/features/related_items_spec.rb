@@ -58,18 +58,18 @@ feature "Related Items" do
 
     within find("#related") do
       link = find_link("Related Items (11)")[:href]
-      expect(link).to end_with "/en/site/search/related_to/Topic?related_item_id=2453&related_item_type=Topic"
+      expect(link).to end_with "/en/site/search/related_to?controller_name_for_zoom_class=Topic&related_item_id=2453&related_item_type=Topic"
 
       link = find("#detail-linked-images").find_link("Images")[:href]
-      expect(link).to end_with "/en/site/search/related_to/StillImage?related_item_id=2453&related_item_type=Topic"
+      expect(link).to end_with "/en/site/search/related_to?controller_name_for_zoom_class=StillImage&related_item_id=2453&related_item_type=Topic"
       link = find("#detail-linked-images").find_link("1 more like this")[:href]
-      expect(link).to end_with "/en/site/search/related_to/StillImage?related_item_id=2453&related_item_type=Topic"
+      expect(link).to end_with "/en/site/search/related_to?controller_name_for_zoom_class=StillImage&related_item_id=2453&related_item_type=Topic"
 
       link = find("#detail-linked-topics").find_link("Topics")[:href]
-      expect(link).to end_with "/en/site/search/related_to/Topic?related_item_id=2453&related_item_type=Topic"
+      expect(link).to end_with "/en/site/search/related_to?controller_name_for_zoom_class=Topic&related_item_id=2453&related_item_type=Topic"
 
       link = find("#detail-linked-video").find_link("Video")[:href]
-      expect(link).to end_with "/en/site/search/related_to/Video?related_item_id=2453&related_item_type=Topic"
+      expect(link).to end_with "/en/site/search/related_to?controller_name_for_zoom_class=Video&related_item_id=2453&related_item_type=Topic"
     end
   end
 
