@@ -104,11 +104,11 @@
   scope '/:urlified_name', as: :basket do
 
     scope '/search', as: :search do
-      post 'for/(:controller_name_for_zoom_class)'            => 'search#for', as: :for
-      post 'all/(:controller_name_for_zoom_class)'            => 'search#all', as: :all
-      post 'tagged/(:controller_name_for_zoom_class)'         => 'search#tagged', as: :tagged
-      post 'related_to/(:controller_name_for_zoom_class)'     => 'search#related_to', as: :related_to
-      post 'contributed_by/(:controller_name_for_zoom_class)' => 'search#contributed_by', as: :contributed_by
+      post 'for/'            => 'search#for', as: :for
+      post 'all/'            => 'search#all', as: :all
+      post 'tagged/'         => 'search#tagged', as: :tagged
+      post 'related_to/'     => 'search#related_to', as: :related_to
+      post 'contributed_by/' => 'search#contributed_by', as: :contributed_by
     end
 
     resources :baskets, only: [:edit] do
