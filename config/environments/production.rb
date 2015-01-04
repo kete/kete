@@ -67,7 +67,7 @@ KeteApp::Application.configure do
   # Send deprecation notices to registered listeners
   config.active_support.deprecation = :notify
 
-  config.action_mailer.default_url_options = { :host => 'kete2.rabid.co.nz' }
+  config.action_mailer.default_url_options = { :host => 'horowhenua.kete.net.nz' }
   # ActionMailer Config
   # Setup for production - deliveries, no errors raised
   config.action_mailer.delivery_method = :smtp
@@ -76,12 +76,15 @@ KeteApp::Application.configure do
   config.action_mailer.default :charset => "utf-8"
 
   config.action_mailer.smtp_settings = {
-    :address        => 'changeme',
+    :address        => 'smtp.mandrillapp.com',
     :port           => '587',
     :authentication => :plain,
+    # Password is a custom generated API key for Mandrill. To inspect it, 
+    # adjust it, or create a new key; login to the Mandrill web-portal and 
+    # go to 'Settings'. Username is the login-email for Mandrill.
     :user_name      => ENV['SMTP_USERNAME'],
     :password       => ENV['SMTP_PASSWORD'],
-    :domain         => 'kete2.rabid.org.nz',
+    :domain         => 'horowhenua.kete.net.nz',
     :enable_starttls_auto => true
   }
 
