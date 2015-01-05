@@ -97,3 +97,6 @@ pickle-email-*.html
 
 
 /database-backups
+
+# Ignore application configuration
+/config/application.yml
