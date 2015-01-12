@@ -11,9 +11,12 @@
 xml.instruct! :xml, :version => "1.0" 
 xml.rss("version" => "2.0", "xmlns:dc" => "http://purl.org/dc/elements/1.1/") do
   xml.channel do
-    xml.title("#{SystemSetting.site_domain} StillImages RSS Feed")
+    xml.title("#{SystemSetting.site_domain} #{@list_type} RSS Feed")
     xml.link "http://#{SystemSetting.site_url}"
-    xml.description "#{SystemSetting.pretty_site_name} StillImage ordered by most update-time"
+    xml.description "#{SystemSetting.pretty_site_name} #{@list_type}s ordered by update-time. By default this shows items added/updated this month. "+
+                    "An item is considered updated if it or it's tags/contributors/related_items has changed.\n"+
+                    "\n"+
+                    "To see earlier records use the udpated_since=date_string HTTP query-field (iso8601, rfc3339, rfc2822, rfc822)"
     xml.language "en-nz"
     xml.ttl "60" 
 

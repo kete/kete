@@ -13,6 +13,7 @@ class VideoController < ApplicationController
         date = DateTime.parse(params[:updated_since]) if params[:updated_since]
         date = DateTime.now.beginning_of_month        if date.nil?
 
+        @list_type = "Video"
         @items = Video.updated_since(date)
         render 'shared/list'
       end
