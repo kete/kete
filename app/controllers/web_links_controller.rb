@@ -15,6 +15,7 @@ class WebLinksController < ApplicationController
         date = DateTime.parse(params[:updated_since]) if params[:updated_since]
         date = DateTime.now.beginning_of_month        if date.nil?
 
+        @list_type = "WebLink"
         @items = WebLink.updated_since(date)
         render 'shared/list'
       end
