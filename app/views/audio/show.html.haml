@@ -6,8 +6,7 @@
   #main-content-wrapper
     #main-content-container
       %a{:name => "main-content"}
-      - cache_with_privacy(@audio_recording, {:part => 'details_first'}) do
-        %h2= h(@audio_recording.title)
+      %h2= h(@audio_recording.title)
 
       = extras_after_title_headline
 
@@ -15,9 +14,9 @@
 
       = render(:partial => "details", :locals => { :item => @audio_recording }) if show_attached_files_for?(@audio_recording)
 
-      - cache_with_privacy(@audio_recording, {:part => 'details_second'}) do
-        %p= @audio_recording.description.html_safe
-        = pending_review(@audio_recording)
+
+      %p= @audio_recording.description.html_safe
+      = pending_review(@audio_recording)
 
       = render(:partial => "topics/extended_fields", :locals => { :item => @audio_recording, :embedded => true })
       %div{:style => "clear:both;"}

@@ -6,17 +6,15 @@
   #main-content-wrapper
     #main-content-container
       %a{:name => "main-content"}
-      - cache_with_privacy(@web_link, {:part => 'details_first'}) do
-        %h2= link_to h(@web_link.title), url_for(@web_link.url)
+      %h2= link_to h(@web_link.title), url_for(@web_link.url)
 
       = extras_after_title_headline
 
       = render(:partial => "topics/related_items", :locals => { :item => @web_link, :related_items => @related_item_topics, :position => 'inset' }) if @web_link.related_items_position == 'inset'
 
-      - cache_with_privacy(@web_link, {:part => 'details_second'}) do
-        = render(:partial => "details", :locals => { :item => @web_link })
-        %p= @web_link.description.html_safe
-        = pending_review(@web_link)
+      = render(:partial => "details", :locals => { :item => @web_link })
+      %p= @web_link.description.html_safe
+      = pending_review(@web_link)
 
       = render(:partial => "topics/extended_fields", :locals => { :item => @web_link, :embedded => true })
       %div{:style => "clear:both;"}

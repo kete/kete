@@ -6,8 +6,7 @@
   #main-content-wrapper
     #main-content-container
       %a{:name => "main-content"}
-      - cache_with_privacy(@document, { :part => 'details_first' }) do
-        %h2= h(@document.title)
+      %h2= h(@document.title)
 
       = extras_after_title_headline
       %p
@@ -17,9 +16,8 @@
 
       = render(:partial => "details", :locals => { :item => @document }) if show_attached_files_for?(@document)
 
-      - cache_with_privacy(@document, { :part => 'details_second' }) do
-        %p= @document.description.html_safe
-        = pending_review(@document)
+      %p= @document.description.html_safe
+      = pending_review(@document)
 
       = render(:partial => "topics/extended_fields", :locals => { :item => @document, :embedded => true })
       %div{:style => "clear:both;"}
