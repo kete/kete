@@ -677,17 +677,18 @@ module ApplicationHelper
     {class: class_names.join(' '), style: styles.join }
   end
 
-  def related_items_count_for_current_item
+  def related_items_count_for_current_item(item)
     @related_items_count_for_current_item ||= begin
-      cache_id = @cache_id
-      class_name = zoom_class_from_controller(params[:controller])
-      unless cache_id
-        cache_id = @topic.id if @topic.present?
+      if item
+        item_id = item.id
+        class_name = zoom_class_from_controller(params[:controller])
+      else
+        item_id = @topic.id if @topic.present?
         class_name = 'Topic' if class_name == 'IndexPage'
       end
-      conditions = "(content_item_relations.related_item_id = :cache_id AND content_item_relations.related_item_type = '#{class_name}')"
-      conditions += " OR (content_item_relations.topic_id = :cache_id)" if params[:controller] == 'topics' || params[:controller] == 'index_page'
-      ContentItemRelation.count(:conditions => [conditions, { :cache_id => cache_id }])
+      conditions = "(content_item_relations.related_item_id = :item_id AND content_item_relations.related_item_type = '#{class_name}')"
+      conditions += " OR (content_item_relations.topic_id = :item_id)" if params[:controller] == 'topics' || params[:controller] == 'index_page'
+      ContentItemRelation.count(:conditions => [conditions, { :item_id => item_id }])
     end
   end
 

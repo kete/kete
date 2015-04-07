@@ -120,9 +120,6 @@ class ApplicationController < ActionController::Base
   # by posting a dummy form
   before_filter :current_user_can_see_action_menu?, :only => [:new, :create, :edit, :update]
 
-  # creates a @cache_id variable based on params[:id]
-  before_filter :set_cache_id, :only => [:show]
-
   # TODO: NOT USED, delete code here and in lib/zoom_controller_helpers.rb
   # related items only track title and url, therefore only update will change those attributes
   after_filter :update_zoom_record_for_related_items, :only => [ :update ]
@@ -147,10 +144,6 @@ class ApplicationController < ActionController::Base
 
   helper :slideshows
   helper :extended_fields
-
-  def set_cache_id
-    @cache_id = params[:id] ? params[:id].to_i : nil
-  end
 
   # set the current basket to the default
   # unless we have urlified_name that is different
