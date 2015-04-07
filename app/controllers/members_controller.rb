@@ -311,7 +311,6 @@ class MembersController < ApplicationController
   end
 
   def rss
-    @cache_key_hash = { :rss => "#{@current_basket.urlified_name}_members_list" }
     list_members_in('member')
 
     respond_to do |format|
