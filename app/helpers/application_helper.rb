@@ -677,17 +677,18 @@ module ApplicationHelper
     {class: class_names.join(' '), style: styles.join }
   end
 
-  def related_items_count_for_current_item
+  def related_items_count_for_current_item(item)
     @related_items_count_for_current_item ||= begin
-      cache_id = @cache_id
-      class_name = zoom_class_from_controller(params[:controller])
-      unless cache_id
-        cache_id = @topic.id if @topic.present?
+      if item
+        item_id = item.id
+        class_name = zoom_class_from_controller(params[:controller])
+      else
+        item_id = @topic.id if @topic.present?
         class_name = 'Topic' if class_name == 'IndexPage'
       end
-      conditions = "(content_item_relations.related_item_id = :cache_id AND content_item_relations.related_item_type = '#{class_name}')"
-      conditions += " OR (content_item_relations.topic_id = :cache_id)" if params[:controller] == 'topics' || params[:controller] == 'index_page'
-      ContentItemRelation.count(:conditions => [conditions, { :cache_id => cache_id }])
+      conditions = "(content_item_relations.related_item_id = :item_id AND content_item_relations.related_item_type = '#{class_name}')"
+      conditions += " OR (content_item_relations.topic_id = :item_id)" if params[:controller] == 'topics' || params[:controller] == 'index_page'
+      ContentItemRelation.count(:conditions => [conditions, { :item_id => item_id }])
     end
   end
 
@@ -1436,31 +1437,6 @@ module ApplicationHelper
     else
       basket_all_topic_type_path(url_hash)
     end
-  end
-
-  # Kieran Pilkington, 2008/07/28
-  # DEPRECATED, points to cache_with_privacy
-  def cache_if_public(item, name = {}, options = nil, &block)
-    cache_with_privacy(item, name, options, &block)
-  end
-
-  # Kieran Pilkinton, 2008/07/28
-  # Cache block with the privacy value
-  # Different blocks have different values for public and private version
-  # If something shares data, just use rails cache method
-  # item can be nil
-  # but this assumes that item is not nil when item is private
-  def cache_with_privacy(item, name = {}, options = nil, &block)
-    privacy_value = (!item.blank? && item.respond_to?(:private) && item.private?) ? "private" : "public"
-    name.each { |key,value| name[key] = "#{value}_#{privacy_value}" }
-
-    # item is nil when we are loading from cache,
-    # so always use params[:id]
-    # strip out title from passed id
-    # (.to_i will only return 123 when passed id is "123-some-title")
-    # if we have an id for this page
-    name[:id] = params[:id].to_i unless params[:id].blank?
-    cache(name, options, &block)
   end
 
   # Check if privacy controls should be displayed?

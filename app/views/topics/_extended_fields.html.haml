@@ -1,17 +1,15 @@
 - embedded = nil unless defined?(embedded)
-- cache_key = embedded ? "secondary_content_extended_fields_embedded" : "secondary_content_extended_fields"
-- cache_with_privacy(item, {:part => cache_key}) do
-  - extended_fields_html = display_xml_attributes(item, :embedded_only => embedded)
-  - if !extended_fields_html.blank?
-    = '<div id="embedded_extended_field_data">'.html_safe if embedded
-    %div{:class => "secondary-content-section-wrapper"}
-      %div{:class => "secondary-content-section", :id => "extended-fields"}
-        .secondary-content-section-content
-          #detail-extended
-            %h4#detail-extended-heading= h(item.title)
-            %br/
-            = extended_fields_html
-          %div{:style => "clear:both;"}
-        .secondary-content-section-footer-wrapper
-          .secondary-content-section-footer &nbsp;
-    = '</div>'.html_safe if embedded
+- extended_fields_html = display_xml_attributes(item, :embedded_only => embedded)
+- if !extended_fields_html.blank?
+  = '<div id="embedded_extended_field_data">'.html_safe if embedded
+  %div{:class => "secondary-content-section-wrapper"}
+    %div{:class => "secondary-content-section", :id => "extended-fields"}
+      .secondary-content-section-content
+        #detail-extended
+          %h4#detail-extended-heading= h(item.title)
+          %br/
+          = extended_fields_html
+        %div{:style => "clear:both;"}
+      .secondary-content-section-footer-wrapper
+        .secondary-content-section-footer &nbsp;
+  = '</div>'.html_safe if embedded

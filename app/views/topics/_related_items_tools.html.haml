@@ -2,15 +2,14 @@
   #related-items-tools
     %ul
       - zoom_class = zoom_class_from_controller(params[:controller])
-      - cache({ :related => 'related-tools-create-or-link-or-remove', :id => @cache_id }) do
-        - if zoom_class == 'Topic'
-          = header_add_links(:link_text => t('topics.related_items.create'), :class => 'first', |
-            :related_item_private => (params[:private] && params[:private] == 'true'),          |
-            :relate_to_item => item, :relate_to_type => zoom_class).html_safe                   |
-        - else
-          %li.first
-            = link_to(t('topics.related_items.create'), :controller => 'topics', :action => :new, :related_item_private => (params[:private] && params[:private] == 'true'), :relate_to_item => item, :relate_to_type => zoom_class)
-        
+      - if zoom_class == 'Topic'
+        = header_add_links(:link_text => t('topics.related_items.create'), :class => 'first', |
+          :related_item_private => (params[:private] && params[:private] == 'true'),          |
+          :relate_to_item => item, :relate_to_type => zoom_class).html_safe                   |
+      - else
+        %li.first
+          = link_to(t('topics.related_items.create'), :controller => 'topics', :action => :new, :related_item_private => (params[:private] && params[:private] == 'true'), :relate_to_item => item, :relate_to_type => zoom_class)
+
         = link_to_related_item_function(:link_text => t('topics.related_items.link_existing'), :function => 'add', :relate_to_item => item, :relate_to_type => zoom_class)
 
         = link_to_related_item_function(:link_text => t('topics.related_items.remove'), :function => 'remove', :relate_to_item => item, :relate_to_type => zoom_class)
