@@ -1439,31 +1439,6 @@ module ApplicationHelper
     end
   end
 
-  # Kieran Pilkington, 2008/07/28
-  # DEPRECATED, points to cache_with_privacy
-  def cache_if_public(item, name = {}, options = nil, &block)
-    cache_with_privacy(item, name, options, &block)
-  end
-
-  # Kieran Pilkinton, 2008/07/28
-  # Cache block with the privacy value
-  # Different blocks have different values for public and private version
-  # If something shares data, just use rails cache method
-  # item can be nil
-  # but this assumes that item is not nil when item is private
-  def cache_with_privacy(item, name = {}, options = nil, &block)
-    privacy_value = (!item.blank? && item.respond_to?(:private) && item.private?) ? "private" : "public"
-    name.each { |key,value| name[key] = "#{value}_#{privacy_value}" }
-
-    # item is nil when we are loading from cache,
-    # so always use params[:id]
-    # strip out title from passed id
-    # (.to_i will only return 123 when passed id is "123-some-title")
-    # if we have an id for this page
-    name[:id] = params[:id].to_i unless params[:id].blank?
-    cache(name, options, &block)
-  end
-
   # Check if privacy controls should be displayed?
   def show_privacy_controls?(basket = @current_basket)
     basket.show_privacy_controls_with_inheritance?
