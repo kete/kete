@@ -23,7 +23,7 @@ module TopicsHelper
         html += t('base.breadcrumb_delimiter')
         html += "</span>"
       end
-      html += link_to(h(tt.name), url_for_topics_of_type(tt)) + "</li>"
+      html += link_to(h(tt.name), url_for_topics_of_type(tt))
     end
     html += "</ul>"
   end

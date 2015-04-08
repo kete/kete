@@ -31,8 +31,9 @@ class Profile < ActiveRecord::Base
   has_many :profile_mappings, :dependent => :destroy
   has_many :baskets, :through => :profile_mappings
 
-  # holds our profile's rule set
-  acts_as_configurable
+  def setting(name, *args)
+    ProfileSettings.get(name, *args)
+  end
 
   # to start, profiles are only available to Basket model
   # so we simply hard code it here, that way we don't need to do anything in our interface
@@ -59,7 +60,7 @@ class Profile < ActiveRecord::Base
       [I18n.t('profile_model.type_options.select_below'), 'some'] ]
   end
 
-  # send @rules to profile.settings[:rules] for storage
+  # send @rules to profile.setting(:rules) for storage
   after_save :set_rules
 
   # return the rules details for the profile
@@ -68,12 +69,12 @@ class Profile < ActiveRecord::Base
   # if raw is true, it'll return the hash we stored which can be
   # used on the forms for hiding/showing fields and setting values
   def rules(raw=false)
-    return unless self.settings[:rules]
+    return unless self.setting(:rules)
 
-    return self.settings[:rules] if raw
+    return self.setting(:rules) if raw
 
     data = Array.new
-    self.settings[:rules].each do |k,v|
+    self.setting(:rules).each do |k,v|
       value = "#{k.humanize}: "
       value += if v['rule_type'] == 'all'
         I18n.t('profile_model.rules.all')
@@ -97,7 +98,7 @@ class Profile < ActiveRecord::Base
 
   # an after_save callback method that saves the rules to settings
   def set_rules
-    self.settings[:rules] = @rules unless @rules.blank?
+    self.set_setting(:rules, @rules) unless @rules.blank?
   end
 
   # active scaffold uses this method to determine

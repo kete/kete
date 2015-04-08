@@ -1,0 +1,44 @@
+- @title = t('account.edit.title')
+%h2= h(@title)
+- form_for :user, :url => { :action => 'update',
+- :id => @user } do |f|
+  %fieldset
+    = render partial: 'shared/model_errors', model: @user
+    .form-element
+      %label{:for => "user_login"}= t 'account.edit.login'
+      = f.text_field :login, :tabindex => '1'
+      .form_example= t 'account.edit.login_example'
+    .form-element
+      %label{:for => "user_email"}= t 'account.edit.email'
+      = f.text_field :email, :tabindex => '1', :style => 'float:left;'
+      = render :partial => 'avatar_updater'
+    .form-element
+      %label{:for => "user_display_name"}= t 'account.edit.user_name'
+      = f.text_field :display_name, :tabindex => '1'
+      .form_example= t 'account.edit.user_name_example'
+    - if I18n.available_locales_with_labels.keys.size > 1
+      .form-element
+        %label= t 'account.edit.language'
+        = locale_dropdown(f)
+        .form_example= t 'account.edit.language_example'
+    - else
+      = f.hidden_field :locale, :value => I18n.default_locale
+    .form-element
+      %label{:for => "allow_emails"}= t 'account.edit.allow_emails'
+      = f.check_box :allow_emails, :tabindex => '1'
+    .form-element
+      %label= t 'account.edit.preferred_license'
+      = render :partial => 'topics/license_chooser_or_agreement',:locals => {:item => @user}
+    - form_fields = @content_type.content_type_to_field_mappings
+    - if form_fields.size > 0
+      = render(:partial => 'extended_fields/extended_field_mapping', |
+        :collection => form_fields,                                  |
+        :locals => { :form_fields => form_fields,                    |
+        :edit => true,                                               |
+        :extended_item => @user,                                     |
+        :item_key => 'user'})                                        |
+  .wrap= submit_tag t('account.edit.save'), :tabindex => '1'
+.detail-tools
+  %ul
+    %li.first= link_to t('account.edit.change_password'), {:action => 'change_password'}, :tabindex => '1'
+

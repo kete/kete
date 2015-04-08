@@ -9,9 +9,9 @@ module FlaggingController
     def flag_form
       @flag = params[:flag]
       @form_target = case @flag
-      when Kete.rejected_flag
+      when SystemSetting.rejected_flag
         'reject'
-      when Kete.reviewed_flag
+      when SystemSetting.reviewed_flag
         'review'
       else
         'flag_version'
@@ -39,8 +39,6 @@ module FlaggingController
 
       flagging_clear_caches_and_update_zoom(@item)
 
-      clear_caches_and_update_zoom_for_commented_item(@item)
-
       @item.notify_moderators_immediatelly_if_necessary(:flag => @flag,
                                                         :history_url => history_url(@item),
                                                         :flagging_user => @current_user,
@@ -53,10 +51,6 @@ module FlaggingController
     end
 
     def flagging_clear_caches_and_update_zoom(item)
-      # clear caches for the item and rss
-      expire_show_caches
-      expire_rss_caches
-
       # add contributor and update zoom if needed
       after_successful_zoom_item_update(item, @version_after_update)
     end
@@ -106,16 +100,12 @@ module FlaggingController
         # if version we are about to supersede
         # is blank, flag it as blank for clarity in the history
         # this doesn't do the reversion in itself
-        @item.flag_at_with(current_version, Kete.blank_flag) if @item.already_at_blank_version?
+        @item.flag_at_with(current_version, SystemSetting.blank_flag) if @item.already_at_blank_version?
 
         @item.tag_list = @item.raw_tag_list
         @item.version_comment = I18n.t('flagging_controller_lib.restore.version_comment',
                                        :version => @version)
         @item.do_not_moderate = true
-        # turn off sanitizing in restores
-        # for the rare case when invalid code made it in
-        # otherwise validation may cause save action to fail
-        @item.do_not_sanitize = true
 
         versions_before_save = @item.versions.size
 
@@ -141,10 +131,8 @@ module FlaggingController
 
         flagging_clear_caches_and_update_zoom(@item)
 
-        clear_caches_and_update_zoom_for_commented_item(@item)
-
         approval_message = I18n.t('flagging_controller_lib.restore.made_live',
-                                  :site_name => Kete.pretty_site_name,
+                                  :site_name => SystemSetting.pretty_site_name,
                                   :basket_name => @current_basket.name)
 
         # notify the contributor of this revision
@@ -220,11 +208,12 @@ module FlaggingController
         @current_private_version = @item.version
       end if @item.respond_to?(:private_version)
 
-      # lets do some queries here and store values in an array/hash for access later
-      # rather than getting them each iteration (which can result in 100's of queries)
+      if @item.contributors.empty?
+        @item_contributors = []
+      else
+        @item_contributors = @item.contributors.all
+      end
 
-      select = 'contributions.version, contributions.created_at as version_created_at, users.id, users.resolved_name, users.email, users.login'
-      @item_contributors = @item.contributors.all(:select => select, :order => 'contributions.version ASC', :group => 'contributions.version')
       @contributor_index = 0
 
       @item_taggings = Hash.new
@@ -261,7 +250,7 @@ module FlaggingController
         @item.revert_to(@preview_version)
 
         # Do not allow access to restricted or private item versions..
-        if (@flags.include?(Kete.restricted_flag) && !@at_least_moderator) ||
+        if (@flags.include?(SystemSetting.restricted_flag) && !@at_least_moderator) ||
            (@item.respond_to?(:private?) && @item.private? && !permitted_to_view_private_items?)
           raise ActiveRecord::RecordNotFound
         end

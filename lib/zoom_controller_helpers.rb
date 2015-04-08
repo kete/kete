@@ -9,32 +9,22 @@ module ZoomControllerHelpers
       end
     end
 
-    # this keeps the RoR item around, just destroys zoom record
-    # doesn't delete zoom records for any relations
 
-    # mainly for cleaning out old zoom record
-    # before we generate a new one
-    def zoom_destroy_for(item)
-      @successful = item.zoom_destroy
-    end
-
-    # this has very little to do with explicit zoom_destroy anymore
-    # but we're not bothering to rename it at the moment
-    # the zoom_item_destroy makes sure comments are deleted as expected
+    # * makes sure comments are deleted before an item is
     def zoom_item_destroy(item)
-      @successful = true
-      # delete any comments this is on
+      successful = true
       item.comments.each do |comment|
-        @successful = comment.destroy
-        if !@successful
-          return @successful
+        successful = comment.destroy
+        if !successful
+          return successful
         end
       end
 
-      if @successful
-        @successful = item.destroy
+      if successful
+        successful = item.destroy
       end
     end
+
 
     # this has very little to do with explicit zoom_destroy anymore
     # but we're not bothering to rename it at the moment
@@ -147,19 +137,7 @@ module ZoomControllerHelpers
     # as that is synchronous and can hold up request responses significantly for items that have large zoom records
     # this moves the prepare_and_save_to_zoom process to asynchronous backgroundrb process
     def update_search_record_for(item, options = { })
-      options = options.merge({ :method_name => "worker_zoom_for",
-                                :class_key => item.class_as_key,
-                                :object => item,
-                                :zoom_items => [{ item.class.name => item.id }]})
-
-      logger.debug("what are worker options " + options.inspect)
-
-      # run the search record build in a backgroundrb worker
-      if !Kete.use_backgroundrb_for_search_record_updates? ||
-          !call_generic_muted_worker_with(options)
-        # fallback to normal search engine rebuilds if worker fails
-        item.prepare_and_save_to_zoom
-      end
+      # ROB: we don't use zoom and this was causing errors so removed.
     end
 
     def worker_zoom_for(options)

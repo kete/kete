@@ -1,0 +1,36 @@
+- if @profiles.blank? || !params[:basket_profile].blank?
+  = render :partial => 'new_form'
+- else
+  - @title = t('baskets.new.title')
+  #add_basket_form
+    %h2= h(@title)
+    = form_tag do
+      %fieldset
+        .form-element
+          %label{:for => "basket_profile"}= t 'baskets.new.which_profile'
+          = select_tag 'basket_profile', options_for_select([['', '']] + @profiles.collect { |p| [p.name, p.id] }), :id => 'basket_profile'
+      %noscript
+        %span#submit_button
+          = submit_tag t('baskets.new.choose_profile'), { :class => "save-button", :tabindex => '1' }
+    <img src='#{image_path('indicator.gif')}' width='16' height='16' alt='#{t 'baskets.new.working'}' id='data_spinner' style='display:none;' />
+
+    \#{link_to_cancel("choose")}
+  #basket_form
+  :javascript
+    //
+    $('basket_profile').observe('change', function(event) {
+      $('basket_form').hide();
+      $('basket_form').innerHTML = '';
+      if (Event.element(event).value == '') { return true; }
+      new Ajax.Request('#{url_for(:action => "render_basket_form")}', {
+        method: 'get',
+        parameters: {
+          basket_profile: $('basket_profile').value
+        },
+        onLoading: function(loading) { $('data_spinner').show(); },
+        onComplete: function(complete) { $('data_spinner').hide(); },
+        onSuccess: function(success) { $('cancelchoose').hide(); $('basket_form').show(); }
+      });
+    });
+    //
+

@@ -1,0 +1,9 @@
+#archive-by-type
+  %ul
+    - ZOOM_CLASSES.each do |zoom_class|
+      - location = { :controller_name_for_zoom_class => zoom_class, :target_basket => SystemSetting.default_basket}
+      - class_name = zoom_class_plural_humanize(zoom_class)
+      - class_count = zoom_class.constantize.count
+
+      %li
+        = link_to "#{class_name} (#{class_count})", basket_search_all_path(location)

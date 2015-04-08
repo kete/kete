@@ -1,24 +1,24 @@
 class AccountController < ApplicationController
-  # see user model for info about activation code
-  # for email password reminders and activation
-  # depreciated in rails 2.0
-  # now in config/environment.rb (later to go into config/initializers/)
-  # observer :user_observer
 
-  include ExtendedContent
-  include ExtendedContentController
-  include EmailController
-
+  #####################################################################
+  #####################################################################
+  ### CONFIGURATION
+  #####################################################################
+  #####################################################################
   # Be sure to include AuthenticationSystem in Application Controller instead
   # include AuthenticatedSystem
   # If you want "remember me" functionality, add this before_filter to Application Controller
+
   before_filter :login_from_cookie
-
   before_filter :redirect_if_user_portraits_arnt_enabled, :only => [:add_portrait, :remove_portrait, :make_selected_portrait]
-
   layout :simple_or_application
 
-  # say something nice, you goof!  something sweet.
+  #####################################################################
+  #####################################################################
+  ### PUBLIC METHODS/ACTIONS
+  #####################################################################
+  #####################################################################
+
   def index
     if logged_in? || User.count > 0
       redirect_to_default_all
@@ -37,24 +37,24 @@ class AccountController < ApplicationController
       if params[:login].present? && params[:password].present?
         self.current_user = User.authenticate(params[:login], params[:password])
       else
-        case @captcha_type
-        when 'image'
-          if simple_captcha_valid?
-            @security_code = params[:security_code]
-          end
-          
-          if simple_captcha_confirm_valid?
-            @res = Captcha.find(session[:captcha_id])
-            @security_code_confirmation = @res.text
-          else
-            @security_code_confirmation = false
-          end
-        when 'question'
-          if validate_brain_buster
-            @security_code = true
-            @security_code_confirmation = true
-          end
-        end
+        # case @captcha_type
+        # when 'image'
+        #   if simple_captcha_valid?
+        #     @security_code = params[:security_code]
+        #   end
+        #
+        #   if simple_captcha_confirm_valid?
+        #     @res = Captcha.find(session[:captcha_id])
+        #     @security_code_confirmation = @res.text
+        #   else
+        #     @security_code_confirmation = false
+        #   end
+        # when 'question'
+        #   if validate_brain_buster
+        #     @security_code = true
+        #     @security_code_confirmation = true
+        #   end
+        # end
 
         if anonymous_ok_for?(session[:return_to]) &&
             @security_code == @security_code_confirmation &&
@@ -66,7 +66,7 @@ class AccountController < ApplicationController
 
           session[:anonymous_user] = { :name => anonymous_name,
             :email => params[:email]}
-          
+
           # see if the submitted website is valid
           # append protocol if they have left it off
           website = params[:website]
@@ -87,7 +87,7 @@ class AccountController < ApplicationController
           cookies[:auth_token] = { :value => self.current_user.remember_token , :expires => self.current_user.remember_token_expires_at }
         end
         unless @anonymous_user
-          move_session_searches_to_current_user 
+          move_session_searches_to_current_user
           flash[:notice] = t('account_controller.login.logged_in')
         end
         redirect_back_or_default({ :locale => current_user.locale,
@@ -110,80 +110,69 @@ class AccountController < ApplicationController
 
           flash[:notice] = error_msgs.join("#{t('account_controller.login.or')}")
 
-          set_captcha_type if anonymous_ok_for?(session[:return_to])
-          create_brain_buster if @captcha_type == 'question'
+          # set_captcha_type if anonymous_ok_for?(session[:return_to])
+          # create_brain_buster if @captcha_type == 'question'
         end
       end
     else
-
-      set_captcha_type if anonymous_ok_for?(session[:return_to])
-      create_brain_buster if @captcha_type == 'question'
+      # set_captcha_type if anonymous_ok_for?(session[:return_to])
+      # create_brain_buster if @captcha_type == 'question'
     end
   end
-
-  def simple_return_tos
-      ['find_related']
-  end
-
-  # override brain_buster method to suit our UI
-  # and working in conjunction with simple_captcha
-  def captcha_failure
-    if @user
-      @user.security_code = 'failed'
-      @user.security_code_confirmation = false
-    else
-      # TODO: do something here for login case
-    end
-  end
-
 
   def signup
     # this loads @content_type
     load_content_type
 
     @user = User.new
-    
-    set_captcha_type
 
-    create_brain_buster if @captcha_type == 'question'
+    # set_captcha_type
+    #
+    # create_brain_buster if @captcha_type == 'question'
 
     # after this is processing submitted form only
     return unless request.post?
-    @user = User.new(params[:user].reject { |k, v| k == "captcha_type" })
+    # @user = User.new(params[:user].reject { |k, v| k == "captcha_type" })
+    @user = User.new(params[:user])
 
-    case @captcha_type
-    when 'image'
-      if simple_captcha_valid?
-        @user.security_code = params[:user][:security_code]
-      end
-
-      if simple_captcha_confirm_valid?
-        @res = Captcha.find(session[:captcha_id])
-        @user.security_code_confirmation = @res.text
-      else
-        @user.security_code_confirmation = false
-      end
-    when 'question'
-      if validate_brain_buster
-        @user.security_code = true
-        @user.security_code_confirmation = true
-      end
-    end
+    # case @captcha_type
+    # when 'image'
+    #   if simple_captcha_valid?
+    #     @user.security_code = params[:user][:security_code]
+    #   end
+    #
+    #   if simple_captcha_confirm_valid?
+    #     @res = Captcha.find(session[:captcha_id])
+    #     @user.security_code_confirmation = @res.text
+    #   else
+    #     @user.security_code_confirmation = false
+    #   end
+    # when 'question'
+    #   if validate_brain_buster
+    #     @user.security_code = true
+    #     @user.security_code_confirmation = true
+    #   end
+    # end
 
     if agreed_terms?
       @user.agree_to_terms = params[:user][:agree_to_terms]
     end
 
+    # We have removed captcha and will re-enable something if/when dummy
+    # sign-ups becomes a problem.
+    @user.security_code = true
+    @user.security_code_confirmation = true
+
     @user.save!
 
     @user.add_as_member_to_default_baskets
 
-    if !Kete.require_activation?
+    if !SystemSetting.require_activation?
       self.current_user = @user
       move_session_searches_to_current_user
       flash[:notice] = t('account_controller.signup.signed_up')
     else
-      if Kete.administrator_activates?
+      if SystemSetting.administrator_activates?
         flash[:notice] = t('account_controller.signup.signed_up_admin_will_review')
       else
         flash[:notice] = t('account_controller.signup.signed_up_with_email')
@@ -198,13 +187,68 @@ class AccountController < ApplicationController
     render :action => 'signup'
   end
 
-  # Walter McGinnis, 2008-03-16
-  # making it so that system setting
-  # determines which type of captcha method we use
-  def set_captcha_type
-    @captcha_type = params[:captcha_type] || Kete.captcha_type
-    @captcha_type = 'image' if @captcha_type == 'all'
+  # def show_captcha
+  #   return unless !params[:id].nil?
+  #   captcha = Captcha.find(params[:id])
+  #   imgdata = captcha.imageblob
+  #   send_data(imgdata,
+  #             :filename => 'captcha.jpg',
+  #             :type => 'image/jpeg',
+  #             :disposition => 'inline')
+  # end
+
+  def disclaimer
+    @topic = Topic.find(params[:id])
+    respond_to do |format|
+      format.html { render :partial => 'account/disclaimer', :layout => 'simple' }
+      format.js
+    end
   end
+
+  def forgot_password
+    return unless request.post?
+    @users = !params[:user][:login].blank? ? User.find_all_by_email_and_login(params[:user][:email], params[:user][:login]) :
+                                             User.find_all_by_email(params[:user][:email])
+    if @users.size == 1
+      user = @users.first
+      user.forgot_password
+      user.save
+      redirect_back_or_default(:controller => '/account', :action => 'index')
+      flash[:notice] = t('account_controller.forgot_password.email_sent')
+    elsif @users.size > 1
+      flash[:notice] = t('account_controller.forgot_password.more_than_one_account')
+    elsif !params[:user][:login].blank?
+      flash[:error] = t('account_controller.forgot_password.no_such_login')
+    else
+      flash[:error] = t('account_controller.forgot_password.no_such_email')
+    end
+  end
+  #####################################################################
+  #####################################################################
+  ### not sure of visiblity yet
+  #####################################################################
+
+  include ExtendedContent
+  include ExtendedContentController
+  include EmailController
+
+
+
+  def simple_return_tos
+      ['find_related']
+  end
+
+  # override brain_buster method to suit our UI
+  # and working in conjunction with simple_captcha
+  # def captcha_failure
+  #   if @user
+  #     @user.security_code = 'failed'
+  #     @user.security_code_confirmation = false
+  #   else
+  #     # TO DO: do something here for login case
+  #   end
+  # end
+
 
   def fetch_gravatar
     respond_to do |format|
@@ -212,35 +256,35 @@ class AccountController < ApplicationController
         render :update do |page|
           page.replace_html params[:avatar_id],
                             avatar_tag(User.new({ :email => params[:email] || String.new }),
-                                                { :size => 30, :rating => 'G', :gravatar_default_url => "#{SITE_URL}images/no-avatar.png" },
+                                                { :size => 30, :rating => 'G', :gravatar_default_url => "/images/no-avatar.png" },
                                                 { :width => 30, :height => 30, :alt => t('account_controller.fetch_gravatar.your_gravatar') })
         end
       end
     end
   end
 
-  def simple_captcha_valid?
-    (params[:user].present? && params[:user][:security_code].present? &&
-     params[:security_code].nil?) ||
-      (params[:user].nil? && params[:security_code].present?)
-  end
-
+  # def simple_captcha_valid?
+  #   (params[:user].present? && params[:user][:security_code].present? &&
+  #    params[:security_code].nil?) ||
+  #     (params[:user].nil? && params[:security_code].present?)
+  # end
+  #
   def agreed_terms?
     if params[:user][:agree_to_terms] == '1'
       return true
     end
   end
 
-  def simple_captcha_confirm_valid?
-    return false unless simple_captcha_valid?
-    
-    @res = Captcha.find(session[:captcha_id])
-    
-    (params[:user].present? &&
-     @res.text == params[:user][:security_code]) ||
-      (params[:security_code].present? &&
-       @res.text == params[:security_code])
-  end
+  # def simple_captcha_confirm_valid?
+  #   return false unless simple_captcha_valid?
+  #
+  #   @res = Captcha.find(session[:captcha_id])
+  #
+  #   (params[:user].present? &&
+  #    @res.text == params[:user][:security_code]) ||
+  #     (params[:security_code].present? &&
+  #      @res.text == params[:security_code])
+  # end
 
   def logout
     deauthenticate
@@ -275,7 +319,6 @@ class AccountController < ApplicationController
     original_user_name = @user.user_name
     if @user.update_attributes(params[:user])
       # @user.user_name has changed
-      expire_contributions_caches_for(@user) if original_user_name != @user.user_name
 
       flash[:notice] = t('account_controller.update.user_updated')
       redirect_to({ :locale => params[:user][:locale],
@@ -298,7 +341,7 @@ class AccountController < ApplicationController
         flash[:notice] = current_user.save ?
         t('account_controller.change_password.password_changed') :
           t('account_controller.change_password.password_not_changed')
-        if IS_CONFIGURED
+        if SystemSetting.is_configured?
           redirect_to :action => 'show'
         else
           redirect_to '/'
@@ -312,23 +355,7 @@ class AccountController < ApplicationController
     end
   end
 
-  def show_captcha
-    return unless !params[:id].nil?
-    captcha = Captcha.find(params[:id])
-    imgdata = captcha.imageblob
-    send_data(imgdata,
-              :filename => 'captcha.jpg',
-              :type => 'image/jpeg',
-              :disposition => 'inline')
-  end
 
-  def disclaimer
-    @topic = Topic.find(params[:id])
-    respond_to do |format|
-      format.html { render :partial => 'account/disclaimer', :layout => 'simple' }
-      format.js
-    end
-  end
 
   # activation code, note, not always used
   # if REQUIRE_ACTIVATION is false, this isn't used
@@ -338,7 +365,7 @@ class AccountController < ApplicationController
     activator = params[:id] || params[:activation_code]
     @user = User.find_by_activation_code(activator)
     if @user and @user.activate
-      if Kete.administrator_activates?
+      if SystemSetting.administrator_activates?
         flash[:notice] = t('account_controller.activate.admin_activated', :new_user => @user.resolved_name)
         redirect_back_or_default(:controller => '/account',
                                  :action => 'show',
@@ -352,25 +379,7 @@ class AccountController < ApplicationController
     end
   end
 
-  # supporting password reset
-  def forgot_password
-    return unless request.post?
-    @users = !params[:user][:login].blank? ? User.find_all_by_email_and_login(params[:user][:email], params[:user][:login]) :
-                                             User.find_all_by_email(params[:user][:email])
-    if @users.size == 1
-      user = @users.first
-      user.forgot_password
-      user.save
-      redirect_back_or_default(:controller => '/account', :action => 'index')
-      flash[:notice] = t('account_controller.forgot_password.email_sent')
-    elsif @users.size > 1
-      flash[:notice] = t('account_controller.forgot_password.more_than_one_account')
-    elsif !params[:user][:login].blank?
-      flash[:error] = t('account_controller.forgot_password.no_such_login')
-    else
-      flash[:error] = t('account_controller.forgot_password.no_such_email')
-    end
-  end
+
 
   def reset_password
     @user = User.find_by_password_reset_code(params[:id]) if params[:id]
@@ -400,7 +409,6 @@ class AccountController < ApplicationController
     else
       flash[:error] = t('account_controller.add_portrait.failed_portrait', :portrait_title => @still_image.title)
     end
-    expire_contributions_caches_for(current_user, :dont_rebuild_zoom => true)
     redirect_to_image_or_profile
   end
 
@@ -413,10 +421,9 @@ class AccountController < ApplicationController
       @successful = false
       flash[:error] = t('account_controller.remove_portrait.failed_portrait', :portrait_title => @still_image.title)
     end
-    expire_contributions_caches_for(current_user, :dont_rebuild_zoom => true)
     respond_to do |format|
       format.html { redirect_to_image_or_profile }
-      format.js { render :file => File.join(RAILS_ROOT, 'app/views/account/portrait_controls.js.rjs') }
+      format.js { render :file => File.join(Rails.root, 'app/views/account/portrait_controls.js.rjs') }
     end
   end
 
@@ -427,7 +434,6 @@ class AccountController < ApplicationController
     else
       flash[:error] = t('account_controller.make_selected_portrait.failed_portrait', :portrait_title => @still_image.title)
     end
-    expire_contributions_caches_for(current_user, :dont_rebuild_zoom => true)
     redirect_to_image_or_profile
   end
 
@@ -440,10 +446,9 @@ class AccountController < ApplicationController
       @successful = false
       flash[:error] = t('account_controller.move_portrait_higher.failed_portrait', :portrait_title => @still_image.title)
     end
-    expire_contributions_caches_for(current_user, :dont_rebuild_zoom => true)
     respond_to do |format|
       format.html { redirect_to_image_or_profile }
-      format.js { render :file => File.join(RAILS_ROOT, 'app/views/account/portrait_controls.js.rjs') }
+      format.js { render :file => File.join(Rails.root, 'app/views/account/portrait_controls.js.rjs') }
     end
   end
 
@@ -456,10 +461,9 @@ class AccountController < ApplicationController
       @successful = false
       flash[:error] = t('account_controller.move_portrait_lower.failed_portrait', :portrait_title => @still_image.title)
     end
-    expire_contributions_caches_for(current_user, :dont_rebuild_zoom => true)
     respond_to do |format|
       format.html { redirect_to_image_or_profile }
-      format.js { render :file => File.join(RAILS_ROOT, 'app/views/account/portrait_controls.js.rjs') }
+      format.js { render :file => File.join(Rails.root, 'app/views/account/portrait_controls.js.rjs') }
     end
   end
 
@@ -483,7 +487,6 @@ class AccountController < ApplicationController
         # once we have the portrait, update the position to index
         portrait_placement.update_attribute(:position, index)
       end
-      expire_contributions_caches_for(current_user, :dont_rebuild_zoom => true)
       @successful = true
       flash[:notice] = t('account_controller.update_portraits.reordered')
     rescue
@@ -506,11 +509,17 @@ class AccountController < ApplicationController
     redirect_back_or_default({:controller => 'account', :action => 'index'}, params[:override_locale])
   end
 
+  #####################################################################
+  #####################################################################
+  ### PRIVATE METHODS
+  #####################################################################
+  #####################################################################
+
   private
 
   def simple_or_application
     return 'application' if session[:return_to].blank?
-    
+
     simple_return_tos_regexp = Regexp.new(simple_return_tos.join('|'))
 
     if session[:return_to] =~ simple_return_tos_regexp ||
@@ -523,7 +532,7 @@ class AccountController < ApplicationController
 
 
   def redirect_if_user_portraits_arnt_enabled
-    unless ENABLE_USER_PORTRAITS
+    unless SystemSetting.enable_user_portraits?
       flash[:notice] = t('account_controller.redirect_if_user_portraits_arnt_enabled.not_enabled')
       @still_image = StillImage.find(params[:id])
       redirect_to_show_for(@still_image)
@@ -541,6 +550,12 @@ class AccountController < ApplicationController
   def load_content_type
     @content_type = ContentType.find_by_class_name('User')
   end
+
+
+  # def set_captcha_type
+  #   @captcha_type = params[:captcha_type] || SystemSetting.captcha_type
+  #   @captcha_type = 'image' if @captcha_type == 'all'
+  # end
 
   include SslControllerHelpers
 end

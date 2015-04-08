@@ -10,18 +10,21 @@ class CommentsController < ApplicationController
   end
 
   def show
-    if params[:format] == 'xml' or !has_all_fragments?
+    @comment = Comment.find(params[:id])
+
+    if params[:format] == 'xml'
       @comment = @current_basket.comments.find(params[:id])
       @title = @comment.title
     end
 
-    if params[:format] == 'xml' or !has_fragment?({:part => 'contributions' })
+    if params[:format] == 'xml'
       @creator = @comment.creator
       @last_contributor = @comment.contributors.last || @creator
     end
 
     respond_to do |format|
-      format.html
+      #format.html { redirect_to(@comment.commmentable, {commenty: 'things'})  }
+      format.html { redirect_to(comment_inplace_url(@comment)) }
       format.xml { render_oai_record_xml(:item => @comment) }
     end
   end
@@ -71,8 +74,6 @@ class CommentsController < ApplicationController
 
       # make sure that we wipe comments cache for thing we are commenting on
       commented_item = zoom_class.find(params[:comment][:commentable_id])
-      commented_privacy = @comment.commentable_private
-      expire_caches_after_comments(commented_item, commented_privacy)
 
       # although we shouldn't be using the related_topic aspect here
       # i.e. there is never going to be params[:related_topic_id]
@@ -94,9 +95,8 @@ class CommentsController < ApplicationController
 
     version_after_update = @comment.max_version + 1
 
-    @successful = ensure_no_new_insecure_elements_in('comment')
     @comment.attributes = params[:comment]
-    @successful = @comment.save if @successful
+    @successful = @comment.save
 
     if @successful
 
@@ -109,8 +109,6 @@ class CommentsController < ApplicationController
 
       # make sure that we wipe comments cache for thing we are commenting on
       commented_item = @comment.commentable
-      commented_privacy = @comment.commentable_private
-      expire_caches_after_comments(commented_item, commented_privacy)
 
       # @comment.prepare_and_save_to_zoom
       # switched to async backgroundrb worker for search record set up
@@ -136,12 +134,10 @@ class CommentsController < ApplicationController
 
     # make sure that we wipe comments cache for thing we are commenting on
     commented_item = @comment.commentable
-    commented_privacy = @comment.commentable_private
 
     @successful = @comment.destroy
 
     if @successful
-      expire_caches_after_comments(commented_item, commented_privacy)
       commented_item.prepare_and_save_to_zoom
 
       flash[:notice] = t('comments_controller.destroy.destroyed')
@@ -170,4 +166,10 @@ class CommentsController < ApplicationController
       end
     end
 
+  def comment_inplace_url(comment)
+    # Link to the comment on the page it's displayed on.
+    commented_item = comment.commentable
+    inplace_comment_url = url_for([commented_item.basket, commented_item])
+    "#{inplace_comment_url}##{comment.to_anchor}"
+  end
 end

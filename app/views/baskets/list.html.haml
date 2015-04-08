@@ -1,0 +1,36 @@
+.white_wrapper
+  - @title = t('baskets.list.title')
+  %h2.basket-list-headline
+    = @title
+  %p
+    - if @site_admin && (@requested_count + @rejected_count) > 0
+      [
+      \#{link_to_unless_current t('baskets.list.all'), :type => nil}    | #{link_to_unless_current t('baskets.list.requests', :request_num => @requested_count), :type => 'requested'}    | #{link_to_unless_current t('baskets.list.rejected', :rejected_num => @rejected_count), :type => 'rejected'}    ]
+  %p
+    %table#basket_list_table
+      %tr
+        %th.basket_image{:abbr => "Image"} &nbsp;
+        %th.basket_name{:abbr => "Name"}= search_sorting_controls_for(t('baskets.list.sort_by_name'), 'name', false)
+        %th.basket_created{:abbr => "Created"}= search_sorting_controls_for(t('baskets.list.sort_by_created_at'), 'created_at', true, 'desc')
+        %th.basket_options{:abbr => "Options"}= t 'baskets.list.options'
+      - @baskets.each do |basket|
+        %tr
+          %td.basket_image= related_image_link_for(basket.related_images, {},             |
+              basket_index_url({ :urlified_name => basket.urlified_name })) |
+          - if %w{ requested rejected }.include?(params[:type])
+            %td.basket_name= link_to basket.name, { :controller => 'baskets',
+                                                    :action => 'edit',
+                                                    :id => basket },
+                                                  :tabindex => '2'
+          - else
+            %td.basket_name= link_to_index_for(basket)
+          %td.basket_created= basket.created_at.to_s(:long)
+          %td.basket_options
+            -if @site_admin || ( logged_in? && current_user.roles.include?(basket.role("admin")) )
+              %ul= link_to_actions_available_for(basket)
+            /end
+          / end
+
+  #prev-next= will_paginate @baskets
+  %h4= header_add_basket_link
+

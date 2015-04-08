@@ -7,7 +7,7 @@ class ExtendedField < ActiveRecord::Base
 
   # find an extended field based on params[:extended_field]
   def self.from_id_or_label(id_or_label)
-    self.first(:conditions => ['UPPER(label) = ?', id_or_label.upcase.gsub('_', ' ')]) || self.find_by_id(id_or_label)
+    where('UPPER(label) = ?', id_or_label.upcase.gsub('_', ' ')).first || self.find_by_id(id_or_label)
   end
 
   # James - 2008-12-05
@@ -17,7 +17,9 @@ class ExtendedField < ActiveRecord::Base
   # these fields, this attributes can be made writeable again.
   attr_readonly :label, :ftype, :multiple
 
-  acts_as_configurable
+  def setting(name, *args)
+    ExtendedFieldSettings.get(name, *args)
+  end
 
   # some input mechanisms for different languages can add whitespace
   # which messes with our label_for_params, etc.
@@ -26,7 +28,7 @@ class ExtendedField < ActiveRecord::Base
   after_save :store_topic_type
 
   def topic_type
-    @topic_type ||= self.settings[:topic_type]
+    @topic_type ||= self.setting(:topic_type)
   end
 
   def topic_type=(value)
@@ -34,13 +36,13 @@ class ExtendedField < ActiveRecord::Base
   end
 
   def store_topic_type
-    self.settings[:topic_type] = @topic_type unless @topic_type.blank?
+    self.set_setting(:topic_type, @topic_type) unless @topic_type.blank?
   end
 
   after_save :store_circa
 
   def circa
-    @circa ||= self.settings[:circa]
+    @circa ||= self.setting(:circa)
   end
 
   def circa?
@@ -52,13 +54,16 @@ class ExtendedField < ActiveRecord::Base
   end
 
   def store_circa
-    self.settings[:circa] = @circa unless @circa.blank?
+    self.set_setting(:circa, @circa) unless @circa.blank?
   end
 
   after_save :set_base_url
 
   def base_url
-    @base_url ||= self.settings[:base_url]
+    #@base_url ||= self.setting(:base_url)
+    # ROB:  Turning this off as it doesn't make sense to use absolute links (kete.co.nz/...) 
+    #       instead of relative onves (/...)
+    ""
   end
 
   def base_url=(value)
@@ -66,7 +71,7 @@ class ExtendedField < ActiveRecord::Base
   end
 
   def set_base_url
-    self.settings[:base_url] = @base_url unless @base_url.blank?
+    self.set_setting(:base_url, @base_url) unless @base_url.blank?
   end
 
   def pseudo_choices
@@ -107,11 +112,9 @@ class ExtendedField < ActiveRecord::Base
     if type_of == 'TopicType'
       # exclude ancestor's fields as well
       topic_types_to_exclude = type.ancestors + [type]
-      find(:all, :readonly => false,
-           :conditions => ["id not in (select extended_field_id from topic_type_to_field_mappings where topic_type_id in (?))", topic_types_to_exclude])
+      where("id not in (select extended_field_id from topic_type_to_field_mappings where topic_type_id in (?))", topic_types_to_exclude).readonly(false).all
     elsif type_of == 'ContentType'
-      find(:all, :readonly => false,
-           :conditions => ["id not in (select extended_field_id from content_type_to_field_mappings where content_type_id = ?)", type])
+      where("id not in (select extended_field_id from content_type_to_field_mappings where content_type_id = ?)", type).readonly(false).all
     else
       # TODO: this is an error, say something meaningful
     end
@@ -155,8 +158,7 @@ class ExtendedField < ActiveRecord::Base
   end
 
   def self.params_to_label(params_key)
-    find(:first,
-         :conditions => ExtendedField.clauses_for_has_label_that_matches(params_key)).label
+    where(self.clauses_for_has_label_that_matches(params_key) ).first.label
   end
 
   def is_a_choice?

@@ -1,0 +1,19 @@
+= hidden_field_tag "captcha_type", @captcha_type, :tabindex => '1'
+.form-element
+  - if @captcha_type == 'image'
+    %label{:for => "user_security_code"}= t 'account.captcha_wrapper.security_code'
+    %div{:style => "float: left"}
+      - if defined?(f)
+        = f.text_field :security_code,     |
+          {:size => '8', :tabindex => '1'} |
+      - else
+        = text_field_tag 'security_code', nil, :size => '8', :tabindex => '1'
+    - id = generate_captcha()
+    - session[:captcha_id] = id
+    %img{:alt => "Security image. ", :src => captcha_url(id)}/
+    .form_example
+      = raw t('account.captcha_wrapper.case_sensitive')
+      - if SystemSetting.captcha_type == 'all'
+        %p= raw t 'account.captcha_wrapper.text_captcha', :text_captcha_link => link_to(t('account.captcha_wrapper.text_captcha_link'), {:captcha_type => 'question'}, :tabindex => '1') 
+  - elsif @captcha_type == 'question'
+    = render :partial => '/captcha'

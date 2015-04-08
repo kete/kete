@@ -1,0 +1,7 @@
+- unless @viewer_portraits.nil?
+  .portrait_image{:style => "width:1px;padding-right:0px;"}
+  - @viewer_portraits.each do |portrait|
+    - if @viewer_is_user || !portrait.thumbnail_file.file_private
+      = render :partial => 'account/portrait', :locals => { :portrait => portrait }
+  - if !@portraits_total_count.nil? && @portraits_total_count > @viewer_portraits.size
+    = link_to_profile_for(@viewer_portraits.last.creator, "<div class=\"generic-result-more\">more &gt; &gt;</div>")

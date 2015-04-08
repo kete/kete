@@ -1,7 +1,5 @@
 module ExtendedFieldsHelper
 
-  include GoogleMap::ExtendedFieldsHelper
-
   # Override for ActiveScaffold extended field controller edit view
   # Refer to http://activescaffold.com/docs/form-overrides for details
 
@@ -41,12 +39,7 @@ module ExtendedFieldsHelper
     '<div id="link_choice_values">' +
       "#{t('extended_fields_helper.pseudo_choices_form_column.link_choice_values')} #{t('extended_fields_helper.pseudo_choices_form_column.link_choice_values_yes')} " + radio_button_tag("record[link_choice_values]", 1, !record.dont_link_choice_values?) + " #{t('extended_fields_helper.pseudo_choices_form_column.link_choice_values_no')} " + radio_button_tag("record[link_choice_values]", 0, record.dont_link_choice_values?) +
     '</div>' +
-    '</div>' +
-
-    # Javascript call to initialise YUI TreeView, and listens for expand/collapse links
-    '<script type="text/javascript>var ' + id + ' = new YAHOO.widget.TreeView(document.getElementById("choice_selection_' + record.id.to_s + '"), [' + top_level.map { |t| build_node_array_for(t, record) }.join(", ") + ']); ' + id + '.render(); ' + id + '.subscribe("clickEvent", function(ev, node) { return false; }); YAHOO.util.Event.addListener("' + id + '_expand", "click", function(tree) { ' + id + '.expandAll(); }, ' + id + '); YAHOO.util.Event.addListener("' + id + '_collapse", "click", function(tree) {  ' + id + '.collapseAll(); }, ' + id + ');</script>' +
-
-    (%w(choice autocomplete).member?(record.ftype) ? "" : javascript_tag("$('hidden_choices_select_#{record.id.to_s}').hide();"))
+    '</div>'
 
   end
 
@@ -76,19 +69,6 @@ module ExtendedFieldsHelper
     end
   end
 
-  # Create a Javascript array of hashes containing attributes for the construction of the TreeView.
-  # This is necessary because YUI's TreeView doesn't probably interpret checkboxes in XHTML when
-  # constructing a TreeView from existing content (ala progressive enhancement).
-  def build_node_array_for(choice, record)
-    string_from_children = choice.children.map { |child| build_node_array_for(child, record) }.join(", ")
-
-    output = ["{type:'html', html:'#{check_box_tag("record[pseudo_choices][]", choice.id.to_s, record.choices.member?(choice))} #{choice.label}', expanded:#{(record.choices.member?(choice) || choice.all_children.any? { |c| record.choices.member?(c) }).to_s}"]
-    output << ", children: [#{string_from_children}]" unless string_from_children.blank?
-    output << "}"
-
-    output.join
-  end
-
   # More ActiveScaffold overloading..
 
   # Same as above, but for ftype.
@@ -107,61 +87,13 @@ module ExtendedFieldsHelper
       [t('extended_fields_helper.ftype_form_column.choices_topic_type'), 'topic_type']
     ]
 
-    if Kete.enable_maps?
+    if SystemSetting.enable_maps?
       options_for_select << [t('extended_fields_helper.ftype_form_column.location_map'), 'map']
       options_for_select << [t('extended_fields_helper.ftype_form_column.location_map_address'), 'map_address']
     end
 
     if record.new_record?
-      select(:record, :ftype, options_for_select, {}, :name => input_name ) +
-      javascript_tag("
-        $('record_ftype').observe('change', function() {
-          value = $('record_ftype').value;
-          // hide the base_url text field if this ftype doesn't support it
-          if ( value == 'checkbox' || value == 'radio' || value == 'topic_type' ) {
-            $('record_base_url').value = '';
-            $('record_base_url').disabled = true;
-          } else {
-            $('record_base_url').value = '';
-            $('record_base_url').disabled = false;
-          }
-          // hide the multiple record field if this ftype doesn't support it
-          if ( value == 'checkbox' || value == 'radio' || value == 'map' || value == 'map_address' ) {
-            $('record_multiple').value = 'false';
-            $('record_multiple').disabled = true;
-          } else {
-            $('record_multiple').value = 'false';
-            $('record_multiple').disabled = false;
-          }
-          // show the choices section when ftype supports it
-          if ( value == 'autocomplete' || value == 'choice' ) {
-            $('hidden_choices_select_#{record.id.to_s}').show();
-          } else {
-            $('hidden_choices_select_#{record.id.to_s}').hide();
-          }
-          // show the allow user choices section when ftype supports it
-          if ( value == 'autocomplete' || value == 'choice' ) {
-            $('allow_user_additions').disabled = false;
-            $('allow_user_additions').show();
-          } else {
-            $('allow_user_additions').hide();
-            $('allow_user_additions').selected = false;
-            $('allow_user_additions').disabled = true;
-          }
-          // show the topic type select when ftype is topic_type
-          if ( value == 'topic_type' ) {
-            $('hidden_choices_topic_type_select_#{record.id.to_s}').show();
-          } else {
-            $('hidden_choices_topic_type_select_#{record.id.to_s}').hide();
-          }
-          // show the circa option when the ftype is year
-          if ( value == 'year' ) {
-            $('hidden_choices_circa_#{record.id.to_s}').show();
-          } else {
-            $('hidden_choices_circa_#{record.id.to_s}').hide();
-          }
-        });
-      ")
+      select(:record, :ftype, options_for_select, {}, :name => input_name )
     else
       "#{record.ftype} #{t('extended_fields_helper.ftype_form_column.cannot_be_changed')}"
     end
@@ -196,7 +128,7 @@ module ExtendedFieldsHelper
     else
 
       select(:record, :parent_id,
-        Choice.find(:all).reject { |c| c.id == record.id }.map { |c| [c.label, c.id] },
+        Choice.all.reject { |c| c.id == record.id }.map { |c| [c.label, c.id] },
         { :select => record.parent_id }, :name => input_name)
     end
   end
@@ -374,13 +306,12 @@ module ExtendedFieldsHelper
     }
 
     html = select_tag("#{name}[#{level}][preset]", option_tags, options.merge(default_options))
-    html += "<img src='/images/indicator.gif' width='16' height='16' alt='#{t('extended_fields_helper.extended_field_choice_select_editor.getting_choices')}' id='#{id_for_extended_field(extended_field)}_level_#{level}_spinner' style='display:none;' />"
+    html += "<img src='#{image_path('indicator.gif')}' width='16' height='16' alt='#{t('extended_fields_helper.extended_field_choice_select_editor.getting_choices')}' id='#{id_for_extended_field(extended_field)}_level_#{level}_spinner' style='display:none;' />"
     if extended_field.user_choice_addition?
       user_supplied_id = "#{id_for_extended_field(extended_field)}_level_#{level}_custom"
       html += " #{t('extended_fields_helper.extended_field_choice_select_editor.suggest_a',
                     :field_name => display_label_for(extended_field).singularize.downcase)} "
       html += text_field_tag("#{name}[#{level}][custom]", nil, :size => 10, :id => user_supplied_id, :class => "#{extended_field.label_for_params}_choice_custom", :tabindex => 1)
-      html += javascript_tag("clearCorrespondingFieldWhenEdited('#{user_supplied_id}', '#{extended_field.label_for_params}_choice_custom', '#{default_options[:id]}', '#{default_options[:class]}');")
     end
     html
   end
@@ -401,22 +332,13 @@ module ExtendedFieldsHelper
                                   :complete => "Element.hide('#{id_for_extended_field(extended_field)}_#{level}_spinner')")
 
     text_field_tag("#{name}[#{level}]", value, options.merge(:id => "#{id_for_extended_field(extended_field)}_#{level}", :autocomplete => "off", :tabindex => 1)) +
-    "<img src='/images/indicator.gif' width='16' height='16' alt='#{t('extended_fields_helper.extended_field_choice_autocomplete_editor.getting_choices')}' id='#{id_for_extended_field(extended_field)}_#{level}_spinner' style='display:none;' />" +
+    "<img src='#{image_path('indicator.gif')}' width='16' height='16' alt='#{t('extended_fields_helper.extended_field_choice_autocomplete_editor.getting_choices')}' id='#{id_for_extended_field(extended_field)}_#{level}_spinner' style='display:none;' />" +
     tag("br") +
     content_tag("div", nil,
       :class => "extended_field_autocomplete",
       :id => id_for_extended_field(extended_field) + "_autocomplete_#{level}",
       :style => "display: none"
     ) +
-
-    # Javascript code to initialize the autocompleter
-    javascript_tag("new Autocompleter.Local(
-      '#{id_for_extended_field(extended_field)}_#{level}',
-      '#{id_for_extended_field(extended_field)}_autocomplete_#{level}',
-      #{array_or_string_for_javascript(choices)},
-      { afterUpdateElement:function(el, sel) { #{remote_call} } }
-    );
-    $('#{id_for_extended_field(extended_field)}_#{level}').focus();") +
 
     # We need to let our controller know that we're using autocomplete for this field.
     # We know the field we expect should be something like topic[extended_content][someonething]..
@@ -444,7 +366,7 @@ module ExtendedFieldsHelper
                                              :multiple_id => (extended_field.multiple? ? @field_multiple_id : nil)
                                            }
                                          })
-    html += "<img src='/images/indicator.gif' width='16' height='16' alt='#{t('extended_fields_helper.extended_field_topic_type_editor.getting_topics')}' id='#{spinner_id}' style='display:none;' />"
+    html += "<img src='#{image_path('indicator.gif')}' width='16' height='16' alt='#{t('extended_fields_helper.extended_field_topic_type_editor.getting_topics')}' id='#{spinner_id}' style='display:none;' />"
 
     # Add some images and text to indicate whether the value entered is valid or invalid
     checking_value = t('extended_fields_helper.extended_field_topic_type_editor.checking_value')
@@ -452,7 +374,7 @@ module ExtendedFieldsHelper
     invalid_value = t('extended_fields_helper.extended_field_topic_type_editor.invalid_value')
     html += <<-RUBY
       <span id='#{spinner_id}_checker' style='display:none;'>
-        <img src='/images/indicator.gif' width='16' height='16' alt='#{checking_value}' /> #{checking_value}...
+        <img src='#{image_path('indicator.gif')}' width='16' height='16' alt='#{checking_value}' /> #{checking_value}...
       </span>
       <span id='#{id}_valid' style='display:none;'>
         <img src='/images/tick14x14.gif' width='14' height='14' alt='#{valid_value}' /> #{valid_value}
@@ -461,18 +383,6 @@ module ExtendedFieldsHelper
         <img src='/images/cross.png' width='16' height='16' alt='#{invalid_value}' /> #{invalid_value}
       </span>
     RUBY
-
-    # Use Javascript to send a request which checks on the server if the value is valid or not
-    html += javascript_tag("
-    $('#{id}').observe('blur', function(){
-      new Ajax.Request('#{url_for(:controller => 'extended_fields', :action => 'validate_topic_type_entry', :id => id)}', {
-        method: 'get',
-        parameters: { field_id: '#{id}', extended_field_id: #{extended_field.id}, value: $('#{id}').value },
-        onCreate: function(create) { $('#{id}_valid').hide(); $('#{id}_invalid').hide(); $('#{spinner_id}_checker').show(); },
-        onComplete: function(complete) { $('#{spinner_id}_checker').hide(); }
-      });
-    });
-    ")
 
     html
   end
@@ -500,14 +410,14 @@ module ExtendedFieldsHelper
 
   def additional_extended_field_control(extended_field, n)
     id = id_for_extended_field(extended_field) + "_additional"
-
-    link_to_remote(t('extended_fields_helper.additional_extended_field_control.add_another',
-                     :field_name => display_label_for(extended_field).singularize.downcase),
-                   :url => { :controller => 'extended_fields',
-                             :action => 'add_field_to_multiples',
-                             :extended_field_id => extended_field.id,
-                             :n => n, :item_key => @item_type_for_params },
-                   :id => id)
+    text = t( 'extended_fields_helper.additional_extended_field_control.add_another', 
+              :field_name => display_label_for(extended_field).singularize.downcase)
+    url = { :controller => 'extended_fields',
+             :action => 'add_field_to_multiples',
+             :extended_field_id => extended_field.id,
+             :n => n, :item_key => @item_type_for_params 
+    }
+    link_to(text, url, { id: id, remote: true } )
   end
 
   def qualified_name_for_field(extended_field)

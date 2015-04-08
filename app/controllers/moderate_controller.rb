@@ -5,8 +5,8 @@ class ModerateController < ApplicationController
   permit "site_admin or admin of :current_basket"
 
   # GETs should be safe (see http://www.w3.org/2001/tag/doc/whenToUseGet.html)
-  verify :method => :post, :only => [ :destroy, :create, :update ],
-         :redirect_to => { :action => :list }
+  # verify :method => :post, :only => [ :destroy, :create, :update ],
+  #        :redirect_to => { :action => :list }
 
   # action menu uses a basket helper we need
   helper :baskets
@@ -25,7 +25,7 @@ class ModerateController < ApplicationController
 
   def rss
     @cache_key_hash = { :rss => "#{@current_basket.urlified_name}_moderate_list" }
-    fetch_revisions unless has_all_rss_fragments?(@cache_key_hash)
+    fetch_revisions
     respond_to do |format|
       format.xml
     end

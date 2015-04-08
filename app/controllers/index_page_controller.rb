@@ -1,9 +1,4 @@
 class IndexPageController < ApplicationController
-  caches_page :robots, :opensearchdescription
-
-  # Kieran Pilkington, 2008/11/26
-  # Instantiation of Google Map code for location settings
-  include GoogleMap::Mapper
 
   include ImageSlideshow
 
@@ -14,10 +9,6 @@ class IndexPageController < ApplicationController
       @privacy_type = @current_basket.show_privacy_controls_with_inheritance? && permitted_to_view_private_items? ? 'private' : 'public'
       @allow_private = (@privacy_type == 'private')
 
-      # Kieran Pilkington, 2008/08/06
-      # Load the index page everytime (for now atleast, until a better title caching system is in place)
-      @is_fully_cached = has_all_fragments?
-      #if !@is_fully_cached or params[:format] == 'xml'
       @topic = @current_basket.index_topic(true) # must load this each time or the topic gets cached a private permanently next
       if @topic && (params[:private] == "true" || (params[:private].blank? && @current_basket.private_default_with_inheritance?)) &&
           @topic.has_private_version? && permitted_to_view_private_items?
@@ -28,46 +19,38 @@ class IndexPageController < ApplicationController
         @title = @topic.title
       end
 
-      if @current_basket != @site_basket or ( @topic.nil? and !@is_fully_cached )
+      if @current_basket != @site_basket or @topic.nil?
         @title = @current_basket.name
       end
 
       if !@current_basket.index_topic.nil? && @current_basket.index_page_topic_is_entire_page
         render :action => :topic_as_full_page
       else
-        if !@is_fully_cached
-
-          if !has_fragment?({:part => 'details'}) and !@topic.nil?
-            @comments = @topic.non_pending_comments
-          end
-
-          # TODO: DRY up
-          @url_to_full_topic = nil
-          @url_to_comments = nil
-          if !@topic.nil?
-            case @current_basket.index_page_link_to_index_topic_as
-            when 'full topic and comments'
-              @url_to_full_topic = url_for( :urlified_name => @topic.basket.urlified_name,
-                                            :action => :show,
-                                            :controller => 'topics',
-                                            :id => @topic )
-              @url_to_comments = url_for(:action => 'show',
-                                         :urlified_name => @topic.basket.urlified_name,
-                                         :controller => 'topics',
-                                         :id => @topic,
-                                         :anchor => 'comments')
-            when 'full topic'
-              @url_to_full_topic = url_for( :urlified_name => @topic.basket.urlified_name,
-                                            :action => :show,
-                                            :controller => 'topics',
-                                            :id => @topic )
-            when 'comments'
-              @url_to_comments = url_for(:action => 'show',
-                                         :urlified_name => @topic.basket.urlified_name,
-                                         :controller => 'topics',
-                                         :id => @topic,
-                                         :anchor => 'comments')
-            end
+        @url_to_full_topic = nil
+        @url_to_comments = nil
+        if !@topic.nil? # if @topic is not nil do ...
+          case @current_basket.index_page_link_to_index_topic_as
+          when 'full topic and comments'
+            @url_to_full_topic = url_for( :urlified_name => @topic.basket.urlified_name,
+                                          :action => :show,
+                                          :controller => 'topics',
+                                          :id => @topic )
+            @url_to_comments = url_for(:action => 'show',
+                                       :urlified_name => @topic.basket.urlified_name,
+                                       :controller => 'topics',
+                                       :id => @topic,
+                                       :anchor => 'comments')
+          when 'full topic'
+            @url_to_full_topic = url_for( :urlified_name => @topic.basket.urlified_name,
+                                          :action => :show,
+                                          :controller => 'topics',
+                                          :id => @topic )
+          when 'comments'
+            @url_to_comments = url_for(:action => 'show',
+                                       :urlified_name => @topic.basket.urlified_name,
+                                       :controller => 'topics',
+                                       :id => @topic,
+                                       :anchor => 'comments')
           end
 
           # prepare blog list of most recent topics
@@ -79,29 +62,41 @@ class IndexPageController < ApplicationController
             # get an array of baskets that we need to exclude from the site recent topics list
             disabled_recent_topics_baskets = Array.new
             if @current_basket == @site_basket
-              disabled_recent_topics_baskets = ConfigurableSetting.find_all_by_name_and_value('disable_site_recent_topics_display', true.to_yaml, :select => :configurable_id, :conditions => ["configurable_id != ?", @site_basket])
+
+              # EOIN: not sure how to handle this yet ConfigurableSetting.where(:name => 'disable_site_recent_topics_display', :value => true.to_yaml).select(:configurable_id).where("configurable_id != ?", @site_basket)
+              # disabled_recent_topics_baskets = ConfigurableSetting.where(:name => 'disable_site_recent_topics_display', :value => true.to_yaml).select(:configurable_id).where("configurable_id != ?", @site_basket)
+              disabled_recent_topics_baskets =  Basket.where("1 = 0") # EOIN: this is a terrible hack to get an empty instance of ActiveRecord::Relation
+
+
               disabled_recent_topics_baskets.collect! { |setting| setting.configurable_id }
             end
             # If we have a blank array, reset it to nil so later on, it'll default to 0 (instead of causing the SQL to return nothing)
             disabled_recent_topics_baskets = nil unless disabled_recent_topics_baskets.size > 0
 
-            # form our find arguments
-            args = { :offset => 0, :limit => @recent_topics_limit, :include => :versions }
-            args[:conditions] = ["basket_id NOT IN (?) AND id != ?", (disabled_recent_topics_baskets || 0), (@topic || 0)]
 
             @recent_topics_items = Array.new
             @total_items = Topic.count
+            items_offset = 0
+
+            disabled_recent_topics_baskets ||= 0
+            @topic ||= 0
 
             # We need to loop over all topics until we have a complete array. If for example the
             # first 5 topics have all versions disputed, then we end up with nothing being displayed
             # on the homepage. By using a while, we can resolve this issue
-            while @recent_topics_items.size < @recent_topics_limit && args[:offset] <= @total_items
+            while @recent_topics_items.size < @recent_topics_limit && items_offset <= @total_items
               # Make the find query based on current basket and privacy level
               if @current_basket == @site_basket
-                recent_topics_items = @allow_private ? Topic.recent(args) : Topic.recent(args).public
+                recent_topics_items = Topic.recent.includes(:versions).
+                                      offset(items_offset).limit(@recent_topics_limit).
+                                      exclude_baskets_and_id(disabled_recent_topics_baskets, @topic)
               else
-                recent_topics_items = @allow_private ? @current_basket.topics.recent(args) : @current_basket.topics.recent(args).public
+                recent_topics_items = @current_basket.topics.recent.includes(:versions).
+                                      offset(items_offset).limit(@recent_topics_limit).
+                                      exclude_baskets_and_id(disabled_recent_topics_baskets, @topic)
               end
+
+              recent_topics_items = recent_topics_items.public unless @allow_private
 
               # Cycle through the 5 recent topics, and get the latest unflagged
               # version with the privacy that the current user is able to see
@@ -132,7 +127,7 @@ class IndexPageController < ApplicationController
 
               # incase we don't have enough yet, loop over the next set
               # increase the offset by @recent_topics_limit amount
-              args[:offset] += @recent_topics_limit
+              items_offset += @recent_topics_limit
             end
 
             # with the final topic, sort by the versions created_at,
@@ -150,6 +145,9 @@ class IndexPageController < ApplicationController
         end
 
       end
+
+      # Don't bother with recent topics
+      @recent_topics_limit = 0
     end
   end
 
@@ -198,11 +196,11 @@ class IndexPageController < ApplicationController
   include BackgroundrbHelpers
   def bdrb_uptime
     raise "Backgroundrb not running!" unless backgroundrb_started?
-    render(:text => "success") 
+    render(:text => "success")
   end
 
   def validate_kete_net_link
-    render(:xml => { :url => SITE_URL, :datetime => "#{Time.new.utc.xmlschema}" })
+    render(:xml => { :url => "/", :datetime => "#{Time.new.utc.xmlschema}" })
   end
 
   # page that tells search engines where not to go

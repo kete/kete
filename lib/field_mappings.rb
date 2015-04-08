@@ -2,6 +2,8 @@ module FieldMappings
   unless included_modules.include? FieldMappings
 
     def self.included(klass)
+
+      # RABID: it seems this module can only be included in 2 classes
       case klass.name
       when 'ContentTypeToFieldMapping'
         klass.send :belongs_to, :content_type
@@ -18,9 +20,6 @@ module FieldMappings
       klass.send :belongs_to, :form_field, :class_name => "ExtendedField", :foreign_key => "extended_field_id"
       klass.send :belongs_to, :required_form_field, :class_name => "ExtendedField", :foreign_key => "extended_field_id"
 
-      klass.send :piggy_back, :extended_field_label_xml_element_name_xsi_type_multiple_description_user_choice_addition_and_ftype,
-          :from => :extended_field, :attributes => [:label, :xml_element_name, :xsi_type, :multiple, :description, :user_choice_addition, :ftype]
-
       klass.extend(ClassMethods)
     end
 
@@ -29,6 +28,37 @@ module FieldMappings
         with_scope(:create => { :required => is_required }) { type.concat field }
       end
     end
+
+    # RABID:
+    # Old Kete used a plugin called 'Piggy Back' which adjusted ActiveRecord
+    # finder methods to load extra data. It used it to automatically load the
+    # following attributes:
+    #
+    #   * ExtendedField#label
+    #   * ExtendedField#xml_element_name
+    #   * ExtendedField#xsi_type
+    #   * ExtendedField#multiple
+    #   * ExtendedField#description
+    #   * ExtendedField#user_choice_addition
+    #   * ExtendedField#ftype
+    #
+    # as attributes of whatever model this module is included into e.g.
+    # ExtendedField#label would be available as #label in this class.
+    #
+    # See http://37signals.com/rails/wiki/PiggyBackQuery.html for the
+    # basics of how PiggyBack worked and the vendor/plugins/piggy_back
+    # directory in the old Kete code for the gory details.
+    #
+    # We just do the simpler (probably slower) thing until we are sure it is
+    # a performance problem.
+
+    def extended_field_label ;                extended_field.label ; end
+    def extended_field_xml_element_name ;     extended_field.xml_element_name ; end
+    def extended_field_xsi_type ;             extended_field.xsi_type ; end
+    def extended_field_multiple ;             extended_field.multiple ; end
+    def extended_field_description ;          extended_field.description ; end
+    def extended_field_user_choice_addition ; extended_field.user_choice_addition ; end
+    def extended_field_ftype ;                extended_field.ftype ; end
 
     def used_by_items?
       # Check whether we are dealing with a topic type mapping

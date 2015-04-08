@@ -1,0 +1,94 @@
+- @title = t('baskets.appearance.title', :basket_name => @current_basket.name)
+= render(:partial => "actions_menu", |
+  :locals => { :item => @basket })   |
+= render :partial => "topics/content_wrapper_start"
+%h2
+  = h(@title)
+  = show_all_fields_link
+- if any_fields_editable?
+  = form_tag :action => 'update_appearance', :id => @basket, :show_all_fields => params[:show_all_fields] do
+    %fieldset
+      - if allowed_field?('theme_font_family')
+        .form-element
+          %label{:for => "settings_theme_font_family"}= t 'baskets.appearance.font_family'
+          = select_tag 'settings[theme_font_family]', @basket.font_family_select_options(current_value_of('theme_font_family')), {"id" => "settings_theme_font_family", :tabindex => '1'}
+      - if allowed_field?('header_image')
+        .form-element
+          = image_tag(@basket.setting(:header_image), :alt => t('baskets.appearance.current_header')) + "<br />" if !@basket.setting(:header_image).blank?
+          %label{:for => "settings_header_image"}= t 'baskets.appearance.header_example'
+          = text_field 'settings', 'header_image', { "id" => "settings_header_image", :tabindex => '1', :value => current_value_of('header_image') }
+      - if allowed_field?('theme')
+        .form-element
+          %label{:for => "settings_theme"}= t 'baskets.appearance.theme'
+          %fieldset
+            - if @basket.possible_themes.size > 0
+              - @basket.possible_themes.each do |theme|
+                .theme-choice-wrapper
+                  = image_tag "/themes/#{theme}/images/sample.jpg", :alt => t('baskets.appearance.screenshot_of', :theme => theme)
+                  .theme-choice-text
+                    - selected = (current_value_of('theme') == theme) ||
+                    - (@site_basket == @basket && current_value_of('theme').class == NilClass && theme == 'default')
+                    = radio_button_tag 'settings[theme]', theme, selected, {"id" => "settings_theme", :tabindex => '1'}
+                    = theme.humanize
+                \&nbsp;
+              - if @site_basket != @basket
+                .theme-choice-wrapper
+                  .theme-choice-text
+                    = radio_button_tag 'settings[theme]', 'nil', current_value_of('theme') == nil
+                    = t 'baskets.appearance.inherit'
+                  .theme-choice-text
+                    = t 'baskets.appearance.inherit_example'
+                    %br/
+                    = t('baskets.appearance.current_inheritance', :theme_name => (@site_basket.setting(:theme) || 'default'))
+            - else
+              %p= t 'baskets.appearance.no_themes'
+            - if @site_admin
+              %div
+                %ul
+                  %li= link_to t('baskets.appearance.new_theme'), {:action => 'new', :controller => 'documents', :is_theme => true}, :tabindex => '1'
+      - if allowed_field?('show_hide_controls')
+        .form-element
+          %label= t 'baskets.appearance.controls'
+          %fieldset
+            .form-element
+              %label{:for => "settings_show_action_menu"}= t 'baskets.appearance.show_actions_to'
+              = select_tag 'settings[show_action_menu]', @basket.show_action_menu_as_options(@site_basket, current_value_of('show_action_menu')), {"id" => "settings_show_action_menu", :tabindex => '1'}
+              %br/
+              = t 'baskets.appearance.show_actions_to_example'
+            .form-element
+              %label{:for => "settings_show_discussion"}= t 'baskets.appearance.show_comments_to'
+              = select_tag 'settings[show_discussion]', @basket.show_discussion_as_options(@site_basket, current_value_of('show_discussion')), {"id" => "settings_show_discussion", :tabindex => '1'}
+              %br/
+              = t 'baskets.appearance.show_comments_to_example'
+            .form-element
+              %label{:for => "settings_show_flagging"}= t 'baskets.appearance.show_flagging_to'
+              = select_tag 'settings[show_flagging]', @basket.show_flagging_as_options(@site_basket, current_value_of('show_flagging')), {"id" => "settings_show_flagging", :tabindex => '1'}
+              %br/
+              = t 'baskets.appearance.show_flagging_to_example'
+            .form-element
+              %label{:for => "settings_show_add_links"}= t 'baskets.appearance.show_add_links_to'
+              = select_tag 'settings[show_add_links]', @basket.show_add_links_as_options(@site_basket, current_value_of('show_add_links')), {"id" => "settings_show_add_links", :tabindex => '1'}
+              %br/
+              = t 'baskets.appearance.show_add_links_to_example'
+      - if allowed_field?('basket_list_menu') && SystemSetting.uses_basket_list_navigation_menu_on_every_page?
+        .form-element
+          %label= t 'baskets.appearance.basket_list_options'
+          %fieldset
+            %p= t 'baskets.appearance.basket_list_options_example'
+            .form-element
+              %label{:for => "settings_side_menu_number_of_topics"}= t 'baskets.appearance.basket_list_options_topic_number'
+              = text_field_tag 'settings[side_menu_number_of_topics]', current_value_of('side_menu_number_of_topics'), {:size => 3, "id" => "settings_side_menu_number_of_topics", :tabindex => '1'}
+            .form-element
+              %label{:for => "settings_side_menu_ordering_of_topics", :style => "width: 100%;"}= t 'baskets.appearance.basket_list_options_sort_by'
+              %div{:style => "clear: left;"}= select_tag 'settings[side_menu_ordering_of_topics]', @basket.side_menu_ordering_of_topics_as_options(@site_basket, current_value_of('side_menu_ordering_of_topics')), {"id" => "side_menu_ordering_of_topics", :tabindex => '1'}
+            .form-element
+              = check_box 'settings', 'side_menu_direction_of_topics', {:checked => (current_value_of('side_menu_direction_of_topics') == 'reverse'), :tabindex => '1'}, 'reverse', ''
+              %label.inline{:for => "settings_side_menu_direction_of_topics"}= t 'baskets.appearance.basket_list_options_in_reverse'
+      - if allowed_field?('additional_footer_content')
+        = render :partial => 'additional_footer_content_fields'
+      %strong= basket_preferences_inheritance_message
+    %div{:style => "margin:0;padding:0"}= submit_tag t('baskets.appearance.button'), {:class => "save-button", :tabindex => '1'}
+  = link_to_cancel
+- else
+  %h4 Appearance options are only set by site administrators at this time.
+

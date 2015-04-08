@@ -1,0 +1,173 @@
+- tool_count = 1
+
+#content-wrapper{class: 'notabs'}
+  = render "basket_navigation_menu" if show_basket_list_naviation_menu?
+
+  #main-content-wrapper
+    #main-content-container
+      %a{:name => "main-content"}
+      - if @topic.present?
+
+        = @topic.description.html_safe if @topic.description.present?
+        = pending_review(@topic)
+        - extended_fields_html = display_xml_attributes(@topic)
+
+        - if !extended_fields_html.blank?
+          %div{:class => "secondary-content-section-wrapper-blue"}
+            %div{:class => "secondary-content-section", :id => "detail-extended-box"}
+              .secondary-content-section-content
+                #detail-extended
+                  %h4#detail-extended-heading= h(@topic.title)
+                  %br/
+                  = extended_fields_html
+                %div{:style => "clear:both;"}
+              .secondary-content-section-footer-wrapper
+                .secondary-content-section-footer &nbsp;
+
+        .detail-tools
+          - if !@url_to_full_topic.nil?
+            %ul
+              = (li_with_correct_class(tool_count) + link_to(t('.continue_to_topic'), @url_to_full_topic) ).html_safe
+            - tool_count += 1
+          - if !@url_to_comments.nil?
+            - if @comments && @comments.size > 0
+              %ul
+                = (li_with_correct_class(tool_count) + t('.view') + link_to( t('.comments', :count => @comments.size), @url_to_comments)).html_safe
+              - tool_count += 1
+        - if logged_in? && (permitted_to_edit_basket_homepage_topic? || (@current_basket.show_privacy_controls_with_inheritance? && permitted_to_view_private_items?))
+          #moderator-tools.clearfix
+            %ul
+              - if permitted_to_edit_basket_homepage_topic?
+                = li_with_correct_class(tool_count) + link_to(t('.edit'), :action => 'edit', :urlified_name => @topic.basket.urlified_name, :controller => 'topics', :id => @topic, :private => @topic.private? )
+                - tool_count += 1
+                %li= link_to t('.history'), :action => 'history', :urlified_name => @topic.basket.urlified_name, :controller => 'topics', :id => @topic, :private => @topic.private?
+              - if @current_basket.show_privacy_controls_with_inheritance? && permitted_to_view_private_items?
+                = render :partial => 'topics/privacy_chooser', :locals => { :item => @topic }
+      - else
+        -# - if @basket_admin
+        -#   #moderator-tools.clearfix
+        -#     %ul
+        -#       %li= link_to t('.create_homepage_topic'),            |
+        -#           :urlified_name => @current_basket.urlified_name, |
+        -#           :controller => 'topics',                         |
+        -#           :action => 'new',                                |
+        -#           :index_for_basket => @current_basket.id,         |
+        -#           :return_to_homepage => true                      |
+
+      - if @recent_topics_limit > 0 && @recent_topics_items.size > 0 && !@current_basket.index_page_recent_topics_as.blank?
+        .home-feature-wrapper
+          %h3
+            = t '.latest'
+            = @recent_topics_items.size.to_s if @recent_topics_items.size > 1
+            - if @recent_topics_items.size > 1
+              = t '.topics'
+            - else
+              = t '.topic'
+          - case @current_basket.index_page_recent_topics_as
+          - when 'summaries'
+            = render :partial => 'post_summary', :collection => @recent_topics_items
+          - when 'headlines'
+            = render :partial => 'post_headline', :collection => @recent_topics_items
+
+  #secondary-content-wrapper
+    - if @current_basket.index_page_basket_search
+      %div{:class => "secondary-content-section-wrapper"}
+        %div{:class => "secondary-content-section", :id => "search-box"}
+          .secondary-content-section-content
+            #right-search-box
+              - @headline = t('.keyword_search')
+              - @headline += (' ' + @title) if @current_basket != @site_basket
+              = render 'search/search_field', :title => @headline
+            %div{:style => "clear:both;"}
+          .secondary-content-section-footer-wrapper
+            .secondary-content-section-footer &nbsp;
+
+    - if @current_basket.allows_contact_with_inheritance?
+      %div{:class => "secondary-content-section-wrapper"}
+        %div{:class => "secondary-content-section", :id => "basket-contact"}
+          .secondary-content-section-content
+            %ul
+              %li= link_to_basket_contact_for(@current_basket)
+            %div{:style => "clear:both;"}
+          .secondary-content-section-footer-wrapper
+            .secondary-content-section-footer &nbsp;
+
+    - if @current_basket.index_page_number_of_tags && @current_basket.index_page_number_of_tags > 0 && @tag_counts_array.size > 0
+      %div{:class => "secondary-content-section-wrapper"}
+        %div{:class => "secondary-content-section", :id => "tags-box"}
+          .secondary-content-section-content
+            %h3 Browse Collections by Selecting a Tag
+            %ul
+
+            - tag_counts = '' # default
+            - if @tag_counts_total > @tag_counts_array.size
+              - all_tags_path = link_to t('.all_tags'), { urlified_name: 'site', controller: 'tags', action: 'list' }
+              - tag_count_summary = t('.show_x_of_x', count: @tag_counts_array.size, total: @tag_counts_total)
+              - tag_counts = "( #{tag_count_summary} ) | #{all_tags_path}".html_safe
+
+            - if @current_basket.index_page_tags_as == 'tag cloud'
+              #tags-headline
+                %h3{:style => "display:inline;"}= t '.tags_title'
+                %span= tag_counts
+              = render :partial => 'tags/tags_by_tag_cloud', :locals => { :tags => @tag_counts_array }
+            - else
+              #tags-headline
+                %h3{:style => "display:inline;"}= t '.categories_title'
+                %span= tag_counts
+              = render :partial => 'tags/tags_by_categories', :locals => { :tags => @tag_counts_array }
+            %div{:style => "clear:both;"}
+          .secondary-content-section-footer-wrapper
+            .secondary-content-section-footer &nbsp;
+
+
+    - if !@current_basket.index_page_archives_as.blank? && @current_basket.index_page_archives_as == 'by type'
+      %div{:class => "secondary-content-section-wrapper"}
+        %div{:class => "secondary-content-section", :id => "contents-by-type"}
+          .secondary-content-section-content
+            %h3 Browse Our Archive by Media Type
+            = render(:partial => 'archive_by_type')
+            %div{:style => "clear:both;"}
+          .secondary-content-section-footer-wrapper
+            .secondary-content-section-footer &nbsp;
+
+    - if @current_basket.feeds.size > 0
+      %div{:class => "secondary-content-section-wrapper"}
+        %div{:class => "secondary-content-section", :id => "homepage-rss-feeds"}
+          .secondary-content-section-content
+            %ul
+            - @current_basket.feeds(true).each do |feed|
+              %h4= h feed.title
+              %ul
+                - feed.entries.each do |entry|
+                  - begin
+                    = content_tag("li", link_to(h(entry.title), h(entry.url)))
+                  - rescue
+                    - logger.info("ERROR: This feed entry is invalid. Probably because an error occurred in the deserialization of the feed.")
+                    - logger.info("Check the source feed and make sure it is serializes/deserializes correctly.")
+            %div{:style => "clear:both;"}
+          .secondary-content-section-footer-wrapper
+            .secondary-content-section-footer &nbsp;
+
+    - if !@current_basket.index_page_image_as.blank? and !@selected_image_file.nil?
+      %div{:class => "secondary-content-section-wrapper"}
+        %div{:class => "secondary-content-section", :id => "selected-image-box"}
+          .secondary-content-section-content
+            %ul
+            #selected-image-headline
+              %h3
+                = t "basket_model.image_#{@current_basket.index_page_image_as}"
+                = t '.image_from_archive'
+            = slideshow_div
+            %div{:style => "clear:both;"}
+          .secondary-content-section-footer-wrapper
+            .secondary-content-section-footer &nbsp;
+
+    - unless @topic.nil? || @topic.license_metadata.nil?
+      %div{:class => "secondary-content-section-wrapper"}
+        %div{:class => "secondary-content-section", :id => "license-box"}
+          .secondary-content-section-content
+            %ul
+            .license= @topic.license_metadata.html_safe
+            %div{:style => "clear:both;"}
+          .secondary-content-section-footer-wrapper
+            .secondary-content-section-footer &nbsp;

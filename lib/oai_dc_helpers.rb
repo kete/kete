@@ -3,7 +3,7 @@ include KeteUrlFor
 include ActionView::Helpers::SanitizeHelper
 
 # oai dublin core xml helpers
-# TODO: evaluate whether we can simply go with SITE_URL
+# TODO: evaluate whether we can simply go with SystemSetting.full_site_url
 # rather than request hacking
 module OaiDcHelpers
   unless included_modules.include? OaiDcHelpers
@@ -13,9 +13,9 @@ module OaiDcHelpers
 
     def oai_dc_xml_request(xml, passed_request = nil)
       if !passed_request.nil?
-        request_uri = passed_request[:request_uri]
+        request_uri = passed_request[:original_url]
       else
-        request_uri = simulated_request[:request_uri]
+        request_uri = simulated_request[:original_url]
       end
 
       xml.request(request_uri, :verb => "GetRecord", :identifier => "#{ZoomDb.zoom_id_stub}#{basket_urlified_name}:#{self.class.name}:#{self.id}", :metadataPrefix => "oai_dc")
@@ -42,11 +42,11 @@ module OaiDcHelpers
 
         # we only need the last from normal content relations and child content relations
         # to compare, not all of each
-        if content_item_relations.count > 0 
+        if content_item_relations.count > 0
           all_relations << content_item_relations.last
         end
 
-        if child_content_item_relations.count > 0 
+        if child_content_item_relations.count > 0
           all_relations << child_content_item_relations.last
         end
 
@@ -147,7 +147,7 @@ module OaiDcHelpers
         }
       else
         # if description is blank, we should do all descriptions for this zoom_class
-        
+
         # topic/document specific
         # order is important, first description will be used as blurb
         # in result list
@@ -164,7 +164,7 @@ module OaiDcHelpers
       # will find that the date created is not useful in their search record
       # and will want to handle date data explicitly in their extended fields
       # only turn it on if specified in the system setting
-      if Kete.add_date_created_to_item_search_record?
+      if SystemSetting.add_date_created_to_item_search_record?
         item_created = created_at.utc.xmlschema
         xml.send("dc:date", item_created)
       end
@@ -204,7 +204,7 @@ module OaiDcHelpers
         commented_on_item = self.commentable
         xml.send("dc:subject") {
           xml.cdata commented_on_item.title
-        } unless [Kete.blank_title, Kete.no_public_version_title].include?(commented_on_item.title)
+        } unless [SystemSetting.blank_title, SystemSetting.no_public_version_title].include?(commented_on_item.title)
         xml.send("dc:relation", url_for_dc_identifier(commented_on_item, { :force_http => true, :minimal => true }.merge(passed_request)))
       else
         related_count = related_items.count
@@ -214,7 +214,7 @@ module OaiDcHelpers
           if related_count < 500
             xml.send("dc:subject") {
               xml.cdata related.title
-            } unless [Kete.blank_title, Kete.no_public_version_title].include?(related.title)
+            } unless [SystemSetting.blank_title, SystemSetting.no_public_version_title].include?(related.title)
           end
           xml.send("dc:relation", url_for_dc_identifier(related, { :force_http => true, :minimal => true }.merge(passed_request)))
         end

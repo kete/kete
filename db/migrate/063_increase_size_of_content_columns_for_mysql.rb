@@ -2,6 +2,10 @@ class IncreaseSizeOfContentColumnsForMysql < ActiveRecord::Migration
   def self.up
     
     # TODO. Add a warning here?
+
+
+    # Check that the MySQL adaptor exists
+    return unless defined?(ActiveRecord::ConnectionAdapters::MysqlAdapter)
     
     # Only run this migration for MySQL backed Kete.
     if ActiveRecord::Base.connection.is_a?(ActiveRecord::ConnectionAdapters::MysqlAdapter)

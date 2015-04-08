@@ -1,0 +1,16 @@
+- # placing this in here for form reloading if validation fails
+- contributing_user = params[:contributing_user].present? ? User.find(params[:contributing_user]) : current_user
+= form_tag(:action => 'choose_contributing_user', :target => params[:action]) do
+  %fieldset{:style => "margin-bottom: 10px;"}
+    %h4= t 'importers.contributing_user_form.title'
+    %p{:style => "margin:5px 0 0 0;"}
+      = t 'importers.contributing_user_form.current_choice'
+      - if current_user == contributing_user
+        = t 'importers.contributing_user_form.self'
+      - else
+        = h(contributing_user.user_name)
+    .form-element
+      %label{:for => "contributing_user"}= t 'importers.contributing_user_form.new_user'
+      = text_field_tag 'search_name', '', :class => 'searchheader-search', :size => '30'
+      = hidden_field_tag('relate_to_topic', params[:relate_to_topic]) if params[:relate_to_topic].present?
+      = submit_tag t('importers.contributing_user_form.search'), :class => 'searchbutton'

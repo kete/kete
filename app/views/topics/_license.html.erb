@@ -1,8 +1,0 @@
-<% cache_with_privacy(item, {:part => "secondary_content_license_metadata"}) do -%>
-  <% unless item.license_metadata.nil? -%>
-    <%= render(:partial => "topics/secondary_wrapper_start",
-               :locals => { :div_id => "license-box", :class_suffix => nil }) -%>
-      <div class="license"><%= item.license_metadata %></div>
-    <%= render(:partial => "topics/secondary_wrapper_end") -%>
-  <% end -%>
-<% end -%>

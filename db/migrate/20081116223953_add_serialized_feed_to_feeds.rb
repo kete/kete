@@ -1,6 +1,6 @@
 class AddSerializedFeedToFeeds < ActiveRecord::Migration
   def self.up
-    add_column :feeds, :serialized_feed, :mediumtext
+    add_column :feeds, :serialized_feed, :text
     add_column :feeds, :update_frequency, :float
   end
 

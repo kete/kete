@@ -1,0 +1,20 @@
+= Nokogiri::XML::Builder.new(:encoding => 'UTF-8') { |xml|                                              |
+    xml.rss(:version => '2.0') {                                                                        |
+      xml.channel {                                                                                     |
+        xml.title t('members.rss.title', :site_name => SITE_NAME, :basket_name => @current_basket.name) |
+        xml.description t('members.rss.description', :basket_name => @current_basket.name)              |
+        xml.link (request.protocol + request.host + request.original_url)                                |
+        xml.language 'en-nz'                                                                            |
+        for member in @members                                                                          |
+          xml.item {                                                                                    |
+            xml.title {                                                                                 |
+              xml.cdata member.user_name                                                                |
+            }                                                                                           |
+            xml.pubDate @role_creations[member.id]                                                      |
+            xml.link url_for_contributions_of(member, 'Topic')                                          |
+            xml.guid url_for_profile_of(member)                                                         |
+          }                                                                                             |
+        end                                                                                             |
+      }                                                                                                 |
+    }                                                                                                   |
+  }.to_xml                                                                                              |

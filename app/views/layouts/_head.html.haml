@@ -1,0 +1,65 @@
+%head
+  -### meta tags ###
+  -#################
+
+  %meta{content: "text/html; charset=utf-8", "http-equiv" => "Content-Type"}/
+  %meta{content: page_keywords,    name: "keywords"}/
+  %meta{content: page_description, name: "description"}/
+  = csrf_meta_tag
+
+
+  -### title ###
+  -#############
+
+  %title= title_with_context
+
+
+  -### DC Meta tags ###
+  -####################
+
+  = dc_metadata_for(current_item) if current_item && !current_item.private?
+  = opensearch_descriptions
+  = open_search_metadata if params[:controller] == 'search' && %w{ all for }.include?(params[:action])
+  - if %w(images topics).include?(params[:controller]) && params[:action] == "show"
+    = oembed_provider_links
+
+
+  -### Stylesheets ###
+  -###################
+
+  = stylesheet_link_tag 'application'
+  = stylesheet_link_tag 'left-hand-column' if show_basket_list_naviation_menu?
+
+  /[if IE]
+    = stylesheet_link_tag 'ie'
+
+
+  -### javascript ###
+  -##################
+
+  = javascript_include_tag 'application'
+
+  -### analytics ###
+  -##################
+
+  - if Rails.env.production?
+    :javascript
+      (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+      (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+      m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+      })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+      ga('create', 'UA-57678744-1', 'auto');
+      ga('send', 'pageview');
+
+
+  -### Feeds ###
+  -#############
+
+  -# Disable RSS feed for the moment
+  -# - combined_rss_url = nil
+  -# -# combined_rss_url = basket_all_rss_url( :urlified_name => @site_basket.urlified_name, :controller_name_for_zoom_class => 'combined' )
+  -# - rss_tag_autos.each do |rss_tag_auto|
+  -#   = rss_tag_auto.sub("title=\"RSS\"", "title=\"RSS #{stripped_title}\"").html_safe
+  -#
+  -# %link{href: combined_rss_url, rel: "alternate", title: t('layouts.application.combined_rss'), type: "application/rss+xml"}

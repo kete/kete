@@ -1,0 +1,41 @@
+- @title = t('moderate.list.title')
+= render(:partial => "baskets/actions_menu", |
+  :locals => { :item => @current_basket })   |
+= render :partial => "topics/content_wrapper_start"
+%p
+  %h2{:style => "display:inline;"}= h(@title)
+  [
+  - if params[:type].blank?
+    to review
+  - else
+    = link_to_unless_current 'to review', params.merge(:type => 'to_review')
+  |
+  \#{link_to_unless_current 'reviewed', params.merge(:type => 'reviewed')} |
+  \#{link_to_unless_current 'rejected', params.merge(:type => 'rejected')}
+  ]
+- if @items.blank?
+  %p= t 'moderate.list.no_items_needing_moderation'
+- else
+  %table.history-table
+    %tr
+      %th
+      %th{:abbr => "Title"}= t 'moderate.list.item_title'
+      %th{:abbr => "Flagged With"}= t 'moderate.list.flagged_with'
+      %th{:abbr => "Privacy"}= t 'moderate.list.privacy'
+      %th{:abbr => "Flagged At"}= t 'moderate.list.flagged_at'
+    - for item in @items
+      %tr
+        %td
+          [ #{link_to_preview_of(item, item, false)} ]
+        %td
+          = h(item.title)
+        %td
+          = h(item.disputed_flags.join(', '))
+        %td
+          = item.respond_to?(:private?) && item.private? ? t('moderate.list.private') : t('moderate.list.public')
+        %td
+          = item.flagged_at.to_s(:short)
+        %td
+          = link_to( t('moderate.list.full_history'), history_url(item))
+#prev-next
+
