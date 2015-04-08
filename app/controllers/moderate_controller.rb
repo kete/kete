@@ -24,7 +24,6 @@ class ModerateController < ApplicationController
   end
 
   def rss
-    @cache_key_hash = { :rss => "#{@current_basket.urlified_name}_moderate_list" }
     fetch_revisions
     respond_to do |format|
       format.xml

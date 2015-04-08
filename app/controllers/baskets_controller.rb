@@ -40,7 +40,6 @@ class BasketsController < ApplicationController
 
   def rss
     @number_per_page = 100
-    @cache_key_hash = { :rss => "basket_list" }
     @baskets = Basket.all(:limit => @number_per_page, :order => 'id DESC')
 
     respond_to do |format|

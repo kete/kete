@@ -39,7 +39,6 @@ class TagsController < ApplicationController
   def rss
     @number_per_page = 100
     # this doesn't work with http auth from and IRC client
-    @cache_key_hash = { :rss => "#{privacy_type}_tags_list" }
     @tags = @current_basket.tag_counts_array(:order => 'latest',
                                              :direction => 'desc',
                                              :limit => @number_per_page,
