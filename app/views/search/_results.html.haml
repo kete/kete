@@ -97,12 +97,4 @@
           - if current_user_can_see_add_links? && scope.current_content_item_type != 'Comment'
             = scope.link_to_add_item(:phrase => t('search.results.add_a_new'), :item_class => scope.current_content_item_type)
         \&nbsp;
-        #showlinks
-          = t 'search.results.show'
-          - SystemSetting.records_per_page_choices.each do |choice|
-            - if scope.number_per_page != choice
-              = link_to(choice, { :overwrite_params => { :number_of_results_per_page => choice, :page => 1 } }, { :tabindex => '1', :rel => 'nofollow' })
-            - else
-              %a#thisnumber{:href => "#"}= choice
-          = t 'search.results.results_on_this_page'
       .cleaner &nbsp;
