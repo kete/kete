@@ -1,7 +1,7 @@
 def load_yaml(file: nil, model: nil, unique_attr: nil)
 
   # Don't be so noisy when we are in the test environment
-  be_quiet = Rails.env == "test"
+  be_quiet = Rails.env.test?
 
   puts "  Creating #{model}(s) ..." unless be_quiet
 
@@ -34,5 +34,7 @@ load_yaml(file: 'users.yml',        model: User,       unique_attr: :email)
 load_yaml(file: 'baskets.yml',      model: Basket,     unique_attr: :name)
 load_yaml(file: 'topics.yml',       model: Topic,      unique_attr: :title)
 load_yaml(file: 'topic_types.yml',  model: TopicType,  unique_attr: :name)
+load_yaml(file: 'content_types.yml',  model: ContentType,  unique_attr: :class_name)
+load_yaml(file: 'licenses.yml',  model: License,  unique_attr: :name)
 
 puts "done."
