@@ -7,9 +7,10 @@ describe Topic do
 
   it "allows setting of a custom title" do
     unique = "a unique title"
-    topic = Topic.new(title: unique, topic_type: TopicType.last, basket: Basket.last)
+    topic_type = FactoryGirl.create(:topic_type)
+    basket = FactoryGirl.create(:basket)
+    topic = Topic.new(title: unique, topic_type: topic_type, basket: basket)
     topic.save!
     expect(topic.title).to eq(unique)
   end
-
 end
