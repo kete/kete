@@ -188,8 +188,6 @@ gem 'validates_xml',                '1.0.3' # >> 2007-06-06
 # our own fork to be sure that the repo will not be deleted in future.
 gem 'authorization', github: 'kete/rails-authorization-plugin'
 
-
-
 # ######
 # Assets
 # ######
@@ -212,15 +210,9 @@ group :development do
   gem 'capistrano-rbenv', '~> 2.0.2'
   gem 'capistrano-rails', '~> 1.1.2'
   gem 'capistrano-bundler', '~> 1.1.3'
-  
 end
 
 group :development, :test do
-  gem 'poltergeist'
-  gem "rspec-rails", "~> 3.0.0"
-  gem "factory_girl_rails", "~> 4.3.0"
-  gem "capybara", "~> 2.4.1"
-  gem "database_cleaner"
   gem "pry-rails"
   gem "debugger", :platforms => [:mingw_19, :ruby_19]
   gem 'debugger-xml', :platforms => [:mingw_19, :ruby_19]
@@ -229,3 +221,26 @@ group :development, :test do
   gem 'awesome_print'
 end
 
+group :test do
+  gem 'poltergeist'
+  gem "rspec-rails", "~> 3.0.0"
+
+  # Why we cannot load factories by default in :development
+  #
+  # Some of our factories reference models in a way that cannot be made lazy.
+  # This causes `rake environment` to depend on a working set of ActiveRecord
+  # models. While this dependency is not a problem in most cases, it does cause
+  # `rake db:schema:load` to fail (because `rake db:schema:load` task depends
+  # on `rake environment` and obviously we don't have a working set of models
+  # during schema load).
+  #
+  # If you need factories in `rails console` in development then you can do
+  #
+  # irb> require 'factory_girl'
+  # irb> FactoryGirl.find_definitions
+  #
+  gem "factory_girl_rails", "~> 4.3.0"
+
+  gem "capybara", "~> 2.4.1"
+  gem "database_cleaner", "~> 1.4.1"
+end
