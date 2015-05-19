@@ -136,7 +136,7 @@ GEM
     compass-rails (1.0.3)
       compass (>= 0.12.2, < 0.14)
     curb (0.8.5)
-    database_cleaner (1.2.0)
+    database_cleaner (1.4.1)
     debugger (1.6.2)
       columnize (>= 0.3.1)
       debugger-linecache (~> 1.2.0)
@@ -354,7 +354,7 @@ DEPENDENCIES
   chronic
   coffee-rails (~> 3.2.1)
   compass-rails
-  database_cleaner
+  database_cleaner (~> 1.4.1)
   debugger
   debugger-xml
   dynamic_form (~> 1.1.4)

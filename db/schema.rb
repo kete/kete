@@ -537,6 +537,7 @@ ActiveRecord::Schema.define(:version => 20141022035342) do
   add_index "taggings", ["basket_id"], :name => "taggings_basket_id_idx"
   add_index "taggings", ["created_at"], :name => "index_taggings_on_created_at"
   add_index "taggings", ["tag_id", "taggable_id", "taggable_type", "context", "tagger_id", "tagger_type"], :name => "taggings_idx", :unique => true
+  add_index "taggings", ["tag_id"], :name => "taggings_tag_id_idx"
   add_index "taggings", ["taggable_id", "taggable_type", "context"], :name => "index_taggings_on_taggable_id_and_taggable_type_and_context"
 
   create_table "tags", :force => true do |t|
