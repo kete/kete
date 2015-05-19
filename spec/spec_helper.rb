@@ -6,6 +6,7 @@ require 'capybara/rails'
 require 'database_cleaner'
 require 'capybara/poltergeist'
 
+# comment this line out to use Firefox and selenium instead of phantomjs
 Capybara.javascript_driver = :poltergeist
 
 # Requires supporting ruby files with custom matchers and macros, etc,

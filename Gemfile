@@ -219,28 +219,13 @@ group :development, :test do
   gem 'byebug', :platforms => [:mingw_20, :ruby_20, :ruby_21]
   gem 'pry-byebug', :platforms => [:mingw_20, :ruby_20, :ruby_21]
   gem 'awesome_print'
+  gem "factory_girl_rails", "~> 4.5.0"
 end
 
 group :test do
   gem 'poltergeist'
+  gem 'selenium-webdriver', '~> 2.45.0'
   gem "rspec-rails", "~> 3.0.0"
-
-  # Why we cannot load factories by default in :development
-  #
-  # Some of our factories reference models in a way that cannot be made lazy.
-  # This causes `rake environment` to depend on a working set of ActiveRecord
-  # models. While this dependency is not a problem in most cases, it does cause
-  # `rake db:schema:load` to fail (because `rake db:schema:load` task depends
-  # on `rake environment` and obviously we don't have a working set of models
-  # during schema load).
-  #
-  # If you need factories in `rails console` in development then you can do
-  #
-  # irb> require 'factory_girl'
-  # irb> FactoryGirl.find_definitions
-  #
-  gem "factory_girl_rails", "~> 4.3.0"
-
   gem "capybara", "~> 2.4.1"
   gem "database_cleaner", "~> 1.4.1"
 end

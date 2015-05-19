@@ -7,15 +7,6 @@ describe Video do
     video
   end
 
-  it "can be validated" do
-    expect( FactoryGirl.build(:validatable_video) ).to be_valid
-    expect { FactoryGirl.create(:validatable_video) }.to raise_error
-  end
-
-  it "can be saved to the database with minimal data filled in" do
-    expect( FactoryGirl.create(:saveable_video) ).to be_a(Video)
-  end
-
   describe "item privacy" do
     describe "(versioned overload) how it interacts with versioning" do
       describe "instance methods (added to instance of this model class" do

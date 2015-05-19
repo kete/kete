@@ -1,6 +1,6 @@
 FactoryGirl.define do
   factory :topic_type do
-    sequence :name do |n| "Topic Type #{n}" end
+    sequence(:name) { |n| "Topic Type #{n}" }
     description "A description of a topic type"
   end
-end 
+end
