@@ -5,6 +5,9 @@ require 'rspec/rails'
 require 'capybara/rails'
 require 'database_cleaner'
 require 'capybara/poltergeist'
+require 'factory_girl'
+
+FactoryGirl.find_definitions
 
 Capybara.javascript_driver = :poltergeist
 
