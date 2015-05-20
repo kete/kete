@@ -228,4 +228,5 @@ group :test do
   gem "rspec-rails", "~> 3.0.0"
   gem "capybara", "~> 2.4.1"
   gem "database_cleaner", "~> 1.4.1"
+  gem 'poltergeist'
 end

@@ -1,5 +1,7 @@
 # Kete 2.0 work in progress
 
+[![Build Status](https://travis-ci.org/kete/kete.svg?branch=kete2)](https://travis-ci.org/kete/kete)
+
 This branch is a partially complete modernisation of the Kete codebase
 
 * upgrade to Rails 3
