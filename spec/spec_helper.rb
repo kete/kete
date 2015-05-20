@@ -5,9 +5,6 @@ require 'rspec/rails'
 require 'capybara/rails'
 require 'database_cleaner'
 require 'capybara/poltergeist'
-require 'factory_girl'
-
-FactoryGirl.find_definitions
 
 # comment this line out to use Firefox and selenium instead of phantomjs
 Capybara.javascript_driver = :poltergeist

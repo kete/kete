@@ -223,7 +223,6 @@ group :development, :test do
 end
 
 group :test do
-  gem 'poltergeist'
   gem 'selenium-webdriver', '~> 2.45.0'
   gem "rspec-rails", "~> 3.0.0"
   gem "capybara", "~> 2.4.1"
