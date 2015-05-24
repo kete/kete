@@ -15,6 +15,6 @@ horowhenua:
   <<: *dev
   database: kete_horowhenua
 
-horowhenua:
+production:
   <<: *dev
   database: kete_production
