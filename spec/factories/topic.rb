@@ -1,7 +1,7 @@
 FactoryGirl.define do
   factory :topic do
-    sequence :title do |n| "Topic Title #{n}" end
+    sequence(:title) { |n| "Topic Title #{n}" }
     topic_type
     basket
   end
-end 
+end

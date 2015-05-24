@@ -1,18 +1,8 @@
 FactoryGirl.define do
   factory :image_file do
-
-    filename "furry.jpg"
-    content_type "image/jpeg"
-    size Random.rand(10000000)
-
-    #parent_id: nil
-    #thumbnail: nil
-    # width Random.rand(10000000)
-    # height Random.rand(10000000)
-
-    trait :with_still_image do
-      association :still_image, factory: :saveable_still_image
-    end
-
+    # filename
+    # content_type "image/jpeg"
+    # size 4374 # hard-code to byte size of our fixture image
+    uploaded_data { fixture_file_upload(Rails.root.join("spec", "fixtures", "sample.jpg").to_s, 'image/jpeg') }
   end
 end
