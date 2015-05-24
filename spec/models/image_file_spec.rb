@@ -7,7 +7,7 @@ describe ImageFile do
     ImageFile.new
   end
 
-  it 'demonstrate how to create an instance' do
+  it 'can be created while referencing a file on disk' do
     path = Rails.root.join("spec", "fixtures", "sample.jpg").to_s
     mimetype = "image/jpeg"
 
