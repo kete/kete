@@ -571,7 +571,8 @@ module ApplicationHelper
     }
     url = basket_search_contributed_by_path(options)
 
-    url.blank? ? display_html : link_to(display_html, url)
+    output = url.blank? ? display_html : link_to(display_html, url)
+    output.html_safe
   end
 
   def stylish_link_to_contributions_of(user, zoom_class, options = {})
@@ -1267,9 +1268,8 @@ module ApplicationHelper
           comment_string += "<li>" + link_to(t('application_helper.show_comments_for.delete'),
                                              {:action => :destroy,
                                                :controller => 'comments',
-                                               :id => comment,
-                                               :authenticity_token => form_authenticity_token},
-                                             :method => :post,
+                                               :id => comment },
+                                             :method => :delete,
                                              :confirm => t('application_helper.show_comments_for.confirm_delete')) + "</li>\n"
         end
 
@@ -1286,13 +1286,13 @@ module ApplicationHelper
         html_string += '</div>' # comment-outer-wrapper
       end
 
-      html_string += "<p>" + link_to(t('application_helper.show_comments_for.join_discussion'),
-                                     { :action => 'new',
-                                       :controller => 'comments',
-                                       :commentable_id => item,
-                                       :commentable_type => item.class.name,
-                                       :commentable_private => (item.respond_to?(:private) && item.private?) ? 1 : 0 }) + "</p>"
     end
+    html_string += "<p>" + link_to(t('application_helper.show_comments_for.join_discussion'),
+                                    { :action => 'new',
+                                      :controller => 'comments',
+                                      :commentable_id => item,
+                                      :commentable_type => item.class.name,
+                                      :commentable_private => (item.respond_to?(:private) && item.private?) ? 1 : 0 }) + "</p>"
 
     return html_string.html_safe
   end

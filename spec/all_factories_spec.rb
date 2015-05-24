@@ -51,4 +51,13 @@ describe 'Factories' do
       expect(wl.title).to eq('foo')
     end
   end
+
+  describe ':topic' do
+    it 'sets creator correctly' do
+      user = FactoryGirl.create(:user)
+      topic = FactoryGirl.create(:topic, creator: user)
+
+      expect(topic.creator).to eq(user)
+    end
+  end
 end

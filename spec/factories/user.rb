@@ -8,5 +8,24 @@ FactoryGirl.define do
     security_code 'test'
     security_code_confirmation 'test'
     locale 'en'
+    display_name 'John Doe'
+
+    trait :activated do
+      after(:create) do |u|
+        u.activate
+      end
+    end
+
+    trait :with_default_baskets do
+      after(:create) do |u|
+        u.add_as_member_to_default_baskets
+      end
+    end
+
+    trait :with_site_admin_role do
+      after(:create) do |u|
+        u.roles << Role.where(name: 'site_admin').first
+      end
+    end
   end
 end
