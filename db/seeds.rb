@@ -1,40 +1,69 @@
-def load_yaml(file: nil, model: nil, unique_attr: nil)
+# We want to be able to run `rake db:seed` to be idempotent (doesn't matter how
+# many times we run it after first run)
 
-  # Don't be so noisy when we are in the test environment
-  be_quiet = Rails.env.test?
-
-  puts "  Creating #{model}(s) ..." unless be_quiet
+def load_yaml(file: nil, model: nil, unique_attrs: nil)
+  fail "unique_attrs must be an array" unless unique_attrs.is_a?(Array)
 
   yaml_file = File.join(Rails.root, 'db', 'yaml', file)
-  yaml_data = YAML::load_file(yaml_file)
-
+  yaml_data = YAML.load_file(yaml_file)
   fail "Failed to load YAML from #{yaml_file}" unless yaml_data
 
-  finder_method_name = "find_or_create_by_#{unique_attr}".to_sym
+  finder_method_name = "find_or_create_by_#{unique_attrs.join('_and_')}".to_sym
+
+  log "  Before: #{model.count} #{model}(s) ..."
 
   yaml_data.each do |attrs|
-    instance = model.send finder_method_name, attrs
+    instance = model.send(finder_method_name, attrs)
 
-    unless instance.kind_of?(ActiveRecord::Base) && instance.valid?
+    unless instance.is_a?(ActiveRecord::Base) && instance.valid?
       # We choose to die if we encounter any error because it is safer than
       # letting you think your seeding worked
-      fail "Failed to create valid instance of #{model}. Errors are: #{instance.errors.messages}"
+      fail "Failed to create valid instance of #{model}. Errors: #{instance.errors.messages}"
     end
 
-    # allow our caller to customise the model before we move on
+    # caller can customise model in block
     yield instance if block_given?
-
-    puts "   * #{instance.send(unique_attr)}" unless be_quiet
   end
+
+  log "  After: #{model.count} #{model}(s) ..."
 end
 
-puts "Loading seeds ... "
+def log(message)
+  puts message unless Rails.env.test?
+end
 
-load_yaml(file: 'users.yml',        model: User,       unique_attr: :email)
-load_yaml(file: 'baskets.yml',      model: Basket,     unique_attr: :name)
-load_yaml(file: 'topics.yml',       model: Topic,      unique_attr: :title)
-load_yaml(file: 'topic_types.yml',  model: TopicType,  unique_attr: :name)
-load_yaml(file: 'content_types.yml',  model: ContentType,  unique_attr: :class_name)
-load_yaml(file: 'licenses.yml',  model: License,  unique_attr: :name)
+log "Loading seeds ..."
 
-puts "done."
+load_yaml(file: 'roles.yml',
+          model: Role,
+          unique_attrs: [:id])
+
+load_yaml(file: 'users.yml',
+          model: User,
+          unique_attrs: [:email])
+
+load_yaml(file: 'roles_users.yml',
+          model: RolesUser,
+          unique_attrs: [:user_id, :role_id])
+
+load_yaml(file: 'baskets.yml',
+          model: Basket,
+          unique_attrs: [:name])
+
+load_yaml(file: 'topics.yml',
+          model: Topic,
+          unique_attrs: [:title])
+
+load_yaml(file: 'topic_types.yml',
+          model: TopicType,
+          unique_attrs: [:name])
+
+load_yaml(file: 'content_types.yml',
+          model: ContentType,
+          unique_attrs: [:class_name])
+
+load_yaml(file: 'licenses.yml',
+          model: License,
+          unique_attrs: [:name])
+
+log "done."

@@ -3,8 +3,8 @@ ENV["RAILS_ENV"] ||= 'test'
 require File.expand_path("../../config/environment", __FILE__)
 require 'rspec/rails'
 require 'capybara/rails'
-require 'database_cleaner'
 require 'capybara/poltergeist'
+require 'database_cleaner'
 
 # comment this line out to use Firefox and selenium instead of phantomjs
 Capybara.javascript_driver = :poltergeist
@@ -19,24 +19,22 @@ RSpec.configure do |config|
   config.use_transactional_fixtures = false
 
   config.before(:suite) do
-    DatabaseCleaner.clean_with(:truncation)
+    DatabaseCleaner.strategy = :transaction
+    DatabaseCleaner.clean_with :truncation
     Rails.application.load_seed
   end
 
-  config.before(:each) do
-    DatabaseCleaner.strategy = :transaction
-  end
+  config.around(:each) do |example|
+    if example.metadata[:type] == :feature
+      DatabaseCleaner.strategy = :truncation
+    else
+      DatabaseCleaner.strategy = :transaction
+    end
 
-  config.before(:each, js: true) do
-    DatabaseCleaner.strategy = :truncation
-  end
-
-  config.before(:each) do
     DatabaseCleaner.start
-  end
-
-  config.after(:each) do
+    example.run
     DatabaseCleaner.clean
+    Rails.application.load_seed if example.metadata[:type] == :feature
   end
 
   # If true, the base class of anonymous controllers will be inferred

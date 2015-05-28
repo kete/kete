@@ -1,10 +1,8 @@
 - edit = false
-- if !@comment.id.blank?
-- edit = true
-- end
+- edit = true if !@comment.id.blank?
+
 %fieldset
   = error_messages_for 'comment'
-  / [form:comment]
   - unless params[:parent_id].blank?
     = hidden_field_tag "parent_id", params[:parent_id]
   = hidden_field_tag 'comment[commentable_private]', (adding_or_editing_private_item? ? '1' : '0')
@@ -17,26 +15,13 @@
     .form-example
       = t 'comments.form.security_warning'
       = t 'comments.form.security_warning_admin' if @site_admin
-  - if @site_admin
-    .form-element
-      %label{:for => "comment_do_not_sanitize"}= t 'comments.form.security_warning_exception'
-      = form.check_box :do_not_sanitize, :tabindex => '1'
   .form-element
     %label{:for => "comment_tag_list"}= t 'comments.form.tags'
-    = text_field_with_auto_complete(:comment, |
-      :tag_list,                              |
-      { :tabindex => '1' },                   |
-      { :tokens => ',',                       |
-      :indicator => 'data_spinner_tags' })    |
+    = text_field(:comment, :tag_list, { tagindex: 1 })
     <img src='#{image_path('indicator.gif')}' width='16' height='16' alt='#{t 'comments.form.tags_spinner'}' id='data_spinner_tags' style='display:none;' />
   - form_fields = @content_type.content_type_to_field_mappings
   - if form_fields.size > 0
-    = render(:partial => 'extended_fields/extended_field_mapping', |
-      :collection => form_fields,                                  |
-      :locals => { :form_fields => form_fields,                    |
-      :edit => edit,                                               |
-      :extended_item => @comment,                                  |
-      :item_key => 'comment'})                                     |
+    = render(:partial => 'extended_fields/extended_field_mapping', :collection => form_fields, :locals => { :form_fields => form_fields, :edit => edit, :extended_item => @comment, :item_key => 'comment'})
   - if edit
     .form-element
       %label{:for => "comment_version_comment"}= t 'comments.form.edit_comment'
@@ -51,10 +36,12 @@
     <div id="skip_email_notification_div"#{"style='display:none;'" unless adding_or_editing_private_item?}>
     .form-element
       %label{:for => "comment_skip_email_notification"}
-        = t 'comments.form.skip_email_notification',                                                            |
-          :role_type => Basket.level_value_from(@basket.setting(:private_item_notification)).downcase.pluralize |
-      - if params[:comment] && params[:comment][:skip_email_notification]; skip = (params[:comment][:skip_email_notification] == '1' ? true : false)
+        = t 'comments.form.skip_email_notification', :role_type => Basket.level_value_from(@basket.setting(:private_item_notification)).downcase.pluralize
+
+      - if params[:comment] && params[:comment][:skip_email_notification]
+        - skip = (params[:comment][:skip_email_notification] == '1' ? true : false)
       - elsif @editing && skip = @item.skip_email_notification
-      - else; skip = false; end
+      - else
+        - skip = false
+
       = form.check_box :skip_email_notification, { :tabindex => '1', :checked => skip }
-  / [eoform:comment]

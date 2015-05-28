@@ -112,8 +112,6 @@ class Comment < ActiveRecord::Base
         # Use update_all instead of self.update_attribute to avoid validations and callbacks
         Comment.update_all("#{parent_col_name} = NULL", { :id => comment.id })
       end
-      # With parents now correct
-      Comment.renumber_all
     end
   end
 
