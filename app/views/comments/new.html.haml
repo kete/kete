@@ -12,7 +12,7 @@
   .wrap
     = submit_tag t('comments.new.button'), {:class => "save-button", :tabindex => '1'}
 
-= link_to_cancel.html_safe
+= link_to_cancel
 
 - if @parent_comment
   #comment_in_response_to

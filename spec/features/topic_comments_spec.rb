@@ -5,129 +5,202 @@ feature 'Topic comments', js: true do
   let(:topic) { FactoryGirl.create(:topic, creator: user) }
   let(:show_topic_path) { basket_topic_path(topic.basket.urlified_name, topic.id) }
 
-  describe 'A logged in user' do
-    it 'can view comments on a topic' do
-      # given ...
+  def add_comment_to_topic(comment_attrs)
+    visit show_topic_path
+    click_on 'join this discussion'
+    fill_in 'comment[title]', with: comment_attrs[:title]
+    tinymce_fill_in 'comment_description', comment_attrs[:description]
+    fill_in 'comment[tag_list]', with: 'clever, funny'
+    click_on 'Save'
+  end
 
-      # when ...
-      login(user)
-      visit show_topic_path
+  describe 'Access control' do
+    describe 'An anonymous user' do
+      it 'can view other users comments on a topic' do
+        # given ...
+        comment_attrs = FactoryGirl.attributes_for(:comment)
 
-      # then ...
-      expect(page).to have_content('There are 0 comments in this discussion')
+        # when a user creates a comment on a topic ...
+        login(user)
+        add_comment_to_topic(comment_attrs)
+
+        # and then logs out ...
+        click_on 'Logout'
+
+        # when an anonymous user views the topic ...
+        visit show_topic_path
+
+        # then ...
+        expect(page).to have_content('There are 1 comments in this discussion')
+        expect(page).to have_content(comment_attrs[:title])
+        expect(page).to have_link('Reply')
+      end
     end
 
-    it 'can add a comment to a topic' do
-      # given ...
-      comment = FactoryGirl.attributes_for(:comment)
+    describe 'An ordinary user' do
+      it 'can view comments on a topic' do
+        # given ...
 
-      # when ...
-      login(user)
-      visit show_topic_path
-      click_on 'join this discussion'
-      fill_in 'comment[title]', with: comment[:title]
-      tinymce_fill_in 'comment_description', comment[:description]
-      fill_in 'comment[tag_list]', with: 'clever, funny'
-      click_on 'Save'
+        # when ...
+        login(user)
+        visit show_topic_path
 
-      # then ...
-      expect(page).to have_content(comment[:title])
-      expect(page).to have_content(comment[:description])
-      expect(page).to have_link('clever')
-      expect(page).to have_link('funny')
+        # then ...
+        expect(page).to have_content('There are 0 comments in this discussion')
+      end
+
+      it 'can add a comment to a topic' do
+        # given ...
+        comment = FactoryGirl.attributes_for(:comment)
+
+        # when ...
+        login(user)
+        add_comment_to_topic(comment)
+
+        # then ...
+        expect(page).to have_content(comment[:title])
+        expect(page).to have_content(comment[:description])
+        expect(page).to have_link('clever')
+        expect(page).to have_link('funny')
+      end
+
+      it 'can reply to a comment on a topic' do
+        # given ...
+        comment_attrs = FactoryGirl.attributes_for(:comment)
+        reply_attrs = FactoryGirl.attributes_for(:comment, title: 'A reply', description: 'A pithy reply')
+
+        # when ...
+        login(user)
+        add_comment_to_topic(comment_attrs)
+
+        expect(page).to have_content('There are 1 comments in this discussion')
+
+        click_on 'Reply'
+        fill_in 'comment[title]', with: reply_attrs[:title]
+        tinymce_fill_in 'comment_description', reply_attrs[:description]
+        click_on 'Save'
+
+        # then ...
+        expect(page).to have_content(reply_attrs[:title])
+        expect(page).to have_content(reply_attrs[:description])
+        expect(page).to have_content('There are 2 comments in this discussion')
+      end
+
+      it 'cannot edit a comment they create' do
+        # given some comment attributes ...
+        comment_attrs = FactoryGirl.attributes_for(:comment)
+
+        # when the user logs in and creates a comment ...
+        login(user)
+        add_comment_to_topic(comment_attrs)
+
+        # then there is no visible 'Edit' link.
+        expect(page.find('.comment-tools')).not_to have_link('Edit')
+      end
+
+      it 'can cancel a comment before saving it' do
+        # given ...
+
+        # when ...
+        login(user)
+        visit show_topic_path
+        click_on 'join this discussion'
+        click_on 'cancel'
+
+        expect(current_path).to eq(show_topic_path)
+      end
     end
 
-    it 'can reply to a comment on a topic' do
-      # given ...
-      comment = FactoryGirl.attributes_for(:comment)
-      reply = FactoryGirl.attributes_for(:comment, title: 'A reply', description: 'A pithy reply')
 
-      # when ...
-      login(user)
-      visit show_topic_path
-      click_on 'join this discussion'
-      fill_in 'comment[title]', with: comment[:title]
-      tinymce_fill_in 'comment_description', comment[:description]
-      click_on 'Save'
+    describe 'An admin' do
+      let(:privileged_user) do
+        FactoryGirl.create(:user, :activated, :with_site_admin_role, :with_default_baskets)
+      end
 
-      expect(page).to have_content('There are 1 comments in this discussion')
+      it 'can add a comment to a topic' do
+        # given some comment attributes ...
+        comment = FactoryGirl.attributes_for(:comment)
 
-      click_on 'Reply'
-      fill_in 'comment[title]', with: reply[:title]
-      tinymce_fill_in 'comment_description', reply[:description]
-      click_on 'Save'
+        # when an admin logs in and creates a comment ...
+        login(privileged_user)
+        add_comment_to_topic(comment)
 
-      # then ...
-      expect(page).to have_content(reply[:title])
-      expect(page).to have_content(reply[:description])
-      expect(page).to have_content('There are 2 comments in this discussion')
-    end
+        # then it should save and be displayed to them ...
+        expect(page).to have_content(comment[:title])
+        expect(page).to have_content(comment[:description])
+        expect(page).to have_link('clever')
+        expect(page).to have_link('funny')
+      end
 
-    it 'can cancel a comment before saving it' do
-      # given ...
+      it 'can delete their own comment' do
+        # given ...
+        comment_attrs = FactoryGirl.attributes_for(:comment)
 
-      # when ...
-      login(user)
-      visit show_topic_path
-      click_on 'join this discussion'
-      click_on 'cancel'
+        # when ...
+        login(privileged_user)
+        add_comment_to_topic(comment_attrs)
 
-      expect(current_path).to eq(show_topic_path)
+        within('.comment-tools') do
+          click_on 'Delete'
+        end
+
+        # accept the confirmation alert dialog that rails shows
+        accept_confirm_dialog
+
+        # then ...
+        expect(page).to have_content('There are 0 comments in this discussion')
+      end
+
+      it 'can edit comments created by a different user' do
+        # given some comment attributes ...
+        comment_attrs = FactoryGirl.attributes_for(:comment)
+        ordinary_user = FactoryGirl.create(:user, :activated, :with_default_baskets)
+        new_title = 'I am checking my privilege'
+
+        # when an ordinary user logs in and creates a comment and logs out...
+        login(ordinary_user)
+        add_comment_to_topic(comment_attrs)
+        click_on 'Logout'
+
+        # and then the privileged user logs in ...
+        login(privileged_user)
+
+        visit show_topic_path
+        within('.comment-tools') do
+          click_on 'Edit'
+        end
+        fill_in 'comment[title]', with: new_title
+        click_on 'Save'
+
+        # then ...
+        expect(page).to have_content(new_title)
+      end
+
+      it 'can delete comments created by a different user' do
+        # given ...
+        comment_attrs = FactoryGirl.attributes_for(:comment)
+
+        # when ...
+        login(user)
+        add_comment_to_topic(comment_attrs)
+
+        click_on 'Logout'
+
+        login(privileged_user)
+        visit show_topic_path
+        within('.comment-tools') do
+          click_on 'Delete'
+        end
+        accept_confirm_dialog
+
+        # then ...
+        expect(page).to have_content('There are 0 comments in this discussion')
+      end
     end
   end
 
-  describe 'A site-admin user' do
+  describe 'Deleting comments' do
     let(:site_admin) { FactoryGirl.create(:user, :activated, :with_default_baskets, :with_site_admin_role) }
-
-    it 'a site admin can delete their own comment after saving it' do
-      # given ...
-      comment = FactoryGirl.attributes_for(:comment)
-
-      # when ...
-      login(site_admin)
-      visit show_topic_path
-      click_on 'join this discussion'
-      fill_in 'comment[title]', with: comment[:title]
-      tinymce_fill_in 'comment_description', comment[:description]
-      click_on 'Save'
-
-      within('.comment-tools') do
-        click_on 'Delete'
-      end
-
-      # accept the confirmation alert dialog that rails shows
-      accept_confirm_dialog
-
-      # then ...
-      expect(page).to have_content('There are 0 comments in this discussion')
-    end
-
-    it 'can delete comments created by a different user' do
-      # given ...
-      comment_attrs = FactoryGirl.attributes_for(:comment)
-
-      # when ...
-      login(user)
-      visit show_topic_path
-      click_on 'join this discussion'
-      fill_in 'comment[title]', with: comment_attrs[:title]
-      tinymce_fill_in 'comment_description', comment_attrs[:description]
-      fill_in 'comment[tag_list]', with: 'clever, funny'
-      click_on 'Save'
-
-      click_on 'Logout'
-
-      login(site_admin)
-      visit show_topic_path
-      within('.comment-tools') do
-        click_on 'Delete'
-      end
-      accept_confirm_dialog
-
-      # then ...
-      expect(page).to have_content('There are 0 comments in this discussion')
-    end
-
     it 'deleting a parent comment attaches children to the grandparent comment' do
       # given ...
       grandparent_attrs = FactoryGirl.attributes_for(:comment)

@@ -539,6 +539,7 @@ module ApplicationHelper
       html += link_to(t('application_helper.link_to_cancel.cancel'), url_for(session[:return_to]), :tabindex => '1')
     end
     html += "</div>"
+    html.html_safe
   end
 
   def link_to_item(item)
@@ -1261,10 +1262,10 @@ module ApplicationHelper
                                              :controller => 'comments',
                                              :action => :edit,
                                              :id => comment) + "</li>\n"
-          comment_string += "<li>" + link_to(t('application_helper.show_comments_for.history'),
-                                             :controller => 'comments',
-                                             :action => :history,
-                                             :id => comment) + "</li>\n"
+          # comment_string += "<li>" + link_to(t('application_helper.show_comments_for.history'),
+          #                                    :controller => 'comments',
+          #                                    :action => :history,
+          #                                    :id => comment) + "</li>\n"
           comment_string += "<li>" + link_to(t('application_helper.show_comments_for.delete'),
                                              {:action => :destroy,
                                                :controller => 'comments',

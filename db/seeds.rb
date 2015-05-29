@@ -38,9 +38,10 @@ load_yaml(file: 'roles.yml',
           model: Role,
           unique_attrs: [:id])
 
-load_yaml(file: 'users.yml',
-          model: User,
-          unique_attrs: [:email])
+load_yaml(file: 'users.yml', model: User, unique_attrs: [:email]) do |user|
+  # activate admin after create
+  user.activate if user.login == 'admin'
+end
 
 load_yaml(file: 'roles_users.yml',
           model: RolesUser,
