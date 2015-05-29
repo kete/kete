@@ -1,0 +1,19 @@
+# Built-in config: https://github.com/bbatsov/rubocop/blob/master/config/default.yml
+
+
+# We do not typically use/need class documentation
+Documentation:
+    Enabled: false
+
+inherit_from: .rubocop_todo.yml
+
+AllCops:
+  RunRailsCops: true
+  Include:
+    - '**/Rakefile'
+    - '**/config.ru'
+  Exclude:
+    - 'old_test/**/*'
+    - 'vendor/**/*'
+    - 'horowhenua_spec/**/*'
+    - 'db/schema.rb'

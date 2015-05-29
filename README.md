@@ -23,6 +23,29 @@ next milestone
 final milestone of this development phase
 
 
+## Contributing
+
+The following is a brief summary how to setup Kete for development
+
+```sh
+git clone https://github.com/kete/kete
+cd kete
+git checkout kete2
+
+cp ./config/database.example.yml ./config/database.yml
+
+npm install                     # install grunt which is used to lint JS
+bundle                          # install gems
+bundle exec rspec               # run specs
+bundle exec rake db:create      # create databases
+bundle exec rake db:setup       # includes db:schema:load and db:seed
+bundle exec rails server
+
+# Before committing any changes:
+bundle exec rubocop             # lint ruby
+./node_modules/.bin/grunt       # lint JS
+```
+
 # Credits
 
 Kete is Copyright (C) 2006-2012 Horowhenua Library Trust and Others under the GPL version 2 license.  See license.txt for details.

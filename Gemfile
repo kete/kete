@@ -28,7 +28,7 @@ gem 'acts_as_versioned', github: "jwhitehorn/acts_as_versioned"
 # RABID: the old plugin version of acts-as-taggable-on was 1.0.0
 gem 'acts-as-taggable-on', '~> 3.3.0'
 
-# RABID: 
+# RABID:
 # Kete monkey patches attachment_fu a lot so we cannot track easily track the
 # main version. You can see which attachment_fu ours was forked from (and when)
 # by inspecting the repo on Github:
@@ -48,7 +48,7 @@ gem 'pothoven-attachment_fu', github: 'kete/attachment_fu'
 
 gem 'validate_url'
 
-# ROB:  kete had it's own feedzirra which adds some extra functions needed by the 
+# ROB:  kete had it's own feedzirra which adds some extra functions needed by the
 #       external_search_sources plugin.
 #       It'll probably be possible to pull these function into external_search_sources
 #       allowing us to use the stock feedzirra gem.
@@ -64,7 +64,7 @@ gem 'acts_as_configurable', '0.0.8'
 
 gem 'routing-filter', '~> 0.3.1'
 
-gem 'oembed_provider_engine' 
+gem 'oembed_provider_engine'
 
 # gem "mysql"
 gem 'pg'
@@ -116,7 +116,7 @@ gem 'htmlentities'
 gem 'http_url_validation_improved'
 
 # $ rake manage_gems:required:install:
-# 
+#
 # "gem install --no-rdoc --no-ri nokogiri"
 # ERROR:  Error installing nokogiri:
 # 	nokogiri requires Ruby version >= 1.9.2.
@@ -155,7 +155,7 @@ gem "acts_as_soft_deletable", :git => "git://github.com/says/acts_as_soft_deleta
 ## gem 'acts_as_zoom'
 #gem 'auto_complete',                '0.0.1' # >> 2008-10-23
 #gem 'backgroundrb-rails3',          '1.1.0' # >> 2008-10-15, replaces 'backgroundrb'
-#gem 'better_nested_set',            '0.1.1' # >> 2008-08-04    
+#gem 'better_nested_set',            '0.1.1' # >> 2008-08-04
 #gem "brain_buster", "#.#.#", :git => "git://github.com/shuber/sortable.git" # 2009-05-25
 #gem "bundle-fu", "#.#.#", :git => "git://github.com/shuber/sortable.git" # 2009-02-16
 #gem "convert_attachment_to", "#.#.#", :git => "git://github.com/shuber/sortable.git" # 2008-07-10
@@ -171,7 +171,7 @@ gem 'will_paginate', '~> 3.0.5'
 
 
 # RABID: should be removed:
-gem 'validates_xml',                '1.0.3' # >> 2007-06-06 
+gem 'validates_xml',                '1.0.3' # >> 2007-06-06
 
 # ##############
 # Authentication
@@ -220,6 +220,7 @@ group :development, :test do
   gem 'pry-byebug', :platforms => [:mingw_20, :ruby_20, :ruby_21]
   gem 'awesome_print'
   gem "factory_girl_rails", "~> 4.5.0"
+  gem 'rubocop', '~> 0.31.0', require: false
 end
 
 group :test do
