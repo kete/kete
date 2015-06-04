@@ -1,6 +1,5 @@
 # Controls needed for Gravatar support throughout the site
 require 'avatar/view/action_view_support'
-require 'redcloth'
 
 # Methods added to this helper will be available to all templates in the application.
 module ApplicationHelper
@@ -1157,13 +1156,14 @@ module ApplicationHelper
       if ef.ftype == 'textarea'
         value = sanitize(value)
 
-        # format the value to html with RedCloth for things like line breaks
+        # format the value to html for things like line breaks
         # start by replacing carriage returns with newlines
         # gotcha: if you have a \r\n or \n\r, you need to convert both to a
         # single new line before converting all remaining \r to \n (else
         # you get double lines where there should only be a single)
         value = value.gsub(/(\r\n|\n\r|\r)/, "\n")
-        value = RedCloth.new(value).to_html
+        markdown = Redcarpet::Markdown.new(Redcarpet::Render::HTML)
+        value = markdown.render(value)
 
         url_regex = '(\w+:\/\/[^ |<]+)'
         email_regex = '([\w._%+-]+@[\w.-]+\.[\w]{2,4})'

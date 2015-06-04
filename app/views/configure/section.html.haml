@@ -13,7 +13,7 @@
             = fields_for "setting[]" do |f|
               = f.text_field :value
               .form_example
-                = RedCloth.new(@setting.explanation).to_html.gsub("&#8220;", "\"").gsub("&#8221;", "\"").gsub("&#8217;", "'").gsub("&#8216;", "'").gsub("‘", "'").gsub("’", "'")
+                = Redcarpet::Markdown.new(Redcarpet::Render::HTML).render(@setting.explanation)
         - else
           = fields_for "setting[]" do |f|
             = f.hidden_field :value

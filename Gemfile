@@ -2,7 +2,7 @@ source "https://rubygems.org"
 
 ruby '2.1.2'
 
-gem "rails", "3.2.19"
+gem "rails", "3.2.21"
 gem 'unicorn'
 
 gem 'tinymce-rails', '~> 4.1.4'
@@ -15,7 +15,7 @@ gem 'rails_12factor', group: :production
 
 gem 'jquery-rails', '~> 3.1.1'
 gem 'haml'
-gem 'acts_as_licensed', github: 'kete/acts_as_licensed', branch: 'rails3-gem'
+gem 'acts_as_licensed', git: 'https://github.com/kete/acts_as_licensed.git', branch: 'rails3-gem'
 # gem "sql-logging"
 
 gem "figaro", "~> 0.7.0"
@@ -23,7 +23,7 @@ gem "pg_search", "~> 0.7.2"
 
 # RABID: the official version of acts_as_versioned seems to be abandoned but
 # 		 this fork claims to have rails 3 support
-gem 'acts_as_versioned', github: "jwhitehorn/acts_as_versioned"
+gem 'acts_as_versioned', git: "https://github.com/jwhitehorn/acts_as_versioned.git", ref: "44dfe632ba8c97c786cbc172a2da18a41b17f668"
 
 # RABID: the old plugin version of acts-as-taggable-on was 1.0.0
 gem 'acts-as-taggable-on', '~> 3.3.0'
@@ -43,8 +43,7 @@ gem 'acts-as-taggable-on', '~> 3.3.0'
 # * OverrideAttachmentFuMethods
 # * ResizeAsJpegWhenNecessary
 #
-gem 'pothoven-attachment_fu', github: 'kete/attachment_fu'
-
+gem 'pothoven-attachment_fu', git: 'https://github.com/kete/attachment_fu.git'
 
 gem 'validate_url'
 
@@ -52,7 +51,7 @@ gem 'validate_url'
 #       external_search_sources plugin.
 #       It'll probably be possible to pull these function into external_search_sources
 #       allowing us to use the stock feedzirra gem.
-gem 'kete-feedzirra', github: 'kete/feedzirra'
+gem 'kete-feedzirra', git: 'https://github.com/kete/feedzirra'
 
 # https://github.com/swanandp/acts_as_list
 gem 'acts_as_list', '~> 0.3.0'
@@ -95,7 +94,7 @@ gem 'rmagick', "2.13.3", require: 'RMagick'
 gem 'oai', '~> 0.3.1'
 
 gem 'packet'
-gem 'RedCloth'
+gem 'redcarpet', '~> 3.2.3'
 gem 'hpricot'
 
 ##gem 'tiny_mce'
@@ -151,7 +150,7 @@ gem 'active_scaffold', '~> 3.3.3'
 
 
 #gem "acts_as_licensed", "#.#.#", :git => "git://github.com/shuber/sortable.git" # 2008-07-10
-gem "acts_as_soft_deletable", :git => "git://github.com/says/acts_as_soft_deletable.git" # 2009-02-16
+gem "acts_as_soft_deletable", :git => "https://github.com/says/acts_as_soft_deletable.git" # 2009-02-16
 ## gem 'acts_as_zoom'
 #gem 'auto_complete',                '0.0.1' # >> 2008-10-23
 #gem 'backgroundrb-rails3',          '1.1.0' # >> 2008-10-15, replaces 'backgroundrb'
@@ -186,7 +185,7 @@ gem 'validates_xml',                '1.0.3' # >> 2007-06-06
 # The authorization gem has not been updated in years. We took this fork from a
 # fork that had some fixes applied to make it work with Ruby 2.0. We are using
 # our own fork to be sure that the repo will not be deleted in future.
-gem 'authorization', github: 'kete/rails-authorization-plugin'
+gem 'authorization', git: 'https://github.com/kete/rails-authorization-plugin'
 
 # ######
 # Assets
@@ -221,6 +220,7 @@ group :development, :test do
   gem 'awesome_print'
   gem "factory_girl_rails", "~> 4.5.0"
   gem 'rubocop', '~> 0.31.0', require: false
+  gem 'bundler-audit', '~> 0.3.1', require: false
 end
 
 group :test do
