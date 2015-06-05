@@ -233,11 +233,44 @@ feature 'Topic comments', js: true do
       first('.comment-depth-1').find('.comment-tools').find_link('Delete').click
       accept_confirm_dialog
 
-      # # then ...
+      # then ...
       expect(page).to have_content(grandparent_attrs[:title])
       expect(page).to have_content(grandparent_attrs[:description])
       expect(page).to have_content(child_attrs[:title])
       expect(page).to have_content(child_attrs[:description])
+    end
+
+    it 'deleting a parent comment also deletes the children' do
+      # given ...
+      parent_attrs = FactoryGirl.attributes_for(:comment)
+      child_attrs = FactoryGirl.attributes_for(:comment)
+
+      # when we create a topic ...
+      login(site_admin)
+      visit show_topic_path
+
+      # .. and then create a parent comment ...
+      click_on 'join this discussion'
+      fill_in 'comment[title]', with: parent_attrs[:title]
+      tinymce_fill_in 'comment_description', parent_attrs[:description]
+      click_on 'Save'
+
+      # ... and then create a child comment ...
+      first('.comment-depth-0').find('.comment-tools').find_link('Reply').click
+      fill_in 'comment[title]', with: child_attrs[:title]
+      tinymce_fill_in 'comment_description', child_attrs[:description]
+      click_on 'Save'
+
+      # ... and then delete the child comment.
+      first('.comment-depth-0').find('.comment-tools').find_link('Delete').click
+      accept_confirm_dialog
+
+      # then ...
+      expect(page).to have_content('There are 0 comments in this discussion')
+      expect(page).not_to have_content(parent_attrs[:title])
+      expect(page).not_to have_content(parent_attrs[:description])
+      expect(page).not_to have_content(child_attrs[:title])
+      expect(page).not_to have_content(child_attrs[:description])
     end
   end
 end
