@@ -233,6 +233,7 @@ GEM
       pry (~> 0.9.12)
     pry-rails (0.3.2)
       pry (>= 0.9.10)
+    psych (2.0.13)
     quiet_assets (1.0.3)
       railties (>= 3.1, < 5.0)
     rack (1.4.7)
@@ -403,6 +404,7 @@ DEPENDENCIES
   pothoven-attachment_fu!
   pry-byebug
   pry-rails
+  psych (> 2.0.5)
   quiet_assets
   railroady
   rails (~> 3.2.19)

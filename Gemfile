@@ -230,3 +230,7 @@ group :test do
   gem "database_cleaner", "~> 1.4.1"
   gem 'poltergeist'
 end
+
+# Security updates
+# https://github.com/tenderlove/psych/pull/187
+gem 'psych', '> 2.0.5'
