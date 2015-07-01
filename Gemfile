@@ -2,7 +2,7 @@ source "https://rubygems.org"
 
 ruby '2.1.2'
 
-gem "rails", "3.2.19"
+gem "rails", "~> 3.2.19"
 gem 'unicorn'
 
 gem 'tinymce-rails', '~> 4.1.4'
@@ -230,3 +230,7 @@ group :test do
   gem "database_cleaner", "~> 1.4.1"
   gem 'poltergeist'
 end
+
+# Security updates
+# https://github.com/tenderlove/psych/pull/187
+gem 'psych', '> 2.0.5'
