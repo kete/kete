@@ -11,6 +11,6 @@ before_script:
   - RAILS_ENV=test bundle exec rake db:schema:load
   - npm install
 script:
-  - bundle exec rspec spec -f p
+  - bundle exec rspec spec
   - bundle exec rubocop
   - ./node_modules/.bin/grunt
