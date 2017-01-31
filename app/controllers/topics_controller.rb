@@ -113,10 +113,10 @@ class TopicsController < ApplicationController
         redirect_to_related_item(@relate_to_item, { :private => (params[:related_item_private] && params[:related_item_private] == 'true' && permitted_to_view_private_items?) })
       when 'basket'
         redirect_to :action => 'add_index_topic',
-        :controller => 'baskets',
-        :index_for_basket => params[:index_for_basket],
-        :return_to_homepage => params[:return_to_homepage],
-        :topic => @topic
+                    :controller => 'baskets',
+                    :index_for_basket => params[:index_for_basket],
+                    :return_to_homepage => params[:return_to_homepage],
+                    :topic => @topic
       else
         flash[:notice] = t('topics_controller.create.created')
         redirect_to :action => 'show', :id => @topic, :private => (params[:topic][:private] == "true")

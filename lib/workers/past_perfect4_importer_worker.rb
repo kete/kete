@@ -217,7 +217,7 @@ class PastPerfect4ImporterWorker < BackgrounDRb::MetaWorker
               # create a new topic from related_accession_record
               # prepare user_reference for extended_content
               accession_topic = { "topic" => { :topic_type_id => @related_topic_type.id,
-                  :title => record_hash["COLLECTION"]} }
+                                               :title => record_hash["COLLECTION"]} }
 
               descrip = RedCloth.new accession_record_hash['DESCRIP']
               accession_topic["topic"][:description] = descrip.to_html
@@ -248,7 +248,7 @@ class PastPerfect4ImporterWorker < BackgrounDRb::MetaWorker
       # they will have different filenames, but same user reference...
       # so adding filename check as criteria
       existing_item = StillImage.find(:first, :joins => 'join image_files on still_images.id = image_files.still_image_id',
-                                      :conditions => "filename = \'#{File.basename(path_to_file_to_grab)}\' and extended_content like \'%<user_reference xml_element_name=\"dc:identifier\">#{objectid}</user_reference>%\'")
+                                              :conditions => "filename = \'#{File.basename(path_to_file_to_grab)}\' and extended_content like \'%<user_reference xml_element_name=\"dc:identifier\">#{objectid}</user_reference>%\'")
 
       new_record = nil
       if existing_item.nil?

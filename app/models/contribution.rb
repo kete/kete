@@ -16,17 +16,17 @@ class Contribution < ActiveRecord::Base
   ZOOM_CLASSES.each do |zoom_class|
     # to track whom created these things
     belongs_to "created_#{zoom_class.tableize.singularize}".to_sym,
-    :class_name => zoom_class,
-    :foreign_key => "contributed_item_id"
+               :class_name => zoom_class,
+               :foreign_key => "contributed_item_id"
 
     # to track whom contributed to these things
     belongs_to "contributed_#{zoom_class.tableize.singularize}".to_sym,
-    :class_name => zoom_class,
-    :foreign_key => "contributed_item_id"
+               :class_name => zoom_class,
+               :foreign_key => "contributed_item_id"
   end
 
   def self.add_as_to(user, role, item)
     with_scope(:create => { :contributor_role => role,
-                 :version => user.version}) { item.concat user }
+                            :version => user.version}) { item.concat user }
   end
 end

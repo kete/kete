@@ -60,8 +60,8 @@ class Searcher
   def contributed_by
     # This could also be scopped by contributor_role: "contributor"/"creator"
     distinct_contributions = Contribution.select("DISTINCT user_id, contributed_item_type, contributed_item_id").
-                                          order(:contributed_item_type, :contributed_item_id).
-                                          where(user_id: query.user_id)
+                             order(:contributed_item_type, :contributed_item_id).
+                             where(user_id: query.user_id)
     {
       "Topic"          => distinct_contributions.where(contributed_item_type: "Topic"),
       "StillImage"     => distinct_contributions.where(contributed_item_type: "StillImage"),
@@ -100,7 +100,7 @@ class Searcher
   def related_to_topic_hash
     related_by_topic        = ContentItemRelation.where(topic_id: query.related_item_id)
     related_by_content_item = ContentItemRelation.where(related_item_type: 'Topic').
-                                                  where(related_item_id: query.related_item_id)
+                              where(related_item_id: query.related_item_id)
 
     # Help arel form an OR statement.
     related_by_topic = related_by_topic.where_values.reduce(:and)
@@ -121,8 +121,8 @@ class Searcher
 
   def related_to_non_topic_hash
     topics_related_to = ContentItemRelation.where(related_item_id: query.related_item_id).
-                                            where(related_item_type: query.related_item_type).
-                                            order('position DESC')
+                        where(related_item_type: query.related_item_type).
+                        order('position DESC')
     {
       "Topic"          => topics_related_to,
       "StillImage"     => empty_relation,

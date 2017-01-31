@@ -124,8 +124,8 @@ module KeteAuthorisationSettings
   # check to see if url is something that can be done anonymously
   def anonymous_ok_for?(url)
     return false unless url.present? && SystemSetting.is_configured? &&
-      SystemSetting.allowed_anonymous_actions.present? &&
-      SystemSetting.allowed_anonymous_actions.size > 0
+                        SystemSetting.allowed_anonymous_actions.present? &&
+                        SystemSetting.allowed_anonymous_actions.size > 0
 
     # get controller and action from url
     # strip off query string before submitting to routing
@@ -161,7 +161,7 @@ module KeteAuthorisationSettings
 
   def permitted_to_edit_basket_homepage_topic?
     @permitted_to_edit_basket_homepage_topic ||= logged_in? &&
-        permit?("site_admin of :site_basket or admin of :site_basket")
+                                                 permit?("site_admin of :site_basket or admin of :site_basket")
   end
 
   # checks if the user is requesting a private version of an item, and see

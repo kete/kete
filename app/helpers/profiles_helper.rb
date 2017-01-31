@@ -99,10 +99,10 @@ module ProfilesHelper
     '<div class="form-element">' +
       content_tag('label', label, :for => rules_label_id(name), :style => 'width: 100%;') +
       '<div style="clear: left">' +
-        text_field_tag("#{@rule_locals[:values_field_prefix]}[#{name}]", current_value_for(name),
-                       :id => "#{@rule_locals[:field_id_prefix]}_values_#{name}", :tabindex => '1') +
+      text_field_tag("#{@rule_locals[:values_field_prefix]}[#{name}]", current_value_for(name),
+                     :id => "#{@rule_locals[:field_id_prefix]}_values_#{name}", :tabindex => '1') +
       '</div>' +
-    '</div>'
+      '</div>'
   end
 
   # A text area tag. Wraps it in form-element div,
@@ -112,7 +112,7 @@ module ProfilesHelper
       (label ? content_tag('label', label, :for => rules_label_id(name), :class => 'inline') : '') +
       text_area_tag("#{@rule_locals[:values_field_prefix]}[#{name}]", current_value_for(name),
                     :rows => 7, :cols => 30, :class => class_name) +
-    '</div>'
+      '</div>'
   end
 
   # A select tag. Wraps it in form-element div,
@@ -121,10 +121,10 @@ module ProfilesHelper
     '<div class="form-element">' +
       (label ? content_tag('label', label, :for => rules_label_id(name), :style => 'width: 100%;') : '') +
       '<div style="clear: left">' +
-        select_tag("#{@rule_locals[:values_field_prefix]}[#{name}]", options,
-                   :id => "#{@rule_locals[:field_id_prefix]}_values_#{name}", :tabindex => '1') +
+      select_tag("#{@rule_locals[:values_field_prefix]}[#{name}]", options,
+                 :id => "#{@rule_locals[:field_id_prefix]}_values_#{name}", :tabindex => '1') +
       '</div>' +
-    '</div>'
+      '</div>'
   end
 
   # A radio button tag. Wraps it in form-element div,
@@ -134,7 +134,7 @@ module ProfilesHelper
       radio_button_tag("#{@rule_locals[:values_field_prefix]}[#{name}]", value, (current_value_for(name) == value),
                        :id => "#{@rule_locals[:field_id_prefix]}_values_#{name}_#{value}", :tabindex => '1') +
       content_tag('label', label, :for => rules_label_id(name, value), :class => 'inline') +
-    '</div>'
+      '</div>'
   end
 
   # A check box tag. Wraps it in form-element div,
@@ -145,7 +145,7 @@ module ProfilesHelper
                     (is_array && current_value_for(name).is_a?(Array) ? current_value_for(name).include?(value) : current_value_for(name) == value),
                     :id => "#{@rule_locals[:field_id_prefix]}_values_#{name}#{"_#{value.underscore.downcase}" if is_array}", :tabindex => '1') +
       content_tag('label', label, :for => "#{rules_label_id(name)}#{"_#{value.underscore.downcase}" if is_array}", :class => 'inline') +
-    '</div>'
+      '</div>'
   end
 
   # The fieldset that wraps around the above field tag methods

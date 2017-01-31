@@ -33,7 +33,7 @@ class LocaleFileNormaliser
   def process_gsub_pairs
     @gsub_pairs.each do |pair|
       @yaml_text.gsub!("{{t.#{pair[0]}}}", pair[1])
-        # i.e. @yaml_text.gsub("{{t.base.can_be}}", tree['base']['can_be'])
+      # i.e. @yaml_text.gsub("{{t.base.can_be}}", tree['base']['can_be'])
 
       process_gsub_function(pair)
       process_gsub_pluralize_capitalize(pair)
@@ -48,7 +48,7 @@ class LocaleFileNormaliser
       #puts search_key +"  --  "+ replace_value
 
       @yaml_text.gsub!(search_key, replace_value)
-        # i.e. @yaml_text.gsub("{{t.base.can_be.capitalize}}", tree['base']['can_be'].capitalize)
+      # i.e. @yaml_text.gsub("{{t.base.can_be.capitalize}}", tree['base']['can_be'].capitalize)
     end
   end
 
@@ -95,15 +95,15 @@ class LocaleFileNormaliser
   end
 
   def process_by_type(value, keys_array)
-      if value.class == String
-        save_string_to_gsub_pair(value, keys_array)
+    if value.class == String
+      save_string_to_gsub_pair(value, keys_array)
 
-      elsif value.class == Array 
-        walk_array(value,  keys_array)
+    elsif value.class == Array 
+      walk_array(value,  keys_array)
 
-      elsif value.class == Hash
-        walk_hash(value,  keys_array)
-      end
+    elsif value.class == Hash
+      walk_hash(value,  keys_array)
+    end
   end
 
 

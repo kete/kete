@@ -51,9 +51,9 @@ class AudioRecording < ActiveRecord::Base
 
 
     join_table = AudioRecording.outer_joins(:taggings).
-                                outer_joins(:contributions).
-                                outer_joins(:content_item_relations).
-                                joins("LEFT OUTER JOIN  deleted_content_item_relations " +
+                 outer_joins(:contributions).
+                 outer_joins(:content_item_relations).
+                 joins("LEFT OUTER JOIN  deleted_content_item_relations " +
                                       "ON deleted_content_item_relations.related_item_id = audio_recordings.id " +
                                       "AND deleted_content_item_relations.related_item_type = 'AudioRecording'")
 
@@ -73,12 +73,12 @@ class AudioRecording < ActiveRecord::Base
   # overriding full_filename to handle our customizations
   # TODO: is this thumbnail arg necessary for classes without thumbnails?
   # def full_filename(thumbnail = nil)
-    # file_system_path = (thumbnail ? thumbnail_class : self).attachment_options[:file_system_path].to_s
-    # this is how this currently reads
-    # rails_root/private/audio_recordings/recording_id/filename
-    # TODO: we'll want to make it like this when we add kete (basket) scoping
-    # rails_root/private/kete_path_name/audio_recordings/recording_id/filename
-    # File.join(RAILS_ROOT, file_system_path, attachment_path_id, thumbnail_name_for(thumbnail))
+  # file_system_path = (thumbnail ? thumbnail_class : self).attachment_options[:file_system_path].to_s
+  # this is how this currently reads
+  # rails_root/private/audio_recordings/recording_id/filename
+  # TODO: we'll want to make it like this when we add kete (basket) scoping
+  # rails_root/private/kete_path_name/audio_recordings/recording_id/filename
+  # File.join(RAILS_ROOT, file_system_path, attachment_path_id, thumbnail_name_for(thumbnail))
   # end
 
   include OverrideAttachmentFuMethods

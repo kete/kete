@@ -169,11 +169,11 @@ class SearchPresenter
 
   def content_item_type_to_tab_nav_name(content_item_type)
     mapping = {   "Topic" => "Topics",
-        "StillImage" => "Images",
-        "AudioRecording" => "Audio",
-        "Video" => "Video",
-        "WebLink" => "Web links",
-        "Document" => "Documents",
+                  "StillImage" => "Images",
+                  "AudioRecording" => "Audio",
+                  "Video" => "Video",
+                  "WebLink" => "Web links",
+                  "Document" => "Documents",
     }
     mapping[content_item_type] || "Unknown content_item_type"
   end
@@ -233,26 +233,26 @@ class SearchPresenter
   end
 
   def search_results_info_and_links
-  #   statement, links = Array.new, Array.new
+    #   statement, links = Array.new, Array.new
 
-  #   statement << t('search.results.showing_x-y_of_z',
-  #                 :start => @start, :finish => @end_record,
-  #                 :total => @result_sets[@current_class].size)
+    #   statement << t('search.results.showing_x-y_of_z',
+    #                 :start => @start, :finish => @end_record,
+    #                 :total => @result_sets[@current_class].size)
 
-  #   links << '<div id="refine_search_dropdown_trigger"></div>'
+    #   links << '<div id="refine_search_dropdown_trigger"></div>'
 
-  #   if @number_of_locations_count && @number_of_locations_count > 0
-  #     statement << t('search.results.x-y_have_z_locations',
-  #                    :start => @start, :finish => @end_record,
-  #                    :n_locations => @number_of_locations_count)
-  #     if params[:view_as] != 'map' && SystemSetting.enable_maps?
-  #       links << link_to(t('search.results.view_map'), { :overwrite_params => { :view_as => 'map' } }, { :tabindex => '1' } )
-  #     elsif params[:view_as] == 'map'
-  #       links << link_to(t('search.results.view_list'), { :overwrite_params => { :view_as => nil } }, { :tabindex => '1' } )
-  #     end
-  #   end
+    #   if @number_of_locations_count && @number_of_locations_count > 0
+    #     statement << t('search.results.x-y_have_z_locations',
+    #                    :start => @start, :finish => @end_record,
+    #                    :n_locations => @number_of_locations_count)
+    #     if params[:view_as] != 'map' && SystemSetting.enable_maps?
+    #       links << link_to(t('search.results.view_map'), { :overwrite_params => { :view_as => 'map' } }, { :tabindex => '1' } )
+    #     elsif params[:view_as] == 'map'
+    #       links << link_to(t('search.results.view_list'), { :overwrite_params => { :view_as => nil } }, { :tabindex => '1' } )
+    #     end
+    #   end
 
-  #   statement.join(', ') + " [ " + links.join(' | ') + " ] "
+    #   statement.join(', ') + " [ " + links.join(' | ') + " ] "
     ''
   end
 

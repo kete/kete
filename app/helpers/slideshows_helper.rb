@@ -62,25 +62,25 @@ module SlideshowsHelper
 
   private
 
-    # Support for keeping view size for images
-    def url_without_extras(url)
+  # Support for keeping view size for images
+  def url_without_extras(url)
 
-      # Store the view size and return the URL without the matching part.
-      if url =~ /view_size=([a-z_]+)$/ && %w{small_sq medium small large}.member?($1)
-        slideshow.image_view_size = $1
-      else
-        slideshow.image_view_size = nil
-      end
-
-      # Remove anything that won't match the dc:identifier for the current item
-      url.gsub!(/[\?&]view_size=[a-z_]+/, '')
-      url.gsub!(/[\?&]private=false/, '')
-
-      # If private=true is tacked on to the end of a long query string, switch the
-      # ampersand for a question mark like in dc:identifier so we get a match.
-      url.gsub!(/&private=true/, "?private=true")
-
-      url
+    # Store the view size and return the URL without the matching part.
+    if url =~ /view_size=([a-z_]+)$/ && %w{small_sq medium small large}.member?($1)
+      slideshow.image_view_size = $1
+    else
+      slideshow.image_view_size = nil
     end
+
+    # Remove anything that won't match the dc:identifier for the current item
+    url.gsub!(/[\?&]view_size=[a-z_]+/, '')
+    url.gsub!(/[\?&]private=false/, '')
+
+    # If private=true is tacked on to the end of a long query string, switch the
+    # ampersand for a question mark like in dc:identifier so we get a match.
+    url.gsub!(/&private=true/, "?private=true")
+
+    url
+  end
 
 end

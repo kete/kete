@@ -5,7 +5,7 @@ module BasketsHelper
       :action => 'find_index',
       :current_basket_id => options[:current_basket_id],
       :current_homepage_id => options[:current_homepage_id] },
-    :popup => ['links', 'height=500,width=500,scrollbars=yes,top=100,left=100'], :tabindex => '1'
+            :popup => ['links', 'height=500,width=500,scrollbars=yes,top=100,left=100'], :tabindex => '1'
   end
 
   def link_to_add_index_topic(options={})
@@ -14,13 +14,13 @@ module BasketsHelper
 
   def basket_preferences_inheritance_message
     return if @basket != @site_basket # for now, we dont need to tell them,
-                                      # it's obvious with the inherit option
+    # it's obvious with the inherit option
     @inheritance_message = "<p>"
     #if @basket != @site_basket
     #  @inheritance_message += "Unspecified settings will be inherited
     #                        from the settings of the Site."
     #else
-      @inheritance_message += t('baskets_helper.basket_preferences_inheritance_message.inheritance_notice')
+    @inheritance_message += t('baskets_helper.basket_preferences_inheritance_message.inheritance_notice')
     #end
 
     @inheritance_message += "</p>"
@@ -40,7 +40,7 @@ module BasketsHelper
       if params[:show_all_fields]
         html += link_to t('baskets_helper.show_all_fields_link.show_allowed_fields'), location.merge(:show_all_fields => nil)
       else
-         html += link_to t('baskets_helper.show_all_fields_link.show_all_fields'), location.merge(:show_all_fields => true)
+        html += link_to t('baskets_helper.show_all_fields_link.show_all_fields'), location.merge(:show_all_fields => true)
       end
       html += ']</span>'
     end

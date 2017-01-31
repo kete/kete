@@ -14,19 +14,8 @@ Lint/AmbiguousOperator:
 Lint/AssignmentInCondition:
   Enabled: false
 
-# Offense count: 3
-# Cop supports --auto-correct.
-Lint/BlockAlignment:
-  Enabled: false
-
 # Offense count: 1
 Lint/ConditionPosition:
-  Enabled: false
-
-# Offense count: 1
-# Cop supports --auto-correct.
-# Configuration parameters: AlignWith, SupportedStyles, AutoCorrect.
-Lint/DefEndAlignment:
   Enabled: false
 
 # Offense count: 19
@@ -36,12 +25,6 @@ Lint/DeprecatedClassMethods:
 
 # Offense count: 3
 Lint/DuplicateMethods:
-  Enabled: false
-
-# Offense count: 12
-# Cop supports --auto-correct.
-# Configuration parameters: AlignWith, SupportedStyles, AutoCorrect.
-Lint/EndAlignment:
   Enabled: false
 
 # Offense count: 60
@@ -217,23 +200,6 @@ Style/AccessorMethodName:
 Style/Alias:
   Enabled: false
 
-# Offense count: 22
-# Cop supports --auto-correct.
-Style/AlignArray:
-  Enabled: false
-
-# Offense count: 87
-# Cop supports --auto-correct.
-# Configuration parameters: EnforcedHashRocketStyle, EnforcedColonStyle, EnforcedLastArgumentHashStyle, SupportedLastArgumentHashStyles.
-Style/AlignHash:
-  Enabled: false
-
-# Offense count: 43
-# Cop supports --auto-correct.
-# Configuration parameters: EnforcedStyle, SupportedStyles.
-Style/AlignParameters:
-  Enabled: false
-
 # Offense count: 79
 # Cop supports --auto-correct.
 # Configuration parameters: EnforcedStyle, SupportedStyles.
@@ -328,11 +294,6 @@ Style/DotPosition:
 
 # Offense count: 7
 Style/EachWithObject:
-  Enabled: false
-
-# Offense count: 19
-# Cop supports --auto-correct.
-Style/ElseAlignment:
   Enabled: false
 
 # Offense count: 7

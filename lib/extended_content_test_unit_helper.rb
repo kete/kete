@@ -161,8 +161,8 @@ module ExtendedContentTestUnitHelper
 
   protected
 
-    def new_model_attributes
-      @new_model
-    end
+  def new_model_attributes
+    @new_model
+  end
 
 end

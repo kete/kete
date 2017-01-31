@@ -8,11 +8,11 @@ class ZoomIndexRebuildWorker < BackgrounDRb::MetaWorker
 
   def create(args = nil)
     results = { :do_work_time => Time.now.utc.to_s,
-      :done_with_do_work => false,
-      :done_with_do_work_time => nil,
-      :records_processed => 0,
-      :records_skipped => 0,
-      :records_failed => 0 }
+                :done_with_do_work => false,
+                :done_with_do_work_time => nil,
+                :records_processed => 0,
+                :records_skipped => 0,
+                :records_failed => 0 }
 
     cache[:results] = results
   end
@@ -66,7 +66,7 @@ class ZoomIndexRebuildWorker < BackgrounDRb::MetaWorker
       end
 
       raise "Specifying skip existing records is not supported when you are using the faster rebuild option." if @skip_existing && @use_zebraidx
-      
+
       raise "Erasing all existing search records is only allowed when you are starting from first record and ending with last record." if @clear_zebra && @start_id != 'first' || @end_id != 'last'
       raise "Start must be a valid item id number." if @start_id != 'first' && @start_id.to_i == 0
       raise "End must be a valid item id number." if @end_id != 'last' && @end_id.to_i ==  0
@@ -131,8 +131,8 @@ class ZoomIndexRebuildWorker < BackgrounDRb::MetaWorker
         while the_class_count > class_count_so_far
           if class_count_so_far > 0
             clause_values[:start_id] = the_class.find(:first,
-                                                     :select => 'id',
-                                                     :conditions => "id > #{@last_id}").id
+                                                      :select => 'id',
+                                                      :conditions => "id > #{@last_id}").id
           end
 
 
@@ -209,18 +209,18 @@ class ZoomIndexRebuildWorker < BackgrounDRb::MetaWorker
             @last_id = item.id
             @results[:last_id] = @last_id
             cache[:results] = @results
-          end
+        end
         end # end batch
 
         if batch_count < batch_size && batch_count != 1
           if @use_zebraidx
             # trigger zebraidx and capture results for reporting
             zebraidx_message = Rake::Task["zebra:index"].execute(ENV)
-            
+
             # rm data subdirectories now that we are done zebraidx batch processing
             FileUtils.rm_r("#{Rails.root}/zebradb/public/data/#{class_name.tableize}", :force => true)
             FileUtils.rm_r("#{Rails.root}/zebradb/private/data/#{class_name.tableize}", :force => true) unless @skip_private
-            
+
             # TODO: more reporting on failed records?
             @record_count += batch_count
             @results[:records_processed] = @record_count
@@ -230,7 +230,7 @@ class ZoomIndexRebuildWorker < BackgrounDRb::MetaWorker
             logger.info("zebraidx at #{@record_count.to_s} says: #{zebraidx_message}")
           end
         end
-        
+
         logger.info("Done with #{class_name}")
       end
 

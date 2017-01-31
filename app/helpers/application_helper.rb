@@ -12,8 +12,8 @@ module ApplicationHelper
 
   # include ZoomHelpers
 
-# !! Re-enable on switch to rails 3.2:
-#  include OembedProviderHelper
+  # !! Re-enable on switch to rails 3.2:
+  #  include OembedProviderHelper
 
   def stripped_title
     h(strip_tags(@title))
@@ -144,8 +144,8 @@ module ApplicationHelper
     return unless @result_sets && @current_class && @result_sets[@current_class]
 
     meta_tag(:name => "totalResults", :content => @result_sets[@current_class].size) +
-    meta_tag(:name => "startIndex", :content => ((@current_page - 1) * @number_per_page)) +
-    meta_tag(:name => "itemsPerPage", :content => @number_per_page)
+      meta_tag(:name => "startIndex", :content => ((@current_page - 1) * @number_per_page)) +
+      meta_tag(:name => "itemsPerPage", :content => @number_per_page)
   end
 
   def header_links_to_baskets
@@ -377,9 +377,9 @@ module ApplicationHelper
         if basket.topics.count > basket_topic_count && basket_topic_count > 0
           html += content_tag("li", link_to(t('application_helper.render_baskets_as_menu.more'),
                                             {:controller => 'search',
-                                            :action => 'all',
-                                            :urlified_name => basket.urlified_name,
-                                            :controller_name_for_zoom_class => 'topics'},
+                                             :action => 'all',
+                                             :urlified_name => basket.urlified_name,
+                                             :controller_name_for_zoom_class => 'topics'},
                                             {:tabindex => '2'}))
         end
 
@@ -401,9 +401,9 @@ module ApplicationHelper
 
   def current_user_can_see_add_links?
     if @current_basket.setting(:show_add_links) == "at least moderator"
-        can_see_add_links = logged_in? && @at_least_a_moderator
+      can_see_add_links = logged_in? && @at_least_a_moderator
     else
-        can_see_add_links = true
+      can_see_add_links = true
     end
     can_see_add_links
   end
@@ -411,18 +411,18 @@ module ApplicationHelper
   def current_user_can_see_action_menu?
     #return true
     if @current_basket.setting(:show_action_menu) == "at least moderator"
-        can_see_action_menu = logged_in? && @at_least_a_moderator
+      can_see_action_menu = logged_in? && @at_least_a_moderator
     else
-        can_see_action_menu = true
+      can_see_action_menu = true
     end
     can_see_action_menu
   end
 
   def current_user_can_see_discussion?
     if @current_basket.setting(:show_discussion) == "at least moderator"
-        can_see_discussion = logged_in? && @at_least_a_moderator
+      can_see_discussion = logged_in? && @at_least_a_moderator
     else
-        can_see_discussion = true
+      can_see_discussion = true
     end
     return_value = can_see_discussion
   end
@@ -447,10 +447,10 @@ module ApplicationHelper
                                 :urlified_name => basket.urlified_name,
                                 :controller => 'members',
                                 :action => 'list'),
-                        :class => options[:class] )
+                  :class => options[:class] )
     elsif !options[:unavailable_text].blank?
       content_tag("li", options[:unavailable_text],
-                        :class => options[:class])
+                  :class => options[:class])
     else
       ''
     end
@@ -544,8 +544,8 @@ module ApplicationHelper
 
   def link_to_item(item)
     link_to h(item.title), :controller => zoom_class_controller(item.class.name),
-    :urlified_name => item.basket.urlified_name,
-    :action => :show, :id => item
+                           :urlified_name => item.basket.urlified_name,
+                           :action => :show, :id => item
   end
 
   def url_for_contributions_of(user, zoom_class)
@@ -772,7 +772,7 @@ module ApplicationHelper
       end
     end
     if (options[:item] && options[:zoom_class] && options[:display_num] && options[:total_num]) &&
-          (options[:total_num] > options[:display_num])
+       (options[:total_num] > options[:display_num])
       display_html += "<li class='more'>"
       more_num = options[:total_num] - options[:display_num]
       display_html += link_to_related_items_of(options[:item], options[:zoom_class], { :link_text => "#{more_num.to_s} more like this &gt;&gt;" }, { :privacy_type => options[:privacy_type] })
@@ -931,10 +931,10 @@ module ApplicationHelper
 
   def basket_option_for(basket, options = {})
     content_tag(:option, (options[:label] || basket.name), {
-      :value => (options[:value] || basket.urlified_name),
-      :class => ('not_member' unless @basket_access_hash.key?(basket.urlified_name.to_sym)),
-      :selected => ('selected' if options[:selected] && basket.urlified_name.to_sym == options[:selected].to_sym)
-    })
+                  :value => (options[:value] || basket.urlified_name),
+                  :class => ('not_member' unless @basket_access_hash.key?(basket.urlified_name.to_sym)),
+                  :selected => ('selected' if options[:selected] && basket.urlified_name.to_sym == options[:selected].to_sym)
+                })
   end
 
   #
@@ -1253,9 +1253,9 @@ module ApplicationHelper
 
         comment_string += "<ul>"
         comment_string += "<li class='first'>" + link_to(t('application_helper.show_comments_for.reply'),
-                                           :controller => 'comments',
-                                           :action => :new,
-                                           :parent_id => comment) + "</li>\n"
+                                                         :controller => 'comments',
+                                                         :action => :new,
+                                                         :parent_id => comment) + "</li>\n"
 
         if logged_in? && @at_least_a_moderator
           comment_string += "<li>" + link_to(t('application_helper.show_comments_for.edit'),
@@ -1268,8 +1268,8 @@ module ApplicationHelper
           #                                    :id => comment) + "</li>\n"
           comment_string += "<li>" + link_to(t('application_helper.show_comments_for.delete'),
                                              {:action => :destroy,
-                                               :controller => 'comments',
-                                               :id => comment },
+                                              :controller => 'comments',
+                                              :id => comment },
                                              :method => :delete,
                                              :confirm => t('application_helper.show_comments_for.confirm_delete')) + "</li>\n"
         end
@@ -1289,11 +1289,11 @@ module ApplicationHelper
 
     end
     html_string += "<p>" + link_to(t('application_helper.show_comments_for.join_discussion'),
-                                    { :action => 'new',
-                                      :controller => 'comments',
-                                      :commentable_id => item,
-                                      :commentable_type => item.class.name,
-                                      :commentable_private => (item.respond_to?(:private) && item.private?) ? 1 : 0 }) + "</p>"
+                                   { :action => 'new',
+                                     :controller => 'comments',
+                                     :commentable_id => item,
+                                     :commentable_type => item.class.name,
+                                     :commentable_private => (item.respond_to?(:private) && item.private?) ? 1 : 0 }) + "</p>"
 
     return html_string.html_safe
   end
@@ -1388,15 +1388,15 @@ module ApplicationHelper
   end
 
   def link_to_edit_for(item)
-      link_to("<span class=\"edit-link\">#{t("topics.actions_menu.edit")}</span>".html_safe,
-              { :action => :edit, :id => item, :private => params[:private] },
-              :tabindex => '1')
+    link_to("<span class=\"edit-link\">#{t("topics.actions_menu.edit")}</span>".html_safe,
+            { :action => :edit, :id => item, :private => params[:private] },
+            :tabindex => '1')
   end
 
   def link_to_history_for(item)
-      link_to("<span class=\"history-link\">#{t("topics.actions_menu.history")}</span>".html_safe,
-              { :action => :history, :id => item },
-              :tabindex => '1')
+    link_to("<span class=\"history-link\">#{t("topics.actions_menu.history")}</span>".html_safe,
+            { :action => :history, :id => item },
+            :tabindex => '1')
   end
 
   # we use this in imports, too
@@ -1407,7 +1407,7 @@ module ApplicationHelper
       result = "<select name=\"#{object}\" id=\"#{object}\""
     end
     html_options.each do |key, value|
-        result << ' ' + key.to_s + '="' + value.to_s + '"'
+      result << ' ' + key.to_s + '="' + value.to_s + '"'
     end
     result << ">\n"
     result << options_for_select(pre_options) unless pre_options.blank?
@@ -1500,10 +1500,10 @@ module ApplicationHelper
     if remote_link
       # create a remote to link
       link_to link_to_text, { :url => location_hash,
-                                     :before => "Element.show('data_spinner')",
-                                     :complete => "Element.hide('data_spinner')" },
-                                      :remote => true,
-                                   :href => url_for(location_hash)
+                              :before => "Element.show('data_spinner')",
+                              :complete => "Element.hide('data_spinner')" },
+              :remote => true,
+              :href => url_for(location_hash)
     else
       # create a plain link
       link_to link_to_text, location_hash
@@ -1521,7 +1521,7 @@ module ApplicationHelper
     # not happy with this icon, just say private: for now
     # TODO: replace with better icon
     # image_tag 'privacy_icon.gif', :width => 16, :height => 15, :alt => "This item is private. ", :class => 'privacy_icon'
-      t('application_helper.privacy_image.private')
+    t('application_helper.privacy_image.private')
   end
 
   def privacy_image_for(item)
@@ -1595,9 +1595,9 @@ module ApplicationHelper
       current_choice = parent_choices.shift
 
       choices = if current_choice.is_a?(ExtendedField)
-        current_choice.choices.find_top_level.reject { |c| !categories_field.choices.member?(c) }
-      else
-        current_choice.choices.reject { |c| !categories_field.choices.member?(c) }
+                  current_choice.choices.find_top_level.reject { |c| !categories_field.choices.member?(c) }
+                else
+                  current_choice.choices.reject { |c| !categories_field.choices.member?(c) }
       end
 
       # Skip this choice if it doesn't have any choices
@@ -1609,11 +1609,11 @@ module ApplicationHelper
       html += content_tag('li', link_to(t('application_helper.browse_by_category_columns.all_items',
                                           :item_type => zoom_class_plural_humanize(@current_class)),
                                         {:view_as => 'choice_hierarchy'}),
-                                {:class => (params[:limit_to_choice] ? '' : 'current' )}) if time == 0
+                          {:class => (params[:limit_to_choice] ? '' : 'current' )}) if time == 0
       # For every choice in the current choice, lets add a list item
       choices.each do |choice|
         html += list_item_for_choice(choice, { :current => parent_choices.include?(choice), :include_children => false },
-                                             { :extended_field => categories_field, :view_as => 'choice_hierarchy' })
+                                     { :extended_field => categories_field, :view_as => 'choice_hierarchy' })
       end
       html += '</ul>'
       html += '</div>'
@@ -1634,11 +1634,11 @@ module ApplicationHelper
         choices << content_tag(:li, value, :class => "current #{'first' if index == 0}")
       else
         choices << content_tag(:li,   link_to(value, {
-          :urlified_name => @current_basket.urlified_name,
-          :controller => 'account',
-          :action => 'change_locale',
-          :override_locale => key
-        }), :class => ('first' if index == 0))
+                                                :urlified_name => @current_basket.urlified_name,
+                                                :controller => 'account',
+                                                :action => 'change_locale',
+                                                :override_locale => key
+                                              }), :class => ('first' if index == 0))
       end
     end
     content_tag(:ul, choices)
@@ -1647,11 +1647,11 @@ module ApplicationHelper
   def locale_dropdown(form=nil, options=nil)
     options ||= Hash.new
     options[:default] ||= if params[:user]
-      params[:user][:locale]
-    elsif current_user != :false
-      current_user.locale
-    else
-      I18n.locale
+                            params[:user][:locale]
+                          elsif current_user != :false
+                            current_user.locale
+                          else
+                            I18n.locale
     end
     locales = I18n.available_locales_with_labels.collect { |key,value| [value,key] }
     locales = ([[options[:pre_text], '']] + locales) if options[:pre_text]

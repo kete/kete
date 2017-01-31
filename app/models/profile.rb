@@ -77,13 +77,13 @@ class Profile < ActiveRecord::Base
     self.setting(:rules).each do |k,v|
       value = "#{k.humanize}: "
       value += if v['rule_type'] == 'all'
-        I18n.t('profile_model.rules.all')
-      elsif v['rule_type'] == 'none'
-        I18n.t('profile_model.rules.none')
-      elsif v['rule_type'] == 'some' && v['allowed']
-        v['allowed'].collect { |a| a.humanize }.join(', ') + '.'
-      else
-        I18n.t('profile_model.rules.none')
+                 I18n.t('profile_model.rules.all')
+               elsif v['rule_type'] == 'none'
+                 I18n.t('profile_model.rules.none')
+               elsif v['rule_type'] == 'some' && v['allowed']
+                 v['allowed'].collect { |a| a.humanize }.join(', ') + '.'
+               else
+                 I18n.t('profile_model.rules.none')
       end
       data << value
     end

@@ -65,7 +65,7 @@ class AccountController < ApplicationController
           anonymous_name = params[:name].blank? ? @anonymous_user.user_name : params[:name]
 
           session[:anonymous_user] = { :name => anonymous_name,
-            :email => params[:email]}
+                                       :email => params[:email]}
 
           # see if the submitted website is valid
           # append protocol if they have left it off
@@ -256,8 +256,8 @@ class AccountController < ApplicationController
         render :update do |page|
           page.replace_html params[:avatar_id],
                             avatar_tag(User.new({ :email => params[:email] || String.new }),
-                                                { :size => 30, :rating => 'G', :gravatar_default_url => "/images/no-avatar.png" },
-                                                { :width => 30, :height => 30, :alt => t('account_controller.fetch_gravatar.your_gravatar') })
+                                       { :size => 30, :rating => 'G', :gravatar_default_url => "/images/no-avatar.png" },
+                                       { :width => 30, :height => 30, :alt => t('account_controller.fetch_gravatar.your_gravatar') })
         end
       end
     end

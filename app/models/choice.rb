@@ -27,7 +27,7 @@ class Choice < ActiveRecord::Base
   has_many :choice_mappings
 
   has_many :extended_fields, :through => :choice_mappings,
-    :source => :field, :source_type => 'ExtendedField'
+                             :source => :field, :source_type => 'ExtendedField'
 
   # Use better nested set for STI
   acts_as_nested_set

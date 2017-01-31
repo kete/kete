@@ -31,9 +31,9 @@ class WebLink < ActiveRecord::Base
 
 
     join_table = WebLink.outer_joins(:taggings).
-                         outer_joins(:contributions).
-                         outer_joins(:content_item_relations).
-                         joins("LEFT OUTER JOIN  deleted_content_item_relations " +
+                 outer_joins(:contributions).
+                 outer_joins(:content_item_relations).
+                 joins("LEFT OUTER JOIN  deleted_content_item_relations " +
                                "ON deleted_content_item_relations.related_item_id = web_links.id " +
                                "AND deleted_content_item_relations.related_item_type = 'WebLink'")
 

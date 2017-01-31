@@ -9,11 +9,11 @@ module KeteUrlFor
     # without privacy
     def url_for_dc_identifier(item, options={})
       location = { :controller => zoom_class_controller(item.class.name),
-        :action => 'show',
-        :id => item,
-        :format => nil,
-        :locale => false,
-        :urlified_name => item.basket_or_default.urlified_name }
+                   :action => 'show',
+                   :id => item,
+                   :format => nil,
+                   :locale => false,
+                   :urlified_name => item.basket_or_default.urlified_name }
 
       location[:protocol] = 'http' if options[:force_http]
 

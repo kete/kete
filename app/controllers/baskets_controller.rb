@@ -510,10 +510,10 @@ class BasketsController < ApplicationController
       value = if @basket.respond_to?(name)
         # if the basket responds to a value method
         @basket.send(name)
-      elsif @basket.respond_to?("#{name}?")
+              elsif @basket.respond_to?("#{name}?")
         # if the basket respond to a boolean method
         @basket.send("#{name}?")
-      else
+              else
         # else, see if it has a setting (which will returns nil if not)
         @basket.settings[name.to_sym]
       end

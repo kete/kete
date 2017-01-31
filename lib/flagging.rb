@@ -256,9 +256,9 @@ module Flagging
         # we leave required fields alone
         # and let the view handle whether they should be shown
         update_hash = { :title => SystemSetting.blank_title,
-          :description => nil,
-          :extended_content => nil,
-          :tag_list => nil }
+                        :description => nil,
+                        :extended_content => nil,
+                        :tag_list => nil }
 
         update_hash[:private] = self.private? if self.respond_to?(:private)
         update_hash[:description] = SystemSetting.pending_flag if self.class.name == 'Comment'
@@ -330,12 +330,12 @@ module Flagging
       if SystemSetting.frequency_of_moderation_email.is_a?(String) and SystemSetting.frequency_of_moderation_email == 'instant'
         # if histor_url is blank it will be figured out in view
         history_url = if !options[:history_url].blank?
-          options[:history_url]
-        else
-          url_for(:host => SystemSetting.site_name,
-                  :urlified_name => basket.urlified_name,
-                  :controller => zoom_class_controller(self.class.name),
-                  :action => 'history', :id => self, :locale => false)
+                        options[:history_url]
+                      else
+                        url_for(:host => SystemSetting.site_name,
+                                :urlified_name => basket.urlified_name,
+                                :controller => zoom_class_controller(self.class.name),
+                                :action => 'history', :id => self, :locale => false)
         end
 
         message = !options[:message].blank? ? options[:message] : nil
@@ -374,29 +374,29 @@ module Flagging
     # EOIN: I do not know what the purpose of making these methods protected is.
     protected
 
-      def do_moderation
-        # if are we are using full moderation
-        # where everything has to approved by an admin
-        # before being seen in the basket
-        # flag the submitted revision
-        # which will have the side effect
-        # of either staying at the last unflagged version
-        # or
-        # adding a blank revision, if no unflagged version is available
+    def do_moderation
+      # if are we are using full moderation
+      # where everything has to approved by an admin
+      # before being seen in the basket
+      # flag the submitted revision
+      # which will have the side effect
+      # of either staying at the last unflagged version
+      # or
+      # adding a blank revision, if no unflagged version is available
 
-        self.reload # make sure we have the latest attribute values (specifically version)
-        if should_moderate?
-          flag_live_version_with(SystemSetting.pending_flag)
-        end
-
+      self.reload # make sure we have the latest attribute values (specifically version)
+      if should_moderate?
+        flag_live_version_with(SystemSetting.pending_flag)
       end
 
-      def should_moderate?
-        self.fully_moderated? and
-          !self.do_not_moderate? and
-          !self.already_at_blank_version? and
-          !self.at_placeholder_public_version?
-      end
+    end
+
+    def should_moderate?
+      self.fully_moderated? and
+        !self.do_not_moderate? and
+        !self.already_at_blank_version? and
+        !self.at_placeholder_public_version?
+    end
 
   end
 

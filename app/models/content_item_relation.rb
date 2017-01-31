@@ -48,20 +48,20 @@ class ContentItemRelation < ActiveRecord::Base
 
   protected
 
-    def self.find_relation_to_topic(topic_id, related_item, options = {})
-      topic_id = topic_id.is_a?(Topic) ? topic_id.id : topic_id
-      options = { :deleted => false }.merge(options)
+  def self.find_relation_to_topic(topic_id, related_item, options = {})
+    topic_id = topic_id.is_a?(Topic) ? topic_id.id : topic_id
+    options = { :deleted => false }.merge(options)
 
-      # Set the class to run the find on.
-      find_class = options[:deleted] ? ContentItemRelation::Deleted : ContentItemRelation
+    # Set the class to run the find on.
+    find_class = options[:deleted] ? ContentItemRelation::Deleted : ContentItemRelation
 
-      if related_item.instance_of?(Topic)
-        relation = find_class.where(topic_id: related_item.id).where(related_item_id: topic_id).where(related_item_type: "Topic").first
-      end
-
-      # If no relationship has been found above, check the correct way around.
-      relation ||= find_class.where(topic_id: topic_id).where(related_item_id: related_item.id).where(related_item_type: "#{related_item.class.name}").first
-
+    if related_item.instance_of?(Topic)
+      relation = find_class.where(topic_id: related_item.id).where(related_item_id: topic_id).where(related_item_type: "Topic").first
     end
+
+    # If no relationship has been found above, check the correct way around.
+    relation ||= find_class.where(topic_id: topic_id).where(related_item_id: related_item.id).where(related_item_type: "#{related_item.class.name}").first
+
+  end
 
 end

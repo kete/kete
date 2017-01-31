@@ -50,11 +50,11 @@ module FriendlyUrls
       # always is (same goes with name)
       string = if self.attributes.include?('title')
         self.attributes['title']
-      elsif self.attributes.include?('name')
+               elsif self.attributes.include?('name')
         self.attributes['name']
-      elsif self.attributes.include?('label')
+               elsif self.attributes.include?('label')
         self.attributes['label']
-      else
+               else
         String.new
       end
 

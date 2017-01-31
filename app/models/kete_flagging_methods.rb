@@ -7,24 +7,24 @@ module KeteFlaggingMethods
   #       There's more information on flags used, moderation, etc, in the comments at the top 
   #       of flagging.rb.
 
-	def pending?
-		if is_a?(Comment)
-			title != SystemSetting.blank_title
-		else
-			title != SystemSetting.blank_title || description != nil 	# is not null
-		end
-	end
-
-	def public?
-		if self.is_a?(Comment)
-			title != SystemSetting.blank_title && title != SystemSetting.no_public_version_title && commentable_private == false
+  def pending?
+    if is_a?(Comment)
+      title != SystemSetting.blank_title
     else
-			title != SystemSetting.blank_title && title != SystemSetting.no_public_version_title
+      title != SystemSetting.blank_title || description != nil 	# is not null
     end
-	end
+  end
 
-	def private?
-		if self.is_a?(Comment)
+  def public?
+    if self.is_a?(Comment)
+      title != SystemSetting.blank_title && title != SystemSetting.no_public_version_title && commentable_private == false
+    else
+      title != SystemSetting.blank_title && title != SystemSetting.no_public_version_title
+    end
+  end
+
+  def private?
+    if self.is_a?(Comment)
       title != SystemSetting.blank_title && commentable_private == true
     else
       title != SystemSetting.blank_title && private_version_serialized != nil 	# NOT NULL

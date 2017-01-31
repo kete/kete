@@ -17,8 +17,8 @@ module ZoomControllerActions
 
 
       import_request = { :host => request.host,
-        :protocol => request.protocol,
-        :request_uri => request.original_url }
+                         :protocol => request.protocol,
+                         :request_uri => request.original_url }
 
       @worker_running = false
       # only one rebuild should be running at a time

@@ -28,8 +28,8 @@ module XmlHelpers
           (item.respond_to?(:original_file) && !item.original_file.blank?)
         protocol = protocol || "http"
         args = { :type => item.content_type,
-          :length => item.size.to_s,
-          :url => file_url_from_bits_for(item, host, protocol) }
+                 :length => item.size.to_s,
+                 :url => file_url_from_bits_for(item, host, protocol) }
 
         if item.class.name == 'ImageFile'
           args[:width] = item.width
@@ -151,7 +151,7 @@ module XmlHelpers
             # limiting here, since we are likely to only want this many
             # if the item is not private, don't allow private related still images
             options = { :limit => SystemSetting.number_of_related_things_to_display_per_type,
-              :conditions => PUBLIC_CONDITIONS}
+                        :conditions => PUBLIC_CONDITIONS}
 
             options.delete(:conditions) if item.private
 

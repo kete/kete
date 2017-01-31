@@ -17,8 +17,8 @@ module OaiZoom
 
     def simulated_request
       @simulated_request ||= { :host => SITE_NAME,
-        :protocol => appropriate_protocol_for(self),
-        :request_uri => url_for_dc_identifier(self)}
+                               :protocol => appropriate_protocol_for(self),
+                               :request_uri => url_for_dc_identifier(self)}
     end
 
     def oai_record_xml(options = { })

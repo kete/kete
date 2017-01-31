@@ -69,8 +69,8 @@ module Importer
       @description_end_templates = Hash.new
       @collections_to_skip = Array.new
       @results = { :do_work_time => Time.now.to_s,
-        :done_with_do_work => false,
-        :records_processed => 0 }
+                   :done_with_do_work => false,
+                   :records_processed => 0 }
 
       cache[:results] = @results
     end

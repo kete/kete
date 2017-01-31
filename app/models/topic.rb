@@ -58,12 +58,12 @@ class Topic < ActiveRecord::Base
     deleted_content_item_relations_sql_2 = "SELECT DISTINCT topic_id FROM deleted_content_item_relations WHERE updated_at > ?"
 
     and_query = Topic.where("topics.  updated_at > ?", date).
-                      where("topics.id IN ( #{taggings_sql} )"). # Tagging doesn't have an updated_at column.
-                      where("topics.id IN ( #{contributions_sql} )").
-                      where("topics.id IN ( #{content_item_relations_sql_1} )").
-                      where("topics.id IN ( #{content_item_relations_sql_2} )").
-                      where("topics.id IN ( #{deleted_content_item_relations_sql_1} )", date).
-                      where("topics.id IN ( #{deleted_content_item_relations_sql_2} )", date)
+                where("topics.id IN ( #{taggings_sql} )"). # Tagging doesn't have an updated_at column.
+                where("topics.id IN ( #{contributions_sql} )").
+                where("topics.id IN ( #{content_item_relations_sql_1} )").
+                where("topics.id IN ( #{content_item_relations_sql_2} )").
+                where("topics.id IN ( #{deleted_content_item_relations_sql_1} )", date).
+                where("topics.id IN ( #{deleted_content_item_relations_sql_2} )", date)
 
     or_query = and_query.where_values.join(" OR ")
 

@@ -75,7 +75,7 @@ module ImageSlideshowTestHelper
           if @topic
             options[:topic_id] = @topic.id
             selected_image_params = { :urlified_name => @topic.basket.urlified_name,
-              :topic_id => @topic.id }
+                                      :topic_id => @topic.id }
           end
 
           # initial population and correct values (clicking play button)

@@ -55,15 +55,15 @@ class PqfQuery
 
   # TODO: my hash_fu is failing me, DRY this up
   DATETIME_SPECS = { 'oai_datestamp' => ATTRIBUTE_SPECS['last_modified'],
-    'last_modified' => ATTRIBUTE_SPECS['last_modified'],
-    'date' => ATTRIBUTE_SPECS['date']
+                     'last_modified' => ATTRIBUTE_SPECS['last_modified'],
+                     'date' => ATTRIBUTE_SPECS['date']
   } unless defined?(DATETIME_SPECS)
 
   DATETIME_COMPARISON_SPECS = { 'before' => QUALIFYING_ATTRIBUTE_SPECS['lt'],
-    'after' => QUALIFYING_ATTRIBUTE_SPECS['gt'],
-    'on' => QUALIFYING_ATTRIBUTE_SPECS['eq'],
-    'on_or_before' => QUALIFYING_ATTRIBUTE_SPECS['le'],
-    'on_or_after' => QUALIFYING_ATTRIBUTE_SPECS['ge']
+                                'after' => QUALIFYING_ATTRIBUTE_SPECS['gt'],
+                                'on' => QUALIFYING_ATTRIBUTE_SPECS['eq'],
+                                'on_or_before' => QUALIFYING_ATTRIBUTE_SPECS['le'],
+                                'on_or_after' => QUALIFYING_ATTRIBUTE_SPECS['ge']
   } unless defined?(DATETIME_COMPARISON_SPECS)
 
   # all ATTRIBUTE_SPECS wll have ..._include method created for them
@@ -72,8 +72,8 @@ class PqfQuery
   DO_NOT_AUTO_DEF_INCLUDE_METHODS_FOR = ATTRIBUTE_SPECS.keys.select { |key| key.include?('sort') } unless defined?(DO_NOT_AUTO_DEF_INCLUDE_METHODS_FOR)
 
   attr_accessor :query_parts, :operators,
-  :title_or_any_text_query_string, :title_or_any_text_operators_string,
-  :direction_value, :sort_spec, :should_search_web_links_to
+                :title_or_any_text_query_string, :title_or_any_text_operators_string,
+                :direction_value, :sort_spec, :should_search_web_links_to
 
   # dynamically define query methods for our attribute specs
   def self.define_query_method_for(method_name, attribute_spec)
@@ -138,7 +138,7 @@ class PqfQuery
       # have a slightly different format (specifies structure of date normalized as @attr 4=5)
       # grab the correct spec for sorting
       @sort_spec = @sort_spec +
-        '_sort' if Search.date_types.include?(@sort_spec) && !@sort_spec.include?('_sort')
+                   '_sort' if Search.date_types.include?(@sort_spec) && !@sort_spec.include?('_sort')
 
       full_query = '@or ' + full_query + QUALIFYING_ATTRIBUTE_SPECS['sort_stub'] + @direction_value.to_s + ' ' + ATTRIBUTE_SPECS[@sort_spec] + ' 0 '
     end
@@ -250,11 +250,11 @@ class PqfQuery
 
   def creators_or_contributors_equals_completely(term_or_terms, options = { })
     query_part = '@or ' + creators_equals_completely(term_or_terms,
-                                           options.merge({ :only_return_as_string => true,
-                                                           :operator => 'none'}))
+                                                     options.merge({ :only_return_as_string => true,
+                                                                     :operator => 'none'}))
     query_part += ' ' + contributors_equals_completely(term_or_terms,
-                                             options.merge({ :only_return_as_string => true,
-                                                             :operator => 'none'}))
+                                                       options.merge({ :only_return_as_string => true,
+                                                                       :operator => 'none'}))
 
     push_to_appropriate_variables(options.merge(:query_part => query_part, :operator => '@and')) unless options[:only_return_as_string]
     query_part

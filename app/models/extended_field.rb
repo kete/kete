@@ -193,12 +193,12 @@ class ExtendedField < ActiveRecord::Base
   alias :to_param :format_for_friendly_unicode_urls
 
   protected
-    def strip_extra_spaces_from_label
-      self.label = self.label.strip
-    end
+  def strip_extra_spaces_from_label
+    self.label = self.label.strip
+  end
 
-    def validate
-      errors.add('label', I18n.t('extended_field_model.label_cant_have')) if label && label.strip =~ /^(form|input|script)$/i
-    end
+  def validate
+    errors.add('label', I18n.t('extended_field_model.label_cant_have')) if label && label.strip =~ /^(form|input|script)$/i
+  end
 
 end
