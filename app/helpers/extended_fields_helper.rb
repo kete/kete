@@ -6,7 +6,7 @@ module ExtendedFieldsHelper
   def topic_type_form_column(record, input_name)
     topic_types = TopicType.find(1).full_set
     select = topic_type_select_with_indent('record', 'topic_type', topic_types, :id, :name, nil,
-                                           { :class=>"select", :tabindex => '1' })
+                                           { :class => "select", :tabindex => '1' })
     content_tag('div', select, { :id => "hidden_choices_topic_type_select_#{record.id.to_s}", :style => 'display:none;' })
   end
 
@@ -34,7 +34,7 @@ module ExtendedFieldsHelper
       end +
       '</ul></div>' +
       '<div id="allow_user_additions">' +
-      "#{t('extended_fields_helper.pseudo_choices_form_column.allow_user_choices')} #{t('extended_fields_helper.pseudo_choices_form_column.allow_user_choices_yes')} " + radio_button_tag("record[user_choice_addition]", 1, record.user_choice_addition?) + " #{t('extended_fields_helper.pseudo_choices_form_column.allow_user_choices_no')} " +   radio_button_tag("record[user_choice_addition]", 0, !record.user_choice_addition?) +
+      "#{t('extended_fields_helper.pseudo_choices_form_column.allow_user_choices')} #{t('extended_fields_helper.pseudo_choices_form_column.allow_user_choices_yes')} " + radio_button_tag("record[user_choice_addition]", 1, record.user_choice_addition?) + " #{t('extended_fields_helper.pseudo_choices_form_column.allow_user_choices_no')} " + radio_button_tag("record[user_choice_addition]", 0, !record.user_choice_addition?) +
       '</div>' +
       '<div id="link_choice_values">' +
       "#{t('extended_fields_helper.pseudo_choices_form_column.link_choice_values')} #{t('extended_fields_helper.pseudo_choices_form_column.link_choice_values_yes')} " + radio_button_tag("record[link_choice_values]", 1, !record.dont_link_choice_values?) + " #{t('extended_fields_helper.pseudo_choices_form_column.link_choice_values_no')} " + radio_button_tag("record[link_choice_values]", 0, record.dont_link_choice_values?) +
@@ -93,7 +93,7 @@ module ExtendedFieldsHelper
     end
 
     if record.new_record?
-      select(:record, :ftype, options_for_select, {}, :name => input_name )
+      select(:record, :ftype, options_for_select, {}, :name => input_name)
     else
       "#{record.ftype} #{t('extended_fields_helper.ftype_form_column.cannot_be_changed')}"
     end
@@ -388,10 +388,10 @@ module ExtendedFieldsHelper
   end
 
   def extended_field_year_editor(name, value, tag_options, extended_field)
-    html = text_field_tag(name+"[value]", (value['value'] if value), tag_options)
+    html = text_field_tag(name + "[value]", (value['value'] if value), tag_options)
     if extended_field.circa?
-      html += hidden_field_tag(name+"[circa]", "0")
-      html += (check_box_tag(name+"[circa]", "1", (value && value['circa'].to_s == '1')) + "Circa?")
+      html += hidden_field_tag(name + "[circa]", "0")
+      html += (check_box_tag(name + "[circa]", "1", (value && value['circa'].to_s == '1')) + "Circa?")
     end
     html
   end
@@ -410,14 +410,14 @@ module ExtendedFieldsHelper
 
   def additional_extended_field_control(extended_field, n)
     id = id_for_extended_field(extended_field) + "_additional"
-    text = t( 'extended_fields_helper.additional_extended_field_control.add_another', 
-              :field_name => display_label_for(extended_field).singularize.downcase)
+    text = t('extended_fields_helper.additional_extended_field_control.add_another',
+             :field_name => display_label_for(extended_field).singularize.downcase)
     url = { :controller => 'extended_fields',
             :action => 'add_field_to_multiples',
             :extended_field_id => extended_field.id,
-            :n => n, :item_key => @item_type_for_params 
+            :n => n, :item_key => @item_type_for_params
     }
-    link_to(text, url, { id: id, remote: true } )
+    link_to(text, url, { id: id, remote: true })
   end
 
   def qualified_name_for_field(extended_field)
@@ -479,15 +479,15 @@ module ExtendedFieldsHelper
     end
   end
 
-  def list_item_for_choice(choice, options={}, url_hash={})
+  def list_item_for_choice(choice, options = {}, url_hash = {})
     options = {
       :include_children => true,
-      :current => false,
+      :current => false
     }.merge(options)
 
     url_hash = {
       :urlified_name => params[:urlified_name] || @site_basket.urlified_name,
-      :controller_name_for_zoom_class => params[:controller_name_for_zoom_class] || 'topics',
+      :controller_name_for_zoom_class => params[:controller_name_for_zoom_class] || 'topics'
     }.merge(url_hash)
 
     if params[:privacy_type].blank?

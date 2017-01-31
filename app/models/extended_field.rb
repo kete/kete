@@ -60,8 +60,8 @@ class ExtendedField < ActiveRecord::Base
   after_save :set_base_url
 
   def base_url
-    #@base_url ||= self.setting(:base_url)
-    # ROB:  Turning this off as it doesn't make sense to use absolute links (kete.co.nz/...) 
+    # @base_url ||= self.setting(:base_url)
+    # ROB:  Turning this off as it doesn't make sense to use absolute links (kete.co.nz/...)
     #       instead of relative onves (/...)
     ""
   end
@@ -108,7 +108,7 @@ class ExtendedField < ActiveRecord::Base
   validates_exclusion_of :label, :in => invalid_label_names, :message => lambda { I18n.t('extended_field_model.already_used', :invalid_label_names => invalid_label_names.join(", ")) }
 
   # TODO: might want to reconsider using subselects here
-  def self.find_available_fields(type,type_of)
+  def self.find_available_fields(type, type_of)
     if type_of == 'TopicType'
       # exclude ancestor's fields as well
       topic_types_to_exclude = type.ancestors + [type]
@@ -158,7 +158,7 @@ class ExtendedField < ActiveRecord::Base
   end
 
   def self.params_to_label(params_key)
-    where(self.clauses_for_has_label_that_matches(params_key) ).first.label
+    where(self.clauses_for_has_label_that_matches(params_key)).first.label
   end
 
   def is_a_choice?
@@ -174,7 +174,7 @@ class ExtendedField < ActiveRecord::Base
     self.dont_link_choice_values = !value.param_to_obj_equiv
   end
 
-  def is_required?(controller, topic_type_id=nil)
+  def is_required?(controller, topic_type_id = nil)
     raise "ERROR: You must specify a topic type id since controller is topics" if controller == 'topics' && topic_type_id.nil?
     if controller == 'topics'
       # we have to check the submitted topic_type or its ancestors

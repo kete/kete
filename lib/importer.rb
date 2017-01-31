@@ -407,7 +407,7 @@ module Importer
     def importer_prepare_short_summary(source_string, length = 25, end_string = '')
       # length is how many words, rather than characters
       words = source_string.split()
-      words[0..(length-1)].join(' ') + (words.length > length ? end_string : '')
+      words[0..(length - 1)].join(' ') + (words.length > length ? end_string : '')
     end
 
     def importer_prepare_path_to_image_file(image_file)
@@ -453,7 +453,7 @@ module Importer
       # make a copy of any files that have spaces in their name
       # a better formed name
       # to avoid problems later
-      if !the_file_name.scan(" ").blank? and  File.exists?(path_to_file_to_grab)
+      if !the_file_name.scan(" ").blank? and File.exists?(path_to_file_to_grab)
         the_new_file_name = the_file_name.gsub(" ", "\.")
         new_file_path = directories_up_to + the_new_file_name
 
@@ -626,7 +626,7 @@ module Importer
       new_record = nil
       if existing_item.blank?
         description_end_template = @description_end_templates['default']
-        new_record = create_new_item_from_record(record, @zoom_class, {:params => params, :record_hash => record_hash, :description_end_template => description_end_template })
+        new_record = create_new_item_from_record(record, @zoom_class, { :params => params, :record_hash => record_hash, :description_end_template => description_end_template })
       else
         logger.info("what is existing item: " + existing_item.id.to_s)
         # record exists in kete already
@@ -641,7 +641,7 @@ module Importer
 
       # if this record was skipped, add to skipped_records
       if !reason_skipped.blank?
-        importer_log_to_skipped_records(title,reason_skipped)
+        importer_log_to_skipped_records(title, reason_skipped)
       end
       # will this help memory leaks
       record = nil
@@ -692,8 +692,8 @@ module Importer
     # output is to a tmp file
     # has commented out code for replacing macronized vowels
     # uncomment if you need them
-    def importer_trim_fat_from_xml_import_file(path_to_original_file,path_to_output,accession = nil)
-      fat_free_file = File.new(path_to_output,'w+')
+    def importer_trim_fat_from_xml_import_file(path_to_original_file, path_to_output, accession = nil)
+      fat_free_file = File.new(path_to_output, 'w+')
 
       fatty_re = Regexp.new("\/\>.*")
 
@@ -1117,7 +1117,7 @@ module Importer
     end
 
     # override in your importer worker to customize
-    def importer_log_to_skipped_records(identifier,reason_skipped)
+    def importer_log_to_skipped_records(identifier, reason_skipped)
       logger.info("#{identifier}: #{reason_skipped}")
     end
 

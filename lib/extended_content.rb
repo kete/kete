@@ -267,7 +267,7 @@ unless included_modules.include? ExtendedContent
     end
   end
 
-  #turns choice hashes into arrays
+  # turns choice hashes into arrays
   def hashes_to_arrays(values)
     values.collect do |value|
       if value.is_a?(Hash) && value.keys.include?('value') && value.keys.include?('label')
@@ -459,7 +459,7 @@ unless included_modules.include? ExtendedContent
           v = parts[2]
         end
 
-        matching_choice = Choice.matching(l,v)
+        matching_choice = Choice.matching(l, v)
 
         # Handle the creation of new choices where the choice is not recognised.
         if !matching_choice && %w(autocomplete choice).include?(field.ftype) && field.user_choice_addition?
@@ -996,7 +996,7 @@ unless included_modules.include? ExtendedContent
   def remove_xml_fix(in_hash)
     out_hash = Hash.new
 
-    in_hash.each do |k,v|
+    in_hash.each do |k, v|
       new_k = tweaked_key(k)
       new_v = v.dup
 

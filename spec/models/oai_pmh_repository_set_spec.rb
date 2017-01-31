@@ -5,4 +5,3 @@ describe OaiPmhRepositorySet do
     foo = OaiPmhRepositorySet.new
   end
 end
-

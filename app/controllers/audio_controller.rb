@@ -9,7 +9,7 @@ class AudioController < ApplicationController
   def list
     respond_to do |format|
       format.html { redirect_to basket_audio_recording_index_path }
-      format.rss do 
+      format.rss do
         date = DateTime.parse(params[:updated_since]) if params[:updated_since]
         date = DateTime.now.beginning_of_month        if date.nil?
 
@@ -27,7 +27,7 @@ class AudioController < ApplicationController
     @creator = @audio_recording.creator
     @last_contributor = @audio_recording.contributors.last || @creator
 
-    @related_item_topics = @audio_recording.related_items.select {|ri| ri.is_a? Topic}
+    @related_item_topics = @audio_recording.related_items.select { |ri| ri.is_a? Topic }
 
     respond_to do |format|
       format.html
@@ -81,6 +81,6 @@ class AudioController < ApplicationController
   end
 
   def destroy
-    zoom_destroy_and_redirect('AudioRecording','Audio recording')
+    zoom_destroy_and_redirect('AudioRecording', 'Audio recording')
   end
 end

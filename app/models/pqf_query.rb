@@ -183,7 +183,7 @@ class PqfQuery
     options = options.first || Hash.new
 
     terms = terms_as_array(term_or_terms).collect { |term| ":#{term.to_s}:" }
-    
+
     # oai is a special case, can't have : precede it
     # replace it with proper version if found
     terms << "oai:" if terms.delete(":oai:")
@@ -204,16 +204,16 @@ class PqfQuery
     end
   end
 
-  def oai_datestamp_between(options = { })
+  def oai_datestamp_between(options = {})
     beginning = options[:beginning]
     ending = options[:ending]
 
     query_part = '@and ' + oai_datestamp_on_or_after(beginning,
                                                      options.merge({ :only_return_as_string => true,
-                                                                     :operator => 'none'}))
+                                                                     :operator => 'none' }))
     query_part += ' ' + oai_datestamp_on_or_before(ending,
                                                    options.merge({ :only_return_as_string => true,
-                                                                   :operator => 'none'}))
+                                                                   :operator => 'none' }))
 
     push_to_appropriate_variables(options.merge(:query_part => query_part)) unless options[:only_return_as_string]
     query_part
@@ -221,7 +221,7 @@ class PqfQuery
 
   # a wrapper that sets up the correct query
   # depending on what options are specified
-  def oai_datestamp_comparison(options = { })
+  def oai_datestamp_comparison(options = {})
     beginning = !options[:beginning].blank? ? options[:beginning] : nil
     ending = !options[:ending].blank? ? options[:ending] : nil
 
@@ -236,25 +236,25 @@ class PqfQuery
     end
   end
 
-  def creators_or_contributors_include(term_or_terms, options = { })
+  def creators_or_contributors_include(term_or_terms, options = {})
     query_part = '@or ' + creators_include(term_or_terms,
                                            options.merge({ :only_return_as_string => true,
-                                                           :operator => 'none'}))
+                                                           :operator => 'none' }))
     query_part += ' ' + contributors_include(term_or_terms,
                                              options.merge({ :only_return_as_string => true,
-                                                             :operator => 'none'}))
+                                                             :operator => 'none' }))
 
     push_to_appropriate_variables(options.merge(:query_part => query_part, :operator => '@and')) unless options[:only_return_as_string]
     query_part
   end
 
-  def creators_or_contributors_equals_completely(term_or_terms, options = { })
+  def creators_or_contributors_equals_completely(term_or_terms, options = {})
     query_part = '@or ' + creators_equals_completely(term_or_terms,
                                                      options.merge({ :only_return_as_string => true,
-                                                                     :operator => 'none'}))
+                                                                     :operator => 'none' }))
     query_part += ' ' + contributors_equals_completely(term_or_terms,
                                                        options.merge({ :only_return_as_string => true,
-                                                                       :operator => 'none'}))
+                                                                       :operator => 'none' }))
 
     push_to_appropriate_variables(options.merge(:query_part => query_part, :operator => '@and')) unless options[:only_return_as_string]
     query_part
@@ -359,7 +359,7 @@ class PqfQuery
         query_part += "#{title_query} #{@title_or_any_text_query_string} #{all_content_query} #{@title_or_any_text_query_string} "
       end
     end
-    push_to_appropriate_variables({:query_part => query_part, :operator => operator})
+    push_to_appropriate_variables({ :query_part => query_part, :operator => operator })
     query_part
   end
 
@@ -388,14 +388,14 @@ class PqfQuery
     terms
   end
 
-  def push_to_appropriate_variables(options = { })
+  def push_to_appropriate_variables(options = {})
     @operators << options[:operator] if !options[:operator].blank? && options[:operator] != 'none'
     @query_parts << options[:query_part] unless options[:only_return_as_string]
   end
 
   # expects single string for term_or_terms
   # or array of strings
-  def create_query_part(options = { })
+  def create_query_part(options = {})
     query_part = options[:attribute_spec]
     # should always be an array by the time it gets here
     term_or_terms = options[:term_or_terms]

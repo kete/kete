@@ -7,7 +7,7 @@ module KeteUrlFor
 
     # this will give us what we always use as a kete item's url
     # without privacy
-    def url_for_dc_identifier(item, options={})
+    def url_for_dc_identifier(item, options = {})
       location = { :controller => zoom_class_controller(item.class.name),
                    :action => 'show',
                    :id => item,
@@ -25,7 +25,7 @@ module KeteUrlFor
     end
 
     # handles things like putting in privacy setting
-    def fully_qualified_item_url(options = {}, is_relation=false)
+    def fully_qualified_item_url(options = {}, is_relation = false)
       host = options[:host] || SystemSetting.site_url
       item = options[:item]
       controller = options[:controller]

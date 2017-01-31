@@ -192,15 +192,15 @@ class TopicsController < ApplicationController
     @item_taggings = @item.taggings
 
     @current_public_version = @item.version
-    #@item.private_version do
+    # @item.private_version do
     #  @current_private_version = @item.version
-    #end if @item.respond_to?(:private_version)
+    # end if @item.respond_to?(:private_version)
 
     @item_contributors = @item.contributors.order('contributions.version ASC')
-    #@item_contributors = @item.contributors.all(
+    # @item_contributors = @item.contributors.all(
     #  :select => 'contributions.version, contributions.created_at as version_created_at, users.id, users.resolved_name, users.email, users.login',
     #  :order => 'contributions.version ASC', :group => 'contributions.version'
-    #)
+    # )
 
     @contributor_index = 0
 

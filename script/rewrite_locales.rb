@@ -1,7 +1,7 @@
 #!/usr/bin/env ruby
 # The config/locales/en.yml file has multiple nested includes. Kill it!
-# ex: 
-#    en.base.thing: thing 
+# ex:
+#    en.base.thing: thing
 #    en.base.lots_o_things: lots of {{t.base.thing.pluralize}}
 #    ...
 
@@ -45,7 +45,7 @@ class LocaleFileNormaliser
     ["pluralize", "capitalize", "downcase", "upcase"].each do |function|
       search_key = "{{t.#{pair[0]}.#{function}}}"
       replace_value = "#{pair[1].send(function)}"
-      #puts search_key +"  --  "+ replace_value
+      # puts search_key +"  --  "+ replace_value
 
       @yaml_text.gsub!(search_key, replace_value)
       # i.e. @yaml_text.gsub("{{t.base.can_be.capitalize}}", tree['base']['can_be'].capitalize)
@@ -64,8 +64,8 @@ class LocaleFileNormaliser
     @yaml_text.gsub!(search_key, replace_value)
   end
 
-  def parse!(number=3)
-    number.times do 
+  def parse!(number = 3)
+    number.times do
       setup_gsub_pairs
       walk_base_en_node(@tree)
       process_gsub_pairs
@@ -98,7 +98,7 @@ class LocaleFileNormaliser
     if value.class == String
       save_string_to_gsub_pair(value, keys_array)
 
-    elsif value.class == Array 
+    elsif value.class == Array
       walk_array(value,  keys_array)
 
     elsif value.class == Hash

@@ -63,7 +63,7 @@ class SearchQuery
 
     @tag = params[:tag]
 
-    @related_item_id = params[:related_item_id ]
+    @related_item_id = params[:related_item_id]
     @related_item_type = params[:related_item_type]
 
     @user_id = params[:user_id]

@@ -125,7 +125,7 @@ module ImageSlideshow
         @selected_still_image = still_image_collection.find_by_id(@current_id)
 
         # At this point, we have a valid still image we should be displaying. Get the ImageFile for it
-        # EOIN: I am commenting this line out for the moment to get this controller working 
+        # EOIN: I am commenting this line out for the moment to get this controller working
         # @selected_image_file = @selected_still_image.send("#{SystemSetting.image_slideshow_size.to_s}_file") if !@selected_still_image.nil?
 
         # Setup the previous and next url links the user can use
@@ -176,7 +176,7 @@ module ImageSlideshow
     end
 
     # Finds all basket images scoped to the correct still image collection
-    def find_basket_images(limit=20)
+    def find_basket_images(limit = 20)
       find_args_hash = { :select => 'id, title, created_at, basket_id, file_private', :limit => limit }
       find_args_hash.merge!(public_conditions) unless display_private_items?
       # Order results acording to the basket setting
@@ -186,7 +186,7 @@ module ImageSlideshow
     end
 
     # Finds all basket images scoped to the current topic
-    def find_related_images(limit=20)
+    def find_related_images(limit = 20)
       raise "ERROR: Tried to populate topic slideshow without passing in params[:topic_id]" unless params[:topic_id]
       find_args_hash = { :select => 'still_images.id, still_images.title, still_images.created_at, still_images.basket_id, still_images.file_private', :limit => limit }
       find_args_hash.merge!(public_conditions) unless display_private_items?

@@ -214,8 +214,8 @@ class ConfigureController < ApplicationController
         delete_existing_workers_for(@worker_type)
 
         unless backgroundrb_is_running?(@worker_type)
-          MiddleMan.new_worker( :worker => @worker_type, :worker_key => @worker_key )
-          MiddleMan.worker(@worker_type, @worker_key).async_do_work( :arg => { :params => params } )
+          MiddleMan.new_worker(:worker => @worker_type, :worker_key => @worker_key)
+          MiddleMan.worker(@worker_type, @worker_key).async_do_work(:arg => { :params => params })
           render :update do |page|
             page.replace_html("updater", periodically_call_remote(:url => { :action => 'get_site_linking_progress' }, :frequency => 10))
           end

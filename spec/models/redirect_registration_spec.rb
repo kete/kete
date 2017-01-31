@@ -5,4 +5,3 @@ describe RedirectRegistration do
     foo = RedirectRegistration.new
   end
 end
-

@@ -7,7 +7,7 @@ module RequiredSoftware
     # poached and modified to include non-gem/lib requirements
     # from http://www.depixelate.com/2006/8/9/quick-tip-ensuring-required-gems-and-libs-are-available
     # --- [ check that we have all the gems and libs we need ] ---
-    def missing_libs(required_software, lib_type='gems', args = {})
+    def missing_libs(required_software, lib_type = 'gems', args = {})
       missing_libs = Array.new
       required_libs = Hash.new
 

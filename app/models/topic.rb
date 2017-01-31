@@ -199,7 +199,7 @@ class Topic < ActiveRecord::Base
   # Named scopes used in the index page controller for recent topics
   scope :recent, lambda { where('1 = 1').order('created_at DESC').limit(5) }
   scope :public, lambda { where('title != ?', SystemSetting.no_public_version_title) }
-  scope :exclude_baskets_and_id, lambda {|basket_ids, id| where("basket_id NOT IN (?) AND id != ?", basket_ids, id) }
+  scope :exclude_baskets_and_id, lambda { |basket_ids, id| where("basket_id NOT IN (?) AND id != ?", basket_ids, id) }
 
   after_save :update_taggings_basket_id
 

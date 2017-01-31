@@ -5,4 +5,3 @@ describe UserNotifier do
     foo = UserNotifier.generic_view_paths # RABID: just hitting a 0 arg method that I know exists to prove that this mailer loads ok
   end
 end
-

@@ -65,14 +65,14 @@ class PastPerfect4ImporterWorker < BackgrounDRb::MetaWorker
       determine_elements_used(@import_photos_file_path)
 
       # this gets rid of xml elements that have empty values
-      @path_to_trimmed_photos = importer_trim_fat_from_xml_import_file(@import_photos_file_path,"#{RAILS_ROOT}/tmp/trimmed_photos_pp4.xml")
+      @path_to_trimmed_photos = importer_trim_fat_from_xml_import_file(@import_photos_file_path, "#{RAILS_ROOT}/tmp/trimmed_photos_pp4.xml")
       @import_photos_xml = REXML::Document.new File.open(@path_to_trimmed_photos)
 
       logger.info("after first trim")
 
       # TODO: test what happens when there isn't an accessions.xml file
       @import_accessions_file_path = "#{@import_dir_path}/accessions.xml"
-      @path_to_trimmed_accessions = importer_trim_fat_from_xml_import_file(@import_accessions_file_path,"#{RAILS_ROOT}/tmp/trimmed_accessions_pp4.xml",true)
+      @path_to_trimmed_accessions = importer_trim_fat_from_xml_import_file(@import_accessions_file_path, "#{RAILS_ROOT}/tmp/trimmed_accessions_pp4.xml", true)
 
       # open the accessions xml to search for a matching record later
       @import_accessions_xml = REXML::Document.new File.open(@path_to_trimmed_accessions)
@@ -195,7 +195,7 @@ class PastPerfect4ImporterWorker < BackgrounDRb::MetaWorker
 
               logger.info("looking for cleaned up accession: " + cleaned_up_accessno)
 
-              if !@last_related_topic_pp4_objectid.nil? and  cleaned_up_accessno == @last_related_topic_pp4_objectid
+              if !@last_related_topic_pp4_objectid.nil? and cleaned_up_accessno == @last_related_topic_pp4_objectid
                 logger.info("looking for cleaned up accession: last accessno match")
                 related_topic = @last_related_topic
               else
@@ -217,7 +217,7 @@ class PastPerfect4ImporterWorker < BackgrounDRb::MetaWorker
               # create a new topic from related_accession_record
               # prepare user_reference for extended_content
               accession_topic = { "topic" => { :topic_type_id => @related_topic_type.id,
-                                               :title => record_hash["COLLECTION"]} }
+                                               :title => record_hash["COLLECTION"] } }
 
               descrip = RedCloth.new accession_record_hash['DESCRIP']
               accession_topic["topic"][:description] = descrip.to_html
@@ -260,7 +260,7 @@ class PastPerfect4ImporterWorker < BackgrounDRb::MetaWorker
           end
         end
 
-        new_record = create_new_item_from_record(record, @zoom_class, {:params => params, :record_hash => record_hash, :description_end_template => description_end_template })
+        new_record = create_new_item_from_record(record, @zoom_class, { :params => params, :record_hash => record_hash, :description_end_template => description_end_template })
       else
         logger.info("what is existing item: " + existing_item.id.to_s)
         # record exists in kete already
@@ -290,7 +290,7 @@ class PastPerfect4ImporterWorker < BackgrounDRb::MetaWorker
     end
     # if this record was skipped, add to skipped_records
     if !reason_skipped.blank?
-      importer_log_to_skipped_records(image_file,reason_skipped)
+      importer_log_to_skipped_records(image_file, reason_skipped)
     end
     # will this help memory leaks
     record = nil

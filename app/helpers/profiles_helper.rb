@@ -88,9 +88,8 @@ module ProfilesHelper
 
   # The id of the rules label. As above, we have a method
   # for it because the id is needed elsewhere
-  def rules_label_id(name, value=nil)
-    value ? "#{@rule_locals[:field_id_prefix]}_values_#{name}_#{value}" \
-          : "#{@rule_locals[:field_id_prefix]}_values_#{name}"
+  def rules_label_id(name, value = nil)
+    value ? "#{@rule_locals[:field_id_prefix]}_values_#{name}_#{value}" : "#{@rule_locals[:field_id_prefix]}_values_#{name}"
   end
 
   # A text field tag. Wraps it in form-element div,
@@ -107,7 +106,7 @@ module ProfilesHelper
 
   # A text area tag. Wraps it in form-element div,
   # with label, and appropriate id and name
-  def rules_text_area_tag(name, label=nil, class_name='tinymce')
+  def rules_text_area_tag(name, label = nil, class_name = 'tinymce')
     '<div class="form-element">' +
       (label ? content_tag('label', label, :for => rules_label_id(name), :class => 'inline') : '') +
       text_area_tag("#{@rule_locals[:values_field_prefix]}[#{name}]", current_value_for(name),
@@ -117,7 +116,7 @@ module ProfilesHelper
 
   # A select tag. Wraps it in form-element div,
   # with label, and appropriate id and name
-  def rules_select_tag(name, options, label=nil)
+  def rules_select_tag(name, options, label = nil)
     '<div class="form-element">' +
       (label ? content_tag('label', label, :for => rules_label_id(name), :style => 'width: 100%;') : '') +
       '<div style="clear: left">' +
@@ -139,7 +138,7 @@ module ProfilesHelper
 
   # A check box tag. Wraps it in form-element div,
   # with label, and appropriate id and name
-  def rules_check_box_tag(name, value, label, is_array=false)
+  def rules_check_box_tag(name, value, label, is_array = false)
     '<div class="form-element">' +
       check_box_tag("#{@rule_locals[:values_field_prefix]}[#{name}]#{'[]' if is_array}", value,
                     (is_array && current_value_for(name).is_a?(Array) ? current_value_for(name).include?(value) : current_value_for(name) == value),

@@ -127,7 +127,7 @@ module ExtendedContentHelpers
         # So before we go any further, make sure we convert the values from Hash to either
         # the preset or custom value depending on which one is filled in
         if ftype == 'choice'
-          value.each do |key,choice_value|
+          value.each do |key, choice_value|
             next unless choice_value.is_a?(Hash)
             choice = choice_value['preset'] # Preset values come from the dropdown
             choice = choice_value['custom'] unless choice_value['custom'].blank? # Custom values come from a text field
@@ -162,8 +162,8 @@ module ExtendedContentHelpers
 
               # this will handle a number of cases, see comment in app/models/choice.rb
               # for details
-              matching_choice = Choice.matching(l,v)
-              matching_choice_mapped = extended_field.choices.matching(l,v)
+              matching_choice = Choice.matching(l, v)
+              matching_choice_mapped = extended_field.choices.matching(l, v)
 
               # Handle the creation of new choices where the choice is not recognised.
               if !matching_choice_mapped && %w(autocomplete choice).include?(ftype) && user_choice_addition

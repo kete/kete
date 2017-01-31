@@ -39,10 +39,10 @@ class WebLink < ActiveRecord::Base
 
     result = join_table.where(
       web_links[:updated_at].gt(date).
-      or( taggings[:created_at].gt(date) ). # Tagging doesn't have a updated_at column.
-      or( contributions[:updated_at].gt(date) ).
-      or( content_item_relations[:updated_at].gt(date) ).
-      or( deleted_content_item_relations[:updated_at].gt(date) )
+      or(taggings[:created_at].gt(date)). # Tagging doesn't have a updated_at column.
+      or(contributions[:updated_at].gt(date)).
+      or(content_item_relations[:updated_at].gt(date)).
+      or(deleted_content_item_relations[:updated_at].gt(date))
     )
 
     result.uniq   # Joins give us repeated results

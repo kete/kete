@@ -20,7 +20,7 @@ module OverrideAttachmentFuMethods
     # Setting attachments_overide_url in the environment/* files applies this.
 
     if Rails.configuration.respond_to? :attachments_overide_url
-      relative_link = fix_attachment_fu_links( super() )
+      relative_link = fix_attachment_fu_links(super())
       "#{Rails.configuration.attachments_overide_url}#{relative_link}"
     else
       super

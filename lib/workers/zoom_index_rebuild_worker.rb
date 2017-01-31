@@ -69,7 +69,7 @@ class ZoomIndexRebuildWorker < BackgrounDRb::MetaWorker
 
       raise "Erasing all existing search records is only allowed when you are starting from first record and ending with last record." if @clear_zebra && @start_id != 'first' || @end_id != 'last'
       raise "Start must be a valid item id number." if @start_id != 'first' && @start_id.to_i == 0
-      raise "End must be a valid item id number." if @end_id != 'last' && @end_id.to_i ==  0
+      raise "End must be a valid item id number." if @end_id != 'last' && @end_id.to_i == 0
 
       # Rake::Task is available inside Rails, but not backgroundrb workers
       # so we need to include rake and load the task(s) we need to use

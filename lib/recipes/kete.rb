@@ -113,7 +113,7 @@ namespace :deploy do
 
       # For each directory, setup a system folder, copy the repository files to it,
       # remove the folder from the current directory and in it's place, put a symlink
-      def symlink_system_directory(dir, prefix='')
+      def symlink_system_directory(dir, prefix = '')
         run "mkdir -p #{shared_path}/system/#{dir}"
         # The keteaccess password file is rewritten later.
         # Let's just move it to make sure we can fall back to something if it goes wrong

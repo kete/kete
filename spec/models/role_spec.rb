@@ -5,4 +5,3 @@ describe Role do
     foo = Role.new
   end
 end
-

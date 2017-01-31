@@ -22,10 +22,10 @@ class Document < ActiveRecord::Base
   # processor none means we don't have to load expensive image manipulation
   # dependencies that we don't need
   # TODO: needs some of the new filetypes like openoffice, pages, plenty of old ones, too
-  has_attachment    :storage => :file_system,
-                    :content_type => SystemSetting.document_content_types,
-                    :processor => :none,
-                    :max_size => SystemSetting.maximum_uploaded_file_size
+  has_attachment :storage => :file_system,
+                 :content_type => SystemSetting.document_content_types,
+                 :processor => :none,
+                 :max_size => SystemSetting.maximum_uploaded_file_size
 
   # Private Item mixin
   include ItemPrivacy::All
@@ -53,10 +53,10 @@ class Document < ActiveRecord::Base
 
     result = join_table.where(
       documents[:updated_at].gt(date).
-      or( taggings[:created_at].gt(date) ). # Tagging doesn't have a updated_at column.
-      or( contributions[:updated_at].gt(date) ).
-      or( content_item_relations[:updated_at].gt(date) ).
-      or( deleted_content_item_relations[:updated_at].gt(date) )
+      or(taggings[:created_at].gt(date)). # Tagging doesn't have a updated_at column.
+      or(contributions[:updated_at].gt(date)).
+      or(content_item_relations[:updated_at].gt(date)).
+      or(deleted_content_item_relations[:updated_at].gt(date))
     )
 
     result.uniq   # Joins give us repeated results

@@ -8,7 +8,7 @@ module KeteTestUnitHelper
     else
       # If @base_class has validation, then use the following:
       assert !model.valid?, "#{@base_class} should not be valid without initialisation parameters"
-      @req_attr_names.each {|attr_name| assert model.errors.invalid?(attr_name.to_sym), "Should be an error message for :#{attr_name}"}
+      @req_attr_names.each { |attr_name| assert model.errors.invalid?(attr_name.to_sym), "Should be an error message for :#{attr_name}" }
     end
   end
 
@@ -41,7 +41,7 @@ module KeteTestUnitHelper
       assert model.errors.invalid?(attr_name.to_sym), "Should be an error message for :#{attr_name}"
     end
   end
-  
+
   include KeteUrlFor
   def test_before_update_register_redirect_if_necessary
     current_model = Module.class_eval(@base_class).create!(@new_model)

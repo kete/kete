@@ -53,7 +53,7 @@ module KeteAuthorisationSettings
     key = session[:moderation_exempt_item]
     return false if key.blank?
 
-    result = ( item_class_name == key[:item_class_name] && item_id.to_s.split("-").first == key[:item_id] )
+    result = (item_class_name == key[:item_class_name] && item_id.to_s.split("-").first == key[:item_id])
 
     session[:moderation_exempt_item] = nil
 
@@ -180,7 +180,7 @@ module KeteAuthorisationSettings
   # used to get the acceptable privacy type (that is the current requested
   # privacy type unless not allowed), and return a value
   # (used in caching to decide whether to look for public or private fragments)
-  def get_acceptable_privacy_type_for(item, value_when_public='public', value_when_private='private')
+  def get_acceptable_privacy_type_for(item, value_when_public = 'public', value_when_private = 'private')
     if allowed_to_access_private_version_of?(item)
       value_when_private
     else

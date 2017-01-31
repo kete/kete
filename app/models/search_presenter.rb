@@ -63,11 +63,11 @@ class SearchPresenter
   end
 
   def date_since
-    query.date_since #unless clear_values
+    query.date_since # unless clear_values
   end
 
   def date_until
-    query.date_until #unless clear_values
+    query.date_until # unless clear_values
   end
 
   def extended_field
@@ -173,7 +173,7 @@ class SearchPresenter
                   "AudioRecording" => "Audio",
                   "Video" => "Video",
                   "WebLink" => "Web links",
-                  "Document" => "Documents",
+                  "Document" => "Documents"
     }
     mapping[content_item_type] || "Unknown content_item_type"
   end
@@ -212,7 +212,7 @@ class SearchPresenter
     query.search_terms
   end
 
-  def link_to_add_item(options={})
+  def link_to_add_item(options = {})
     # phrase = options[:phrase]
     # item_class = options[:item_class]
 
@@ -275,7 +275,7 @@ class SearchPresenter
   end
 
 
-  def title_setup_first_part(title_so_far, span_around_zoom_class=false)
+  def title_setup_first_part(title_so_far, span_around_zoom_class = false)
     # if @current_basket != @site_basket
     #   title_so_far += @current_basket.name + ' '
     # end

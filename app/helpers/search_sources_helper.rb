@@ -43,11 +43,11 @@ module SearchSourcesHelper
     { :search_source => source.title_id, :id => params[:id].to_i }
   end
 
-  def search_source_title_for(entry, length=50)
+  def search_source_title_for(entry, length = 50)
     entry.title ? truncate(strip_tags(entry.title).squish, :length => length, :omission => '...') : ''
   end
 
-  def search_source_summary_for(entry, length=300)
+  def search_source_summary_for(entry, length = 300)
     summary = entry.title
     summary += " - " + truncate(strip_tags(entry.summary).squish, :length => length, :omission => '...') if entry.summary
     summary
@@ -67,7 +67,7 @@ module SearchSourcesHelper
                 record.send(syntax)
               else
                 nil
-      end
+              end
 
       value = Hash.new if value.blank?
       html = String.new

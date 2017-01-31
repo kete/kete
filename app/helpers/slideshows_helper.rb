@@ -52,7 +52,7 @@ module SlideshowsHelper
       slideshow.navigable? &&
       slideshow.in_set?(url_without_extras(current_url)) &&
       !(slideshow.results.size < 2) &&
-      
+
       # James - 2008-11-19
       # Factored out slideshow controls partial rendering statement to application.rhtml, so we need to check that the controller
       # and action are right now as the partial is no longer called from the 'show' view for each item type.

@@ -24,7 +24,7 @@ class TopicType < ActiveRecord::Base
   # that they are importing
   has_many :imports, :dependent => :destroy
 
-  scope :from_urlified_name, lambda {|urlified_name| where('LOWER(name) = ?', urlified_name.downcase.gsub('_', ' ') ) }
+  scope :from_urlified_name, lambda { |urlified_name| where('LOWER(name) = ?', urlified_name.downcase.gsub('_', ' ')) }
 
   validates_presence_of :name, :description
   validates_uniqueness_of :name, :case_sensitive => false
@@ -43,10 +43,10 @@ class TopicType < ActiveRecord::Base
   # then we also have ancestor fields for all the topic types above this topic type
 
   def available_fields
-    @available_fields = ExtendedField.find_available_fields(self,'TopicType')
+    @available_fields = ExtendedField.find_available_fields(self, 'TopicType')
   end
 
-  def mapped_fields(options={})
+  def mapped_fields(options = {})
     options[:with_ancestors] ||= true
     relevant_topic_types = options[:with_ancestors] ? self_and_ancestors : [self]
     # TODO: might want to reconsider using a subselect here

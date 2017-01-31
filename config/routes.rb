@@ -35,19 +35,19 @@
     #### monitoring tools ###############################
     #
     ## to make sure the rails process is answering
-    #match 'uptime.txt' => 'index_page#uptime'
+    # match 'uptime.txt' => 'index_page#uptime'
     ## to make sure that the db is answering
-    #match 'db_uptime.txt' => 'index_page#db_uptime'
+    # match 'db_uptime.txt' => 'index_page#db_uptime'
     ## to make sure that the zebra is answering
-    #match 'zebra_uptime.txt' => 'index_page#zebra_uptime'
+    # match 'zebra_uptime.txt' => 'index_page#zebra_uptime'
     ## to make sure that the backgroundrb is answering
-    #match 'bdrb_uptime.txt' => 'index_page#bdrb_uptime'
+    # match 'bdrb_uptime.txt' => 'index_page#bdrb_uptime'
     ## to make sure that registration is valid
-    #match 'validate_kete_net_link.xml' => 'index_page#validate_kete_net_link'
+    # match 'validate_kete_net_link.xml' => 'index_page#validate_kete_net_link'
     ## for search engines, ask them not to go to certain places
-    #match 'robots.txt' => 'index_page#robots'
+    # match 'robots.txt' => 'index_page#robots'
     ## for opensearch compatible clients
-    #match 'opensearchdescription.xml' => 'index_page#opensearchdescription'
+    # match 'opensearchdescription.xml' => 'index_page#opensearchdescription'
 
     ####################################################
     ####################################################
@@ -63,10 +63,10 @@
     ####################################################
     ####################################################
 
-    get   ':urlified_name/account/index' => 'account#index'
+    get ':urlified_name/account/index' => 'account#index'
     match ':urlified_name/account/signup' => 'account#signup', via: [:get, :post]
     match ':urlified_name/account/login' => 'account#login', via: [:get, :post]
-    get   ':urlified_name/account/disclaimer/:id' => 'account#disclaimer'
+    get ':urlified_name/account/disclaimer/:id' => 'account#disclaimer'
     match ':urlified_name/account/show_captcha' => 'account#show_captcha'
     match ':urlified_name/account/forgot_password' => 'account#forgot_password'
 
@@ -102,7 +102,7 @@
     # not work.
 
     scope '/:urlified_name', as: :basket do
-  
+
       scope '/search', as: :search do
         post 'for'            => 'search#for'
         post 'all'            => 'search#all'
@@ -110,7 +110,7 @@
         post 'related_to'     => 'search#related_to'
         post 'contributed_by' => 'search#contributed_by'
       end
-  
+
       resources :baskets, only: [:edit] do
         member do
           post :add_tags # TaggingController
@@ -119,7 +119,7 @@
           get :list
         end
       end
-  
+
       resources :topics do
         member do
           get :history # FlaggingController
@@ -130,7 +130,7 @@
           get :list
         end
       end
-  
+
       resources :images, as: :still_image do
         member do
           get :history # FlaggingController
@@ -141,7 +141,7 @@
           get :list
         end
       end
-  
+
       resources :audio, as: :audio_recording do
         member do
           get :history # FlaggingController
@@ -152,7 +152,7 @@
           get :list
         end
       end
-  
+
       resources :video do
         member do
           get :history # FlaggingController
@@ -163,7 +163,7 @@
           get :list
         end
       end
-  
+
       resources :web_links do
         member do
           get :history # FlaggingController
@@ -174,7 +174,7 @@
           get :list
         end
       end
-  
+
       resources :documents do
         member do
           get :history # FlaggingController
@@ -185,15 +185,15 @@
           get :list
         end
       end
-  
+
       resources :comments
-  
+
       resources :tags, only: [:index, :show] do
         collection do
           get :list
         end
       end
-  
+
     end
 
 

@@ -29,7 +29,7 @@ class WebLinksController < ApplicationController
     @creator = @web_link.creator
     @last_contributor = @web_link.contributors.last || @creator
 
-    @related_item_topics = @web_link.related_items.select {|ri| ri.is_a? Topic}
+    @related_item_topics = @web_link.related_items.select { |ri| ri.is_a? Topic }
 
     respond_to do |format|
       format.html
@@ -78,6 +78,6 @@ class WebLinksController < ApplicationController
   end
 
   def destroy
-    zoom_destroy_and_redirect('WebLink','Web link')
+    zoom_destroy_and_redirect('WebLink', 'Web link')
   end
 end

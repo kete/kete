@@ -42,7 +42,7 @@ module ImageSlideshowTestHelper
                 @topic.creator = User.first
               end
 
-              context "and the images are in the same basket" do 
+              context "and the images are in the same basket" do
                 setup do
                   3.times { |i| create_new_image_relation_to(@topic, :title => "Child Image #{i + 1}") }
                 end
@@ -52,11 +52,11 @@ module ImageSlideshowTestHelper
                 end
               end
 
-              context "and the images are in a different basket from topic" do 
+              context "and the images are in a different basket from topic" do
                 setup do
                   3.times { |i| create_new_image_relation_to(@topic,
                                                              :basket_id => create_new_basket({ :name => "basket #{i + 1}" }).id,
-                                                             :title => "Child Image in Another Basket #{i + 1}" )}
+                                                             :title => "Child Image in Another Basket #{i + 1}")}
                 end
 
                 should "have slideshow be populated in the session on selected image visit" do

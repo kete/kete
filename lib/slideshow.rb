@@ -91,7 +91,7 @@ class Slideshow
     first?(url) && on_first_page?
   end
 
-  def next(url=nil)
+  def next(url = nil)
     if url
       in_set?(url) ? after(url) : nil
     else
@@ -99,7 +99,7 @@ class Slideshow
     end
   end
 
-  def previous(url=nil)
+  def previous(url = nil)
     if url
       in_set?(url) ? before(url) : nil
     else

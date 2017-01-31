@@ -1,7 +1,7 @@
 # ROB: This is a possible candidate for converting to a presenter.
 
 module RssHelper
-  # ROB: Methods pulled from oai_dc_helpers.rb and simplified to return strings/nil 
+  # ROB: Methods pulled from oai_dc_helpers.rb and simplified to return strings/nil
   # So far only used for StillImages. May need some more tweaking for other content-types.
 
   def rss_dc_identifier(item)
@@ -49,7 +49,7 @@ module RssHelper
     # This way we can limit exactly to one user.
 
     array = item.creators.map do |creator|
-      sub_array = [ creator.user_name ]
+      sub_array = [creator.user_name]
       sub_array << creator.login if creator.user_name != creator.login
     end
     array.flatten
@@ -60,7 +60,7 @@ module RssHelper
     # This way we can limit exactly to one user.
 
     array = item.contributors.select(:login).uniq.map do |contributor|
-      sub_array = [ contributor.user_name ]
+      sub_array = [contributor.user_name]
       sub_array << contributor.login if contributor.user_name != contributor.login
     end
     array.flatten
@@ -68,13 +68,13 @@ module RssHelper
 
   def rss_dc_relations_array(item)
     item.related_items.map do |related|
-      # ROB: Previously a dc:subject tag was created using related.title. This 
+      # ROB: Previously a dc:subject tag was created using related.title. This
       #      seems unnecessary and wasn't implemented.
       rss_link_for(related)
     end
   end
 
-  def rss_dc_type(item) 
+  def rss_dc_type(item)
     if item.is_a? AudioRecording
       'Sound'
     elsif item.is_a? StillImage
@@ -102,7 +102,7 @@ module RssHelper
   end
 
   def rss_dc_format(item)
-    if [ Topic, Comment, WebLink ].include?(item.class)
+    if [Topic, Comment, WebLink].include?(item.class)
       'text/html'
     elsif item.is_a?(StillImage) && item.original_file.present?
       item.original_file.content_type

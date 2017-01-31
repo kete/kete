@@ -2,9 +2,9 @@ module KeteFlaggingMethods
   # ROB:  The existing special-flagging (public/pending/etc) in kete is going to be removed.
   # 			this is a place to stick any code for working with theses.
   #
-  #       Right now these are my best guesses for tests. I have no idea if they actually work. 
+  #       Right now these are my best guesses for tests. I have no idea if they actually work.
   #
-  #       There's more information on flags used, moderation, etc, in the comments at the top 
+  #       There's more information on flags used, moderation, etc, in the comments at the top
   #       of flagging.rb.
 
   def pending?

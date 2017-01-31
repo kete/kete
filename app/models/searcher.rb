@@ -30,7 +30,7 @@ class Searcher
         "Video"          => Video.order("updated_at DESC"),
         "WebLink"        => WebLink.order("updated_at DESC"),
         "Document"       => Document.order("updated_at DESC"),
-        "Comment"        => Comment.order("updated_at DESC"),
+        "Comment"        => Comment.order("updated_at DESC")
       }
     else
       {
@@ -40,7 +40,7 @@ class Searcher
         'Video'          => Video.joins(:basket).where(baskets: { urlified_name: query.basket_name }).order('updated_at DESC'),
         'WebLink'        => WebLink.joins(:basket).where(baskets: { urlified_name: query.basket_name }).order('updated_at DESC'),
         'Document'       => Document.joins(:basket).where(baskets: { urlified_name: query.basket_name }).order('updated_at DESC'),
-        'Comment'        => Comment.joins(:basket).where(baskets: { urlified_name: query.basket_name }).order('updated_at DESC'),
+        'Comment'        => Comment.joins(:basket).where(baskets: { urlified_name: query.basket_name }).order('updated_at DESC')
       }
     end
   end
@@ -53,7 +53,7 @@ class Searcher
       "Video"          => Video.tagged_with(query.tag).order("updated_at DESC"),
       "WebLink"        => WebLink.tagged_with(query.tag).order("updated_at DESC"),
       "Document"       => Document.tagged_with(query.tag).order("updated_at DESC"),
-      "Comment"        => Comment.tagged_with(query.tag).order("updated_at DESC"),
+      "Comment"        => Comment.tagged_with(query.tag).order("updated_at DESC")
     }
   end
 
@@ -69,7 +69,7 @@ class Searcher
       "Video"          => distinct_contributions.where(contributed_item_type: "Video"),
       "WebLink"        => distinct_contributions.where(contributed_item_type: "WebLink"),
       "Document"       => distinct_contributions.where(contributed_item_type: "Document"),
-      "Comment"        => distinct_contributions.where(contributed_item_type: "Comment"),
+      "Comment"        => distinct_contributions.where(contributed_item_type: "Comment")
     }
   end
 
@@ -115,7 +115,7 @@ class Searcher
       "Video"          => related_to_topic.where(related_item_type: 'Video'),
       "WebLink"        => related_to_topic.where(related_item_type: 'WebLink'),
       "Document"       => related_to_topic.where(related_item_type: 'Document'),
-      "Comment"        => related_to_topic.where(related_item_type: 'Comment'),
+      "Comment"        => related_to_topic.where(related_item_type: 'Comment')
     }
   end
 
@@ -130,7 +130,7 @@ class Searcher
       "Video"          => empty_relation,
       "WebLink"        => empty_relation,
       "Document"       => empty_relation,
-      "Comment"        => empty_relation,
+      "Comment"        => empty_relation
     }
   end
 
