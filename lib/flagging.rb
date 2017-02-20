@@ -1,6 +1,6 @@
 # RABID:
-# * this module is 
-#   * included directly in Topic, 
+# * this module is
+#   * included directly in Topic,
 #   * included by ConfigureAsKeteContentItem into every class that it is included in
 #     * AudioRecording
 #     * Comment
@@ -26,7 +26,7 @@
 # Moderation
 # ==========
 # * moderation is implemented by saving particular tags with the model
-# * moderation also has to be aware of the various older versions of the model 
+# * moderation also has to be aware of the various older versions of the model
 
 # flags that can be set on a model (as tags):
 # * blank
@@ -221,7 +221,7 @@ module Flagging
       last_version_tags_count = last_version.tags.size
 
       if last_version_number > 1
-        while last_version_tags_count > 0 || ( last_version.respond_to?(:private) && last_version.private? != self.private? )
+        while last_version_tags_count > 0 || (last_version.respond_to?(:private) && last_version.private? != self.private?)
           last_version_number = last_version_number - 1
           break if last_version_number == 0
 
@@ -239,7 +239,7 @@ module Flagging
       # if there isn't a unflagged version, we create a new blank one
       # that states that the item is pending
       # and return that version
-      if last_version_tags_count == 0 && ( !last_version.respond_to?(:private?) || last_version.private? == self.private? )
+      if last_version_tags_count == 0 && (!last_version.respond_to?(:private?) || last_version.private? == self.private?)
 
         if last_version.respond_to?(:private?) && last_version.private?
 
@@ -256,9 +256,9 @@ module Flagging
         # we leave required fields alone
         # and let the view handle whether they should be shown
         update_hash = { :title => SystemSetting.blank_title,
-          :description => nil,
-          :extended_content => nil,
-          :tag_list => nil }
+                        :description => nil,
+                        :extended_content => nil,
+                        :tag_list => nil }
 
         update_hash[:private] = self.private? if self.respond_to?(:private)
         update_hash[:description] = SystemSetting.pending_flag if self.class.name == 'Comment'
@@ -326,16 +326,16 @@ module Flagging
       title == SystemSetting.no_public_version_title
     end
 
-    def notify_moderators_immediatelly_if_necessary(options = { })
+    def notify_moderators_immediatelly_if_necessary(options = {})
       if SystemSetting.frequency_of_moderation_email.is_a?(String) and SystemSetting.frequency_of_moderation_email == 'instant'
         # if histor_url is blank it will be figured out in view
         history_url = if !options[:history_url].blank?
-          options[:history_url]
-        else
-          url_for(:host => SystemSetting.site_name,
-                  :urlified_name => basket.urlified_name,
-                  :controller => zoom_class_controller(self.class.name),
-                  :action => 'history', :id => self, :locale => false)
+                        options[:history_url]
+                      else
+                        url_for(:host => SystemSetting.site_name,
+                                :urlified_name => basket.urlified_name,
+                                :controller => zoom_class_controller(self.class.name),
+                                :action => 'history', :id => self, :locale => false)
         end
 
         message = !options[:message].blank? ? options[:message] : nil
@@ -374,29 +374,29 @@ module Flagging
     # EOIN: I do not know what the purpose of making these methods protected is.
     protected
 
-      def do_moderation
-        # if are we are using full moderation
-        # where everything has to approved by an admin
-        # before being seen in the basket
-        # flag the submitted revision
-        # which will have the side effect
-        # of either staying at the last unflagged version
-        # or
-        # adding a blank revision, if no unflagged version is available
+    def do_moderation
+      # if are we are using full moderation
+      # where everything has to approved by an admin
+      # before being seen in the basket
+      # flag the submitted revision
+      # which will have the side effect
+      # of either staying at the last unflagged version
+      # or
+      # adding a blank revision, if no unflagged version is available
 
-        self.reload # make sure we have the latest attribute values (specifically version)
-        if should_moderate?
-          flag_live_version_with(SystemSetting.pending_flag)
-        end
-
+      self.reload # make sure we have the latest attribute values (specifically version)
+      if should_moderate?
+        flag_live_version_with(SystemSetting.pending_flag)
       end
 
-      def should_moderate?
-        self.fully_moderated? and
-          !self.do_not_moderate? and
-          !self.already_at_blank_version? and
-          !self.at_placeholder_public_version?
-      end
+    end
+
+    def should_moderate?
+      self.fully_moderated? and
+        !self.do_not_moderate? and
+        !self.already_at_blank_version? and
+        !self.at_placeholder_public_version?
+    end
 
   end
 
@@ -425,7 +425,7 @@ module Flagging
         # otherwise all taggings that are flags are disputed
         if already_moderated_flag_ids.size > 0
           # have to do a more complex set of conditions to get "tag_id not in" into the where clause
-          conditions_sql_array = conditions.keys.collect { |k| "#{k.to_s} = :#{k.to_s}"}
+          conditions_sql_array = conditions.keys.collect { |k| "#{k.to_s} = :#{k.to_s}" }
           conditions_sql = conditions_sql_array.join(' AND ')
           conditions_sql += " AND tag_id not in (#{already_moderated_flag_ids.join(',')})"
           conditions = [conditions_sql, conditions]

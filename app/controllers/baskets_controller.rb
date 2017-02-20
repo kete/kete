@@ -316,9 +316,7 @@ class BasketsController < ApplicationController
       end
       # collect baskets that they can see add item controls for
       @basket_list = @basket_access_hash.collect do |basket_urlified_name, basket_hash|
-        current_user_is?(all_baskets_hash[basket_urlified_name.to_sym][:privacy], all_baskets_hash[basket_urlified_name.to_sym][:basket]) \
-          ? [basket_hash[:basket_name], basket_urlified_name.to_s] \
-          : nil
+        current_user_is?(all_baskets_hash[basket_urlified_name.to_sym][:privacy], all_baskets_hash[basket_urlified_name.to_sym][:basket]) \ ? [basket_hash[:basket_name], basket_urlified_name.to_s] \ : nil
       end.compact
     end
 
@@ -495,7 +493,7 @@ class BasketsController < ApplicationController
   # get the current value of a field, from either basket/setting submitted values,
   # profile if new record, or exsiting value of existing record
   # skip_posted_values will skip getting the value from params
-  def current_value_of(name, skip_posted_values=false, form_type=nil)
+  def current_value_of(name, skip_posted_values = false, form_type = nil)
     form_type ||= @form_type
 
     value = nil
@@ -510,10 +508,10 @@ class BasketsController < ApplicationController
       value = if @basket.respond_to?(name)
         # if the basket responds to a value method
         @basket.send(name)
-      elsif @basket.respond_to?("#{name}?")
+              elsif @basket.respond_to?("#{name}?")
         # if the basket respond to a boolean method
         @basket.send("#{name}?")
-      else
+              else
         # else, see if it has a setting (which will returns nil if not)
         @basket.settings[name.to_sym]
       end
@@ -555,7 +553,7 @@ class BasketsController < ApplicationController
   # End of Basket Profile Helpers
   #
 
-  def list_baskets(per_page=10)
+  def list_baskets(per_page = 10)
     if !params[:type].blank? && @site_admin
       @listing_type = params[:type]
     else

@@ -65,7 +65,7 @@ class AccountController < ApplicationController
           anonymous_name = params[:name].blank? ? @anonymous_user.user_name : params[:name]
 
           session[:anonymous_user] = { :name => anonymous_name,
-            :email => params[:email]}
+                                       :email => params[:email] }
 
           # see if the submitted website is valid
           # append protocol if they have left it off
@@ -84,7 +84,7 @@ class AccountController < ApplicationController
         # anonymous users can't use remember me, check for login password
         if @anonymous_user.blank? && params[:remember_me] == "1"
           self.current_user.remember_me
-          cookies[:auth_token] = { :value => self.current_user.remember_token , :expires => self.current_user.remember_token_expires_at }
+          cookies[:auth_token] = { :value => self.current_user.remember_token, :expires => self.current_user.remember_token_expires_at }
         end
         unless @anonymous_user
           move_session_searches_to_current_user
@@ -256,8 +256,8 @@ class AccountController < ApplicationController
         render :update do |page|
           page.replace_html params[:avatar_id],
                             avatar_tag(User.new({ :email => params[:email] || String.new }),
-                                                { :size => 30, :rating => 'G', :gravatar_default_url => "/images/no-avatar.png" },
-                                                { :width => 30, :height => 30, :alt => t('account_controller.fetch_gravatar.your_gravatar') })
+                                       { :size => 30, :rating => 'G', :gravatar_default_url => "/images/no-avatar.png" },
+                                       { :width => 30, :height => 30, :alt => t('account_controller.fetch_gravatar.your_gravatar') })
         end
       end
     end
@@ -387,7 +387,7 @@ class AccountController < ApplicationController
     # form should have user hash after it's been submitted
     return if @user unless params[:user]
     if (params[:user][:password] == params[:user][:password_confirmation])
-      self.current_user = @user #for the next two lines to work
+      self.current_user = @user # for the next two lines to work
       current_user.password_confirmation = params[:user][:password_confirmation]
       current_user.password = params[:user][:password]
       @user.reset_password
@@ -479,7 +479,7 @@ class AccountController < ApplicationController
       # Get all of the portrait relations in one query
       portrait_list = current_user.user_portrait_relations
       # For each of the portrait ids, update their position based on the array index
-      portrait_ids.each_with_index do |portrait_id,index|
+      portrait_ids.each_with_index do |portrait_id, index|
         # The first element we leave in (to represent the selected portrait)
         next if portrait_id.blank?
         # Get this portrait from the portrait_list array
@@ -506,7 +506,7 @@ class AccountController < ApplicationController
     notice = t('account_controller.change_locale.locale_changed')
     notice += t('account_controller.change_locale.change_permanently') if logged_in?
     flash[:notice] = notice
-    redirect_back_or_default({:controller => 'account', :action => 'index'}, params[:override_locale])
+    redirect_back_or_default({ :controller => 'account', :action => 'index' }, params[:override_locale])
   end
 
   #####################################################################

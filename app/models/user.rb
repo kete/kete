@@ -39,16 +39,16 @@ class User < ActiveRecord::Base
   # this is mainly for convenience methods rather than finders
   ZOOM_CLASSES.each do |zoom_class|
     has_many "created_#{zoom_class.tableize}".to_sym,
-    :through => :contributions,
-    :source => "created_#{zoom_class.tableize.singularize}".to_sym,
-    :include => :basket,
-    :order => "#{zoom_class.tableize}.created_at"
+             :through => :contributions,
+             :source => "created_#{zoom_class.tableize.singularize}".to_sym,
+             :include => :basket,
+             :order => "#{zoom_class.tableize}.created_at"
 
     has_many "contributed_#{zoom_class.tableize}".to_sym,
-    :through => :contributions,
-    :source => "contributed_#{zoom_class.tableize.singularize}".to_sym,
-    :include => :basket,
-    :order => "#{zoom_class.tableize}.created_at"
+             :through => :contributions,
+             :source => "contributed_#{zoom_class.tableize.singularize}".to_sym,
+             :include => :basket,
+             :order => "#{zoom_class.tableize}.created_at"
   end
 
   # Each user can have multiple portraits (images relating to their account)
@@ -82,20 +82,20 @@ class User < ActiveRecord::Base
   # For accepting terms
   attr_accessor :agree_to_terms
 
-  validates_presence_of     :login, :email
-  validates_inclusion_of    :agree_to_terms, :in => ['1'], :if => :new_record?, :message => 'before you can sign up'
-  validates_presence_of     :security_code,              :if => :new_record?
-  validates_presence_of     :password,                   :if => :password_required?
-  validates_presence_of     :password_confirmation,      :if => :password_required?
-  validates_length_of       :password, :within => 4..40, :if => :password_required?
+  validates_presence_of :login, :email
+  validates_inclusion_of :agree_to_terms, :in => ['1'], :if => :new_record?, :message => 'before you can sign up'
+  validates_presence_of :security_code,              :if => :new_record?
+  validates_presence_of :password,                   :if => :password_required?
+  validates_presence_of :password_confirmation,      :if => :password_required?
+  validates_length_of :password, :within => 4..40, :if => :password_required?
   validates_confirmation_of :password,                   :if => :password_required?
   # Walter McGinnis, 2008-03-16
   # refining captcha to be more accessable (i.e. adding questions) and also make more sense to end user
   validates_confirmation_of :security_code,              :if => :new_record?, :message => lambda { I18n.t('user_model.failed_security_answer') }
-  validates_length_of       :login,    :within => 3..40
-  validates_length_of       :email,    :within => 3..100
-  validates_format_of       :login, :with => /^[^\s]+$/
-  validates_uniqueness_of   :login, :case_sensitive => false
+  validates_length_of :login,    :within => 3..40
+  validates_length_of :email,    :within => 3..100
+  validates_format_of :login, :with => /^[^\s]+$/
+  validates_uniqueness_of :login, :case_sensitive => false
   validates_inclusion_of :locale, :in => I18n.available_locales_with_labels.keys, :message => lambda { I18n.t('user_model.locale_incorrect', :locales => I18n.available_locales_with_labels.keys.join(', ')) }
 
   before_save :encrypt_password
@@ -178,7 +178,7 @@ class User < ActiveRecord::Base
   # rails strips the non integers after the id
   def to_param
     require 'unicode'
-    "#{id}"+Unicode::normalize_KD("-"+user_name+"-").downcase.gsub(/[^a-z0-9\s_-]+/,'').gsub(/[\s_-]+/,'-')[0..-2]
+    "#{id}" + Unicode::normalize_KD("-" + user_name + "-").downcase.gsub(/[^a-z0-9\s_-]+/, '').gsub(/[\s_-]+/, '-')[0..-2]
   end
 
   # password reset related
@@ -251,13 +251,13 @@ class User < ActiveRecord::Base
   end
 
   def add_as_member_to_default_baskets
-    Basket.find_all_by_id(SystemSetting.default_baskets_ids).each { |basket| self.has_role('member',basket) }
+    Basket.find_all_by_id(SystemSetting.default_baskets_ids).each { |basket| self.has_role('member', basket) }
   end
 
   def basket_permissions
     permissions = roles.where(authorizable_type: 'Basket').
-                        select("roles.id AS role_id, roles.name AS role_name, baskets.id AS basket_id, baskets.urlified_name AS basket_urlified_name, baskets.name AS basket_name").
-                        joins("INNER JOIN baskets on roles.authorizable_id = baskets.id")
+                  select("roles.id AS role_id, roles.name AS role_name, baskets.id AS basket_id, baskets.urlified_name AS basket_urlified_name, baskets.name AS basket_name").
+                  joins("INNER JOIN baskets on roles.authorizable_id = baskets.id")
 
     # EOIN: example of the SQL this query generates
     # "SELECT roles.id AS role_id, roles.name AS role_name, baskets.id AS basket_id, baskets.urlified_name AS basket_urlified_name, baskets.name AS basket_name FROM \"roles\" INNER JOIN \"roles_users\" ON \"roles\".\"id\" = \"roles_users\".\"role_id\" INNER JOIN baskets on roles.authorizable_id = baskets.id WHERE \"roles_users\".\"user_id\" = 956 AND \"roles\".\"authorizable_type\" = 'Basket'"
@@ -303,12 +303,12 @@ class User < ActiveRecord::Base
 
   # supporting activation
   def make_activation_code
-    self.activation_code = Digest::SHA1.hexdigest( Time.now.to_s.split(//).sort_by {rand}.join )
+    self.activation_code = Digest::SHA1.hexdigest(Time.now.to_s.split(//).sort_by { rand }.join)
   end
 
   # supporting password reset
   def make_password_reset_code
-    self.password_reset_code = Digest::SHA1.hexdigest( Time.now.to_s.split(//).sort_by {rand}.join )
+    self.password_reset_code = Digest::SHA1.hexdigest(Time.now.to_s.split(//).sort_by { rand }.join)
   end
 
   # before filter

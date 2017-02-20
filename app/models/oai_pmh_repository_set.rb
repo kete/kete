@@ -16,28 +16,28 @@
 class OaiPmhRepositorySet < ActiveRecord::Base
   # belongs_to :zoom_db
 
-  validates_presence_of :name, :set_spec, :match_code, :value#, :zoom_db
+  validates_presence_of :name, :set_spec, :match_code, :value # , :zoom_db
   validates_uniqueness_of :name, :set_spec, :case_sensitive => false
 
   # don't allow special characters in name or set_spec that will break our xml
   validates_format_of :name, :set_spec,
-  :with => /^[^\'\":<>\&,\/\\\?]*$/,
-  :message => lambda { I18n.t('oai_pmh_repository_set_model.invalid_chars', :invalid_chars => "\', \\, /, &, \", ?, <, and >") }
+                      :with => /^[^\'\":<>\&,\/\\\?]*$/,
+                      :message => lambda { I18n.t('oai_pmh_repository_set_model.invalid_chars', :invalid_chars => "\', \\, /, &, \", ?, <, and >") }
 
   class GeneratedSet
     attr_accessor :name, :description, :spec
 
-    def initialize(options = { })
+    def initialize(options = {})
       @name = options[:name]
       @description = options[:description]
       @spec = options[:spec]
     end
   end
 
-  def create_set(options = { })
+  def create_set(options = {})
     this_set = { :name => options[:name] || name,
-      :description => options[:description] || description || nil,
-      :spec => options[:set_spec] || set_spec
+                 :description => options[:description] || description || nil,
+                 :spec => options[:set_spec] || set_spec
     }
     set = GeneratedSet.new(this_set)
   end
@@ -51,7 +51,7 @@ class OaiPmhRepositorySet < ActiveRecord::Base
     end
   end
 
-  def add_this_set_to(xml_builder, options = { })
+  def add_this_set_to(xml_builder, options = {})
     this_name = options[:name] || name
     this_description = options[:description] || description || nil
     this_set_spec = options[:set_spec] || set_spec
@@ -135,8 +135,8 @@ class OaiPmhRepositorySet < ActiveRecord::Base
     # append dynamic stuff to base set attributes
     eval(value).each do |string|
       options = { :name => "#{name} - #{string}",
-        :description => string + ' - ' + description,
-        :set_spec => full_spec(string)}
+                  :description => string + ' - ' + description,
+                  :set_spec => full_spec(string) }
 
       @options_for_generated_sets << options
     end
@@ -144,4 +144,3 @@ class OaiPmhRepositorySet < ActiveRecord::Base
     @options_for_generated_sets
   end
 end
-

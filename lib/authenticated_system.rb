@@ -159,7 +159,7 @@ module AuthenticatedSystem
       if hash_or_url.is_a?(Hash)
         hash_or_url[:locale] = false
       elsif hash_or_url.is_a?(String)
-        locale_match = %r(^/(#{I18n.available_locales_with_labels.keys.map{|l|l.to_s}.join('|')}))
+        locale_match = %r(^/(#{I18n.available_locales_with_labels.keys.map { |l| l.to_s }.join('|')}))
         hash_or_url = hash_or_url.gsub(locale_match, '')
         hash_or_url
       else
@@ -169,7 +169,7 @@ module AuthenticatedSystem
 
     # Redirect to the URI stored by the most recent store_location call or
     # to the passed default.
-    def redirect_back_or_default(default, lang=nil)
+    def redirect_back_or_default(default, lang = nil)
       if session[:return_to]
         return_to = strip_locale(session[:return_to])
         return_to = "/#{lang.to_s}" + return_to if lang
@@ -194,7 +194,7 @@ module AuthenticatedSystem
       if user && user.remember_token?
         user.remember_me
         self.current_user = user
-        cookies[:auth_token] = { :value => self.current_user.remember_token , :expires => self.current_user.remember_token_expires_at }
+        cookies[:auth_token] = { :value => self.current_user.remember_token, :expires => self.current_user.remember_token_expires_at }
         flash[:notice] = I18n.t('authenticated_system_lib.login_from_cookie.logged_in')
       end
     end

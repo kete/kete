@@ -539,7 +539,7 @@ class SearchController < ApplicationController
   def find_index
     @current_basket = Basket.find(params[:current_basket_id])
     @topics_outside_of_this_basket = false  # turn this to true if you want to allow the Site basket
-                                            # homepage to be an About basket topic for example
+    # homepage to be an About basket topic for example
     @current_homepage = @current_basket.index_topic
 
     case params[:function]
@@ -651,10 +651,10 @@ class SearchController < ApplicationController
 
       # Find resulting items through deleted relationships
       @results = ContentItemRelation::Deleted.find_all_by_topic_id_and_related_item_type(@relate_to_item, related_class_name) \
-                                             .collect { |r| related_class.find(r.related_item_id) }
+                 .collect { |r| related_class.find(r.related_item_id) }
       if related_class_is_topic
         @results += ContentItemRelation::Deleted.find_all_by_related_item_id_and_related_item_type(@relate_to_item, 'Topic') \
-                                                .collect { |r| Topic.find(r.topic_id) }
+                    .collect { |r| Topic.find(r.topic_id) }
       end
     when "add"
       @verb = t('search_controller.find_related.add')
@@ -702,11 +702,11 @@ class SearchController < ApplicationController
         pagination_methods.each_key do |method_name|
 
           eval \
-          "class << @results
-            define_method('#{method_name}') do
-              #{pagination_methods[method_name]}
-            end
-          end"
+            "class << @results
+              define_method('#{method_name}') do
+                #{pagination_methods[method_name]}
+              end
+            end"
 
         end
       end
@@ -719,7 +719,7 @@ class SearchController < ApplicationController
   # stored in a session cookie
   # so they don't have to reset it everytime they go to new search results
   def store_number_of_results_per_page
-      session[:number_of_results_per_page] = @number_per_page
+    session[:number_of_results_per_page] = @number_per_page
   end
 
   # James - 2008-07-04
@@ -754,7 +754,7 @@ class SearchController < ApplicationController
   # James Stradling <james@katipo.co.nz> - 2008-05-02
   # Refactored to use acts_as_zoom#has_appropriate_records?
   #### DEPRECIATED?
-  def zoom_update_and_test(item,zoom_db)
+  def zoom_update_and_test(item, zoom_db)
     item_class = item.class.name
 
     if !session[:skip_existing].nil? and session[:skip_existing] == true
@@ -792,7 +792,7 @@ class SearchController < ApplicationController
     # to stop here if thats the case, or we get a 500 error calling .size below
     return if @result_sets.nil? || @result_sets[@current_class].nil? || @displaying_error
 
-    results = @results.map{ |r| r[:url] }
+    results = @results.map { |r| r[:url] }
 
     total_results = @result_sets[@current_class].size
 

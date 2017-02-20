@@ -16,9 +16,9 @@ class SystemSetting
       "kete@library.org.nz"
     end
 
-    #def default_number_of_multiples
+    # def default_number_of_multiples
     #  5
-    #end
+    # end
 
     def flagging_tags
       ['inaccurate', 'duplicate', 'inappropriate', 'entered by mistake', 'has typos']
@@ -28,33 +28,33 @@ class SystemSetting
       3
     end
 
-    #def help_basket
+    # def help_basket
     #  2
-    #end
+    # end
     #
-    #def extended_field_for_user_name
+    # def extended_field_for_user_name
     #  "user_name"
-    #end
+    # end
 
-    #def tags_synonyms
+    # def tags_synonyms
     #  nil
-    #end
+    # end
 
-    #def description_synonyms
+    # def description_synonyms
     #  nil
-    #end
+    # end
     #
-    #def description_template
+    # def description_template
     #  nil
-    #end
+    # end
 
-    #def setup_sections
+    # def setup_sections
     #  ['Server', 'System', 'Accounts', 'Warnings', 'Flagging', 'Results Display', 'Related Items Display', 'Extended Fields']
-    #end
+    # end
 
-    #def documentation_basket
+    # def documentation_basket
     #  4
-    #end
+    # end
 
     def default_policy_is_full_moderation
       false
@@ -76,21 +76,21 @@ class SystemSetting
       4
     end
 
-    #def title_synonyms
+    # def title_synonyms
     #  nil
-    #end
+    # end
 
-    #def short_summary_synonyms
+    # def short_summary_synonyms
     #  nil
-    #end
+    # end
 
-    #def import_fields_to_ignore
+    # def import_fields_to_ignore
     #  ['HiliteLibrary']
-    #end
+    # end
 
-    #def default_baskets_ids
+    # def default_baskets_ids
     #  # ROB: not in the Kete2 system's system_settings database.
-    #end
+    # end
 
     def default_content_license
       License.find(1)
@@ -104,16 +104,16 @@ class SystemSetting
       "There is currently no public version of this item."
     end
 
-    #def uses_basket_list_navigation_menu_on_every_page
+    # def uses_basket_list_navigation_menu_on_every_page
     #  false
-    #end
+    # end
 
     def basket_creation_policy
-     "closed"
+      "closed"
     end
 
     def related_items_position_default
-      # ROB: In the exisiting data this is often saved as the empty string. 
+      # ROB: In the exisiting data this is often saved as the empty string.
       #      Some models also have "inset" or "sidebar"
       "below"
     end
@@ -122,17 +122,17 @@ class SystemSetting
       true
     end
 
-    #def notify_site_admins_of_flaggings
+    # def notify_site_admins_of_flaggings
     #  false
-    #end
+    # end
 
-    #def display_topic_type_on_search_result
+    # def display_topic_type_on_search_result
     #  false
-    #end
+    # end
 
-    #def display_related_topics_as_topic_type_counts
+    # def display_related_topics_as_topic_type_counts
     #  false
-    #end
+    # end
 
     def restricted_flag
       "restricted"
@@ -143,12 +143,12 @@ class SystemSetting
     end
 
     def default_search_privacy
-     "public"
+      "public"
     end
 
-    #def language_choices_display_type
+    # def language_choices_display_type
     #  "dropdown"
-    #end
+    # end
 
     def dc_date_display_detail_level
       "year_month_and_day"
@@ -187,7 +187,7 @@ class SystemSetting
     end
 
     def uses_basket_list_navigation_menu_on_every_page
-     false
+      false
     end
 
     def enable_user_portraits
@@ -284,7 +284,7 @@ class SystemSetting
     end
 
     def image_sizes
-      {:small_sq => '50x50!', :small => '50', :medium => '200>', :large => '400>'}
+      { :small_sq => '50x50!', :small => '50', :medium => '200>', :large => '400>' }
     end
 
     def audio_content_types
@@ -415,11 +415,7 @@ class SystemSetting
     end
 
     def download_warning
-      "You are about to download a file from Kete. Kete is an open digital repository"+
-      "and as such we can not guarantee the integrity of any file in the repository.  "+
-      "Please ensure that your virus scan software is operating and is configured to "+
-      "scan this download.\n"+
-      "Are you sure you want to proceed?"
+      "You are about to download a file from Kete. Kete is an open digital repository" + "and as such we can not guarantee the integrity of any file in the repository.  " + "Please ensure that your virus scan software is operating and is configured to " + "scan this download.\n" + "Are you sure you want to proceed?"
     end
   end
 end

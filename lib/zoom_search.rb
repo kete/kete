@@ -15,13 +15,13 @@ module ZoomSearch
     def count_public_items_for(zoom_class, options = {})
       0
     end
-    def count_private_items_for(zoom_class, options={})
+    def count_private_items_for(zoom_class, options = {})
       0
     end
-    def find_private_related_items_for(item, zoom_class, options={})
+    def find_private_related_items_for(item, zoom_class, options = {})
       {}
     end
-    def find_public_related_items_for(item, zoom_class, options={})
+    def find_public_related_items_for(item, zoom_class, options = {})
       {}
     end
 
@@ -297,7 +297,7 @@ module ZoomSearch
     #     location_hash = Hash.new
     #     last_value = location_array.last
     #     coords = Array.new
-        
+
     #     if last_value.is_a?(String) &&
     #         last_value.include?(',') &&
     #         last_value.split(',').size == 2

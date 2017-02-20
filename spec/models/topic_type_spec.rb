@@ -5,4 +5,3 @@ describe TopicType do
     foo = TopicType.new
   end
 end
-

@@ -51,7 +51,7 @@ module OaiDcHelpers
         end
 
         if all_relations.size > 0
-          all_relations.sort! { |a,b| a.updated_at <=> b.updated_at }
+          all_relations.sort! { |a, b| a.updated_at <=> b.updated_at }
 
           last_relation = all_relations.last
           if last_relation.updated_at > most_recent_updated_at

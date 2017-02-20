@@ -1,13 +1,13 @@
 module AccountHelper
 
-  def String.random_alphanumeric(size=16)
-    (1..size).collect { (i = Kernel.rand(62); i += ((i < 10) ? 48 : ((i < 36) ? 55 : 61 ))).chr }.join
+  def String.random_alphanumeric(size = 16)
+    (1..size).collect { (i = Kernel.rand(62); i += ((i < 10) ? 48 : ((i < 36) ? 55 : 61))).chr }.join
   end
 
   def generate_captcha
-    #Define an array of words for generation
-    #words = ['captcha', 'is', 'the', 'way']
-    #Pick one from random to use in captcha image
+    # Define an array of words for generation
+    # words = ['captcha', 'is', 'the', 'way']
+    # Pick one from random to use in captcha image
     # captchatext = String.random_alphanumeric(6).upcase # words[rand(words.size)]
 
     # #Generate text layer

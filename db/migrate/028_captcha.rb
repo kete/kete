@@ -11,16 +11,3 @@ class Captcha < ActiveRecord::Migration
     drop_table :captchas
   end
 end
-
-
-
-
-
-
-
-
-
-
-
-
-

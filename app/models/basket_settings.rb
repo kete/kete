@@ -43,5 +43,3 @@ class BasketSettings
     }
   end
 end
-
-

@@ -12,7 +12,7 @@ class SearchSource < ActiveRecord::Base
     cattr_accessor "acceptable_#{config}".to_sym
     class_eval("@@acceptable_#{config} = ExternalSearchSources[config.to_sym]")
     validates_inclusion_of config.singularize.to_sym, :in => class_eval("@@acceptable_#{config}"), :allow_blank => (config == 'limit_params'),
-                           :message => I18n.t('search_source_model.must_be_one_of', :types => class_eval("@@acceptable_#{config}.join(', ')"))
+                                                      :message => I18n.t('search_source_model.must_be_one_of', :types => class_eval("@@acceptable_#{config}.join(', ')"))
   end
 
   default_scope :order => 'position ASC'
@@ -44,16 +44,16 @@ class SearchSource < ActiveRecord::Base
   end
 
   def self.or_positions
-    [ [I18n.t('search_source_model.or_positions.no_or_syntax'), 'none'],
-      [I18n.t('search_source_model.or_positions.before_terms'), 'before'],
-      [I18n.t('search_source_model.or_positions.between_terms'), 'between'],
-      [I18n.t('search_source_model.or_positions.after_terms'), 'after'] ]
+    [[I18n.t('search_source_model.or_positions.no_or_syntax'), 'none'],
+     [I18n.t('search_source_model.or_positions.before_terms'), 'before'],
+     [I18n.t('search_source_model.or_positions.between_terms'), 'between'],
+     [I18n.t('search_source_model.or_positions.after_terms'), 'after']]
   end
 
   def self.case_values
-    [ [I18n.t('search_source_model.case_values.doesnt_matter'), ''],
-      [I18n.t('search_source_model.case_values.uppercase'), 'upper'],
-      [I18n.t('search_source_model.case_values.lowercase'), 'lower'] ]
+    [[I18n.t('search_source_model.case_values.doesnt_matter'), ''],
+     [I18n.t('search_source_model.case_values.uppercase'), 'upper'],
+     [I18n.t('search_source_model.case_values.lowercase'), 'lower']]
   end
 
   def source_url

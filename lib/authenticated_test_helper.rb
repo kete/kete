@@ -20,11 +20,11 @@ module AuthenticatedTestHelper
   def authorize_as(user)
     if user
       @request.env["HTTP_AUTHORIZATION"] = "Basic #{Base64.encode64("#{users(user).login}:test")}"
-      accept       'application/xml'
+      accept 'application/xml'
       content_type 'application/xml'
     else
       @request.env["HTTP_AUTHORIZATION"] = nil
-      accept       nil
+      accept nil
       content_type nil
     end
   end
@@ -41,15 +41,15 @@ module AuthenticatedTestHelper
   #    end
   #  end
   #
-  #def assert_difference(object, method = nil, difference = 1)
+  # def assert_difference(object, method = nil, difference = 1)
   #  initial_value = object.send(method)
   #  yield
   #  assert_equal initial_value + difference, object.send(method), "#{object}##{method}"
-  #end
+  # end
 
-  #def assert_no_difference(object, method, &block)
+  # def assert_no_difference(object, method, &block)
   #  assert_difference object, method, 0, &block
-  #end
+  # end
 
   # Assert the block redirects to the login
   #

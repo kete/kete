@@ -79,8 +79,8 @@ KeteApp::Application.configure do
     :address        => 'smtp.mandrillapp.com',
     :port           => '587',
     :authentication => :plain,
-    # Password is a custom generated API key for Mandrill. To inspect it, 
-    # adjust it, or create a new key; login to the Mandrill web-portal and 
+    # Password is a custom generated API key for Mandrill. To inspect it,
+    # adjust it, or create a new key; login to the Mandrill web-portal and
     # go to 'Settings'. Username is the login-email for Mandrill.
     :user_name      => ENV['SMTP_USERNAME'],
     :password       => ENV['SMTP_PASSWORD'],

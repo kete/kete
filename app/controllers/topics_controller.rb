@@ -113,10 +113,10 @@ class TopicsController < ApplicationController
         redirect_to_related_item(@relate_to_item, { :private => (params[:related_item_private] && params[:related_item_private] == 'true' && permitted_to_view_private_items?) })
       when 'basket'
         redirect_to :action => 'add_index_topic',
-        :controller => 'baskets',
-        :index_for_basket => params[:index_for_basket],
-        :return_to_homepage => params[:return_to_homepage],
-        :topic => @topic
+                    :controller => 'baskets',
+                    :index_for_basket => params[:index_for_basket],
+                    :return_to_homepage => params[:return_to_homepage],
+                    :topic => @topic
       else
         flash[:notice] = t('topics_controller.create.created')
         redirect_to :action => 'show', :id => @topic, :private => (params[:topic][:private] == "true")
@@ -192,15 +192,15 @@ class TopicsController < ApplicationController
     @item_taggings = @item.taggings
 
     @current_public_version = @item.version
-    #@item.private_version do
+    # @item.private_version do
     #  @current_private_version = @item.version
-    #end if @item.respond_to?(:private_version)
+    # end if @item.respond_to?(:private_version)
 
     @item_contributors = @item.contributors.order('contributions.version ASC')
-    #@item_contributors = @item.contributors.all(
+    # @item_contributors = @item.contributors.all(
     #  :select => 'contributions.version, contributions.created_at as version_created_at, users.id, users.resolved_name, users.email, users.login',
     #  :order => 'contributions.version ASC', :group => 'contributions.version'
-    #)
+    # )
 
     @contributor_index = 0
 

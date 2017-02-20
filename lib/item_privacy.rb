@@ -16,7 +16,7 @@ module ItemPrivacy
     def self.included(klass)
       klass.class_eval do
         include ActsAsVersionedOverload::InstanceMethods
-        extend  ActsAsVersionedOverload::ClassMethods
+        extend ActsAsVersionedOverload::ClassMethods
         include AttachmentFuOverload
         include TaggingOverload::InstanceMethods
         extend TaggingOverload::SingletonMethods
@@ -337,7 +337,7 @@ module ItemPrivacy
     module SingletonMethods
 
       # Required by tag cloud functionality on basket home-pages.
-      def tag_counts(options, private_tags=false)
+      def tag_counts(options, private_tags = false)
 
         # Only return public tags (for the time being..)
         tags = Hash.new
@@ -402,7 +402,7 @@ module ItemPrivacy
           FileUtils.mv @old_filename, full_filename
 
           # Remove the directory we moved from too if it's empty
-          Dir.rmdir(File.dirname(@old_filename)) if (Dir.entries(File.dirname(@old_filename))-['.','..']).empty?
+          Dir.rmdir(File.dirname(@old_filename)) if (Dir.entries(File.dirname(@old_filename)) - ['.', '..']).empty?
         end
         @old_filename =  nil
         true

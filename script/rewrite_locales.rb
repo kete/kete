@@ -1,7 +1,7 @@
 #!/usr/bin/env ruby
 # The config/locales/en.yml file has multiple nested includes. Kill it!
-# ex: 
-#    en.base.thing: thing 
+# ex:
+#    en.base.thing: thing
 #    en.base.lots_o_things: lots of {{t.base.thing.pluralize}}
 #    ...
 
@@ -33,7 +33,7 @@ class LocaleFileNormaliser
   def process_gsub_pairs
     @gsub_pairs.each do |pair|
       @yaml_text.gsub!("{{t.#{pair[0]}}}", pair[1])
-        # i.e. @yaml_text.gsub("{{t.base.can_be}}", tree['base']['can_be'])
+      # i.e. @yaml_text.gsub("{{t.base.can_be}}", tree['base']['can_be'])
 
       process_gsub_function(pair)
       process_gsub_pluralize_capitalize(pair)
@@ -45,10 +45,10 @@ class LocaleFileNormaliser
     ["pluralize", "capitalize", "downcase", "upcase"].each do |function|
       search_key = "{{t.#{pair[0]}.#{function}}}"
       replace_value = "#{pair[1].send(function)}"
-      #puts search_key +"  --  "+ replace_value
+      # puts search_key +"  --  "+ replace_value
 
       @yaml_text.gsub!(search_key, replace_value)
-        # i.e. @yaml_text.gsub("{{t.base.can_be.capitalize}}", tree['base']['can_be'].capitalize)
+      # i.e. @yaml_text.gsub("{{t.base.can_be.capitalize}}", tree['base']['can_be'].capitalize)
     end
   end
 
@@ -64,8 +64,8 @@ class LocaleFileNormaliser
     @yaml_text.gsub!(search_key, replace_value)
   end
 
-  def parse!(number=3)
-    number.times do 
+  def parse!(number = 3)
+    number.times do
       setup_gsub_pairs
       walk_base_en_node(@tree)
       process_gsub_pairs
@@ -95,15 +95,15 @@ class LocaleFileNormaliser
   end
 
   def process_by_type(value, keys_array)
-      if value.class == String
-        save_string_to_gsub_pair(value, keys_array)
+    if value.class == String
+      save_string_to_gsub_pair(value, keys_array)
 
-      elsif value.class == Array 
-        walk_array(value,  keys_array)
+    elsif value.class == Array
+      walk_array(value,  keys_array)
 
-      elsif value.class == Hash
-        walk_hash(value,  keys_array)
-      end
+    elsif value.class == Hash
+      walk_hash(value,  keys_array)
+    end
   end
 
 

@@ -68,7 +68,7 @@ module ExtendedContentTestUnitHelper
     assert model.valid?
 
     assert_equal '<some_tag xml_element_name="dc:something">something</some_tag>', model.extended_content
-    assert_equal  [["some_tag", "something"]].sort, model.extended_content_pairs.sort
+    assert_equal [["some_tag", "something"]].sort, model.extended_content_pairs.sort
 
     # Test with multiple nodes
     model = Module.class_eval(@base_class).create!(new_model_attributes)
@@ -77,7 +77,7 @@ module ExtendedContentTestUnitHelper
     assert model.valid?
 
     assert_equal '<some_tag xml_element_name="dc:something">something</some_tag><some_other_tag xml_element_name="dc:something_else">something_else</some_other_tag>', model.extended_content
-    assert_equal  [["some_other_tag", "something_else"], ["some_tag", "something"]], model.extended_content_pairs
+    assert_equal [["some_other_tag", "something_else"], ["some_tag", "something"]], model.extended_content_pairs
 
   end
 
@@ -161,8 +161,8 @@ module ExtendedContentTestUnitHelper
 
   protected
 
-    def new_model_attributes
-      @new_model
-    end
+  def new_model_attributes
+    @new_model
+  end
 
 end

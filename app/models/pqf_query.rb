@@ -55,15 +55,15 @@ class PqfQuery
 
   # TODO: my hash_fu is failing me, DRY this up
   DATETIME_SPECS = { 'oai_datestamp' => ATTRIBUTE_SPECS['last_modified'],
-    'last_modified' => ATTRIBUTE_SPECS['last_modified'],
-    'date' => ATTRIBUTE_SPECS['date']
+                     'last_modified' => ATTRIBUTE_SPECS['last_modified'],
+                     'date' => ATTRIBUTE_SPECS['date']
   } unless defined?(DATETIME_SPECS)
 
   DATETIME_COMPARISON_SPECS = { 'before' => QUALIFYING_ATTRIBUTE_SPECS['lt'],
-    'after' => QUALIFYING_ATTRIBUTE_SPECS['gt'],
-    'on' => QUALIFYING_ATTRIBUTE_SPECS['eq'],
-    'on_or_before' => QUALIFYING_ATTRIBUTE_SPECS['le'],
-    'on_or_after' => QUALIFYING_ATTRIBUTE_SPECS['ge']
+                                'after' => QUALIFYING_ATTRIBUTE_SPECS['gt'],
+                                'on' => QUALIFYING_ATTRIBUTE_SPECS['eq'],
+                                'on_or_before' => QUALIFYING_ATTRIBUTE_SPECS['le'],
+                                'on_or_after' => QUALIFYING_ATTRIBUTE_SPECS['ge']
   } unless defined?(DATETIME_COMPARISON_SPECS)
 
   # all ATTRIBUTE_SPECS wll have ..._include method created for them
@@ -72,8 +72,8 @@ class PqfQuery
   DO_NOT_AUTO_DEF_INCLUDE_METHODS_FOR = ATTRIBUTE_SPECS.keys.select { |key| key.include?('sort') } unless defined?(DO_NOT_AUTO_DEF_INCLUDE_METHODS_FOR)
 
   attr_accessor :query_parts, :operators,
-  :title_or_any_text_query_string, :title_or_any_text_operators_string,
-  :direction_value, :sort_spec, :should_search_web_links_to
+                :title_or_any_text_query_string, :title_or_any_text_operators_string,
+                :direction_value, :sort_spec, :should_search_web_links_to
 
   # dynamically define query methods for our attribute specs
   def self.define_query_method_for(method_name, attribute_spec)
@@ -138,7 +138,7 @@ class PqfQuery
       # have a slightly different format (specifies structure of date normalized as @attr 4=5)
       # grab the correct spec for sorting
       @sort_spec = @sort_spec +
-        '_sort' if Search.date_types.include?(@sort_spec) && !@sort_spec.include?('_sort')
+                   '_sort' if Search.date_types.include?(@sort_spec) && !@sort_spec.include?('_sort')
 
       full_query = '@or ' + full_query + QUALIFYING_ATTRIBUTE_SPECS['sort_stub'] + @direction_value.to_s + ' ' + ATTRIBUTE_SPECS[@sort_spec] + ' 0 '
     end
@@ -183,7 +183,7 @@ class PqfQuery
     options = options.first || Hash.new
 
     terms = terms_as_array(term_or_terms).collect { |term| ":#{term.to_s}:" }
-    
+
     # oai is a special case, can't have : precede it
     # replace it with proper version if found
     terms << "oai:" if terms.delete(":oai:")
@@ -204,16 +204,16 @@ class PqfQuery
     end
   end
 
-  def oai_datestamp_between(options = { })
+  def oai_datestamp_between(options = {})
     beginning = options[:beginning]
     ending = options[:ending]
 
     query_part = '@and ' + oai_datestamp_on_or_after(beginning,
                                                      options.merge({ :only_return_as_string => true,
-                                                                     :operator => 'none'}))
+                                                                     :operator => 'none' }))
     query_part += ' ' + oai_datestamp_on_or_before(ending,
                                                    options.merge({ :only_return_as_string => true,
-                                                                   :operator => 'none'}))
+                                                                   :operator => 'none' }))
 
     push_to_appropriate_variables(options.merge(:query_part => query_part)) unless options[:only_return_as_string]
     query_part
@@ -221,7 +221,7 @@ class PqfQuery
 
   # a wrapper that sets up the correct query
   # depending on what options are specified
-  def oai_datestamp_comparison(options = { })
+  def oai_datestamp_comparison(options = {})
     beginning = !options[:beginning].blank? ? options[:beginning] : nil
     ending = !options[:ending].blank? ? options[:ending] : nil
 
@@ -236,25 +236,25 @@ class PqfQuery
     end
   end
 
-  def creators_or_contributors_include(term_or_terms, options = { })
+  def creators_or_contributors_include(term_or_terms, options = {})
     query_part = '@or ' + creators_include(term_or_terms,
                                            options.merge({ :only_return_as_string => true,
-                                                           :operator => 'none'}))
+                                                           :operator => 'none' }))
     query_part += ' ' + contributors_include(term_or_terms,
                                              options.merge({ :only_return_as_string => true,
-                                                             :operator => 'none'}))
+                                                             :operator => 'none' }))
 
     push_to_appropriate_variables(options.merge(:query_part => query_part, :operator => '@and')) unless options[:only_return_as_string]
     query_part
   end
 
-  def creators_or_contributors_equals_completely(term_or_terms, options = { })
+  def creators_or_contributors_equals_completely(term_or_terms, options = {})
     query_part = '@or ' + creators_equals_completely(term_or_terms,
-                                           options.merge({ :only_return_as_string => true,
-                                                           :operator => 'none'}))
+                                                     options.merge({ :only_return_as_string => true,
+                                                                     :operator => 'none' }))
     query_part += ' ' + contributors_equals_completely(term_or_terms,
-                                             options.merge({ :only_return_as_string => true,
-                                                             :operator => 'none'}))
+                                                       options.merge({ :only_return_as_string => true,
+                                                                       :operator => 'none' }))
 
     push_to_appropriate_variables(options.merge(:query_part => query_part, :operator => '@and')) unless options[:only_return_as_string]
     query_part
@@ -359,7 +359,7 @@ class PqfQuery
         query_part += "#{title_query} #{@title_or_any_text_query_string} #{all_content_query} #{@title_or_any_text_query_string} "
       end
     end
-    push_to_appropriate_variables({:query_part => query_part, :operator => operator})
+    push_to_appropriate_variables({ :query_part => query_part, :operator => operator })
     query_part
   end
 
@@ -388,14 +388,14 @@ class PqfQuery
     terms
   end
 
-  def push_to_appropriate_variables(options = { })
+  def push_to_appropriate_variables(options = {})
     @operators << options[:operator] if !options[:operator].blank? && options[:operator] != 'none'
     @query_parts << options[:query_part] unless options[:only_return_as_string]
   end
 
   # expects single string for term_or_terms
   # or array of strings
-  def create_query_part(options = { })
+  def create_query_part(options = {})
     query_part = options[:attribute_spec]
     # should always be an array by the time it gets here
     term_or_terms = options[:term_or_terms]

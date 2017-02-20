@@ -5,10 +5,10 @@ module FriendlyUrls
     # needs testing against IE6 to see if it works
     def format_friendly_for(string)
       require 'unicode'
-      Unicode::normalize_KD("-"+string+"-").downcase.gsub('&', 'and').gsub(/[^a-z0-9\s_-]+/,'').gsub(/[\s_-]+/,'-')[0..-2]
+      Unicode::normalize_KD("-" + string + "-").downcase.gsub('&', 'and').gsub(/[^a-z0-9\s_-]+/, '').gsub(/[\s_-]+/, '-')[0..-2]
     end
 
-    def format_friendly_unicode_for(string, options = { })
+    def format_friendly_unicode_for(string, options = {})
       demarkator = options[:demarkator].nil? ? "-" : options[:demarkator]
       at_start = options[:at_start].nil? ? true : options[:at_start]
       at_end = options[:at_end].nil? ? false : options[:at_end]
@@ -41,7 +41,7 @@ module FriendlyUrls
     # i.e. /id-title/
     # rails strips the non integers after the id
     # has to be in a model
-    def format_for_friendly_urls(topic_version=false, unicode = false)
+    def format_for_friendly_urls(topic_version = false, unicode = false)
       skip_titles = [SystemSetting.no_public_version_title, SystemSetting.blank_title]
 
       # we use self.attributes['title'] here rather than self.title
@@ -50,11 +50,11 @@ module FriendlyUrls
       # always is (same goes with name)
       string = if self.attributes.include?('title')
         self.attributes['title']
-      elsif self.attributes.include?('name')
+               elsif self.attributes.include?('name')
         self.attributes['name']
-      elsif self.attributes.include?('label')
+               elsif self.attributes.include?('label')
         self.attributes['label']
-      else
+               else
         String.new
       end
 
@@ -67,7 +67,7 @@ module FriendlyUrls
       id_for_url
     end
 
-    def format_for_friendly_unicode_urls(topic_version=false)
+    def format_for_friendly_unicode_urls(topic_version = false)
       format_for_friendly_urls(topic_version, true)
     end
   end

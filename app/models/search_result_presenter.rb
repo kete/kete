@@ -84,7 +84,7 @@ class SearchResultPresenter
 
   def thumbnail_file
     (model.respond_to? :thumbnail_file) ? model.thumbnail_file : ""
-  end  
+  end
 
   private
 

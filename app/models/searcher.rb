@@ -30,7 +30,7 @@ class Searcher
         "Video"          => Video.order("updated_at DESC"),
         "WebLink"        => WebLink.order("updated_at DESC"),
         "Document"       => Document.order("updated_at DESC"),
-        "Comment"        => Comment.order("updated_at DESC"),
+        "Comment"        => Comment.order("updated_at DESC")
       }
     else
       {
@@ -40,7 +40,7 @@ class Searcher
         'Video'          => Video.joins(:basket).where(baskets: { urlified_name: query.basket_name }).order('updated_at DESC'),
         'WebLink'        => WebLink.joins(:basket).where(baskets: { urlified_name: query.basket_name }).order('updated_at DESC'),
         'Document'       => Document.joins(:basket).where(baskets: { urlified_name: query.basket_name }).order('updated_at DESC'),
-        'Comment'        => Comment.joins(:basket).where(baskets: { urlified_name: query.basket_name }).order('updated_at DESC'),
+        'Comment'        => Comment.joins(:basket).where(baskets: { urlified_name: query.basket_name }).order('updated_at DESC')
       }
     end
   end
@@ -53,15 +53,15 @@ class Searcher
       "Video"          => Video.tagged_with(query.tag).order("updated_at DESC"),
       "WebLink"        => WebLink.tagged_with(query.tag).order("updated_at DESC"),
       "Document"       => Document.tagged_with(query.tag).order("updated_at DESC"),
-      "Comment"        => Comment.tagged_with(query.tag).order("updated_at DESC"),
+      "Comment"        => Comment.tagged_with(query.tag).order("updated_at DESC")
     }
   end
 
   def contributed_by
     # This could also be scopped by contributor_role: "contributor"/"creator"
     distinct_contributions = Contribution.select("DISTINCT user_id, contributed_item_type, contributed_item_id").
-                                          order(:contributed_item_type, :contributed_item_id).
-                                          where(user_id: query.user_id)
+                             order(:contributed_item_type, :contributed_item_id).
+                             where(user_id: query.user_id)
     {
       "Topic"          => distinct_contributions.where(contributed_item_type: "Topic"),
       "StillImage"     => distinct_contributions.where(contributed_item_type: "StillImage"),
@@ -69,7 +69,7 @@ class Searcher
       "Video"          => distinct_contributions.where(contributed_item_type: "Video"),
       "WebLink"        => distinct_contributions.where(contributed_item_type: "WebLink"),
       "Document"       => distinct_contributions.where(contributed_item_type: "Document"),
-      "Comment"        => distinct_contributions.where(contributed_item_type: "Comment"),
+      "Comment"        => distinct_contributions.where(contributed_item_type: "Comment")
     }
   end
 
@@ -100,7 +100,7 @@ class Searcher
   def related_to_topic_hash
     related_by_topic        = ContentItemRelation.where(topic_id: query.related_item_id)
     related_by_content_item = ContentItemRelation.where(related_item_type: 'Topic').
-                                                  where(related_item_id: query.related_item_id)
+                              where(related_item_id: query.related_item_id)
 
     # Help arel form an OR statement.
     related_by_topic = related_by_topic.where_values.reduce(:and)
@@ -115,14 +115,14 @@ class Searcher
       "Video"          => related_to_topic.where(related_item_type: 'Video'),
       "WebLink"        => related_to_topic.where(related_item_type: 'WebLink'),
       "Document"       => related_to_topic.where(related_item_type: 'Document'),
-      "Comment"        => related_to_topic.where(related_item_type: 'Comment'),
+      "Comment"        => related_to_topic.where(related_item_type: 'Comment')
     }
   end
 
   def related_to_non_topic_hash
     topics_related_to = ContentItemRelation.where(related_item_id: query.related_item_id).
-                                            where(related_item_type: query.related_item_type).
-                                            order('position DESC')
+                        where(related_item_type: query.related_item_type).
+                        order('position DESC')
     {
       "Topic"          => topics_related_to,
       "StillImage"     => empty_relation,
@@ -130,7 +130,7 @@ class Searcher
       "Video"          => empty_relation,
       "WebLink"        => empty_relation,
       "Document"       => empty_relation,
-      "Comment"        => empty_relation,
+      "Comment"        => empty_relation
     }
   end
 

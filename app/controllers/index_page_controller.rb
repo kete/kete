@@ -31,20 +31,20 @@ class IndexPageController < ApplicationController
         if !@topic.nil? # if @topic is not nil do ...
           case @current_basket.index_page_link_to_index_topic_as
           when 'full topic and comments'
-            @url_to_full_topic = url_for( :urlified_name => @topic.basket.urlified_name,
-                                          :action => :show,
-                                          :controller => 'topics',
-                                          :id => @topic )
+            @url_to_full_topic = url_for(:urlified_name => @topic.basket.urlified_name,
+                                         :action => :show,
+                                         :controller => 'topics',
+                                         :id => @topic)
             @url_to_comments = url_for(:action => 'show',
                                        :urlified_name => @topic.basket.urlified_name,
                                        :controller => 'topics',
                                        :id => @topic,
                                        :anchor => 'comments')
           when 'full topic'
-            @url_to_full_topic = url_for( :urlified_name => @topic.basket.urlified_name,
-                                          :action => :show,
-                                          :controller => 'topics',
-                                          :id => @topic )
+            @url_to_full_topic = url_for(:urlified_name => @topic.basket.urlified_name,
+                                         :action => :show,
+                                         :controller => 'topics',
+                                         :id => @topic)
           when 'comments'
             @url_to_comments = url_for(:action => 'show',
                                        :urlified_name => @topic.basket.urlified_name,
@@ -132,7 +132,7 @@ class IndexPageController < ApplicationController
 
             # with the final topic, sort by the versions created_at,
             # rather than the public topics created_at
-            @recent_topics_items.sort! { |t1,t2| t2.created_at<=>t1.created_at }
+            @recent_topics_items.sort! { |t1, t2| t2.created_at <=> t1.created_at }
           end
         end
 
@@ -187,7 +187,7 @@ class IndexPageController < ApplicationController
   def zebra_uptime
     zoom_dbs = [ZoomDb.find_by_database_name('public')]
     # zoom_dbs <<  ZoomDb.find_by_database_name('private')
-    zoom_dbs.each { |db| Module.class_eval('Topic').process_query(:zoom_db => db, :query => "@attr 1=_ALLRECORDS @attr 2=103 ''")}
+    zoom_dbs.each { |db| Module.class_eval('Topic').process_query(:zoom_db => db, :query => "@attr 1=_ALLRECORDS @attr 2=103 ''") }
     render(:text => "success")
   end
 

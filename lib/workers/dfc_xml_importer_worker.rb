@@ -88,7 +88,7 @@ class DfcXmlImporterWorker < BackgrounDRb::MetaWorker
         end
       end
 
-      File.open(path_to_records_file_output, 'w') {|f| f.write(output.to_xml) }
+      File.open(path_to_records_file_output, 'w') { |f| f.write(output.to_xml) }
 
     end
   end

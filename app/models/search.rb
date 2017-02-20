@@ -10,7 +10,7 @@ class Search < ActiveRecord::Base
     types
   end
 
-  def self.view_as_types_as_options(current, show_inherit=true)
+  def self.view_as_types_as_options(current, show_inherit = true)
     options = String.new
     options += "<option value='inherit'>#{I18n.t('search_model.view_as_types_as_options.inherit')}</option>" if show_inherit
     Search.view_as_types.each do |type|
@@ -79,7 +79,7 @@ class Search < ActiveRecord::Base
     sort_type_options
   end
 
-  def sort_type(options = { })
+  def sort_type(options = {})
     sort_type = options[:user_specified] || options[:default]
 
     # if this is an "all" search
@@ -98,7 +98,7 @@ class Search < ActiveRecord::Base
     @pqf_query.direction_value = 2 if (date_types.include?(sort_type) && (requested.nil? || requested != 'reverse')) || (!date_types.include?(sort_type) && !requested.nil? && requested == 'reverse')
   end
 
-  def add_sort_to_query_if_needed(options = { })
+  def add_sort_to_query_if_needed(options = {})
     sort_type = sort_type(:default => 'none',
                           :user_specified => options[:user_specified],
                           :action => options[:action],

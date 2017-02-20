@@ -17,7 +17,7 @@ class Feed < ActiveRecord::Base
 
   serialize :serialized_feed
 
-  def self.fetch(url, escape=true)
+  def self.fetch(url, escape = true)
     Rails.logger.debug("Original feed url: #{url}")
     url = escape ? URI.escape(url) : url
     Rails.logger.debug("Escaped feed url: #{url}")
@@ -38,7 +38,7 @@ class Feed < ActiveRecord::Base
       File.delete(file_path) if File.exists?(file_path)
     end
   end
-  
+
   def destroy_caches
     clear_caches
   end

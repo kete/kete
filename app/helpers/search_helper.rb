@@ -90,7 +90,7 @@ module SearchHelper
     !@existing_ids.nil? && @existing_ids.member?(item.id)
   end
 
-  def topic_related_thumbs_from(images, options = { })
+  def topic_related_thumbs_from(images, options = {})
     num_images_to_show = options[:num_images_to_show] ? options[:num_images_to_show] : SystemSetting.number_of_related_images_to_display
     num_images_to_show = [images.length, num_images_to_show].min
 
