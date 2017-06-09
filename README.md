@@ -11,15 +11,15 @@ This work is not yet complete so this branch is not ready for production use.
 You can view existing content in the Kete but creating or editing content is not
 working yet.
 
-##Development Milestones
+## Development Milestones
 
-###Read Only Functionality
+### Read Only Functionality
 - there is a known issue where some links are broken on pages within Kete. These are pending investigation
 
-###User Accounts and Create/Edit Functionality on Items
+### User Accounts and Create/Edit Functionality on Items
 next milestone
 
-###Administrator features are complete
+### Administrator features are complete
 final milestone of this development phase
 
 
