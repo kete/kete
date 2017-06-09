@@ -8,15 +8,15 @@ Kete is a knowledge basket of images, audio, video and documents which are colle
 
 There is no upgrade path from the old kete1 to kete2 yet. Patches are very welcome.
 
-##Development Milestones
+## Development Milestones
 
-###Read Only Functionality
+### Read Only Functionality
 - there is a known issue where some links are broken on pages within Kete. These are pending investigation
 
-###User Accounts and Create/Edit Functionality on Items
+### User Accounts and Create/Edit Functionality on Items
 next milestone
 
-###Administrator features are complete
+### Administrator features are complete
 final milestone of this development phase
 
 
