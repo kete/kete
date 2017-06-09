@@ -1,15 +1,12 @@
-# Kete 2.0 work in progress
+# Kete 2.0
 
 [![Build Status](https://travis-ci.org/kete/kete.svg?branch=kete2)](https://travis-ci.org/kete/kete)
 
-This branch is a partially complete modernisation of the Kete codebase
+Kete is a knowledge basket of images, audio, video and documents which are collected and catalogued by the community.
 
-* upgrade to Rails 3
-* move dependencies to gems that are currently being maintained.
+##Important note for Kete 1.x users
 
-This work is not yet complete so this branch is not ready for production use.
-You can view existing content in the Kete but creating or editing content is not
-working yet.
+There is no upgrade path from the old kete1 to kete2 yet. Patches are very welcome.
 
 ## Development Milestones
 

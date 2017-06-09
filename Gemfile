@@ -1,6 +1,6 @@
 source "https://rubygems.org"
 
-ruby '2.1.2'
+ruby '2.3.3'
 
 gem "rails", "3.2.22.1"
 gem 'unicorn'
@@ -23,7 +23,7 @@ gem "pg_search", "~> 0.7.2"
 
 # RABID: the official version of acts_as_versioned seems to be abandoned but
 # 		 this fork claims to have rails 3 support
-gem 'acts_as_versioned', github: "jwhitehorn/acts_as_versioned"
+gem 'db_acts_as_versioned', '~> 3.5.0'
 
 # RABID: the old plugin version of acts-as-taggable-on was 1.0.0
 gem 'acts-as-taggable-on', '~> 3.3.0'
@@ -87,7 +87,7 @@ gem 'dynamic_form', '~> 1.1.4'
 
 gem "backgroundrb-rails3", "~> 1.1.6", :require => 'backgroundrb'
 gem 'mini_exiftool', '< 2.0.0'
-gem 'rmagick', "2.13.3", require: 'RMagick'
+gem 'rmagick', "~> 2.16.0", require: 'RMagick'
 
 
 # Note: the file config/required_software.yml is a good place to look for things that would be needed in a bundler file.
@@ -221,6 +221,7 @@ group :development, :test do
   gem 'awesome_print'
   gem "factory_girl_rails", "~> 4.5.0"
   gem 'rubocop', '~> 0.31.0', require: false
+  gem 'test-unit', '~> 3.0'
 end
 
 group :test do

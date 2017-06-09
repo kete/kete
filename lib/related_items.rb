@@ -20,9 +20,7 @@ module RelatedItems
     # build up one collection of all types of related items
     # this will also trigger @related_items_hash to be instanciated if it doesn't already exist
     def related_items
-      related_items = Array.new
-      related_items_hash.values.each { |v| related_items += v }
-      related_items
+      related_items_hash.values
     end
   end
 end
