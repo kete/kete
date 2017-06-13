@@ -1,0 +1,22 @@
+%div{:class => "image-result-wrapper", :id => "item_#{result.id}_wrapper"}
+  .image-result-thumb
+    -if result.thumbnail_file.nil?
+      = link_to t('search.image.view_image'), basket_aware_url_for(result.model)
+    -else
+      = link_to image_tag(result.thumbnail_file.public_filename, alt: result.title), basket_aware_url_for(result.model)
+  .image-result-header
+    %h4= link_to h(result.title), basket_aware_url_for(result.model), :tabindex => '1'
+  .image-result-description
+    = strip_tags(result.short_summary)
+    .image-result-morej
+      = link_to(t('search.image.more').html_safe, basket_aware_url_for(result.model), { :title => t('search.image.more_on', :title => result.title), :tabindex => '1' })
+
+  - if result.has_related_items?
+    = render 'related', related: result.related,
+                        related_items_summary: result.related_items_summary,
+                        locally_hosted: result.locally_hosted,
+                        source_url: basket_aware_url_for(result.model),
+                        title: result.title    
+
+  = dc_date_display_of(result.dc_dates)
+  %div{:style => "clear:left;"}

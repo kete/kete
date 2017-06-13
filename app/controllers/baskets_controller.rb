@@ -1,7 +1,4 @@
 class BasketsController < ApplicationController
-  ### TinyMCE WYSIWYG editor stuff
-  uses_tiny_mce :only => VALID_TINYMCE_ACTIONS
-  ### end TinyMCE WYSIWYG editor stuff
 
   permit "site_admin or admin of :current_basket", :only => [:edit, :update, :homepage_options, :destroy,
                                                              :add_index_topic, :appearance, :update_appearance,
@@ -18,11 +15,7 @@ class BasketsController < ApplicationController
 
   include WorkerControllerHelpers
 
-  # Kieran Pilkington, 2008/11/26
-  # Instantiation of Google Map code for location settings
-  include GoogleMap::Mapper
-
-  include TaggingController
+  # include TaggingController
 
   include AnonymousFinishedAfterFilter
 
@@ -31,8 +24,9 @@ class BasketsController < ApplicationController
   end
 
   # GETs should be safe (see http://www.w3.org/2001/tag/doc/whenToUseGet.html)
-  verify :method => :post, :only => [ :destroy, :create, :update ],
-         :redirect_to => { :action => :list }
+  # EOIN: FIXME: verify is not in rails3 but we do need to limit the HTTP verbs in routing. This will need to be addressed before we go live
+  # verify :method => :post, :only => [ :destroy, :create, :update ],
+  #        :redirect_to => { :action => :list }
 
   def list
     list_baskets
@@ -46,10 +40,8 @@ class BasketsController < ApplicationController
 
   def rss
     @number_per_page = 100
-    @cache_key_hash = { :rss => "basket_list" }
-    unless has_all_rss_fragments?(@cache_key_hash)
-      @baskets = Basket.all(:limit => @number_per_page, :order => 'id DESC')
-    end
+    @baskets = Basket.all(:limit => @number_per_page, :order => 'id DESC')
+
     respond_to do |format|
       format.xml
     end
@@ -106,19 +98,19 @@ class BasketsController < ApplicationController
       end
 
       # if basket creator is admin or creation not moderated, make creator basket admin
-      @basket.accepts_role('admin', current_user) if BASKET_CREATION_POLICY == 'open' || @site_admin
+      @basket.accepts_role('admin', current_user) if SystemSetting.basket_creation_policy == 'open' || @site_admin
 
       # if an site admin makes a basket, make sure emailing notifications are skipped
       if basket_policy_request_with_permissions?
         @site_basket.administrators.each do |administrator|
-          UserNotifier.deliver_basket_notification_to(administrator, current_user, @basket, 'request')
+          UserNotifier.basket_notification_to(administrator, current_user, @basket, 'request').deliver
         end
         flash[:notice] = t('baskets_controller.create.to_be_reviewed')
         redirect_to "/#{@site_basket.urlified_name}"
       else
         if !@site_admin
           @site_basket.administrators.each do |administrator|
-            UserNotifier.deliver_basket_notification_to(administrator, current_user, @basket, 'created')
+            UserNotifier.basket_notification_to(administrator, current_user, @basket, 'created').deliver
           end
         end
         flash[:notice] = t('baskets_controller.create.created')
@@ -170,7 +162,6 @@ class BasketsController < ApplicationController
       ZOOM_CLASSES.each do |zoom_class|
         basket_items = @basket.send(zoom_class.tableize)
         basket_items.each do |item|
-          expire_show_caches_for(item)
           zoom_destroy_for(item)
         end
       end
@@ -217,10 +208,10 @@ class BasketsController < ApplicationController
       # We send the emails right before a redirect so
       # it doesn't break anything if the emailing fails
       unless params[:accept_basket].blank?
-        UserNotifier.deliver_basket_notification_to(@basket.creator, current_user, @basket, 'approved')
+        UserNotifier.basket_notification_to(@basket.creator, current_user, @basket, 'approved').deliver
       end
       unless params[:reject_basket].blank?
-        UserNotifier.deliver_basket_notification_to(@basket.creator, current_user, @basket, 'rejected')
+        UserNotifier.basket_notification_to(@basket.creator, current_user, @basket, 'rejected').deliver
       end
 
       # Add this last because it takes the longest time to process
@@ -321,7 +312,7 @@ class BasketsController < ApplicationController
       all_baskets_hash = Hash.new
       # get the add item setting for each of the baskets the user has access to
       Basket.find_all_by_urlified_name(@basket_access_hash.stringify_keys.keys).each do |b|
-        all_baskets_hash[b.urlified_name.to_sym] = { :basket => b, :privacy => b.settings[:show_add_links] }
+        all_baskets_hash[b.urlified_name.to_sym] = { :basket => b, :privacy => b.setting(:show_add_links) }
       end
       # collect baskets that they can see add item controls for
       @basket_list = @basket_access_hash.collect do |basket_urlified_name, basket_hash|
@@ -360,15 +351,7 @@ class BasketsController < ApplicationController
 
     respond_to do |format|
       format.html { render :partial => 'topics/form', :layout => 'application' }
-      format.js do
-        render :update do |page|
-          page.replace_html 'item_form', :partial => 'topics/form'
-          page << "#{raw_tiny_mce_init}"
-          page << "tinyMCE.execCommand('mceRemoveControl', false, 'mceEditor');"
-          page << "tinyMCE.execCommand('mceAddControl', false, 'mceEditor');"
-          page << google_map_initializers if defined?(google_map_initializers)
-        end
-      end
+      format.js
     end
   end
 

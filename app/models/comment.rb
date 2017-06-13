@@ -1,4 +1,14 @@
 class Comment < ActiveRecord::Base
+
+  include PgSearch
+  include PgSearchCustomisations
+  multisearchable against: [
+    :title,
+    :description,
+    :raw_tag_list,
+    :searchable_extended_content_values
+  ]
+
   # don't orphan children
   # reassign them as children of their grandparent
   # if you destroy their parent
@@ -46,10 +56,7 @@ class Comment < ActiveRecord::Base
   # Helper class method to look up all comments for
   # commentable class name and commentable id.
   def self.find_comments_for_commentable(commentable_str, commentable_id)
-    find(:all,
-      :conditions => ["commentable_type = ? and commentable_id = ?", commentable_str, commentable_id],
-      :order => "lft"
-    )
+    where(:commentable_type => commentable_str, :commentable_id => commentable_id).order('lft')
   end
 
   # pulled almost directly from acts_as_commentable
@@ -103,10 +110,8 @@ class Comment < ActiveRecord::Base
     else
       children.each do |comment|
         # Use update_all instead of self.update_attribute to avoid validations and callbacks
-        Comment.update_all("#{parent_col_name} = NULL", { :id => comment.id })
+        Comment.update_all("#{parent_column_name} = NULL", { :id => comment.id })
       end
-      # With parents now correct
-      Comment.renumber_all
     end
   end
 

@@ -1,0 +1,7 @@
+.credits
+  - if SystemSetting.show_powered_by_kete?
+    = t('index_page.credits.powered_by')
+    %a{:href => "http://kete.net.nz/"}
+      = image_tag "kete-logo-36x17-transparent-bg.gif"
+
+  = SystemSetting.additional_credits_html unless SystemSetting.additional_credits_html.blank?

@@ -1,7 +1,7 @@
 module ZoomControllerActions
   unless included_modules.include? ZoomControllerActions
     include WorkerControllerHelpers
-    
+
     # this takes the configuration and uses it to start a backgroundrb worker
     # to do the actual rebuild work on zebra
     def rebuild_zoom_index
@@ -18,7 +18,7 @@ module ZoomControllerActions
 
       import_request = { :host => request.host,
         :protocol => request.protocol,
-        :request_uri => request.request_uri }
+        :request_uri => request.original_url }
 
       @worker_running = false
       # only one rebuild should be running at a time

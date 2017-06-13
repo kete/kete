@@ -1,5 +1,5 @@
 class Import < ActiveRecord::Base
-  IMPORTS_DIR = RAILS_ROOT + '/imports/'
+  IMPORTS_DIR = Rails.root + '/imports/'
   VALID_ARCHIVE_CLASSES = ATTACHABLE_CLASSES
 
   belongs_to :basket

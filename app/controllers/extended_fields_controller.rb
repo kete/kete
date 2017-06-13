@@ -41,25 +41,12 @@ class ExtendedFieldsController < ApplicationController
   end
 
   def add_field_to_multiples
-
-    extended_field = ExtendedField.find(params[:extended_field_id])
-    n = params[:n].to_i
+    @extended_field = ExtendedField.find(params[:extended_field_id])
+    @n = params[:n].to_i
     @item_type_for_params = params[:item_key]
 
-    render :update do |page|
-
-      # Remove the field adder control
-      page.remove "#{qualified_name_for_field(extended_field)}_multis_extender"
-
-      # Add a new field editor to the bottom of the set
-      page.insert_html :bottom, "#{qualified_name_for_field(extended_field)}_multis", \
-        :partial => 'extended_fields/extended_field_editor', \
-        :locals => { :ef => extended_field, :content => [], :n => n, :multiple => true }
-
-      # Add the field adder control back to the bottom of the set
-      page.insert_html :bottom, "#{qualified_name_for_field(extended_field)}_multis", \
-        :partial => 'extended_fields/additional_extended_field_control', \
-        :locals => { :ef => extended_field, :n => n.to_i + 1 }
+    respond_to do |format|
+      format.js
     end
   end
 
@@ -122,10 +109,9 @@ class ExtendedFieldsController < ApplicationController
     search_term = search_term.split(' (').first if search_term =~ /.+ \(.+\)/
     logger.debug("What is search term: #{search_term}")
 
-    topic_type_ids = TopicType.find_by_id(parent_topic_type).full_set.collect { |a| a.id } rescue []
+    topic_type_ids = TopicType.where(:id => parent_topic_type).full_set.collect { |a| a.id } rescue []
 
-    topics = Topic.find(:all, :conditions => ["title LIKE ? AND topic_type_id IN (?)", "%#{search_term}%", topic_type_ids],
-                        :order => "title ASC", :limit => 10)
+    topics = Topic.where("title LIKE ? AND topic_type_id IN (?)", "%#{search_term}%", topic_type_ids).order("title ASC").limit(10)
     logger.debug("Topics are: #{topics.inspect}")
 
     topics = topics.map { |entry|
@@ -150,7 +136,7 @@ class ExtendedFieldsController < ApplicationController
     js = no_value_js
     unless value.blank?
       js = invalid_value_js
-      topic = Topic.find_by_id(value.split('/').last.to_i, :select => 'topic_type_id')
+      topic = Topic.where(:id => value.split('/').last.to_i).select('topic_type_id')
       if topic
         valid_topic_type_ids = parent_topic_type.full_set.collect { |topic_type| topic_type.id }
         js = valid_value_js if valid_topic_type_ids.include?(topic.topic_type_id)

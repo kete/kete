@@ -1,0 +1,14 @@
+- zoom_class ||= nil
+- topic_type_id ||= nil
+- if topic_type_id.present?
+- fields = TopicType.find(topic_type_id).mapped_fields
+- elsif zoom_class && zoom_class != 'Topic'
+- fields = ContentType.find_by_class_name(zoom_class).mapped_fields
+- else
+- fields = ExtendedField.all
+- end
+%select{:id => "import_#{id}", :name => "import[#{id}]"}
+  %option{:value => ""}
+  - fields.each do |field|
+    %option{:value => field.id}= field.label
+%img{:height => "16", :id => "extended_fields_spinner_for_#{id}", :src => "#{image_path('indicator.gif')}", :style => "display:none;", :width => "16"}/

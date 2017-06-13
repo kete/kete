@@ -1,0 +1,69 @@
+- blather = params[:page] && params[:page].to_i > 1 ? t('search.rss.next') : t('search.rss.latest')
+- @title = title_setup_first_part(SITE_NAME + " - #{blather} #{t('search.rss.x_results_in', :amount => @number_per_page)} ") + last_part_of_title_for_rss_if_refinement_of
+= Nokogiri::XML::Builder.new(:encoding => 'UTF-8') { |xml|                                                                                                |
+  xml.rss(:version => '2.0',                                                                                                                              |
+          "xmlns:media" => "http://search.yahoo.com/mrss",                                                                                                |
+          "xmlns:opensearch" => "http://a9.com/-/spec/opensearch/1.1/",                                                                                   |
+          "xmlns:atom" => "http://www.w3.org/2005/Atom") {                                                                                                |
+    xml.channel {                                                                                                                                         |
+      will_paginate_atom(@results, xml)                                                                                                                   |
+      xml.title @title                                                                                                                                    |
+      xml.link (request.protocol + request.host + request.original_url)                                                                                    |
+      xml.description t('search.rss.showing_x-y_of_z',                                                                                                    |
+                        :start => @start,                                                                                                                 |
+                        :end => @end_record,                                                                                                              |
+                        :total => @result_sets[@current_class].size)                                                                                      |
+      xml.language 'en-nz'                                                                                                                                |
+      xml.send("opensearch:totalResults", @result_sets[@current_class].size)                                                                              |
+      xml.send("opensearch:startIndex", ((@current_page - 1) * @number_per_page))                                                                         |
+      xml.send("opensearch:itemsPerPage", @number_per_page)                                                                                               |
+      xml.send("opensearch:Query", :role => "request", :searchTerms => @search_terms) unless @search_terms.blank?                                         |
+      for result in @results                                                                                                                              |
+        xml.item {                                                                                                                                        |
+          xml.title {                                                                                                                                     |
+            xml.cdata result[:title]                                                                                                                      |
+          }                                                                                                                                               |
+          short_summary = strip_tags(result[:short_summary].to_s)                                                                                         |
+          # this enables things like cooliris (http://cooliris.com)                                                                                       |
+          # note that it goes before short summary may have the thumbnail added                                                                           |
+          # so as not to include it in media:description                                                                                                  |
+          # also handles podcasts with inclusion of backwards compatible enclosure tag                                                                    |
+          unless result[:media_content].blank?                                                                                                            |
+            xml.send("media:content", :url => result[:media_content][:src], :type => result[:media_content][:content_type])                               |
+            xml.send("media:description") {                                                                                                               |
+              xml.cdata short_summary                                                                                                                     |
+            }                                                                                                                                             |
+            xml.enclosure(:url => result[:media_content][:src], :type => result[:media_content][:content_type], :length => result[:media_content][:size]) |
+          end                                                                                                                                             |
+          unless result[:thumbnail].blank?                                                                                                                |
+            thumbnail_html = render(:partial => 'thumb_image_tag',                                                                                        |
+                                    :locals => { :thumbnail => result[:thumbnail],                                                                        |
+                                      :title => result[:title] })                                                                                         |
+            short_summary = thumbnail_html + short_summary                                                                                                |
+          end                                                                                                                                             |
+          xml.send("media:thumbnail", :url => result[:medium][:src]) unless result[:medium].blank?                                                        |
+          # include thumbnails of related images for topics                                                                                               |
+          # and totals of related items for everything                                                                                                    |
+          if result[:related]                                                                                                                             |
+            related = result[:related]                                                                                                                    |
+            related_string = "<p>#{t('search.rss.related')} "                                                                                             |
+            totals_array = related[:counts].keys.collect { |key| zoom_class_humanize_after(related[:counts][key], key.to_s.classify) }                    |
+            related_string += totals_array.to_sentence + '</p>'                                                                                           |
+            if !related[:still_images].blank?                                                                                                             |
+              related_string += "<p>"                                                                                                                     |
+              related_string += topic_related_thumbs_from(related[:still_images])                                                                         |
+              related_string += "</p>"                                                                                                                    |
+            end                                                                                                                                           |
+            short_summary = short_summary + related_string                                                                                                |
+          end                                                                                                                                             |
+          xml.description {                                                                                                                               |
+            xml.cdata short_summary                                                                                                                       |
+          }                                                                                                                                               |
+          xml.pubDate result[:date]                                                                                                                       |
+          xml.link result[:url]                                                                                                                           |
+          xml.guid result[:url]                                                                                                                           |
+        }                                                                                                                                                 |
+      end                                                                                                                                                 |
+    }                                                                                                                                                     |
+  }                                                                                                                                                       |
+  }.to_xml                                                                                                                                                |

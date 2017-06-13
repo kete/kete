@@ -10,10 +10,6 @@ module ExtendedContentController
       # Autocomplete methods for tag adder on item pages
       klass.send :include, TaggingController
 
-      # Kieran Pilkington, 2008/11/26
-      # Instantiation of Google Map code for location settings
-      klass.send :include, GoogleMap::Mapper
-
       klass.send :include, AnonymousFinishedAfterFilter
 
       if klass.name == 'CommentsController'
@@ -27,19 +23,15 @@ module ExtendedContentController
                           :only =>  [ :destroy, :restore, :reject, :make_theme ]
 
       # GETs should be safe (see http://www.w3.org/2001/tag/doc/whenToUseGet.html)
-      klass.send :verify, :method => :post,
-                          :only => [ :destroy, :create, :update ],
-                          :redirect_to => { :action => :list }
+      # klass.send :verify, :method => :post,
+      #                     :only => [ :destroy, :create, :update ],
+      #                     :redirect_to => { :action => :list }
 
       unless klass.name == 'TopicsController'
         # used to determined appropriate extended fields for the model you are operating on
         klass.send :before_filter, :load_content_type,
                                    :only => [:show, :new, :create, :edit, :update]
       end
-
-      ### TinyMCE WYSIWYG editor stuff
-      klass.send :uses_tiny_mce, :only => VALID_TINYMCE_ACTIONS
-      ### end TinyMCE WYSIWYG editor stuff
 
       klass.send :helper, :privacy_controls
 
@@ -48,54 +40,6 @@ module ExtendedContentController
       end
 
       private
-
-      # By default, only site admins are allowed to not sanitize content, however if a user wants to edit an item
-      # with insecure content, we should let them change stuff around it, and to do that, if the current elements
-      # is an exact match with the submitted elements, then we can set do_not_sanitize to true here. A non site admin
-      # still can't choose to no sanotize content though (so any new elements must be added by a site admin)
-      def ensure_no_new_insecure_elements_in(item_type)
-        return true if @site_admin && params[item_type.to_sym][:do_not_sanitize] == '1'
-
-        @item = eval("@#{item_type}")
-
-        old_doc = Nokogiri.HTML(@item.description) unless @item.description.blank?
-        existing_elements = Array.new
-        new_doc = Nokogiri::HTML(params[item_type.to_sym][:description]) unless params[item_type.to_sym][:description].blank?
-        current_elements = Array.new
-
-        INSECURE_EXTENDED_VALID_ELEMENTS.each do |field_key|
-          old_doc.search("//#{field_key.to_s}").each { |element| existing_elements << element.to_s.strip } unless @item.description.blank?
-          new_doc.search("//#{field_key.to_s}").each { |element| current_elements << element.to_s.strip } unless params[item_type.to_sym][:description].blank?
-        end
-
-        params[item_type.to_sym][:do_not_sanitize] = true
-        new_elements = Array.new
-        current_elements.each do |element|
-          if existing_elements.include?(element)
-            # delete it as we go so we can't use the same one again later
-            existing_elements.delete_at(existing_elements.index(element))
-          else
-            new_elements << element
-            params[item_type.to_sym][:do_not_sanitize] = false
-          end
-        end
-
-        if new_elements.size > 0
-          if @site_admin
-            @item.errors.add('Description', I18n.t('extended_content_controller_lib.ensure_no_new_insecure_elements_in.contains_new_elements_admin',
-                                                   :count => new_elements.size))
-            false
-          else
-            @item.errors.add('Description', I18n.t('extended_content_controller_lib.ensure_no_new_insecure_elements_in.contains_new_elements',
-                                                   :count => new_elements.size))
-            logger.warn "WARNING: #{current_user.login} tried to add the following new elements to #{item_type} #{@item.id}"
-            new_elements.each { |element| logger.warn element.inspect }
-            false
-          end
-        else
-          true
-        end
-      end
 
       def build_relations_from_topic_type_extended_field_choices(extended_values=nil)
         params_key = zoom_class_params_key_from_controller(params[:controller])
@@ -157,7 +101,6 @@ module ExtendedContentController
               # use async backgroundrb worker rather than slowing down response to request to wait for related topic rebuild
               # topic.prepare_and_save_to_zoom
               update_search_record_for(topic)
-              expire_related_caches_for(topic, 'topics')
             end
           end
         end

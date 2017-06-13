@@ -1,8 +1,0 @@
---- 
-format: 1
-handler: 
-  commit: f38155bfab707ae65d23c030986227e9c4158a7b
-  branch: HEAD
-lock: 
-repository_url: git://github.com/kete/acts_as_licensed.git
-repository_class: Piston::Git::Repository

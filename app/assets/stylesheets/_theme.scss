@@ -1,0 +1,287 @@
+/* --------- /themes/horowhenua/stylesheets/rounded_corners.css --------- */
+.notabs #main-content-wrapper {
+        // background-image: url(image-path('content-tab-sel-lf.gif'));
+        background-position: top left;
+        background-repeat: no-repeat;
+}
+#search-content-wrapper {
+	// background-image: url(image-path('content-tab-sel-lf.gif'));
+	background-position: top left;
+	background-repeat: no-repeat;
+}
+.main-content-footer-wrapper {
+        margin: 0 0 -1em -1em;
+}
+#top-menu {
+        // background-image: url(image-path('top-menu-btrt-bg.gif'));
+        background-position: 100% 100%;
+        background-repeat: no-repeat;
+}
+#top-menu ul {
+        // background-image: url(image-path('top-menu-btlf-bg.gif'));
+        background-position: 0 100%;
+        background-repeat: no-repeat;
+}
+#content-tabs ul li{
+        // background-image: url(image-path('content-tab-unsel-lf.gif'));
+        background-repeat: no-repeat;
+}
+#content-tabs ul li a{
+        // background-image: url(image-path('content-tab-unsel-rt.gif'));
+        background-repeat: no-repeat;
+        background-position: 100% 0;
+}
+#content-tabs ul li.selected{
+        // background-image: url(image-path('content-tab-sel-lf.gif'));
+        background-repeat: no-repeat;
+}
+#content-tabs ul li.selected a{
+        // background-image: url(image-path('content-tab-sel-rt.gif'));
+        background-repeat: no-repeat;
+        background-position: 100% 0;
+}
+#content-wrapper, #search-wrapper {
+        background-color: white;
+        // background-image: url(image-path('content-tab-sel-rt.gif'));
+        background-repeat: no-repeat;
+        background-position: 100% 0;
+}
+
+/*
+ * SECONDARY CONTENT WRAPPER FOR MAIN CONTENT (BLUE)
+ */
+.secondary-content-section-wrapper-blue {
+  // background: #cddced url(image-path('insetbox-2-tplf.gif')) no-repeat top left;
+  width: auto;
+}
+.secondary-content-section-wrapper-blue .secondary-content-section {
+  // background: transparent url(image-path('insetbox-2-tprt.gif')) no-repeat top right;
+}
+.secondary-content-section-wrapper-blue .secondary-content-section-footer-wrapper {
+  // background: transparent url(image-path('insetbox-2-btlf.gif')) no-repeat bottom left;
+  width: auto; height: 13px; padding: 0; margin: 0;
+}
+.secondary-content-section-wrapper-blue .secondary-content-section-footer {
+  // background: transparent url(image-path('insetbox-2-btrt.gif')) no-repeat bottom right;
+  width: auto; height: 13px; padding: 0; margin: 0;
+}
+
+/*
+ * SECONDARY CONTENT WRAPPER FOR MAIN CONTENT (GREY)
+ */
+.secondary-content-section-wrapper {
+  // background: #dfdfdf url(image-path('insetbox-1-tplf.gif')) no-repeat top left;
+  width: auto;
+}
+.secondary-content-section-wrapper .secondary-content-section {
+  // background: transparent url(image-path('insetbox-1-tprt.gif')) no-repeat top right;
+}
+.secondary-content-section-wrapper .secondary-content-section-footer-wrapper {
+  // background: transparent url(image-path('insetbox-1-btlf.gif')) no-repeat bottom left;
+  width: auto; height: 13px; padding: 0; margin: 0;
+}
+.secondary-content-section-wrapper .secondary-content-section-footer {
+  // background: transparent url(image-path('insetbox-1-btrt.gif')) no-repeat bottom right;
+  width: auto; height: 13px; padding: 0; margin: 0;
+}
+
+/*
+ * CONTENT WRAPPER FOR COMMENTS
+ */
+.comment-wrapper .comment-wrapper-header-wrapper {
+        // background: transparent url(image-path('comment_tplf.gif')) no-repeat top left;
+}
+.comment-wrapper .comment-wrapper-header {
+        // background: transparent url(image-path('comment_tprt.gif')) no-repeat top right;
+}
+.comment-wrapper .comment-wrapper-footer-wrapper {
+        // background: transparent url(image-path('comment_btlf.gif')) no-repeat bottom left;
+}
+.comment-wrapper .comment-wrapper-footer {
+        // background: transparent url(image-path('comment_btrt.gif')) no-repeat bottom right;
+}
+/* --------- /themes/horowhenua/stylesheets/general.css --------- */
+#body-outer-wrapper {
+  width: 90%;
+  margin: 0 auto;
+  max-width: 980px;
+}
+
+a img {
+	border-width: 0px;
+}
+
+#content-tabs ul li {
+	border: none;
+	background-color: #667733;
+}
+.secondary-content-section-wrapper {
+	clear: left;
+}
+.secondary-content-section{
+	background-color: #C6DD85;
+}
+#body-outer-wrapper{
+	overflow:hidden;
+}
+#content-wrapper{
+	border: 0;
+}
+#main-nav {
+	clear: left;
+	padding-top: 1em !important;
+}
+
+a {
+	color: #BF470A;
+}
+
+/* --- comments  -- */
+
+.comment-wrapper .comment-content a {
+  color: #BF470A;
+}
+
+.comment-wrapper{
+	border: none;
+}
+.comment-content{
+	border: none;
+	padding-top: 1em;
+}
+.comment-wrapper h5 {
+	font-size: 1.2em;
+}
+/* --------- /themes/horowhenua/stylesheets/home_page.css --------- */
+/* --- HOMEPAGE --- */
+#home-right {
+        background: #FFEEDD;
+        float: left;
+        padding: 10px;
+        width:200px
+}
+#home-container {
+        padding: 0 16px 0 16px;
+        width:65%;
+        float:left;
+}
+#home-searchheader {
+        padding: 10px 0 30px 0;
+}
+.home-feature-wrapper {
+        padding: 16px 16px 0 0;
+        position:relative;
+}
+
+/* use if want homepage features to appear as a two row table */
+.home-feature-toprow {
+/*      clear: both; */
+}
+.home-feature-secondrow {
+        clear: both;
+        padding-top: 20px;
+}
+
+%home-feature-box {
+  width: 265px;
+  height: 390px;
+
+  a {
+    font-size: medium;
+    color: #005e5e;
+  }
+
+  h3 a {
+    font-weight: bold;
+    font-style: normal;
+  }
+
+  p a {
+    font-weight: normal;
+    font-style: italic;
+    }
+}
+
+.home-feature-left {
+        background: #D7EEF2;
+        float: left;
+        padding: 4px;
+        margin: 10px 47px 10px 30px; /*comment out for two row table */
+        position:relative;
+        @extend %home-feature-box;
+}
+.home-feature-left img {
+        padding: 0 10px 0 10px;
+}
+.home-feature-right {
+        background: #D7EEF2;
+        float: left;
+/*      margin-left: 20px;  for tow row table */
+        margin:10px 20px 10px 0; /*comment out for two row table */
+        padding: 4px;
+        position:relative;
+        @extend %home-feature-box;
+}
+.home-feature-right img {
+        padding: 0 10px 0 10px;
+}
+/* --------- /themes/horowhenua/stylesheets/header.css --------- */
+#header h1, #header ul{
+        position: relative;
+        z-index: 50;
+}
+#header {
+        position: relative;
+        height: 125px;
+        padding-top: 15px;
+        background: #AFBF77 url(image-path('ketebanner.png')) top left no-repeat;
+        zindex: 100;
+}
+#header #description{
+	color: white;
+	padding-left: 28px;
+}
+#header h1 a.basket{
+	font-size: .8em;
+}
+/* this is where we set the header image */
+#head-search-wrapper{
+        float: left;
+        padding-top: 95px;
+        // background: transparent url(image-path('themes/horowhenua/hlt.gif')) top right no-repeat;
+        z-index: 1;
+}
+
+#basket-list {
+	margin-left: 32px;
+   	text-align: right;
+   	padding-right: 10px;
+}
+#basket-list li a{
+	color: black;
+}
+#top-menu {
+        padding-top: 0em !important;
+	background-color: #344533;
+}
+input.searchheader-search {
+        width: 10em;
+}
+
+#main-nav {
+        padding-top: 10px !important;
+}
+
+#top-menu  #main-nav{
+	// background: transparent url(image-path('horowhenua/top-menu-btlf-bg.gif')) bottom left no-repeat !important;
+}
+
+#top-menu {
+	// background: #344533 url(image-path('horowhenua/top-menu-btrt-bg.gif')) bottom right no-repeat !important;
+}
+#top-menu li{
+	color: #ccc;
+}
+#top-menu ul.user-nav {
+	padding-top: 10px !important;
+}

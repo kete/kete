@@ -1,0 +1,27 @@
+- search_source_id = source.title_id
+- entries = source.fetch(search_text, options)
+- if entries[:total] > 0
+  %h4{:id => "#{search_source_id}_heading"}= h(source.title)
+  - unless entries[:links].blank?
+    %div{:id => "#{search_source_id}_links"}
+      - entries[:links].each do |link|
+        %div{:class => ExternalSearchSources[:default_link_classes], :id => "#{search_source_id}_result_#{link.object_id}"}
+          = link_to(search_source_title_for(link), h(link.url), |
+            :title => search_source_summary_for(link),          |
+            :target => '_blank')                                |
+  - unless entries[:images].blank?
+    .images{:id => "#{search_source_id}_images"}
+      - entries[:images].each do |image|
+        %div{:class => ExternalSearchSources[:image_link_classes], :id => "#{search_source_id}_result_#{image.object_id}"}
+          = link_to(search_source_image_for(image) + search_source_title_for(image), h(image.url), |
+            :title => search_source_summary_for(image),                                            |
+            :target => '_blank')                                                                   |
+          %div{:style => "clear:both;"}
+  - unless entries[:total] < (options[:limit] || source.limit)
+    %div{:class => ExternalSearchSources[:default_link_classes], :id => "#{search_source_id}_more_results"}
+      = link_to(t('search_sources.search_source.more').html_safe, source.more_link, |
+        :title => t('search_sources.search_source.more_like_this'),                 |
+        :target => '_blank')                                                        |
+  - unless source.source_credit.blank?
+    %div{:id => "#{search_source_id}_credit"}
+      = source.source_credit.html_safe

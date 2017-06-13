@@ -1,0 +1,42 @@
+- class_name: User
+  id: "1"
+  description: User profile information.
+  humanized_plural: Users
+  controller: account
+  humanized: User
+- class_name: AudioRecording
+  id: "2"
+  description: Where we store audio recordings.
+  humanized_plural: Audio
+  controller: audio
+  humanized: Audio
+- class_name: Document
+  id: "3"
+  description: Where we put documents.
+  humanized_plural: Documents
+  controller: documents
+  humanized: Document
+- class_name: StillImage
+  id: "4"
+  description: Where we keep images.
+  humanized_plural: Images
+  controller: images
+  humanized: Image
+- class_name: Video
+  id: "5"
+  description: Where we keep videos.
+  humanized_plural: Videos
+  controller: video
+  humanized: Video
+- class_name: WebLink
+  id: "6"
+  description: Where we store web links.
+  humanized_plural: Web links
+  controller: web_links
+  humanized: Web link
+- class_name: Comment
+  id: "7"
+  description: Where we store comments on items and topics, also known as discussion.
+  humanized_plural: Discussion
+  controller: comments
+  humanized: Discussion

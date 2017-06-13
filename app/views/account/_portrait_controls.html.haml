@@ -1,0 +1,35 @@
+- if @viewer_is_user && params[:controller] != 'images'
+  %noscript
+    - control_id = "image_#{portrait.id}_controls"
+    %span.portrait_controls{:id => control_id}
+      - link_hash = { :before => "Element.show('data_spinner')",
+      - :complete => "Element.hide('data_spinner')" }
+      - unless portrait.user_portrait_relation.first?
+        = link_to image_tag('icon-tag.gif',                              |
+                    { :alt => t('account.portrait_controls.selected'),   |
+                      :title => t('account.portrait_controls.selected'), |
+                      :width => 14, :height => 14 }),                    |
+          { :action => 'make_selected_portrait', :id => portrait.id },   |
+          { :id => "#{control_id}_selected" }                            |
+        -#
+        = link_to image_tag('icon_results_previous.gif',               |
+                    { :alt => t('account.portrait_controls.higher'),   |
+                      :title => t('account.portrait_controls.higher'), |
+                      :width => 14, :height => 14 }),                  |
+          { :action => 'move_portrait_higher', :id => portrait.id },   |
+          { :id => "#{control_id}_higher" }                            |
+      - unless portrait.user_portrait_relation.last?
+        = link_to image_tag('icon_results_next.gif',                  |
+                    { :alt => t('account.portrait_controls.lower'),   |
+                      :title => t('account.portrait_controls.lower'), |
+                      :width => 14, :height => 14 }),                 |
+          { :action => 'move_portrait_lower', :id => portrait.id },   |
+          { :id => "#{control_id}_lower" }                            |
+      = link_to image_tag('cross.png',                               |
+                  { :alt => t('account.portrait_controls.remove'),   |
+                    :title => t('account.portrait_controls.remove'), |
+                    :width => 14, :height => 14 }),                  |
+        { :action => 'remove_portrait', :id => portrait.id },        |
+        { :id => "#{control_id}_remove" }                            |
+  :css
+    #portrait_images .portrait_image { width: 70px; }

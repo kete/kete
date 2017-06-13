@@ -1,0 +1,7 @@
+- @title = t('content_types.new.title')
+%h2= h(@title)
+= form_tag :action => 'create' do
+  = render :partial => 'form'
+  = submit_tag t('content_types.new.create')
+= render(:partial => 'generic_fields', :locals => { :local_id => @content_type.id, scope: @scope })
+= link_to t('content_types.new.cancel'), :action => 'list'

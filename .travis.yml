@@ -1,0 +1,16 @@
+language: ruby
+cache: bundler
+bundler_args: --without development
+before_install:
+  - gem install bundler
+rvm:
+  - 2.3.3
+before_script:
+  - cp config/database.travis.yml config/database.yml
+  - psql -c 'create database travis_ci_test' -U postgres
+  - RAILS_ENV=test bundle exec rake db:schema:load
+  - npm install
+script:
+  - bundle exec rspec spec
+  - bundle exec rubocop
+  - ./node_modules/.bin/grunt

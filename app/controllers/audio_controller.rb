@@ -7,11 +7,27 @@ class AudioController < ApplicationController
   end
 
   def list
-    index
+    respond_to do |format|
+      format.html { redirect_to basket_audio_recording_index_path }
+      format.rss do 
+        date = DateTime.parse(params[:updated_since]) if params[:updated_since]
+        date = DateTime.now.beginning_of_month        if date.nil?
+
+        @list_type = "AudioRecording"
+        @items = AudioRecording.updated_since(date)
+        render 'shared/list'
+      end
+    end
   end
 
   def show
     @audio_recording = prepare_item_and_vars
+    @comments = @audio_recording.non_pending_comments
+
+    @creator = @audio_recording.creator
+    @last_contributor = @audio_recording.contributors.last || @creator
+
+    @related_item_topics = @audio_recording.related_items.select {|ri| ri.is_a? Topic}
 
     respond_to do |format|
       format.html
@@ -50,9 +66,8 @@ class AudioController < ApplicationController
 
     version_after_update = @audio_recording.max_version + 1
 
-    @successful = ensure_no_new_insecure_elements_in('audio_recording')
     @audio_recording.attributes = params[:audio_recording]
-    @successful = @audio_recording.save if @successful
+    @successful = @audio_recording.save
 
     if @successful
 

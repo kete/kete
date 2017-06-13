@@ -1,0 +1,47 @@
+- if scope.view_as_choice_heirarchy?
+  - unless scope.category_columns.blank?
+    = render "topics/content_wrapper_start", style_classes: "full-width notabs choices"
+    %h3
+      = t('search.form.browse_by_category')
+      %img#categories_spinner{src: image_path('indicator.gif'), width: '16', height: '16', alt: t('search.form.getting_categories'), style: 'display:none;'}
+    #category_selections
+      = scope.category_columns
+    .main-content-footer-wrapper
+      .main-content-footer
+        &nbsp;
+- else
+  %noscript
+    = render "topics/content_wrapper_start", :style_classes => "full-width notabs"
+    = form_tag(:overwrite_params => overwritten_search_params) do
+      #search-options-wrapper
+        %h4= t 'search.form.options'
+        %label{:for => "sort_type"}= t 'search.form.sort_by'
+        - sort_type = (params[:sort_type].blank? and !scope.current_basket.setting(:sort_order_default).blank?) ? scope.current_basket.setting(:sort_order_default) : params[:sort_type]
+        = select_tag 'sort_type', scope.sort_type_options_for(sort_type, params[:action]), :tabindex => '1'
+        <div id="sort_direction_field" #{'style="display:none"' if params[:action] == 'for' && (params[:sort_type].blank? || params[:sort_type] == 'none')}>
+        %label{:for => "sort_direction"}= t 'search.form.in_reverse'
+        - currently_reversed = ((!params[:sort_direction].blank? && params[:sort_direction] == 'reverse') or (params[:sort_type].blank? && scope.current_basket.setting(:sort_direction_reversed_default) == 'reverse'))
+        - currently_disabled = (params[:action] == 'for' && (params[:sort_type].blank? || params[:sort_type] == 'none'))
+        <input type="checkbox" name="sort_direction" id="sort_direction" value="reverse"#{' disabled="true"' if currently_disabled}#{' checked="checked"' if currently_reversed} tabindex="1" />
+      %br/
+      - if params[:controller_name_for_zoom_class] == 'topics'
+        %label{:for => "topic_type"}= t 'search.form.about_a'
+        = topic_type_select_with_indent('topic_type', nil, TopicType.find(1).full_set, :name, :name, params[:topic_type], {}, [[t('search.form.any_topic_type'), '']])
+
+      - if params[:relate_to_topic].blank? && show_privacy_search_controls? && permitted_to_view_private_items?
+        %label{:for => "privacy_type"}= t 'search.form.privacy_type'
+        = select_tag 'privacy_type', options_for_select({ t('search.form.private') => 'private', t('search.form.public') => 'public' }, params[:privacy_type] || 'public'), :tabindex => '1'
+
+      = render partial: 'search/refine_by_choice', locals: { scope: scope }
+      %br/
+      = render partial: 'search/refine_by_date', locals: { scope: scope }
+      %br/
+      %input#update{:name => "update", :tabindex => "1", :type => "submit", :value => t('search.form.update_results')}
+      #searchheader
+        #searchheader-results
+          %h3= headline
+        .wrap
+          = text_field_tag 'search_terms', scope.search_terms, {:class => 'searchheader-search', :size => '30', :tabindex => '1'}
+          = submit_tag t('search.form.search'), {:class => 'searchbutton', :tabindex => '1'}
+    .main-content-footer-wrapper
+      .main-content-footer &nbsp;

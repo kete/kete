@@ -1,0 +1,5 @@
+%h2 SECONDARY_WRAPPER_START SHOULD BE REMOVED
+- additional_classes = defined?(content_classes) ? " #{content_classes}" : ''
+%div{:class => "secondary-content-section-wrapper#{class_suffix}"}
+  %div{:class => "secondary-content-section#{additional_classes}", :id => div_id}
+    .secondary-content-section-content

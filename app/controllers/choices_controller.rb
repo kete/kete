@@ -4,9 +4,10 @@ class ChoicesController < ApplicationController
 
   before_filter :set_page_title
 
+  # TODO: need to re-implemnet the intention of this
   permit "site_admin", :except => [ :categories_list ]
   
-  active_scaffold :choices do |config|
+  active_scaffold :choice do |config|
     
     # Which columns to show
     config.columns = [:label, :value, :parent, :children]

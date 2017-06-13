@@ -1,4 +1,5 @@
 class TagsController < ApplicationController
+
   def index
     redirect_to :action => 'list'
   end
@@ -26,7 +27,7 @@ class TagsController < ApplicationController
 
     respond_to do |format|
       format.html
-      format.js { render :file => File.join(RAILS_ROOT, 'app/views/tags/tags_list.js.rjs') }
+      format.js { render :file => File.join(Rails.root, 'app/views/tags/tags_list.js.rjs') }
     end
   end
 
@@ -38,14 +39,11 @@ class TagsController < ApplicationController
   def rss
     @number_per_page = 100
     # this doesn't work with http auth from and IRC client
-    @cache_key_hash = { :rss => "#{privacy_type}_tags_list" }
-    unless has_all_rss_fragments?(@cache_key_hash)
-      @tags = @current_basket.tag_counts_array(:order => 'latest',
-                                               :direction => 'desc',
-                                               :limit => @number_per_page,
-                                               :page => @current_page,
-                                               :allow_private => (privacy_type == 'private'))
-    end
+    @tags = @current_basket.tag_counts_array(:order => 'latest',
+                                             :direction => 'desc',
+                                             :limit => @number_per_page,
+                                             :page => @current_page,
+                                             :allow_private => (privacy_type == 'private'))
     respond_to do |format|
       format.xml
     end

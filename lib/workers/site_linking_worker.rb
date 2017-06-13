@@ -20,8 +20,8 @@ class SiteLinkingWorker < BackgrounDRb::MetaWorker
 
     begin
       linking = SiteLinkingResource.create(
-        :name => Kete.pretty_site_name,
-        :url => SITE_URL,
+        :name => SystemSetting.pretty_site_name,
+        :url => SystemSetting.full_site_url,
         :description => params[:site_description],
         :address => params[:site_publisher_address]
       )

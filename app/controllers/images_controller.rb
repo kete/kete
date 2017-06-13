@@ -7,11 +7,27 @@ class ImagesController < ApplicationController
   end
 
   def list
-    index
+    respond_to do |format|
+      format.html { redirect_to basket_still_image_index_path }
+      format.rss do 
+        date = DateTime.parse(params[:updated_since]) if params[:updated_since]
+        date = DateTime.now.beginning_of_month        if date.nil?
+
+        @list_type = "StillImage"
+        @items = StillImage.updated_since(date)
+        render 'shared/list'
+      end
+    end
   end
 
   def show
     @still_image = prepare_item_and_vars
+    @comments = @still_image.non_pending_comments
+
+    @creator = @still_image.creator
+    @last_contributor = @still_image.contributors.last || @creator
+
+    @related_item_topics = @still_image.related_items.select {|ri| ri.is_a? Topic}
 
     @view_size = params[:view_size] || "medium"
     @image_file = ImageFile.find_by_thumbnail_and_still_image_id(@view_size, params[:id])
@@ -50,7 +66,7 @@ class ImagesController < ApplicationController
 
       # if we are allowing harvesting of embedded metadata from the image_file
       # we need to grab it from the image_file's file path
-      @still_image.populate_attributes_from_embedded_in(@image_file.full_filename) if ENABLE_EMBEDDED_SUPPORT
+      @still_image.populate_attributes_from_embedded_in(@image_file.full_filename) if SystemSetting.enable_embedded_support
 
       @successful = @still_image.save
 
@@ -77,7 +93,6 @@ class ImagesController < ApplicationController
           if params[:selected_portrait]
             UserPortraitRelation.make_portrait_selected_for(current_user, @still_image)
           end
-          expire_contributions_caches_for(current_user, :dont_rebuild_zoom => true)
         end
       end
 
@@ -97,9 +112,8 @@ class ImagesController < ApplicationController
 
     version_after_update = @still_image.max_version + 1
 
-    @successful = ensure_no_new_insecure_elements_in('still_image')
     @still_image.attributes = params[:still_image]
-    @successful = @still_image.save if @successful
+    @successful = @still_image.save
 
     if @successful
       # if they have uploaded something new, insert it

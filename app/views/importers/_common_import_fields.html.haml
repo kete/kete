@@ -1,0 +1,37 @@
+- if show_privacy_controls?
+  .form-element
+    %label= t 'importers.common_import_fields.imported_items_privacy'
+    %ul.option-list
+      %li
+        = radio_button 'import', :private, false, { :id => "import_private_false", :checked => !@current_basket.private_default? }
+        %label.privacy-label{:for => "import_private_false"}= t 'importers.common_import_fields.public'
+        = t 'importers.common_import_fields.public_description'
+      %li
+        = radio_button 'import', :private, true, { :id => "import_private_true", :checked => @current_basket.private_default? }
+        %label{:for => "import_private_true"}= t 'importers.common_import_fields.private'
+        = t 'importers.common_import_fields.private_description'
+    .form_example= t 'importers.common_import_fields.imported_items_privacy_example'
+  <div class="form-element" id="import_file_private"#{" style=\"display: none;\"" unless params[:relate_to_topic] .present?}>
+  %label= t 'importers.common_import_fields.imported_items_file_privacy'
+  %ul.option-list
+    %li
+      = radio_button 'import', :file_private, false, { :id => "import_file_private_false", :checked => !@current_basket.file_private_default_with_inheritance? }
+      %label.privacy-label{:for => "import_file_private_false"}= t 'importers.common_import_fields.downloaded_by_everyone'
+    %li
+      = radio_button 'import', :file_private, true, { :id => "import_file_private_true", :checked => @current_basket.file_private_default_with_inheritance? }
+      %label{:for => "import_file_private_true"}= t('importers.common_import_fields.downloaded_by_role',                  |
+          :role_name => @current_basket.private_file_visibility_with_inheritance) |
+  .form_example= t 'importers.common_import_fields.imported_items_file_privacy_example'
+.form-element
+  %label{:for => "import_base_tags"}= t 'importers.common_import_fields.tags'
+  = form.text_field :base_tags
+  .form_example= t 'importers.common_import_fields.tags_description'
+.form-element
+  %label{:for => "import_description_beginning_template"}= t 'importers.common_import_fields.description_template_start'
+  = form.text_area :description_beginning_template, :class => "tinymce", :cols => 120, :rows => 10
+  .form_example= t 'importers.common_import_fields.description_template_start_description'
+.form-element
+  %label{:for => "import_default_description_end_template"}= t 'importers.common_import_fields.description_template_end'
+  = form.text_area :default_description_end_template, :class => "tinymce", :cols => 120, :rows => 10
+  .form_example= t 'importers.common_import_fields.description_template_end_description'
+= render('topics/license_chooser_or_agreement', :item => @import) if licenses_are_available?

@@ -1,0 +1,815 @@
+--
+system_settings_001:
+  name: Is Configured
+  technically_advanced: true
+  required_to_be_configured: true
+  explanation: Whether the site has been configured for use yet.
+  id: "1"
+  value: "false"
+  section: System
+system_settings_002:
+  name: Pretty Site Name
+  technically_advanced: false
+  required_to_be_configured: true
+  explanation: This will appear on your site pages, outgoing emails, etc.
+  id: "2"
+  value: Kete
+  section: Server
+system_settings_003:
+  name: Site Name
+  technically_advanced: false
+  required_to_be_configured: true
+  explanation: The host name, for example 'kete.net.nz'.
+  id: "3"
+  value:
+  section: Server
+system_settings_004:
+  name: Site URL
+  technically_advanced: true
+  required_to_be_configured: false
+  explanation: |-
+    The URL to provide to links to the site.  Should include the protocol at the beginning and a trailing slash.
+
+    For example: http://kete.net.net.nz/
+    If you leave this blank, we will use "http://" and Site Name, followed by a trailing "/".
+  id: "4"
+  value:
+  section: Server
+system_settings_005:
+  name: Notifier Email
+  technically_advanced: false
+  required_to_be_configured: true
+  explanation: |-
+    What email address should outgoing notifications, such as password reminders, from the site come from.
+
+    For example: kete@kete.net.nz
+  id: "5"
+  value:
+  section: Server
+system_settings_006:
+  name: Contact Email
+  technically_advanced: false
+  required_to_be_configured: true
+  explanation: |-
+    What email address should be linked to in the 'Contact' link, normally on the top right bar of navigation on every page.
+
+    For example: kete@kete.net.nz
+
+    IMPORTANT: Contact URL will take precedence over Contact Email! This must have a value, but may not be used if Contact URL is present.
+  id: "6"
+  value:
+  section: Server
+system_settings_007:
+  name: Records Per Page Choices
+  technically_advanced: false
+  required_to_be_configured: true
+  explanation: What options does the user have for their preference of numbers of results to show per page? Opening [ and closing ] are required.
+  id: "7"
+  value: "[5, 10, 20, 50]"
+  section: Results Display
+system_settings_008:
+  name: Default Records Per Page
+  technically_advanced: false
+  required_to_be_configured: true
+  explanation: How many records do we display if no preference is set.
+  id: "8"
+  value: "5"
+  section: Results Display
+system_settings_009:
+  name: Default Search Class
+  technically_advanced: false
+  required_to_be_configured: true
+  explanation: Which 'tab' should be selected for results pages if the user has chosen one.
+  id: "9"
+  value: Topic
+  section: Results Display
+system_settings_010:
+  name: Number of Related Things to Display Per Type
+  technically_advanced: false
+  required_to_be_configured: true
+  explanation: On a topic or item detail page, how many related items are listed before a "more related items" link is provided.
+  id: "10"
+  value: "5"
+  section: Related Items Display
+system_settings_011:
+  name: Number of Related Images to Display
+  technically_advanced: false
+  required_to_be_configured: true
+  explanation: On a topic detail page, how many related images are listed before a "more related images" link is provided.
+  id: "11"
+  value: "5"
+  section: Related Items Display
+system_settings_012:
+  name: Default Number of Multiples
+  technically_advanced: false
+  required_to_be_configured: true
+  explanation: If an extended field can have multiple values, how many input fields are added to form using the extended field?
+  id: "12"
+  value: "5"
+  section: Extended Fields
+system_settings_013:
+
+  name: Flagging Tags
+  technically_advanced: false
+  required_to_be_configured: true
+  explanation: What flags are available to users to flag items?  Be careful to use single quotes and commas. Opening [ and closing ] are required.  Just put [] to turn flagging off.
+  id: "13"
+  value: "['inaccurate', 'duplicate', 'inappropriate', 'entered by mistake', 'has typos']"
+  section: Flagging
+system_settings_018:
+  name: Require Activation
+  technically_advanced: false
+  required_to_be_configured: true
+  explanation: Does the newly signed up user have to confirm their email address before being fully registered?
+  id: "18"
+  value: "false"
+  section: Accounts
+system_settings_019:
+  name: About Basket
+  technically_advanced: true
+  required_to_be_configured: true
+  explanation: Choose only to be changed for a small number of established sites.  Safely skipped.
+  id: "19"
+  value: "3"
+  section: System
+system_settings_020:
+  name: Help Basket
+  technically_advanced: true
+  required_to_be_configured: true
+  explanation: Choose only to be changed for a small number of established sites.  Safely skipped.
+  id: "20"
+  value: "2"
+  section: System
+system_settings_021:
+  name: Extended Field for User Name
+  technically_advanced: false
+  required_to_be_configured: true
+  explanation: |-
+    Allows for specifying an extended field to user registration forms for things like "Full name" or "Screen name", rather than just their "login" which can't contain spaces.  The notation here specifies the extended field's label in lower case with '_' replacing spaces.
+
+    If the extended field doesn't exist it won't be displayed.
+  id: "21"
+  value: user_name
+  section: Extended Fields
+system_settings_022:
+  name: Download Warning
+  technically_advanced: false
+  required_to_be_configured: false
+  explanation: What warning do we display for users regarding the site's liability towards downloaded files that have been uploaded by other users (excluding images)?  if blank, we won't include a warning.
+  id: "22"
+  value: |-
+    You are about to download a file from Kete. Kete is an open digital repository and as such we can not guarantee the integrity of any file in the repository.  Please ensure that your virus scan software is operating and is configured to scan this download.
+                                                                                                                                                                                                                                                              Are you sure you want to proceed?
+  section: Warnings
+system_settings_023:
+  name: Tags Synonyms
+  technically_advanced: true
+  required_to_be_configured: false
+  explanation: |+
+    A comma separated list of column names of imported data that we will use as tags for the imported item.  You must use single quotes, too. Opening [ and closing ] are required. Just put [] for none.
+
+    For example: ['subjects', 'people', 'places']
+  id: "23"
+  value:
+  section: Imports
+system_settings_024:
+  name: Description Synonyms
+  technically_advanced: true
+  required_to_be_configured: false
+  explanation: |-
+    A comma separated list of column names of imported data that will be added together to make the item's description.  You must use single quotes, too. Opening [ and closing ] are required. Just put [] for none.
+
+    For example: ['desc', 'notes', 'other_info']
+  id: "24"
+  value:
+  section: Imports
+system_settings_025:
+  name: Description Template
+  technically_advanced: true
+  required_to_be_configured: false
+  explanation: A default piece of HTML, unless one is specified at the time of import, that will be added at the beginning of imported item's description.
+  id: "25"
+  value:
+  section: Imports
+system_settings_026:
+  name: Image Sizes
+  technically_advanced: true
+  required_to_be_configured: true
+  explanation: |-
+    This is the attachment_fu plugin's automatic thumbnail generation specification.  Make sure you understand what you are doing and have the right syntax! Opening { and closing } are required.
+
+    Note, this only takes effect from this point forward.  No existing image files will be changed.
+  id: "26"
+  value: "{:small_sq => '50x50!', :small => '50', :medium => '200>', :large => '400>'}"
+  section: Images
+system_settings_027:
+  name: Image Content Types
+  technically_advanced: true
+  required_to_be_configured: true
+  explanation: |-
+    This is the attachment_fu plugin's specification for which content types it allows.  Make sure you understand what you are doing and have the right syntax! Opening [ and closing ] are required.
+
+    Note, this only takes effect from this point forward.  No existing image files will be changed.
+  id: "27"
+  value: "['image/tiff', 'image/bmp', 'image/x-ms-bmp', 'image/quicktime', 'image/x-quicktime', 'application/postscript', 'application/octet-stream', 'image/vnd.adobe.photoshop', 'image/x-photoshop', 'image/vnd.adobe.photoshop', 'image/x-photoshop', 'application/x-photoshop', 'image/xcf', :image]"
+  section: Images
+system_settings_028:
+  name: Maximum Uploaded File Size
+  technically_advanced: false
+  required_to_be_configured: true
+  explanation: We will only allow uploads of files up to this size.
+  id: "28"
+  value: 50.megabyte
+  section: System
+system_settings_029:
+  name: Document Content Types
+  technically_advanced: true
+  required_to_be_configured: true
+  explanation: |-
+    This is the attachment_fu plugin's specification for which content types it allows.  Make sure you understand what you are doing and have the right syntax! Opening [ and closing ] are required.
+
+    Note, this only takes effect from this point forward.  No existing document files will be changed.
+  id: "29"
+  value: "['text/html', 'text/plain', 'text/rtf', 'text/css', 'application/mac-binhex40', 'application/msword', 'application/word', 'application/pdf', 'application/pics-rules', 'application/postscript', 'application/rtf', 'application/vnd.ms-excel', 'application/vnd.ms-powerpoint', 'application/x-gtar', 'application/x-gzip', 'application/zip', 'application/x-zip', 'application/x-zip-compressed', 'application/x-tar', 'application/x-compressed-tar', 'application/vnd.oasis.opendocument.chart', 'application/vnd.oasis.opendocument.database', 'application/vnd.oasis.opendocument.formula', 'application/vnd.oasis.opendocument.drawing', 'application/vnd.oasis.opendocument.image', 'application/vnd.oasis.opendocument.text-master', 'application/vnd.oasis.opendocument.presentation', 'application/vnd.oasis.opendocument.spreadsheet', 'application/vnd.oasis.opendocument.text', 'application/vnd.oasis.opendocument.text-web', 'image/jpeg', 'image/jpg', 'application/octet-stream', 'application/excel', 'application/x-excel', 'application/x-msexcel', 'application/msexcel', 'application/x-ms-excel', 'application/ms-excel', 'application/x-dos_ms_excel', 'image/vnd.adobe.photoshop', 'image/x-photoshop', 'application/x-photoshop', 'image/xcf', 'application/xml']"
+  section: Documents
+system_settings_030:
+  name: Audio Content Types
+  technically_advanced: true
+  required_to_be_configured: true
+  explanation: |-
+    This is the attachment_fu plugin's specification for which content types it allows.  Make sure you understand what you are doing and have the right syntax! Opening [ and closing ] are required.
+
+    Note, this only takes effect from this point forward.  No existing audio files will be changed.
+  id: "30"
+  value: "['audio/mpeg', 'audio/mpg', 'audio/x-mpeg', 'audio/x-mpegurl', 'audio/wav', 'audio/x-wav', 'audio/x-ms-wma', 'audio/x-ms-waxaudio', 'audio/ogg', 'application/ogg', 'audio/x-vorbis+ogg', 'audio/x-aiff', 'application/octet-stream', 'audio/vorbis', 'audio/speex', 'audio/flac']"
+  section: Audio
+system_settings_031:
+  name: Video Content Types
+  technically_advanced: true
+  required_to_be_configured: true
+  explanation: |-
+    This is the attachment_fu plugin's specification for which content types it allows.  Make sure you understand what you are doing and have the right syntax! Opening [ and closing ] are required.
+
+    Note, this only takes effect from this point forward.  No existing video files will be changed.
+  id: "31"
+  value: "['application/x-shockwave-flash', 'application/flash-video', 'application/x-flash-video', 'video/x-flv', 'video/mp4', 'video/x-m4v', 'video/mpeg', 'video/quicktime', 'video/x-msvideo', 'video/avi', 'video/x-quicktime', 'application/x-director', 'image/mov', 'application/asx', 'video/x-ms-asf-plugin', 'application/x-mplayer2', 'video/x-ms-asf', 'video/x-ms-wm', 'video/x-ms-wmv', 'video/x-ms-wvx', 'application/x-dvi', 'application/octet-stream', 'application/ogg', 'video/ogg', 'video/theora']"
+  section: Video
+system_settings_032:
+  name: Setup Sections
+  technically_advanced: true
+  required_to_be_configured: true
+  explanation: |-
+    What system setting sections should we prompt the user for right after installation?  These should be listed in order. Make sure you understand what you are doing and have the right syntax! Opening [ and closing ] are required.
+  id: "32"
+  value: "['Server', 'System', 'Accounts', 'Warnings', 'Flagging', 'Results Display', 'Related Items Display', 'Extended Fields']"
+  section: System
+system_settings_033:
+  name: Documentation Basket
+  technically_advanced: true
+  required_to_be_configured: true
+  explanation: Choose only to be changed for a small number of established sites.  Safely skipped.
+  id: "33"
+  value: "4"
+  section: System
+system_settings_034:
+  name: Enable Converting Documents
+  technically_advanced: true
+  required_to_be_configured: true
+  explanation: Turns on converting uploaded documents to the new document description.  Requires the convert_attachment_to plugin supporting software be installed (see the README). CAREFUL.  ENABLING THIS WITHOUT MAKING PROPER PREPERATIONS MAY BREAK YOUR SITE AFTER RESTART!
+  id: "34"
+  value: "false"
+  section: Documents
+system_settings_035:
+  name: Default Policy Is Full Moderation
+  technically_advanced: false
+  required_to_be_configured: true
+  explanation: Should the default policy for all new baskets created on the site be full moderation?  Full moderation means that all changes or additions must be reviewed by a moderator before going public.
+  id: "35"
+  value: "false"
+  section: Flagging
+system_settings_036:
+  name: Blank Title
+  technically_advanced: true
+  required_to_be_configured: true
+  explanation: If an item is completely pending (has no unflagged versions), what should the title be while it waits to be moderated?
+  id: "36"
+  value: Pending Moderation
+  section: Flagging
+system_settings_037:
+  name: Pending Flag
+  technically_advanced: true
+  required_to_be_configured: true
+  explanation: What is the tag that designates a version as needing moderator attention?  You probably want to decide this once for the site and not change it.  Otherwise previously tagged versions will come up as just plain flagged in the future.
+  id: "37"
+  value: pending
+  section: Flagging
+system_settings_038:
+  name: Rejected Flag
+  technically_advanced: true
+  required_to_be_configured: true
+  explanation: What is the tag that designates a version having been rejected by a moderator?  You probably want to decide this once for the site and not change it.  Otherwise previously tagged versions will come up as just plain flagged in the future.
+  id: "38"
+  value: rejected
+  section: Flagging
+system_settings_039:
+  name: Blank Flag
+  technically_advanced: true
+  required_to_be_configured: true
+  explanation: What is the tag that designates a version has been previously used as placeholder (pending moderation) by a moderator?  You probably want to decide this once for the site and not change it.  Otherwise previously tagged versions will come up as just plain flagged in the future.
+  id: "39"
+  value:  used for moderation
+  section: Flagging
+system_settings_040:
+  name: Reviewed Flag
+  technically_advanced: true
+  required_to_be_configured: true
+  explanation: What is the tag that designates a version has been previously used as placeholder (pending moderation) by a moderator?  You probably want to decide this once for the site and not change it.  Otherwise previously tagged versions will come up as just plain flagged in the future.
+  id: "40"
+  value:  reviewed by moderator
+  section: Flagging
+system_settings_041:
+  name: Frequency of Moderation Email
+  technically_advanced: false
+  required_to_be_configured: true
+  explanation: How often should the site email moderators when revisions need review?  Accepted values are "instant" or a number specifying the number of hours between digest (lists all revisions needing moderation) emails. A value of "instant" will send an email to moderators right after the revision is submitted only.  A value of 0 will never send moderators email.  This is desiable if you use alternative method for tracking revisions needing moderation by subscribing to the RSS feed from the moderate area of a basket.
+  id: 41
+  value: "4"
+  section: Flagging
+system_settings_042:
+  name: Title Synonyms
+  technically_advanced: true
+  required_to_be_configured: false
+  explanation: |-
+    A comma separated list of column names of imported data that can be used as an imported item's title.  Usually, you'll only have one column name that is a synonym for title per import type.  We provide a list here so that we can support multiple import types.  You must use single quotes, too. Opening [ and closing ] are required. Just put [] for none.
+
+    For example: ['name', 'TERM']
+  id: "42"
+  value:
+  section: Imports
+system_settings_043:
+  name: Short Summary Synonyms
+  technically_advanced: true
+  required_to_be_configured: false
+  explanation: |-
+    A comma separated list of column names of imported data that will be added together to make the item's short summary.  Only applicable to topics and documents.  You must use single quotes, too. Opening [ and closing ] are required. Just put [] for none.
+
+    For example: ['desc', 'notes', 'other_info']
+  id: "43"
+  value:
+  section: Imports
+system_settings_044:
+  name: Import Fields to Ignore
+  technically_advanced: true
+  required_to_be_configured: false
+  explanation: |-
+    A comma separated list of column names of imported data that are problematic and should simply be ignored.  You must use single quotes, too. Opening [ and closing ] are required. You are probably best to add to this list rather than replace it.
+
+    For example: ['BAD_DATA']
+  id: "44"
+  value: "['HiliteLibrary']"
+  section: Imports
+system_settings_045:
+  name: DEFAULT_BASKETS_IDS
+  technically_advanced: true
+  required_to_be_configured: true
+  explanation: |-
+    A comma separated list of ids for the baskets that users will be added to as members when they are registered.  Opening [ and closing ] are required. You are probably best to add to this list rather than replace it.
+  id: "45"
+  value: "[1]"
+  section: System
+system_settings_046:
+  name: Captcha Type
+  technically_advanced: false
+  required_to_be_configured: true
+  explanation: Choose the type of spam protection method (known as 'captcha' see http://en.wikipedia.org/wiki/Captcha) used during user registration. The options are to use 'image' (which is inaccessable to blind users and requires Rmagick supporting software), 'question' (which currently has a bias towards english speakers, but doesn't require other software), or 'all' (which is will provide image first, but link to question captcha for accesability, in the future may include an 'audio' option).  Note that you shouldn't include the single quotes around you choice.
+  id: "46"
+  value: "all"
+  section: Accounts
+system_settings_047:
+  name: Default Content License
+  technically_advanced: true
+  required_to_be_configured: false
+  explanation: Choose the license selected by default when members add new content to the Kete instance. Enter the id of the license (refer to the id primary key in your database). Note that the license id selected must correlate to a license in the 'licenses' database table in order to be used. A set of Creative Commons New Zealand Licenses (excluding the 'No Derivative Works' variant) are included and can be installed using the 'rake acts_as_licensed:import_nz_cc_licenses' command.
+  id: 47
+  value:
+  section: Server
+system_settings_048:
+  name: Force HTTPS On Restricted Pages
+  technically_advanced: true
+  required_to_be_configured: true
+  explanation: Forces private items and administrative controls to be accessed via HTTPS. YOU MUST HAVE SSL/HTTPS ENABLED AND WORKING ON YOUR WEB SERVER. CAREFUL.  ENABLING THIS WITHOUT MAKING PROPER PREPERATIONS MAY BREAK YOUR SITE AFTER RESTART!
+  id: "48"
+  value: "false"
+  section: Server
+system_settings_049:
+  name: No Public Version Title
+  technically_advanced: true
+  required_to_be_configured: true
+  explanation: If an item is not available publicly (has no public versions), what should the title be?
+  id: "49"
+  value: No Public Version Available
+  section: Privacy Settings
+system_settings_050:
+  name: No Public Version Description
+  technically_advanced: true
+  required_to_be_configured: true
+  explanation: If an item is not available publicly (has no public versions), what should the description be?
+  id: "50"
+  value: There is currently no public version of this item.
+  section: Privacy Settings
+system_settings_051:
+  name: Provide OAI PMH Repository
+  technically_advanced: true
+  required_to_be_configured: true
+  explanation: Turns on OAI PMH Repository for your Kete site.
+  id: "51"
+  value: "false"
+  section: Server
+system_settings_052:
+  name: Uses Basket List Navigation Menu On Every Page
+  technically_advanced: true
+  required_to_be_configured: true
+  explanation: Does your site theme support a list of baskets on every page? Please note that the default Kete theme currently does not.
+  id: "52"
+  value: "false"
+  section: Server
+system_settings_053:
+  name: Available Syntax Highlighters
+  technically_advanced: true
+  required_to_be_configured: true
+  explanation: "A comma separated list of syntax highlighters you want users to be able to use to style emedded code in topics. Will increase page load with each highlighter you add. Opening [ and closing ] are required. Avialable highlighters: ['html', 'javascript', 'css', 'ruby', 'php', 'perl', 'sql', 'xml', 'yml', 'bash']"
+  id: "53"
+  value: "[]"
+  section: System
+system_settings_054:
+  name: Government Website
+  technically_advanced: true
+  required_to_be_configured: false
+  explanation: "Your local/country government website. Opening [ and closing ] are required. Format: ['Government Name', 'http://yourgovernment.govt/']"
+  id: "54"
+  value: ""
+  section: System
+system_settings_055:
+  name: Default Page Keywords
+  technically_advanced: true
+  required_to_be_configured: false
+  explanation: ""
+  id: "55"
+  value: "kete,topics,images,audio,video,web links,documents,discussion,community"
+  section: Server
+system_settings_056:
+  name: Default Page Description
+  technically_advanced: true
+  required_to_be_configured: false
+  explanation: ""
+  id: "56"
+  value: "Kete is a knowledge basket of topics, images, audio, video, web links, documents, and discussion which are collected and catalogued by the community."
+  section: Server
+system_settings_057:
+  name: Enable User Portraits
+  technically_advanced: true
+  required_to_be_configured: true
+  explanation: If enabled, Users will be able to add images they upload to their 'portraits', a set of images displayed on their profile page. The first portrait image will be used as their avatar around the site.
+  id: "57"
+  value: "false"
+  section: Accounts
+system_settings_058:
+  name: Enable Gravatar Support
+  technically_advanced: true
+  required_to_be_configured: true
+  explanation: If enabled, and when a User Portrait has not been set, Kete will attempt to get the users Gravatar based on their registered email.
+  id: "58"
+  value: "false"
+  section: Accounts
+system_settings_059:
+  name: Basket Creation Policy
+  technically_advanced: true
+  required_to_be_configured: true
+  explanation: Allow site members to create baskets? Can be 'open' (instant creation), 'request' (admin approved) or 'closed' (admin only).
+  id: "59"
+  value: "closed"
+  section: System
+system_settings_060:
+  name: Enable Embedded Support
+  technically_advanced: true
+  required_to_be_configured: true
+  explanation: "If enabled, uploaded files for images, audio, video, and documents will have embedded metadate harvested for them. This is dependent on either default fields (Title, Description, Tags, etc.) or Extended Fields having their Import Synonyms mapped to embedded data fields.  IMPORTANT NOTE: that you must install the mini_exiftool ruby gem and its required software (EXIFTool) for this to work.  See Installation Guide for details."
+  id: "60"
+  value: "false"
+  section: System
+system_settings_061:
+  name: Image Slideshow Size
+  technically_advanced: true
+  required_to_be_configured: true
+  explanation: "The size of images in the slideshows on both the homepage and inset related items sections. Can be one of the following: small_sq, small, medium, large"
+  id: "61"
+  value: "medium"
+  section: Images
+system_settings_062:
+  name: Related Items Position Default
+  technically_advanced: true
+  required_to_be_configured: true
+  explanation: "The default value for related items position. Set to 'below' to have it displayed below the topic, 'inset' to have it displayed within the topic description, or 'sidebar' to have it displayed in the sidebar of topic pages. IMPORTANT NOTE: this only effects NEW items. To change existing items, see the applicable rake tasks by running 'rake -T kete:tools:related_items'."
+  id: "62"
+  value: "inset"
+  section: Related Items Display
+system_settings_063:
+  name: Hide Related Items Position Field
+  technically_advanced: true
+  required_to_be_configured: true
+  explanation: "Should the option to change related items position be hidden from users?"
+  id: "63"
+  value: "true"
+  section: Related Items Display
+system_settings_064:
+  name: Show Powered By Kete
+  technically_advanced: true
+  required_to_be_configured: true
+  explanation: "Should we show the powered by Kete credit at the bottom of the site standard layout?"
+  id: "64"
+  value: "true"
+  section: Server
+system_settings_065:
+  name: Additional Credits HTML
+  technically_advanced: true
+  required_to_be_configured: false
+  explanation: "What HTML should we put at the bottom of the site standard layout for things like the c
+ompany that hosts the site or did the development of the software?"
+  id: "65"
+  value:
+  section: Server
+system_settings_066:
+  name: Notify Site Admins of Flaggings
+  technically_advanced: true
+  required_to_be_configured: true
+  explanation: "When an item is flagged, by default, site admins are the last to be notified (after moderators, basket admin, and site basket admins). Set this value to true to always have site admins be notified of flaggings (along with moderators or other admins that need to be notified)."
+  id: "66"
+  value: "false"
+  section: Flagging
+system_settings_067:
+  name: Keep Embedded Metadata For All Sizes
+  technically_advanced: true
+  required_to_be_configured: true
+  explanation: "When creating the different versions of uploaded images, such as thumbnails, should we keep the embedded metadata with the new version of the image? Not transferring embedded metadata to the new versions can make them significantly smaller, especially if the original has an embedded thumbnail version already. On the other hand embedded metadata may contain information that is important to keep, such as copyright holder."
+  id: "67"
+  value: "false"
+  section: Images
+system_settings_068:
+  name: Display Topic Type on Search Result
+  technically_advanced: false
+  required_to_be_configured: true
+  explanation: "Should the topic type of an item be displayed before the topic title on search results?"
+  id: "68"
+  value: "false"
+  section: Results Display
+system_settings_069:
+  name: Display Related Topics as Topic Type counts
+  technically_advanced: false
+  required_to_be_configured: true
+  explanation: "Should Related Topics be displayed as Topic Type counts instead?"
+  id: "69"
+  value: "false"
+  section: Related Items Display
+system_settings_070:
+  name: Restricted Flag
+  technically_advanced: true
+  required_to_be_configured: true
+  explanation: What is the tag that designates a version having been restricted to a moderator or above?  You probably want to decide this once for the site and not change it.  Otherwise previously tagged versions will come up as just plain flagged in the future.
+  id: "70"
+  value: restricted
+  section: Flagging
+system_settings_071:
+  name: Add Date Created To Item Search Record
+  technically_advanced: true
+  required_to_be_configured: true
+  explanation: "By default, Kete will add a Dublin Core Date element with the date that the item was created on the Kete site to the item's search record. This is not always appropriate for all sites. For example, site's that have imported a lot of archival material may find this data unimportant and distracting from real date data in archival record item. Change this value to \"false\" to stop Kete from automatically adding the item's creation date to search records."
+  id: "71"
+  value: "true"
+  section: Search
+system_settings_072:
+  name: Display Search Terms Field
+  technically_advanced: true
+  required_to_be_configured: true
+  explanation: "Choose one of the following: all, none, menu, refine. All will be shown on both the search menu and refine your results, menu will be just the search menu activated by the magnifying glass icon, refine will only be under refine your results link on results pages, and none hides the field altogether."
+  id: "72"
+  value: "refine"
+  section: Search
+system_settings_073:
+  name: Display Date Range Fields
+  technically_advanced: true
+  required_to_be_configured: true
+  explanation: "Choose one of the following: all, none, menu, refine. All will be shown on both the search menu and refine your results, menu will be just the search menu activated by the magnifying glass icon, refine will only be under refine your results link on results pages, and none hides the field altogether."
+  id: "73"
+  value: "all"
+  section: Search
+system_settings_074:
+  name: Display Privacy Fields
+  technically_advanced: true
+  required_to_be_configured: true
+  explanation: "Choose one of the following: all, none, menu, refine. All will be shown on both the search menu and refine your results, menu will be just the search menu activated by the magnifying glass icon, refine will only be under refine your results link on results pages, and none hides the field altogether."
+  id: "74"
+  value: "all"
+  section: Search
+system_settings_075:
+  name: Default Search Privacy
+  technically_advanced: true
+  required_to_be_configured: true
+  explanation: "Which privacy should be the default if the user hasn't supplied one yet? Choose one of the following: public, private"
+  id: "75"
+  value: "public"
+  section: Search
+system_settings_076:
+  name: Display Item Type Field
+  technically_advanced: true
+  required_to_be_configured: true
+  explanation: "Choose one of the following: all, none, menu, refine. All will be shown on both the search menu and refine your results, menu will be just the search menu activated by the magnifying glass icon, refine will only be under refine your results link on results pages, and none hides the field altogether."
+  id: "76"
+  value: "menu"
+  section: Search
+system_settings_077:
+  name: Display Topic Type Field
+  technically_advanced: true
+  required_to_be_configured: true
+  explanation: "Choose one of the following: all, none, menu, refine. All will be shown on both the search menu and refine your results, menu will be just the search menu activated by the magnifying glass icon, refine will only be under refine your results link on results pages, and none hides the field altogether."
+  id: "77"
+  value: "all"
+  section: Search
+system_settings_078:
+  name: Display Basket Field
+  technically_advanced: true
+  required_to_be_configured: true
+  explanation: "Choose one of the following: all, none, menu, refine. All will be shown on both the search menu and refine your results, menu will be just the search menu activated by the magnifying glass icon, refine will only be under refine your results link on results pages, and none hides the field altogether."
+  id: "78"
+  value: "menu"
+  section: Search
+system_settings_079:
+  name: Display Sorting Fields
+  technically_advanced: true
+  required_to_be_configured: true
+  explanation: "Choose one of the following: all, none, menu, refine. All will be shown on both the search menu and refine your results, menu will be just the search menu activated by the magnifying glass icon, refine will only be under refine your results link on results pages, and none hides the field altogether."
+  id: "79"
+  value: "refine"
+  section: Search
+system_settings_080:
+  name: Display Choices Field
+  technically_advanced: true
+  required_to_be_configured: true
+  explanation: "Choose one of the following: all, none, menu, refine. All will be shown on both the search menu and refine your results, menu will be just the search menu activated by the magnifying glass icon, refine will only be under refine your results link on results pages, and none hides the field altogether."
+  id: "80"
+  value: "refine"
+  section: Search
+system_settings_081:
+  name: Language Choices Position
+  technically_advanced: true
+  required_to_be_configured: true
+  explanation: "Where should the available language selection choices be displayed? Choose one of the following: header, top_menu_center, top_menu_farthest_right, footer"
+  id: "81"
+  value: "footer"
+  section: System
+system_settings_082:
+  name: Language Choices Display Type
+  technically_advanced: true
+  required_to_be_configured: true
+  explanation: "How should the available language selection choices be displayed? Choose one of the following: dropdown, links"
+  id: "82"
+  value: "dropdown"
+  section: System
+system_settings_083:
+  name: Search Selected Topic Type
+  technically_advanced: true
+  required_to_be_configured: false
+  explanation: "Requires 'Display Topic Type Field' be set to 'all' or 'menu'. Choose the topic type selected by default when users use the search menu. Enter the id of the topic type (refer to the id primary key in your database) or leave blank for no default selected."
+  id: "83"
+  value: ""
+  section: Search
+system_settings_084:
+  name: Search Select Current Basket
+  technically_advanced: true
+  required_to_be_configured: true
+  explanation: "Should the current basket be selected when no current search has been made? If false, it'll search the site basket by default."
+  id: "84"
+  value: "false"
+  section: Search
+system_settings_085:
+  name: DC Date Display On Search Results
+  technically_advanced: true
+  required_to_be_configured: true
+  explanation: "Should a results DC Date values be displayed on a search result? Either 'true' or 'false'."
+  id: "85"
+  value: "false"
+  section: Results Display
+system_settings_086:
+  name: DC Date Display Detail Level
+  technically_advanced: true
+  required_to_be_configured: true
+  explanation: "How much detail should the DC Date values show? Choose one of the following: year, year_and_month, year_month_and_day"
+  id: "86"
+  value: "year_month_and_day"
+  section: Results Display
+system_settings_087:
+  name: DC Date Display Formulator
+  technically_advanced: true
+  required_to_be_configured: false
+  explanation: "Which method is used to determine the dates to display? If none is provided, all DC dates will be displayed."
+  id: "87"
+  value: ""
+  section: Results Display
+system_settings_088:
+  name: List Baskets Number
+  technically_advanced: false
+  required_to_be_configured: true
+  explanation: "How many baskets should we list under the Pretty Site Name at the top of the page? If 0, no baskets will be listed. Note that large basket names or a large number here may result in the basket list breaking over two lines or crowding other aspects of the header area. You may need to adjust your CSS in a theme, accordingly."
+  id: "88"
+  value: "2"
+  section: Server
+system_settings_089:
+  name: Contact URL
+  technically_advanced: false
+  required_to_be_configured: false
+  explanation: |-
+    Rather than Contact Email, should we link to a URL in the 'Contact' link, normally on the top right bar of navigation on every page.
+
+    For example: http://your_site/about/ and then you alter the About basket's homepage topic to contain your contact details.
+    
+    IMPORTANT: this will take precedence over Contact Email!
+  id: "89"
+  value:
+  section: Server
+system_settings_090:
+  name: Allowed Anonymous Actions
+  technically_advanced: true
+  required_to_be_configured: false
+  explanation: |-
+    What actions on the site will you allow people to do as a non-registered user. They will still be required to submit an email address and user name, but no permanent account will be created for them.
+
+    Each action that you want to allow, must be in following format where the allowed_for is the first page (say a comment form) of the action you allow and the finished_after is the second URL that the allowed_for form submits to: { :allowed_for => 'controller_name/action_name', :finished_after => 'controller_name/action_name' }. An anonymous action description should then be wrappe in square brackets []. A setting with a single anonymous action for allowing anoymous comments (i.e. discussion) would have this value:
+
+    [{ :allowed_for => 'comments/new', :finished_after => 'comments/create' }]
+
+    You can multiple actions, in which case their declarations should be comma separated, like so:
+
+    [{ :allowed_for => 'comments/new', :finished_after => 'comments/create' }, { :allowed_for => 'baskets/contact', :finished_after => 'baskets/send_email' }]
+
+    At this time, these two actions (comments and contact form) are the only two actions we recommend. If you want to do more, you should discuss it on http://kete.net.nz.
+
+    IMPORTANT: this HAS to be in correct format. Be very careful using this.
+
+  id: "90"
+  value:
+  section: Server
+system_settings_091:
+  name: Enable Maps
+  technically_advanced: false
+  required_to_be_configured: true
+  explanation: "If enabled, maps will be available to be used to set and display location data (must be set up via extended fields) and when there is location data for a set of results, viewing on a map will be given to users as an option."
+  id: "91"
+  value: "false"
+  section: System
+system_settings_092:
+  name: Default Latitude
+  technically_advanced: false
+  required_to_be_configured: true
+  explanation: "If maps are enabled and the user's current location cannot be determined, this will be used to center a new item's map. Be careful to enter a well-formed and valid latitude value in floating point format."
+  id: "92"
+  value: "-41.3368981"
+  section: System
+system_settings_093:
+  name: Default Longitude
+  technically_advanced: false
+  required_to_be_configured: true
+  explanation: "If maps are enabled and the user's current location cannot be determined, this will be used to center a new item's map. Be careful to enter a well-formed and valid longitude value in floating point format."
+  id: "93"
+  value: "174.7725319"
+  section: System
+system_settings_094:
+  name: Default Zoom Level
+  technically_advanced: false
+  required_to_be_configured: true
+  explanation: "If maps are enabled, how zoomed in should the default map be."
+  id: "94"
+  value: "5"
+  section: System
+system_settings_095:
+  name: Use Backgroundrb For Cache Expirations
+  technically_advanced: true
+  required_to_be_configured: true
+  explanation: "If true, search records and cache clearing will be scheduled as a backgroundrb process and results may not be updated right away. Only use if you very big records or lots of related items."
+  id: "95"
+  value: "false"
+  section: System
+system_settings_096:
+  name: Use Backgroundrb For Search Record Updates
+  technically_advanced: true
+  required_to_be_configured: true
+  explanation: "If true, search records and cache clearing will be scheduled as a backgroundrb process and results may not be updated right away. Only use if you very big records or lots of related items."
+  id: "96"
+  value: "false"
+  section: System
+system_settings_097:
+  name: Administrator Activates
+  technically_advanced: false
+  required_to_be_configured: true
+  explanation: Does, instead of the user activating the account, a site administrator have to review the user and activate the user. Requires Activation must be true in addition to this setting being, true for this functionality.
+  id: "97"
+  value: "false"
+  section: Accounts
