@@ -2,7 +2,7 @@ source "https://rubygems.org"
 
 ruby '2.3.3'
 
-gem "rails", "3.2.22.1"
+gem "rails", "3.2.22.5"
 gem 'unicorn'
 
 gem 'tinymce-rails', '~> 4.1.4'
