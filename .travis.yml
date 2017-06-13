@@ -9,8 +9,10 @@ before_script:
   - cp config/database.travis.yml config/database.yml
   - psql -c 'create database travis_ci_test' -U postgres
   - RAILS_ENV=test bundle exec rake db:schema:load
+  - bundle exec bundle-audit update
   - npm install
 script:
   - bundle exec rspec spec
   - bundle exec rubocop
+  - bundle exec bundle-audit check
   - ./node_modules/.bin/grunt
