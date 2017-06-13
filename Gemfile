@@ -2,7 +2,7 @@ source "https://rubygems.org"
 
 ruby '2.3.3'
 
-gem "rails", "3.2.22.1"
+gem "rails", "~> 3.2.22.3"
 gem 'unicorn'
 
 gem 'tinymce-rails', '~> 4.1.4'
@@ -76,7 +76,7 @@ gem "awesome_nested_set", "~> 2.1.6"
 # gem 'rake', '0.9.2.2' # version needed to use: require 'rake/rdoctask'
 gem 'rake'
 # gem "rdoc"
-gem 'nokogiri', '~> 1.6.0'
+gem 'nokogiri', '>= 1.7.1'
 
 # Officially sanctioned Rails way to add Rails 2 stuff like #error_messages_for
 # to Rails 3 projects
@@ -95,7 +95,7 @@ gem 'rmagick', "~> 2.16.0", require: 'RMagick'
 gem 'oai', '~> 0.3.1'
 
 gem 'packet'
-gem 'RedCloth'
+gem 'RedCloth', '>= 4.3.0'
 gem 'hpricot'
 
 ##gem 'tiny_mce'
@@ -201,7 +201,7 @@ gem 'authorization', github: 'kete/rails-authorization-plugin'
 gem 'sass-rails'
 gem 'compass-rails'
 gem 'coffee-rails', '~> 3.2.1'
-gem 'uglifier', '>= 1.0.3'
+gem 'uglifier', '>= 2.7.2'
 
 group :development do
   gem 'quiet_assets'
@@ -235,3 +235,4 @@ end
 # Security updates
 # https://github.com/tenderlove/psych/pull/187
 gem 'psych', '> 2.0.5'
+gem 'rubyzip', '>= 1.2.1'
