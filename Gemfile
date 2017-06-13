@@ -75,7 +75,7 @@ gem "awesome_nested_set", "~> 2.1.6"
 # gem 'rake', '0.9.2.2' # version needed to use: require 'rake/rdoctask'
 gem 'rake'
 # gem "rdoc"
-gem 'nokogiri', '~> 1.6.0'
+gem 'nokogiri', '~> 1.7.1'
 
 # Officially sanctioned Rails way to add Rails 2 stuff like #error_messages_for
 # to Rails 3 projects
