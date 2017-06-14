@@ -304,7 +304,7 @@ GEM
       ruby-progressbar (~> 1.4)
     ruby-graphviz (1.0.9)
     ruby-progressbar (1.7.5)
-    rubyzip (1.1.7)
+    rubyzip (1.2.1)
     sass (3.2.10)
     sass-rails (3.2.6)
       railties (~> 3.2.0)
