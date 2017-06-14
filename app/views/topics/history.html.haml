@@ -50,7 +50,8 @@
               = link_to_contributions_of(creator, @item.class.name, with_avatar: true)
           - else
             - contributor = @item_contributors[@contributor_index]
-            = link_to_contributions_of(contributor, @item.class.name, with_avatar: true) if @item_contributors.size > 0
+            - if @item_contributors.size > 0
+              = link_to_contributions_of(contributor, @item.class.name, with_avatar: true)
             - @contributor_index += 1
 
         %td= kete_time_ago_in_words(version.updated_at)
