@@ -8,4 +8,5 @@
   - unless params[:return_to_homepage].nil?
     = hidden_field_tag "return_to_homepage", params[:return_to_homepage]
 = render partial: 'topics/topic_types',
-  locals: { topic_types: TopicType.find(1).full_set, pre_options: (!defined?(pre_options).nil? ? pre_options : Array.new) }
+  locals: { topic_types: TopicType.find(1).full_set,
+    pre_options: (!defined?(pre_options).nil? ? pre_options : Array.new) }
