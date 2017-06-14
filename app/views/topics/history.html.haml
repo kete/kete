@@ -8,17 +8,17 @@
 .detail-tools
   %table.history-table
     %tr
-      %th{:abbr => "Number"}= t 'topics.history.number'
+      %th{abbr: "Number"}= t 'topics.history.number'
       %th
-      %th{:abbr => "Flags"}= t 'topics.history.flags'
-      %th{:abbr => "Privacy"}= t 'topics.history.privacy'
-      %th{:abbr => "Contributor"}= t 'topics.history.contributor'
-      %th{:abbr => "Updated"}= t 'topics.history.updated'
-      %th{:abbr => "Comments"}= t 'topics.history.comments'
+      %th{abbr: "Flags"}= t 'topics.history.flags'
+      %th{abbr: "Privacy"}= t 'topics.history.privacy'
+      %th{abbr: "Contributor"}= t 'topics.history.contributor'
+      %th{abbr: "Updated"}= t 'topics.history.updated'
+      %th{abbr: "Comments"}= t 'topics.history.comments'
     - @versions.each do |version|
       - tag_names = Array.new
       - tag_names = @item_taggings[version.id].collect { |tag| tag.name } if @item_taggings[version.id]
-      %tr{:class => cycle('table-row-odd', 'table-row-even'), :valign => "top"}
+      %tr{class: cycle('table-row-odd', 'table-row-even'), valign: "top"}
         %td= "\# #{version.version}"
         %td
           [
@@ -26,7 +26,7 @@
             - if tag_names.include?(SystemSetting.restricted_flag) && !@at_least_moderator
               %b restricted
             - else
-              = link_to_preview_of(@item, version, true, :submitter => @item_contributors[@contributor_index])
+              = link_to_preview_of(@item, version, true, submitter: @item_contributors[@contributor_index])
           - else
             %b current
           ]
@@ -41,19 +41,18 @@
         %td.contributor
           - if version.version.nil? || version.version == 1
             - @item.creators.each do |creator|
-              = link_to_contributions_of(creator, @item.class.name, :with_avatar => true)
+              = link_to_contributions_of(creator, @item.class.name, with_avatar: true)
           - else
             - contributor = @item_contributors[@contributor_index]
-            = link_to_contributions_of(contributor, @item.class.name, :with_avatar => true) if @item_contributors.size > 0
+            = link_to_contributions_of(contributor, @item.class.name, with_avatar: true) if @item_contributors.size > 0
             - @contributor_index += 1
 
         %td= kete_time_ago_in_words(version.updated_at)
         %td
-          - if !version.version_comment.blank?
-            = h(version.version_comment)
+          = h(version.version_comment) unless version.version_comment.blank?
   - if @show_private_versions_notice
     %p
-      %strong= t 'topics.history.has_private_version', :login => link_to( t('topics.history.login_link'), :controller => "account", :action => "login")
+      %strong= t 'topics.history.has_private_version', login: link_to( t('topics.history.login_link'), controller: "account", action: "login")
   %h3
     = t 'topics.history.back_to_live'
     = link_to_item(@item)
