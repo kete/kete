@@ -14,5 +14,5 @@ before_script:
 script:
   - bundle exec rspec spec
   # - bundle exec rubocop
-  - bundle exec bundle-audit check
+  # - bundle exec bundle-audit check
   - ./node_modules/.bin/grunt
