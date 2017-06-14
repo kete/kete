@@ -3,7 +3,7 @@
 - if !extended_fields_html.blank?
   = '<div id="embedded_extended_field_data">'.html_safe if embedded
   .secondary-content-section-wrapper
-    #extended-fields.secondary-content-section
+    .secondary-content-section#extended-fields
       .secondary-content-section-content
         #detail-extended
           %h4#detail-extended-heading= h(item.title)
