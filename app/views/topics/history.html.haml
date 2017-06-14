@@ -59,7 +59,11 @@
           = h(version.version_comment) unless version.version_comment.blank?
   - if @show_private_versions_notice
     %p
-      %strong= t 'topics.history.has_private_version', login: link_to( t('topics.history.login_link'), controller: "account", action: "login")
+      %strong
+        = t 'topics.history.has_private_version',
+          login: link_to( t('topics.history.login_link'),
+          controller: "account",
+          action: "login")
   %h3
     = t 'topics.history.back_to_live'
     = link_to_item(@item)
