@@ -6,22 +6,21 @@
 - item_class = item_type.singularize.camelize
 - related_to_path = basket_search_related_to_path({related_item_id: @topic.id, related_item_type: 'Topic', controller_name_for_zoom_class: item_class, urlified_name: @topic.basket.urlified_name})
 
-%div{id: "detail-linked-#{item_type}", class: visible_class}
+%div{ id: "detail-linked-#{item_type}", class: visible_class }
   %h4
-    %a.small{href: related_to_path }
+    %a.small{ href: related_to_path }
       = "#{item_type.titleize} (#{related_items.count})"
-      %img.expand_collapse_image{alt: "Related_items_collapsed", src: "/assets/related_items_collapsed.gif?1323654851"}/
+      %img.expand_collapse_image{ alt: "Related_items_collapsed", src: "/assets/related_items_collapsed.gif?1323654851" }/
   %hr/
 
   %ul
     - last_five_related_items = related_items.last(5).reverse
-
     - last_five_related_items.each do |related_item|
       %li
-        %a{href: url_for([related_item.basket, related_item])}
+        %a{ href: url_for([related_item.basket, related_item]) }
           = related_item.title
 
-    - if  related_items.count > 5
+    - if related_items.count > 5
       - overflow = related_items.count - 5
       %li.more
-        %a.small{href: related_to_path}=  "#{overflow} more like this &gt;&gt;".html_safe
+        %a.small{ href: related_to_path }= "#{overflow} more like this &gt;&gt;".html_safe
