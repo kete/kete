@@ -328,6 +328,11 @@ GEM
     sshkit (1.13.1)
       net-scp (>= 1.1.2)
       net-ssh (>= 2.8.0)
+    strong_parameters (0.2.3)
+      actionpack (~> 3.0)
+      activemodel (~> 3.0)
+      activesupport (~> 3.0)
+      railties (~> 3.0)
     temple (0.8.0)
     test-unit (3.2.4)
       power_assert
@@ -423,6 +428,7 @@ DEPENDENCIES
   rubocop (~> 0.31.0)
   sass-rails
   selenium-webdriver (~> 2.45.0)
+  strong_parameters
   test-unit (~> 3.0)
   tinymce-rails (~> 4.1.4)
   uglifier (>= 1.0.3)
