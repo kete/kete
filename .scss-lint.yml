@@ -1,0 +1,22 @@
+---
+scss_files: "app/assets/stylesheets/"
+
+linters:
+  Comment:
+    exclude: '**/*.css'
+  StringQuotes:
+    style: double_quotes
+  HexLength:
+    style: long
+  HexNotation:
+    style: uppercase
+  PropertySortOrder:
+    enabled: false
+  LeadingZero:
+    style: include_zero
+  SelectorDepth:
+    max_depth: 7
+  NestingDepth:
+    max_depth: 7
+  FinalNewline:
+    enabled: false
