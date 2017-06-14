@@ -32,7 +32,8 @@
 
   #secondary-content-wrapper
     = render(partial: "tags_div", locals: { item: @topic })
-    = render(partial: "related_items", locals: { item: @topic, related_items: @related_item, position: 'sidebar' }) if @topic.related_items_position == 'sidebar'
+    - if @topic.related_items_position == 'sidebar'
+      = render(partial: "related_items", locals: { item: @topic, related_items: @related_item, position: 'sidebar' })
     = render(partial: "extended_fields", locals: { item: @topic, embedded: false })
     = display_search_sources_for(@topic)
     = render(partial: "license", locals: { item: @topic })
