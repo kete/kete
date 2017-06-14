@@ -53,9 +53,9 @@
           - selected = scope.urlified_basket_name
           - selected = (SystemSetting.search_select_current_basket ? scope.current_basket.urlified_name : scope.site_basket.urlified_name) if clear_values
           - options = basket_option_for(scope.site_basket, :label => t('search.mini_controls.all_of', :site_basket_name => scope.site_basket.name))
-          - baskets = Basket.all(:conditions => ["id NOT IN (?)", scope.standard_baskets]) +
-          - [scope.help_basket, scope.about_basket, scope.documentation_basket]
-          - baskets.each { |basket| options += basket_option_for(basket, :selected => selected) }
+          - baskets = Basket.all(:conditions => ["id NOT IN (?)", scope.standard_baskets]) + [scope.help_basket, scope.about_basket, scope.documentation_basket]
+          - baskets.each do |basket|
+            - options += basket_option_for(basket, :selected => selected)
           = select_tag('target_basket', options)
 
     - if display_search_field_for?(type, SystemSetting.display_choices_field) && (scope.extended_field || categories_field)
