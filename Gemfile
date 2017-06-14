@@ -215,8 +215,6 @@ end
 
 group :development, :test do
   gem "pry-rails"
-  gem "debugger", :platforms => [:mingw_19, :ruby_19]
-  gem 'debugger-xml', :platforms => [:mingw_19, :ruby_19]
   gem 'byebug', :platforms => [:mingw_20, :ruby_20, :ruby_21]
   gem 'pry-byebug', :platforms => [:mingw_20, :ruby_20, :ruby_21]
   gem 'awesome_print'
