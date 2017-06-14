@@ -13,7 +13,7 @@
             %br/
             = extended_fields_html
         .license= @topic.license_metadata
-        %div{style: "clear:both;"}
+        %div{ style: "clear:both;" }
         - links = link_to_membership_request_of(@current_basket).html_safe
         - links += link_to_members_of(@current_basket)
         - if @current_basket.allows_contact_with_inheritance? || !links.blank? || logged_in? && (permitted_to_edit_current_item? || (@current_basket.show_privacy_controls_with_inheritance? &&  permitted_to_view_private_items?))
@@ -38,5 +38,5 @@
                 %ul
                   %li= link_to_basket_contact_for(@current_basket)
               = links unless links.blank?
-            %div{style: "clear:both;"}
+            %div{ style: "clear:both;" }
 
