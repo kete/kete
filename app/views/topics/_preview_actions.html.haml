@@ -9,7 +9,10 @@
         version: item.version, private: item.private? }
       - options = { method: :post, tabindex: '1' }
 
-      %li= link_to t('topics.preview_actions.make_live'), location.merge(action: :restore), options.merge(confirm: t('topics.preview_actions.make_live_confirm'))
+      %li
+        = link_to t('topics.preview_actions.make_live'),
+          location.merge(action: :restore),
+          options.merge(confirm: t('topics.preview_actions.make_live_confirm'))
 
       %li= link_to t('topics.preview_actions.mark_as_reviewed'), location.merge(action: :flag_form, flag: SystemSetting.reviewed_flag), options.merge(confirm: t('topics.preview_actions.mark_as_reviewed_confirm'))
 
