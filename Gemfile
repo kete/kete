@@ -73,7 +73,9 @@ gem "awesome_nested_set", "~> 2.1.6"
 
 # Added to get rake working. I suspect these should be removed.
 # gem 'rake', '0.9.2.2' # version needed to use: require 'rake/rdoctask'
-gem 'rake'
+
+gem 'rake', '< 11.0' # Remove this pin when you go to rails 4
+
 # gem "rdoc"
 gem 'nokogiri', '~> 1.7.1'
 
