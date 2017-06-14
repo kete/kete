@@ -8,13 +8,13 @@
 .detail-tools
   %table.history-table
     %tr
-      %th{abbr: "Number"}= t 'topics.history.number'
+      %th{ abbr: "Number" }= t 'topics.history.number'
       %th
-      %th{abbr: "Flags"}= t 'topics.history.flags'
-      %th{abbr: "Privacy"}= t 'topics.history.privacy'
-      %th{abbr: "Contributor"}= t 'topics.history.contributor'
-      %th{abbr: "Updated"}= t 'topics.history.updated'
-      %th{abbr: "Comments"}= t 'topics.history.comments'
+      %th{ abbr: "Flags" }= t 'topics.history.flags'
+      %th{ abbr: "Privacy" }= t 'topics.history.privacy'
+      %th{ abbr: "Contributor" }= t 'topics.history.contributor'
+      %th{ abbr: "Updated" }= t 'topics.history.updated'
+      %th{ abbr: "Comments" }= t 'topics.history.comments'
     - @versions.each do |version|
       - tag_names = Array.new
       - tag_names = @item_taggings[version.id].collect { |tag| tag.name } if @item_taggings[version.id]
