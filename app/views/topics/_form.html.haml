@@ -152,8 +152,7 @@
     = add_ons_item_form_mid(form)
 
     - if @item_type == :topic
-      - @self_topic_type_and_ancestors = @editing ? @item.topic_type.self_and_ancestors :
-      - TopicType.find(params[:topic][:topic_type_id]).self_and_ancestors
+      - @self_topic_type_and_ancestors = @editing ? @item.topic_type.self_and_ancestors : TopicType.find(params[:topic][:topic_type_id]).self_and_ancestors
       - @self_topic_type_and_ancestors.each do |topic_type|
         - form_fields = topic_type.topic_type_to_field_mappings
         - if form_fields.size > 0
