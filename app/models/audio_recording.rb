@@ -1,5 +1,4 @@
 class AudioRecording < ActiveRecord::Base
-
   include PgSearch
   include PgSearchCustomisations
   # all the common configuration is handled by this module
@@ -26,7 +25,7 @@ class AudioRecording < ActiveRecord::Base
   # file_system_path: "#{BASE_PRIVATE_PATH}/#{self.table_name}",
   # will rework with when we get to public/private split
   has_attachment storage: :file_system,
-                 file_system_path: "audio",
+                 file_system_path: 'audio',
                  content_type: SystemSetting.audio_content_types,
                  processor: :none,
                  max_size: SystemSetting.maximum_uploaded_file_size
@@ -41,8 +40,8 @@ class AudioRecording < ActiveRecord::Base
   acts_as_licensed
 
   # Do not version self.file_private
-  self.non_versioned_columns << "file_private"
-  self.non_versioned_columns << "private_version_serialized"
+  non_versioned_columns << 'file_private'
+  non_versioned_columns << 'private_version_serialized'
 
   def self.updated_since(date)
     # AudioRecording.where( <AudioRecording or its join tables is newer than date>  )
@@ -53,20 +52,19 @@ class AudioRecording < ActiveRecord::Base
     content_item_relations =          ContentItemRelation.arel_table
     deleted_content_item_relations =  Arel::Table.new(:deleted_content_item_relations)
 
-
-    join_table = AudioRecording.outer_joins(:taggings).
-                                outer_joins(:contributions).
-                                outer_joins(:content_item_relations).
-                                joins("LEFT OUTER JOIN  deleted_content_item_relations " +
-                                      "ON deleted_content_item_relations.related_item_id = audio_recordings.id " +
+    join_table = AudioRecording.outer_joins(:taggings)
+                 .outer_joins(:contributions)
+                 .outer_joins(:content_item_relations)
+                 .joins('LEFT OUTER JOIN  deleted_content_item_relations ' \
+                                      'ON deleted_content_item_relations.related_item_id = audio_recordings.id ' \
                                       "AND deleted_content_item_relations.related_item_type = 'AudioRecording'")
 
     result = join_table.where(
-      audio_recordings[:updated_at].gt(date).
-      or( taggings[:created_at].gt(date) ). # Tagging doesn't have a updated_at column.
-      or( contributions[:updated_at].gt(date) ).
-      or( content_item_relations[:updated_at].gt(date) ).
-      or( deleted_content_item_relations[:updated_at].gt(date) )
+      audio_recordings[:updated_at].gt(date)
+      .or(taggings[:created_at].gt(date)) # Tagging doesn't have a updated_at column.
+      .or(contributions[:updated_at].gt(date))
+      .or(content_item_relations[:updated_at].gt(date))
+      .or(deleted_content_item_relations[:updated_at].gt(date))
     )
 
     result.uniq   # Joins give us repeated results
