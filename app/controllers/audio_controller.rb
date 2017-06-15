@@ -76,7 +76,7 @@ class AudioController < ApplicationController
 
   def audio_recording_params
     params.require(:audio_recording)
-      .permit(:basket_id, :title, :description, :uploaded_data,
-              :tag_list, :version_comment, :raw_tag_list, :related_items_position)
+          .permit(:basket_id, :title, :description, :uploaded_data,
+                  :tag_list, :version_comment, :raw_tag_list, :related_items_position)
   end
 end
