@@ -56,8 +56,8 @@ class AudioRecording < ActiveRecord::Base
                  .outer_joins(:contributions)
                  .outer_joins(:content_item_relations)
                  .joins('LEFT OUTER JOIN  deleted_content_item_relations ' \
-                                      'ON deleted_content_item_relations.related_item_id = audio_recordings.id ' \
-                                      "AND deleted_content_item_relations.related_item_type = 'AudioRecording'")
+                        'ON deleted_content_item_relations.related_item_id = audio_recordings.id ' \
+                        "AND deleted_content_item_relations.related_item_type = 'AudioRecording'")
 
     result = join_table.where(
       audio_recordings[:updated_at].gt(date)
