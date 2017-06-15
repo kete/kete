@@ -38,7 +38,6 @@ class AudioController < ApplicationController
   end
 
   def create
-    byebug
     @audio_recording = AudioRecording.new(audio_recording_params)
     @audio_recording.creator = current_user
     @audio_recording.save && @audio_recording.do_notifications_if_pending(1, current_user)
