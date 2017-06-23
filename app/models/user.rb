@@ -229,7 +229,7 @@ class User < ActiveRecord::Base
   def show_email?
     extended_content_hash = xml_attributes_without_position
     @show_email = false
-    if !extended_content_hash.blank? && !extended_content_hash["email_visible"].blank? && !extended_content_hash["email_visible"].to_s.match("xml_element_name") && extended_content_hash["email_visible"].strip == 'yes'
+    if !extended_content_hash.blank? && !extended_content_hash['email_visible'].blank? && !extended_content_hash['email_visible'].to_s.match('xml_element_name') && extended_content_hash['email_visible'].strip == 'yes'
       @show_email = true
     end
     @show_email
