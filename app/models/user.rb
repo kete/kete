@@ -231,7 +231,7 @@ class User < ActiveRecord::Base
     if !extended_content_hash.blank? && !extended_content_hash["email_visible"].blank? && !extended_content_hash["email_visible"].to_s.match("xml_element_name") && extended_content_hash["email_visible"].strip == 'yes'
       @show_email = true
     end
-    return @show_email
+    @show_email
   end
 
   def accepts_emails?
