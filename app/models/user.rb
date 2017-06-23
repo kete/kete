@@ -84,13 +84,13 @@ class User < ActiveRecord::Base
   # For accepting terms
   attr_accessor :agree_to_terms
 
-  validates_presence_of :login, :email
-  validates_inclusion_of :agree_to_terms, in: ['1'], if: :new_record?, message: 'before you can sign up'
-  validates_presence_of :security_code, if: :new_record?
-  validates_presence_of :password, if: :password_required?
-  validates_presence_of :password_confirmation, if: :password_required?
-  validates_length_of :password, within: 4..40, if: :password_required?
-  validates_confirmation_of :password, if: :password_required?
+  validates :login, :email, presence: true
+  validates :agree_to_terms, inclusion: { in: ['1'], if: :new_record?, message: 'before you can sign up' }
+  validates :security_code, presence: { if: :new_record? }
+  validates :password, presence: { if: :password_required? }
+  validates :password_confirmation, presence: { if: :password_required? }
+  validates :password, length: { within: 4..40, if: :password_required? }
+  validates :password, confirmation: { if: :password_required? }
   # Walter McGinnis, 2008-03-16
   # refining captcha to be more accessable (i.e. adding questions) and also make more sense to end user
   validates_confirmation_of :security_code, if: :new_record?, message: -> { I18n.t('user_model.failed_security_answer') }
