@@ -246,8 +246,8 @@ class User < ActiveRecord::Base
   def distinct_contributions
     @distinct_contributions = []
     ZOOM_CLASSES.each do |zoom_class|
-      self.send("created_#{zoom_class.tableize}".to_sym).each do |contribution|
-        if !@distinct_contributions.include?(contribution)
+      send("created_#{zoom_class.tableize}".to_sym).each do |contribution|
+        unless @distinct_contributions.include?(contribution)
           @distinct_contributions << contribution
         end
       end
