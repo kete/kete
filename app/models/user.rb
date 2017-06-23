@@ -267,7 +267,7 @@ class User < ActiveRecord::Base
   end
 
   def add_as_member_to_default_baskets
-    Basket.find_all_by_id(SystemSetting.default_baskets_ids).each { |basket| self.has_role('member',basket) }
+    Basket.find_all_by_id(SystemSetting.default_baskets_ids).each { |basket| has_role('member', basket) }
   end
 
   def basket_permissions
