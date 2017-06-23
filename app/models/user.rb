@@ -257,7 +257,7 @@ class User < ActiveRecord::Base
         end
       end
     end
-    return @distinct_contributions
+    @distinct_contributions
   end
 
   def add_checkbox
