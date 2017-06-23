@@ -23,7 +23,7 @@ class User < ActiveRecord::Base
   include ExtendedContent
 
   # this is where we handle contributions of different kinds
-  has_many :contributions, :order => 'created_at', :dependent => :delete_all
+  has_many :contributions, order: 'created_at', dependent: :delete_all
   # by using has_many :through associations we gain some bidirectional flexibility
   # with our polymorphic join model
   # basicaly specifically name the classes on the other side of the relationship here
@@ -73,7 +73,7 @@ class User < ActiveRecord::Base
   acts_as_authorizable
 
   # Add association to license
-  License.has_many :users, :dependent => :nullify
+  License.has_many :users, dependent: :nullify
 
   # Virtual attribute for the unencrypted password
   attr_accessor :password
@@ -84,21 +84,21 @@ class User < ActiveRecord::Base
   # For accepting terms
   attr_accessor :agree_to_terms
 
-  validates_presence_of     :login, :email
-  validates_inclusion_of    :agree_to_terms, :in => ['1'], :if => :new_record?, :message => 'before you can sign up'
-  validates_presence_of     :security_code,              :if => :new_record?
-  validates_presence_of     :password,                   :if => :password_required?
-  validates_presence_of     :password_confirmation,      :if => :password_required?
-  validates_length_of       :password, :within => 4..40, :if => :password_required?
-  validates_confirmation_of :password,                   :if => :password_required?
+  validates_presence_of :login, :email
+  validates_inclusion_of :agree_to_terms, in: ['1'], if: :new_record?, message: 'before you can sign up'
+  validates_presence_of :security_code, if: :new_record?
+  validates_presence_of :password, if: :password_required?
+  validates_presence_of :password_confirmation, if: :password_required?
+  validates_length_of :password, within: 4..40, if: :password_required?
+  validates_confirmation_of :password, if: :password_required?
   # Walter McGinnis, 2008-03-16
   # refining captcha to be more accessable (i.e. adding questions) and also make more sense to end user
-  validates_confirmation_of :security_code,              :if => :new_record?, :message => lambda { I18n.t('user_model.failed_security_answer') }
-  validates_length_of       :login,    :within => 3..40
-  validates_length_of       :email,    :within => 3..100
-  validates_format_of       :login, :with => /^[^\s]+$/
-  validates_uniqueness_of   :login, :case_sensitive => false
-  validates_inclusion_of :locale, :in => I18n.available_locales_with_labels.keys, :message => lambda { I18n.t('user_model.locale_incorrect', :locales => I18n.available_locales_with_labels.keys.join(', ')) }
+  validates_confirmation_of :security_code, if: :new_record?, message: -> { I18n.t('user_model.failed_security_answer') }
+  validates_length_of :login,    within: 3..40
+  validates_length_of :email,    within: 3..100
+  validates_format_of :login, with: /^[^\s]+$/
+  validates_uniqueness_of :login, case_sensitive: false
+  validates_inclusion_of :locale, in: I18n.available_locales_with_labels.keys, message: -> { I18n.t('user_model.locale_incorrect', locales: I18n.available_locales_with_labels.keys.join(', ')) }
 
   before_save :encrypt_password
 
@@ -117,7 +117,7 @@ class User < ActiveRecord::Base
   # Activates the user in the database.
   def activate
     @activated = true
-    update_attributes(:activated_at => Time.now.utc, :activation_code => nil)
+    update_attributes(activated_at: Time.now.utc, activation_code: nil)
   end
 
   # Returns true if the user has just been activated.
@@ -192,7 +192,7 @@ class User < ActiveRecord::Base
   def reset_password
     # First update the password_reset_code before setting the
     # reset_password flag to avoid duplicate email notifications.
-    update_attributes(:password_reset_code => nil)
+    update_attributes(password_reset_code: nil)
     @reset_password = true
   end
 
@@ -268,10 +268,10 @@ class User < ActiveRecord::Base
     permissions.each do |permission|
       p = permission.attributes
       permissions_hash[p['basket_urlified_name'].to_sym] = {
-        :id => p['basket_id'].to_i,
-        :role_id => p['role_id'].to_i,
-        :role_name => p['role_name'],
-        :basket_name => p['basket_name']
+        id: p['basket_id'].to_i,
+        role_id: p['role_id'].to_i,
+        role_name: p['role_name'],
+        basket_name: p['basket_name']
       }
     end
     permissions_hash
