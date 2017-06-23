@@ -93,12 +93,19 @@ class User < ActiveRecord::Base
   validates :password, confirmation: { if: :password_required? }
   # Walter McGinnis, 2008-03-16
   # refining captcha to be more accessable (i.e. adding questions) and also make more sense to end user
-  validates_confirmation_of :security_code, if: :new_record?, message: -> { I18n.t('user_model.failed_security_answer') }
-  validates_length_of :login,    within: 3..40
-  validates_length_of :email,    within: 3..100
-  validates_format_of :login, with: /^[^\s]+$/
-  validates_uniqueness_of :login, case_sensitive: false
-  validates_inclusion_of :locale, in: I18n.available_locales_with_labels.keys, message: -> { I18n.t('user_model.locale_incorrect', locales: I18n.available_locales_with_labels.keys.join(', ')) }
+  validates :security_code, confirmation: {
+    if: :new_record?, message: -> { I18n.t('user_model.failed_security_answer') }
+  }
+  validates :login,    length: { within: 3..40 }
+  validates :email,    length: { within: 3..100 }
+  validates :login, format: { with: /^[^\s]+$/ }
+  validates :login, uniqueness: { case_sensitive: false }
+  validates :locale,
+            inclusion: { in: I18n.available_locales_with_labels.keys,
+                         message: lambda do
+                                    I18n.t('user_model.locale_incorrect',
+                                           locales: I18n.available_locales_with_labels.keys.join(', '))
+                                  end }
 
   before_save :encrypt_password
 
