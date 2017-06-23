@@ -4,7 +4,7 @@ class User < ActiveRecord::Base
   # they specify a topic type of thing they are importing
   # or a topic type for the item that relates groups of things
   # that they are importing
-  has_many :imports, :dependent => :destroy
+  has_many :imports, dependent: :destroy
 
   # Walter McGinnis, 2007-03-23
   # added activation supporting code
