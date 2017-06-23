@@ -204,6 +204,8 @@ gem 'compass-rails'
 gem 'coffee-rails', '~> 3.2.1'
 gem 'uglifier', '>= 1.0.3'
 
+gem 'strong_parameters'
+
 group :development do
   gem 'quiet_assets'
   gem 'rails-erd'

@@ -3,6 +3,9 @@
 Documentation:
     Enabled: false
 
+Metrics/LineLength:
+  Max: 120
+
 AllCops:
   Include:
     - '**/Rakefile'
