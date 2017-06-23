@@ -187,7 +187,13 @@ class User < ActiveRecord::Base
   # rails strips the non integers after the id
   def to_param
     require 'unicode'
-    id.to_s + Unicode.normalize_KD('-' + user_name + '-').downcase.gsub(/[^a-z0-9\s_-]+/, '').gsub(/[\s_-]+/, '-')[0..-2]
+    id.to_s + Unicode.normalize_KD(
+      '-' + user_name + '-'
+    ).downcase.gsub(
+      /[^a-z0-9\s_-]+/, ''
+    ).gsub(
+      /[\s_-]+/, '-'
+    )[0..-2]
   end
 
   # password reset related
