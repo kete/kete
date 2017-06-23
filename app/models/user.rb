@@ -212,15 +212,15 @@ class User < ActiveRecord::Base
   end
 
   def user_name
-    self.resolved_name
+    resolved_name
   end
 
   def avatar
-    @avatar ||= (self.portraits.first if !self.portraits.empty? && !self.portraits.first.thumbnail_file.file_private)
+    @avatar ||= (portraits.first if !portraits.empty? && !portraits.first.thumbnail_file.file_private)
   end
 
   def show_email?
-    extended_content_hash = self.xml_attributes_without_position
+    extended_content_hash = xml_attributes_without_position
     @show_email = false
     if !extended_content_hash.blank? && !extended_content_hash["email_visible"].blank? && !extended_content_hash["email_visible"].to_s.match("xml_element_name") && extended_content_hash["email_visible"].strip == 'yes'
       @show_email = true
@@ -244,8 +244,8 @@ class User < ActiveRecord::Base
           @distinct_contributions << contribution
         end
       end
-      self.send("contributed_#{zoom_class.tableize}".to_sym).each do |contribution|
-        if !@distinct_contributions.include?(contribution)
+      send("contributed_#{zoom_class.tableize}".to_sym).each do |contribution|
+        unless @distinct_contributions.include?(contribution)
           @distinct_contributions << contribution
         end
       end
@@ -317,13 +317,13 @@ class User < ActiveRecord::Base
 
   # supporting password reset
   def make_password_reset_code
-    self.password_reset_code = Digest::SHA1.hexdigest( Time.now.to_s.split(//).sort_by {rand}.join )
+    self.password_reset_code = Digest::SHA1.hexdigest(Time.now.to_s.split(//).sort_by { rand }.join)
   end
 
   # before filter
   def encrypt_password
     return if password.blank?
-    self.salt = Digest::SHA1.hexdigest("--#{Time.now.to_s}--#{login}--") if new_record?
+    self.salt = Digest::SHA1.hexdigest("--#{Time.now}--#{login}--") if new_record?
     self.crypted_password = encrypt(password)
   end
 
@@ -332,7 +332,7 @@ class User < ActiveRecord::Base
   end
 
   def display_name_or_login
-    self.resolved_name = !self.display_name.blank? ? self.display_name : self.login
+    self.resolved_name = !display_name.blank? ? display_name : login
   end
 
   private
