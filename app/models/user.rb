@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 require 'digest/sha1'
 class User < ActiveRecord::Base
   # imports are processes to bring in content to a basket
