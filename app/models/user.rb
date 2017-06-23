@@ -39,16 +39,16 @@ class User < ActiveRecord::Base
   # this is mainly for convenience methods rather than finders
   ZOOM_CLASSES.each do |zoom_class|
     has_many "created_#{zoom_class.tableize}".to_sym,
-    :through => :contributions,
-    :source => "created_#{zoom_class.tableize.singularize}".to_sym,
-    :include => :basket,
-    :order => "#{zoom_class.tableize}.created_at"
+             through: :contributions,
+             source: "created_#{zoom_class.tableize.singularize}".to_sym,
+             include: :basket,
+             order: "#{zoom_class.tableize}.created_at"
 
     has_many "contributed_#{zoom_class.tableize}".to_sym,
-    :through => :contributions,
-    :source => "contributed_#{zoom_class.tableize.singularize}".to_sym,
-    :include => :basket,
-    :order => "#{zoom_class.tableize}.created_at"
+             through: :contributions,
+             source: "contributed_#{zoom_class.tableize.singularize}".to_sym,
+             include: :basket,
+             order: "#{zoom_class.tableize}.created_at"
   end
 
   # Each user can have multiple portraits (images relating to their account)
