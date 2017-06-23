@@ -263,7 +263,7 @@ class User < ActiveRecord::Base
   def add_checkbox
     # used by a form when adding user as member of a basket
     # where 0 is always going to be the starting value
-    return 0
+    0
   end
 
   def add_as_member_to_default_baskets
