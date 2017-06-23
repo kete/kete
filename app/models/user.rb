@@ -54,7 +54,8 @@ class User < ActiveRecord::Base
   # Each user can have multiple portraits (images relating to their account)
   has_many :user_portrait_relations, order: 'position', dependent: :delete_all
   has_many :portraits, through: :user_portrait_relations,
-    source: :still_image, order: 'user_portrait_relations.position'
+                       source: :still_image,
+                       order: 'user_portrait_relations.position'
 
   # users can create baskets if the system setting is enabled to do so
   has_many :baskets, class_name: 'Basket', foreign_key: :creator_id
