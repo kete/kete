@@ -1,7 +1,5 @@
 ---
 engines:
-  rubocop:
-    enabled: true
   brakeman:
     enabled: true
   bundler-audit:
@@ -20,14 +18,25 @@ engines:
     enabled: true
   fixme:
     enabled: true
-    exclude_fingerprints:
-    - b63ffebcedb7715969ca685d07c1e674
+  flog:
+    enabled: true
+    config:
+      score_threshold: 20.0
+  rubocop:
+    enabled: true
+  scss-lint:
+    enabled: true
+  shellcheck:
+    enabled: true
+  stylelint:
+    enabled: true
 ratings:
   paths:
   - Gemfile.lock
   - "**.erb"
   - "**.haml"
   - "**.rb"
+  - "**.rake"
   - "**.rhtml"
   - "**.slim"
   - "**.css"
@@ -38,6 +47,7 @@ ratings:
   - "**.module"
   - "**.php"
   - "**.py"
+  - "**.sh"
 exclude_paths:
 - config/
 - db/
