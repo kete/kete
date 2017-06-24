@@ -221,7 +221,7 @@ group :development, :test do
   gem 'pry-byebug'
   gem 'awesome_print'
   gem "factory_girl_rails", "~> 4.5.0"
-  gem 'rubocop', '~> 0.31.0', require: false
+  gem 'rubocop', '~> 0.47.0', require: false
   gem 'test-unit', '~> 3.0'
   gem 'bundler-audit', '~> 0.3.1', require: false
 end
