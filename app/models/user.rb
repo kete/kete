@@ -1,10 +1,11 @@
+# frozen_string_literal: true
 require 'digest/sha1'
 class User < ActiveRecord::Base
   # imports are processes to bring in content to a basket
   # they specify a topic type of thing they are importing
   # or a topic type for the item that relates groups of things
   # that they are importing
-  has_many :imports, :dependent => :destroy
+  has_many :imports, dependent: :destroy
 
   # Walter McGinnis, 2007-03-23
   # added activation supporting code
@@ -23,7 +24,7 @@ class User < ActiveRecord::Base
   include ExtendedContent
 
   # this is where we handle contributions of different kinds
-  has_many :contributions, :order => 'created_at', :dependent => :delete_all
+  has_many :contributions, order: 'created_at', dependent: :delete_all
   # by using has_many :through associations we gain some bidirectional flexibility
   # with our polymorphic join model
   # basicaly specifically name the classes on the other side of the relationship here
@@ -39,27 +40,29 @@ class User < ActiveRecord::Base
   # this is mainly for convenience methods rather than finders
   ZOOM_CLASSES.each do |zoom_class|
     has_many "created_#{zoom_class.tableize}".to_sym,
-    :through => :contributions,
-    :source => "created_#{zoom_class.tableize.singularize}".to_sym,
-    :include => :basket,
-    :order => "#{zoom_class.tableize}.created_at"
+             through: :contributions,
+             source: "created_#{zoom_class.tableize.singularize}".to_sym,
+             include: :basket,
+             order: "#{zoom_class.tableize}.created_at"
 
     has_many "contributed_#{zoom_class.tableize}".to_sym,
-    :through => :contributions,
-    :source => "contributed_#{zoom_class.tableize.singularize}".to_sym,
-    :include => :basket,
-    :order => "#{zoom_class.tableize}.created_at"
+             through: :contributions,
+             source: "contributed_#{zoom_class.tableize.singularize}".to_sym,
+             include: :basket,
+             order: "#{zoom_class.tableize}.created_at"
   end
 
   # Each user can have multiple portraits (images relating to their account)
-  has_many :user_portrait_relations, :order => 'position', :dependent => :delete_all
-  has_many :portraits, :through => :user_portrait_relations, :source => :still_image, :order => 'user_portrait_relations.position'
+  has_many :user_portrait_relations, order: 'position', dependent: :delete_all
+  has_many :portraits, through: :user_portrait_relations,
+                       source: :still_image,
+                       order: 'user_portrait_relations.position'
 
   # users can create baskets if the system setting is enabled to do so
-  has_many :baskets, :class_name => 'Basket', :foreign_key => :creator_id
+  has_many :baskets, class_name: 'Basket', foreign_key: :creator_id
 
   # users can have many saved searches
-  has_many :searches, :dependent => :destroy
+  has_many :searches, dependent: :destroy
 
   # Virtual attribute for the contribution.version join model
   # a hack to be able to pass it in
@@ -71,7 +74,7 @@ class User < ActiveRecord::Base
   acts_as_authorizable
 
   # Add association to license
-  License.has_many :users, :dependent => :nullify
+  License.has_many :users, dependent: :nullify
 
   # Virtual attribute for the unencrypted password
   attr_accessor :password
@@ -82,21 +85,28 @@ class User < ActiveRecord::Base
   # For accepting terms
   attr_accessor :agree_to_terms
 
-  validates_presence_of     :login, :email
-  validates_inclusion_of    :agree_to_terms, :in => ['1'], :if => :new_record?, :message => 'before you can sign up'
-  validates_presence_of     :security_code,              :if => :new_record?
-  validates_presence_of     :password,                   :if => :password_required?
-  validates_presence_of     :password_confirmation,      :if => :password_required?
-  validates_length_of       :password, :within => 4..40, :if => :password_required?
-  validates_confirmation_of :password,                   :if => :password_required?
+  validates :login, :email, presence: true
+  validates :agree_to_terms, inclusion: { in: ['1'], if: :new_record?, message: 'before you can sign up' }
+  validates :security_code, presence: { if: :new_record? }
+  validates :password, presence: { if: :password_required? }
+  validates :password_confirmation, presence: { if: :password_required? }
+  validates :password, length: { within: 4..40, if: :password_required? }
+  validates :password, confirmation: { if: :password_required? }
   # Walter McGinnis, 2008-03-16
   # refining captcha to be more accessable (i.e. adding questions) and also make more sense to end user
-  validates_confirmation_of :security_code,              :if => :new_record?, :message => lambda { I18n.t('user_model.failed_security_answer') }
-  validates_length_of       :login,    :within => 3..40
-  validates_length_of       :email,    :within => 3..100
-  validates_format_of       :login, :with => /^[^\s]+$/
-  validates_uniqueness_of   :login, :case_sensitive => false
-  validates_inclusion_of :locale, :in => I18n.available_locales_with_labels.keys, :message => lambda { I18n.t('user_model.locale_incorrect', :locales => I18n.available_locales_with_labels.keys.join(', ')) }
+  validates :security_code, confirmation: {
+    if: :new_record?, message: -> { I18n.t('user_model.failed_security_answer') }
+  }
+  validates :login,    length: { within: 3..40 }
+  validates :email,    length: { within: 3..100 }
+  validates :login, format: { with: /^[^\s]+$/ }
+  validates :login, uniqueness: { case_sensitive: false }
+  validates :locale,
+            inclusion: { in: I18n.available_locales_with_labels.keys,
+                         message: lambda do
+                                    I18n.t('user_model.locale_incorrect',
+                                           locales: I18n.available_locales_with_labels.keys.join(', '))
+                                  end }
 
   before_save :encrypt_password
 
@@ -115,7 +125,7 @@ class User < ActiveRecord::Base
   # Activates the user in the database.
   def activate
     @activated = true
-    update_attributes(:activated_at => Time.now.utc, :activation_code => nil)
+    update_attributes(activated_at: Time.now.utc, activation_code: nil)
   end
 
   # Returns true if the user has just been activated.
@@ -156,7 +166,7 @@ class User < ActiveRecord::Base
   # These create and unset the fields required for remembering users between browser closes
   def remember_me
     # don't inadvertantly save temporary settings for anonymous user
-    self.reload if anonymous?
+    reload if anonymous?
 
     self.remember_token_expires_at = 2.weeks.from_now.utc
     self.remember_token            = encrypt("#{email}--#{remember_token_expires_at}")
@@ -165,7 +175,7 @@ class User < ActiveRecord::Base
 
   def forget_me
     # don't inadvertantly save temporary settings for anonymous user
-    self.reload if anonymous?
+    reload if anonymous?
 
     self.remember_token_expires_at = nil
     self.remember_token            = nil
@@ -178,19 +188,25 @@ class User < ActiveRecord::Base
   # rails strips the non integers after the id
   def to_param
     require 'unicode'
-    "#{id}"+Unicode::normalize_KD("-"+user_name+"-").downcase.gsub(/[^a-z0-9\s_-]+/,'').gsub(/[\s_-]+/,'-')[0..-2]
+    id.to_s + Unicode.normalize_KD(
+      '-' + user_name + '-'
+    ).downcase.gsub(
+      /[^a-z0-9\s_-]+/, ''
+    ).gsub(
+      /[\s_-]+/, '-'
+    )[0..-2]
   end
 
   # password reset related
   def forgot_password
-    self.make_password_reset_code
+    make_password_reset_code
     @forgotten_password = true
   end
 
   def reset_password
     # First update the password_reset_code before setting the
     # reset_password flag to avoid duplicate email notifications.
-    update_attributes(:password_reset_code => nil)
+    update_attributes(password_reset_code: nil)
     @reset_password = true
   end
 
@@ -203,24 +219,27 @@ class User < ActiveRecord::Base
   end
 
   def user_name
-    self.resolved_name
+    resolved_name
   end
 
   def avatar
-    @avatar ||= (self.portraits.first if !self.portraits.empty? && !self.portraits.first.thumbnail_file.file_private)
+    @avatar ||= (portraits.first if !portraits.empty? && !portraits.first.thumbnail_file.file_private)
   end
 
   def show_email?
-    extended_content_hash = self.xml_attributes_without_position
+    extended_content_hash = xml_attributes_without_position
     @show_email = false
-    if !extended_content_hash.blank? && !extended_content_hash["email_visible"].blank? && !extended_content_hash["email_visible"].to_s.match("xml_element_name") && extended_content_hash["email_visible"].strip == 'yes'
+    if !extended_content_hash.blank? &&
+       !extended_content_hash['email_visible'].blank? &&
+       !extended_content_hash['email_visible'].to_s.match('xml_element_name') &&
+       extended_content_hash['email_visible'].strip == 'yes'
       @show_email = true
     end
-    return @show_email
+    @show_email
   end
 
   def accepts_emails?
-    self.allow_emails == true
+    allow_emails == true
   end
 
   # we only need distinct items contributed to
@@ -228,30 +247,30 @@ class User < ActiveRecord::Base
   # this is tricky to do in sql,
   # at least without making it db specific
   def distinct_contributions
-    @distinct_contributions = Array.new
+    @distinct_contributions = []
     ZOOM_CLASSES.each do |zoom_class|
-      self.send("created_#{zoom_class.tableize}".to_sym).each do |contribution|
-        if !@distinct_contributions.include?(contribution)
+      send("created_#{zoom_class.tableize}".to_sym).each do |contribution|
+        unless @distinct_contributions.include?(contribution)
           @distinct_contributions << contribution
         end
       end
-      self.send("contributed_#{zoom_class.tableize}".to_sym).each do |contribution|
-        if !@distinct_contributions.include?(contribution)
+      send("contributed_#{zoom_class.tableize}".to_sym).each do |contribution|
+        unless @distinct_contributions.include?(contribution)
           @distinct_contributions << contribution
         end
       end
     end
-    return @distinct_contributions
+    @distinct_contributions
   end
 
   def add_checkbox
     # used by a form when adding user as member of a basket
     # where 0 is always going to be the starting value
-    return 0
+    0
   end
 
   def add_as_member_to_default_baskets
-    Basket.find_all_by_id(SystemSetting.default_baskets_ids).each { |basket| self.has_role('member',basket) }
+    Basket.find_all_by_id(SystemSetting.default_baskets_ids).each { |basket| has_role('member', basket) }
   end
 
   def basket_permissions
@@ -262,14 +281,14 @@ class User < ActiveRecord::Base
     # EOIN: example of the SQL this query generates
     # "SELECT roles.id AS role_id, roles.name AS role_name, baskets.id AS basket_id, baskets.urlified_name AS basket_urlified_name, baskets.name AS basket_name FROM \"roles\" INNER JOIN \"roles_users\" ON \"roles\".\"id\" = \"roles_users\".\"role_id\" INNER JOIN baskets on roles.authorizable_id = baskets.id WHERE \"roles_users\".\"user_id\" = 956 AND \"roles\".\"authorizable_type\" = 'Basket'"
 
-    permissions_hash = Hash.new
+    permissions_hash = {}
     permissions.each do |permission|
       p = permission.attributes
       permissions_hash[p['basket_urlified_name'].to_sym] = {
-        :id => p['basket_id'].to_i,
-        :role_id => p['role_id'].to_i,
-        :role_name => p['role_name'],
-        :basket_name => p['basket_name']
+        id: p['basket_id'].to_i,
+        role_id: p['role_id'].to_i,
+        role_name: p['role_name'],
+        basket_name: p['basket_name']
       }
     end
     permissions_hash
@@ -303,18 +322,18 @@ class User < ActiveRecord::Base
 
   # supporting activation
   def make_activation_code
-    self.activation_code = Digest::SHA1.hexdigest( Time.now.to_s.split(//).sort_by {rand}.join )
+    self.activation_code = Digest::SHA1.hexdigest(Time.now.to_s.split(//).sort_by { rand }.join)
   end
 
   # supporting password reset
   def make_password_reset_code
-    self.password_reset_code = Digest::SHA1.hexdigest( Time.now.to_s.split(//).sort_by {rand}.join )
+    self.password_reset_code = Digest::SHA1.hexdigest(Time.now.to_s.split(//).sort_by { rand }.join)
   end
 
   # before filter
   def encrypt_password
     return if password.blank?
-    self.salt = Digest::SHA1.hexdigest("--#{Time.now.to_s}--#{login}--") if new_record?
+    self.salt = Digest::SHA1.hexdigest("--#{Time.now}--#{login}--") if new_record?
     self.crypted_password = encrypt(password)
   end
 
@@ -323,7 +342,7 @@ class User < ActiveRecord::Base
   end
 
   def display_name_or_login
-    self.resolved_name = !self.display_name.blank? ? self.display_name : self.login
+    self.resolved_name = !display_name.blank? ? display_name : login
   end
 
   private
