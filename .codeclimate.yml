@@ -28,8 +28,6 @@ engines:
     enabled: true
   shellcheck:
     enabled: true
-  stylelint:
-    enabled: true
 ratings:
   paths:
   - Gemfile.lock
