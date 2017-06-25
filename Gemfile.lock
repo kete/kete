@@ -332,7 +332,7 @@ GEM
       activesupport (~> 3.0)
       railties (~> 3.0)
     temple (0.8.0)
-    test-unit (3.2.4)
+    test-unit (3.2.5)
       power_assert
     thor (0.19.4)
     tilt (1.4.1)
@@ -438,6 +438,7 @@ DEPENDENCIES
   will_paginate (~> 3.0.5)
   xml-simple
   ya2yaml
+
 
 RUBY VERSION
    ruby 2.3.3p222
