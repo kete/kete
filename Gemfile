@@ -202,6 +202,9 @@ gem 'uglifier', '>= 1.0.3'
 
 gem 'strong_parameters'
 
+# this doesn't make much sense, but heroku is complaining about not having this gem
+gem 'test-unit', '~> 3.0'
+
 group :development do
   gem 'capistrano', '~> 3.2.1'
   gem 'capistrano-bundler', '~> 1.1.3'
@@ -219,7 +222,6 @@ group :development, :test do
   gem 'pry-byebug'
   gem 'pry-rails'
   gem 'rubocop', '~> 0.47.0', require: false
-  gem 'test-unit', '~> 3.0'
 end
 
 group :test do
