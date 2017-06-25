@@ -8,7 +8,7 @@ Kete is a knowledge basket of images, audio, video and documents which are colle
 
 [![Deploy](https://www.herokucdn.com/deploy/button.svg)](https://heroku.com/deploy)
 
-##Important note for Kete 1.x users
+## Important note for Kete 1.x users
 
 There is no upgrade path from the old kete1 to kete2 yet. Patches are very welcome.
 
