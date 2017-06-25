@@ -2,8 +2,8 @@
 - extended_fields_html = display_xml_attributes(item, :embedded_only => embedded)
 - if !extended_fields_html.blank?
   = '<div id="embedded_extended_field_data">'.html_safe if embedded
-  %div{:class => "secondary-content-section-wrapper"}
-    %div{:class => "secondary-content-section", :id => "extended-fields"}
+  .secondary-content-section-wrapper
+    .secondary-content-section#extended-fields
       .secondary-content-section-content
         #detail-extended
           %h4#detail-extended-heading= h(item.title)

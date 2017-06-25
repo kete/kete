@@ -1,11 +1,11 @@
-%div{:class => "secondary-content-section-wrapper"}
-  %div{:class => "secondary-content-section", :id => "discussion"}
+.secondary-content-section-wrapper
+  .secondary-content-section#discussion
     .secondary-content-section-content
       %h3
-      - if logged_in? and @at_least_a_moderator
+      - if logged_in? && @at_least_a_moderator
         = show_comments_for(item)
       - else
         = show_comments_for(item)
-      %div{:style => "clear:both;"}
+      %div{ style: "clear:both;" }
     .secondary-content-section-footer-wrapper
       .secondary-content-section-footer &nbsp;

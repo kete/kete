@@ -4,23 +4,34 @@
       %li.first
         %h4= t 'topics.preview_actions.title'
 
-      - location = { :id => item,  :authenticity_token => form_authenticity_token, :version => item.version, :private => item.private? }
-      - options = { :method => :post, :tabindex => '1' }
+      - location = { id: item,
+        authenticity_token: form_authenticity_token,
+        version: item.version, private: item.private? }
+      - options = { method: :post, tabindex: '1' }
 
-      %li= link_to t('topics.preview_actions.make_live'), location.merge(:action => :restore), options.merge(:confirm => t('topics.preview_actions.make_live_confirm'))
+      %li
+        = link_to t('topics.preview_actions.make_live'),
+          location.merge(action: :restore),
+          options.merge(confirm: t('topics.preview_actions.make_live_confirm'))
 
-      %li= link_to t('topics.preview_actions.mark_as_reviewed'), location.merge(:action => :flag_form, :flag => SystemSetting.reviewed_flag), options.merge(:confirm => t('topics.preview_actions.mark_as_reviewed_confirm'))
+      %li
+        = link_to t('topics.preview_actions.mark_as_reviewed'),
+          location.merge(action: :flag_form, flag: SystemSetting.reviewed_flag),
+          options.merge(confirm: t('topics.preview_actions.mark_as_reviewed_confirm'))
 
-      %li= link_to t('topics.preview_actions.reject'), location.merge(:action => :flag_form, :flag => SystemSetting.rejected_flag), options.merge(:confirm => t('topics.preview_actions.reject_confirm'))
+      %li
+        = link_to t('topics.preview_actions.reject'),
+          location.merge(action: :flag_form, flag: SystemSetting.rejected_flag),
+          options.merge(confirm: t('topics.preview_actions.reject_confirm'))
 
-    %div{:style => "clear:both;"}
+    %div{ style: "clear:both;" }
 .item-tools.slim
   %ul
     %li.first
       %h4= t 'topics.preview_actions.title_for_item'
 
     - if can_moderate
-      %li= link_to t('topics.preview_actions.delete_all_versions'), location.merge(:action => :destroy), options.merge(:confirm => t('topics.preview_actions.delete_confirm'))
+      %li= link_to t('topics.preview_actions.delete_all_versions'), location.merge(action: :destroy), options.merge(confirm: t('topics.preview_actions.delete_confirm'))
 
-    %li= link_to t('topics.preview_actions.history'), { :action => :history, :id => item }, { :tabindex => '1' }
-  %div{:style => "clear:both;"}
+    %li= link_to t('topics.preview_actions.history'), { action: :history, id: item }, { tabindex: '1' }
+  %div{ style: "clear:both;" }

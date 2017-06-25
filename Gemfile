@@ -204,6 +204,8 @@ gem 'compass-rails'
 gem 'coffee-rails', '~> 3.2.1'
 gem 'uglifier', '>= 1.0.3'
 
+gem 'strong_parameters'
+
 group :development do
   gem 'quiet_assets'
   gem 'rails-erd'
@@ -215,13 +217,11 @@ end
 
 group :development, :test do
   gem "pry-rails"
-  gem "debugger", :platforms => [:mingw_19, :ruby_19]
-  gem 'debugger-xml', :platforms => [:mingw_19, :ruby_19]
-  gem 'byebug', :platforms => [:mingw_20, :ruby_20, :ruby_21]
-  gem 'pry-byebug', :platforms => [:mingw_20, :ruby_20, :ruby_21]
+  gem 'byebug'
+  gem 'pry-byebug'
   gem 'awesome_print'
   gem "factory_girl_rails", "~> 4.5.0"
-  gem 'rubocop', '~> 0.31.0', require: false
+  gem 'rubocop', '~> 0.47.0', require: false
   gem 'test-unit', '~> 3.0'
   gem 'bundler-audit', '~> 0.3.1', require: false
 end
