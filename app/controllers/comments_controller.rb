@@ -90,10 +90,7 @@ class CommentsController < ApplicationController
 
   def update
     @comment = Comment.find(params[:id])
-
     version_after_update = @comment.max_version + 1
-
-    # @comment.attributes = params[:comment]
     @comment.update(comment_params)
 
     if @comment.save
