@@ -118,7 +118,7 @@ feature "RSS Feeds" do
   it "for topics are available" do
     item = Topic.find(171)
     update_timestamp(item)
-    
+
     visit "/en/site/topics/list.rss?updated_since=#{one_day_ago}"
     expect(page).to have_selector('item', count: 1)
 

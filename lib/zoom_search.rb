@@ -297,7 +297,7 @@ module ZoomSearch
     #     location_hash = Hash.new
     #     last_value = location_array.last
     #     coords = Array.new
-        
+
     #     if last_value.is_a?(String) &&
     #         last_value.include?(',') &&
     #         last_value.split(',').size == 2

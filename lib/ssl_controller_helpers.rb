@@ -1,6 +1,6 @@
 module SslControllerHelpers
   unless included_modules.include? SslControllerHelpers
-    
+
     def ssl_required?
       SystemSetting.force_https_on_restricted_pages || false
     end

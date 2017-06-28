@@ -42,7 +42,7 @@ class BasketTest < ActiveSupport::TestCase
 
   def test_before_update_register_redirect_if_necessary
     basket = Basket.create(@new_model.merge({ :name => "foo" }))
-    
+
     basket.name = "bar"
 
     basket.save!

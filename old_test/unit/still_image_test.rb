@@ -137,7 +137,7 @@ class StillImageTest < ActiveSupport::TestCase
       @still_image = new_still_image({}, {})
       @still_image.creator = User.first
     end
-    
+
     should "have an oembed_response" do
       assert @still_image.respond_to?(:oembed_response)
       assert @still_image.oembed_response

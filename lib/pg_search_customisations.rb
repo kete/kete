@@ -1,4 +1,4 @@
-module PgSearchCustomisations 
+module PgSearchCustomisations
 
   def self.included(base)
     base.send :extend, ClassMethods
@@ -36,7 +36,7 @@ module PgSearchCustomisations
       #
       # * we just want the contents of the 'value' key
 
-      values = extended_content_values.values.map do |value| 
+      values = extended_content_values.values.map do |value|
         (value.class == Hash) ? value['value'] : value
       end
 

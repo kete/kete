@@ -33,7 +33,7 @@ class ModerationTest < ActionController::IntegrationTest
       should "create a new item and have it moderated" do
         create_a_new_pending_topic_and_accept_it
       end
-      
+
       should "update an item and have it moderated" do
         create_a_new_topic_with_several_approved_versions
       end
@@ -51,27 +51,27 @@ class ModerationTest < ActionController::IntegrationTest
     # context "an open basket" do
     #   # TODO: Test flagging and moderation in an open basket
     # end
-    
+
     context "a topic with several revisions, one of which is invalid due to an additional extended field" do
-      
+
       setup do
-        
+
         @basket = new_basket :name => "Moderation test basket" do
           select 'moderator views before item approved', :from => 'settings_fully_moderated'
         end
-        
+
         # Create a new topic type
         visit "/site/topic_types/new?parent_id=1"
         fill_in "Name", :with => "Topic type for moderation test"
         fill_in "Description", :with => "Topic type for moderation test description"
         click_button "Create"
-      
+
         @topic_type = TopicType.last
-        
+
         # Create a new topic of this topic type
         @topic = new_topic({ :title => "Initial version", :topic_type => "Topic type for moderation test" }, @basket)
         assert @topic.valid?
-        
+
         # Add a required extended field to the topic type
         click_link "extended fields"
         click_link "Create New"
@@ -88,23 +88,23 @@ class ModerationTest < ActionController::IntegrationTest
 
         check "extended_field_#{@extended_field.to_param.to_s}_required_checkbox"
         click_button "Add to Topic Type"
-        
+
         update_item @topic do
           fill_in "topic[extended_content_values][required_field]", :with => "Value for required field"
         end
-        
+
         body_should_contain "Value for required field"
       end
-      
+
       teardown do
         @topic_type.destroy rescue false
         @extended_field.destroy rescue false
       end
-      
+
       should "be a fully moderated basket" do
         assert @basket.fully_moderated?
       end
-      
+
       should "have an invalid earlier version" do
         @topic.revert_to(1)
         @topic.send(:allow_nil_values_for_extended_content=, false)
@@ -112,49 +112,49 @@ class ModerationTest < ActionController::IntegrationTest
         @topic.send(:allow_nil_values_for_extended_content=, true)
         assert_equal true, @topic.send(:allow_nil_values_for_extended_content)
       end
-      
+
       should "force content update when reverting to the first version" do
         visit "/#{@basket.urlified_name}/topics/preview/#{@topic.id}?version=1"
         click_link I18n.t('topics.preview_actions.make_live')
         body_should_contain "The version you're reverting to is missing some compulsory content. Please contribute the missing details before continuing. You may need to contact the original author to collect additional information."
-        
+
         fill_in "topic[extended_content_values][required_field]", :with => "Value for required field after moderation"
         click_button "Update"
         body_should_contain "Topic was successfully updated."
         body_should_contain "Value for required field after moderation"
       end
-      
+
       should "be able to add a new version and revert to the second without problem" do
         update_item(@topic, :title => "Third revision") do
           fill_in "topic[extended_content_values][required_field]", :with => "Value for required field"
         end
-        
+
         visit "/#{@basket.urlified_name}/topics/preview/#{@topic.id}?version=2"
         click_link I18n.t('topics.preview_actions.make_live')
-        
+
         body_should_contain "The content of this Topic has been approved from the selected revision."
         body_should_contain "Value for required field"
       end
-      
+
       context "as a moderator" do
 
         setup do
           add_jenny_as_moderator_to(@basket)
           login_as('jenny', 'test', { :logout_first => true })
         end
-        
+
         should "revert to first version, supply additional content and have version made live immediately" do
           visit "/#{@basket.urlified_name}/topics/preview/#{@topic.id}?version=1"
           click_link I18n.t('topics.preview_actions.make_live')
-          
+
           body_should_contain "The version you're reverting to is missing some compulsory content. Please contribute the missing details before continuing. You may need to contact the original author to collect additional information."
-          
+
           fill_in "topic[extended_content_values][required_field]", :with => "Moderator set value for required field after moderation"
           click_button "Update"
-          
+
           body_should_contain "Topic was successfully updated."
           body_should_contain "Moderator set value for required field after moderation"
-          
+
           @topic.reload
           assert_equal 3, @topic.version
         end
@@ -164,11 +164,11 @@ class ModerationTest < ActionController::IntegrationTest
           click_link I18n.t('topics.preview_actions.delete_all_versions')
           assert_equal "http://www.example.com/en/moderation_test_basket/all/topics/", current_url
         end
-        
+
       end
-      
+
     end
-    
+
     teardown do
       ZOOM_CLASSES.each do |class_name|
         eval(class_name).destroy_all
@@ -225,11 +225,11 @@ class ModerationTest < ActionController::IntegrationTest
       assert_equal item.versions.last.title, item.title, "Current version should be the same as the latest, but is not."
       assert_not_equal item.title, BLANK_TITLE, "Current version should not have pending title, but does. #{item.inspect}"
     end
-    
+
     def configure_new_topic_type_with_extended_field(options = {})
       options = {
         :extended_field_value_required => false,
-        :extended_field_label => "Extended data", 
+        :extended_field_label => "Extended data",
         :extended_field_multiple => false,
         :extended_field_ftype => "Text",
         :topic_type_name => "Test topic type",

@@ -4,4 +4,4 @@ describe Contribution do
   it "does not blow up when you initialize it" do
     foo = Contribution.new
   end
-end 
+end
