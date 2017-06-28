@@ -136,12 +136,12 @@ class AccountControllerTest < ActionController::TestCase
   def test_should_send_activation_email_after_signup
     # Override constant to test for activation email
     set_constant('REQUIRE_ACTIVATION', true)
-    
+
     create_user
     assert_equal 1, @emails.length
     assert_match /Please activate your new account/, @emails.first.subject
     assert_match /User name: quire/, @emails.first.body
-    assert_match /Password: quire/, @emails.first.body 
+    assert_match /Password: quire/, @emails.first.body
     assert_match /account\/activate\/#{assigns(:user).activation_code}/, @emails.first.body
   end
 
@@ -171,7 +171,7 @@ class AccountControllerTest < ActionController::TestCase
     assert_match("Password reset", flash[:notice])
     assert_equal 2, @emails.length # make sure that it e-mails the user notifying that their password was reset
     assert_equal(@user.email, @emails.first.to[0], "should have gone to user")
-    # 
+    #
     # # Make sure that the user can login with this new password
     assert(User.authenticate(@user.login, "new_password"), "password should have been reset")
   end

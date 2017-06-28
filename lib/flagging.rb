@@ -1,6 +1,6 @@
 # RABID:
-# * this module is 
-#   * included directly in Topic, 
+# * this module is
+#   * included directly in Topic,
 #   * included by ConfigureAsKeteContentItem into every class that it is included in
 #     * AudioRecording
 #     * Comment
@@ -26,7 +26,7 @@
 # Moderation
 # ==========
 # * moderation is implemented by saving particular tags with the model
-# * moderation also has to be aware of the various older versions of the model 
+# * moderation also has to be aware of the various older versions of the model
 
 # flags that can be set on a model (as tags):
 # * blank

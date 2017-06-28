@@ -11,9 +11,9 @@ class ConfigurationTest < ActionController::IntegrationTest
       fill_in 'login', :with => 'admin'
       fill_in 'password', :with => 'test'
       click_button 'Log in'
-      
+
       sleep 3
-      
+
       body_should_contain 'Logged in successfully', :dump_response => true
       click_button 'Change password'
 
@@ -22,7 +22,7 @@ class ConfigurationTest < ActionController::IntegrationTest
       fill_in 'password', :with => 'kete'
       fill_in 'password_confirmation', :with => 'kete'
       click_button 'Change password'
-      
+
       body_should_contain 'Password changed'
       click_link 'Server'
       fill_in 'setting_2_value', :with => 'Kete Test Setup'
@@ -34,12 +34,12 @@ class ConfigurationTest < ActionController::IntegrationTest
       click_button 'Save'
       body_should_contain 'All required settings are complete.'
       click_button 'Next'
-      
+
       click_link 'set up Search Engine'
       click_button 'Save'
       click_button 'Start'
       click_button 'Finish'
-      
+
       body_should_contain 'Final Configuration Step'
       Webrat.stop_app_server
       sleep 3

@@ -154,7 +154,7 @@ class AccountTest < ActionController::IntegrationTest
       end
 
       should "have anonymous user email in session" do
-        
+
       end
 
       should "not allow anonymous access to action accept for allowd_for and finished_after action" do

@@ -105,7 +105,7 @@ namespace :zebra do
     # HACK: no version flag on zebrasrv, read value out of last line of man entry
     # pretty friggin brittle
     man_entry = `man zebrasrv`
-    
+
     last_line = man_entry.lines.select { |l| l.start_with?('zebra') }.last
 
     version = last_line.match(/^zebra ([0-9]+\.[0-9]+\.[0-9]+)/)[1]

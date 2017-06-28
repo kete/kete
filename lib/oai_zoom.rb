@@ -110,7 +110,7 @@ module OaiZoom
       @import_request = options[:import_request]
       skip_private = options[:skip_private]
       write_files = options[:write_files]
-      
+
       was_private = private? # store whether the item was private or not before the reload
 
       reload # get the the most up to date version of self
@@ -151,7 +151,7 @@ module OaiZoom
 
       private_version! if was_private # restore the privacy before we reloaded
     end
-    
+
     # TODO: this may not be needed anymore
     def importer_oai_dc_xml_dc_identifier(xml,item, passed_request = nil)
       if !passed_request.nil?
