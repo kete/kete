@@ -117,6 +117,7 @@ class CommentsController < ApplicationController
 
   def destroy
     @comment = Comment.find(params[:id])
+    commented_item = @comment.commentable
     @comment.destroy
 
     flash[:notice] = t('comments_controller.destroy.destroyed')
