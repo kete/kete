@@ -557,7 +557,9 @@ class BasketsController < ApplicationController
                     end
 
     @default_sorting = { order: 'created_at', direction: 'desc' }
-    paginate_order = current_sorting_options(@default_sorting[:order], @default_sorting[:direction], %w(name created_at))
+    paginate_order = current_sorting_options(
+      @default_sorting[:order],
+      @default_sorting[:direction], %w(name created_at))
 
     options = { page: params[:page],
                 per_page: per_page,
