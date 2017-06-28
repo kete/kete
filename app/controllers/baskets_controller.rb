@@ -1,12 +1,12 @@
+# frozen_string_literal: true
 class BasketsController < ApplicationController
+  permit 'site_admin or admin of :current_basket', only: [:edit, :update, :homepage_options, :destroy,
+                                                          :add_index_topic, :appearance, :update_appearance,
+                                                          :set_settings]
 
-  permit "site_admin or admin of :current_basket", :only => [:edit, :update, :homepage_options, :destroy,
-                                                             :add_index_topic, :appearance, :update_appearance,
-                                                             :set_settings]
+  before_filter :redirect_if_current_user_cant_add_or_request_basket, only: [:new, :create]
 
-  before_filter :redirect_if_current_user_cant_add_or_request_basket, :only => [:new, :create]
-
-  after_filter :remove_robots_txt_cache, :only => [:create, :update, :destroy]
+  after_filter :remove_robots_txt_cache, only: [:create, :update, :destroy]
 
   # Get the Privacy Controls helper for the add item forms
   helper :privacy_controls
@@ -20,7 +20,7 @@ class BasketsController < ApplicationController
   include AnonymousFinishedAfterFilter
 
   def index
-    redirect_to :action => 'list'
+    redirect_to action: 'list'
   end
 
   # GETs should be safe (see http://www.w3.org/2001/tag/doc/whenToUseGet.html)
@@ -31,16 +31,16 @@ class BasketsController < ApplicationController
   def list
     list_baskets
 
-    @rss_tag_auto = rss_tag(:replace_page_with_rss => true)
-    @rss_tag_link = rss_tag(:replace_page_with_rss => true, :auto_detect => false)
+    @rss_tag_auto = rss_tag(replace_page_with_rss: true)
+    @rss_tag_link = rss_tag(replace_page_with_rss: true, auto_detect: false)
 
-    @requested_count = Basket.count(:conditions => "status = 'requested'")
-    @rejected_count = Basket.count(:conditions => "status = 'rejected'")
+    @requested_count = Basket.count(conditions: "status = 'requested'")
+    @rejected_count = Basket.count(conditions: "status = 'rejected'")
   end
 
   def rss
     @number_per_page = 100
-    @baskets = Basket.all(:limit => @number_per_page, :order => 'id DESC')
+    @baskets = Basket.all(limit: @number_per_page, order: 'id DESC')
 
     respond_to do |format|
       format.xml
@@ -63,7 +63,7 @@ class BasketsController < ApplicationController
     respond_to do |format|
       format.js do
         render :update do |page|
-          page.replace_html 'basket_form', :partial => 'new_form'
+          page.replace_html 'basket_form', partial: 'new_form'
         end
       end
     end
@@ -73,11 +73,11 @@ class BasketsController < ApplicationController
     convert_text_fields_to_boolean
 
     # if an site admin makes a basket, make sure the basket is instantly approved
-    if basket_policy_request_with_permissions?
-      params[:basket][:status] = 'requested'
-    else
-      params[:basket][:status] = 'approved'
-    end
+    params[:basket][:status] = if basket_policy_request_with_permissions?
+                                 'requested'
+                               else
+                                 'approved'
+                               end
 
     params[:basket][:creator_id] = current_user.id
 
@@ -108,16 +108,16 @@ class BasketsController < ApplicationController
         flash[:notice] = t('baskets_controller.create.to_be_reviewed')
         redirect_to "/#{@site_basket.urlified_name}"
       else
-        if !@site_admin
+        unless @site_admin
           @site_basket.administrators.each do |administrator|
             UserNotifier.basket_notification_to(administrator, current_user, @basket, 'created').deliver
           end
         end
         flash[:notice] = t('baskets_controller.create.created')
-        redirect_to :urlified_name => @basket.urlified_name, :controller => 'baskets', :action => 'edit', :id => @basket
+        redirect_to urlified_name: @basket.urlified_name, controller: 'baskets', action: 'edit', id: @basket
       end
     else
-      render :action => 'new'
+      render action: 'new'
     end
   end
 
@@ -137,7 +137,7 @@ class BasketsController < ApplicationController
 
   def update
     params[:source_form] ||= 'edit'
-    params[:basket] ||= Hash.new
+    params[:basket] ||= {}
 
     @basket = Basket.find(params[:id])
     @topics = @basket.topics
@@ -148,9 +148,7 @@ class BasketsController < ApplicationController
       @basket.accepts_role('admin', @basket.creator)
     end
 
-    unless params[:reject_basket].blank?
-      params[:basket][:status] = 'rejected'
-    end
+    params[:basket][:status] = 'rejected' unless params[:reject_basket].blank?
 
     # have to update zoom records for things in the basket
     # in two steps
@@ -158,7 +156,7 @@ class BasketsController < ApplicationController
     # as well as caches
     # because item.zoom_destroy needs original record to match
     # then after update, create new zoom records with new urlified_name
-    if !params[:basket][:name].blank? and original_name != params[:basket][:name]
+    if !params[:basket][:name].blank? && (original_name != params[:basket][:name])
       ZOOM_CLASSES.each do |zoom_class|
         basket_items = @basket.send(zoom_class.tableize)
         basket_items.each do |item|
@@ -217,13 +215,13 @@ class BasketsController < ApplicationController
       # Add this last because it takes the longest time to process
       @basket.feeds.each do |feed|
         feed.update_feed
-        MiddleMan.new_worker( :worker => :feeds_worker, :worker_key => feed.to_worker_key, :data => feed.id )
+        MiddleMan.new_worker(worker: :feeds_worker, worker_key: feed.to_worker_key, data: feed.id)
       end
 
       flash[:notice] = t('baskets_controller.update.updated')
       redirect_to "/#{@basket.urlified_name}/"
     else
-      render :action => params[:source_form]
+      render action: params[:source_form]
     end
   end
 
@@ -238,25 +236,19 @@ class BasketsController < ApplicationController
       # skip comments, they should be destroyed by their parent items
       if zoom_class != 'Comment'
         zoom_items = @basket.send(zoom_class.tableize)
-        if zoom_items.size > 0
+        if !zoom_items.empty?
           zoom_items.each do |item|
             @successful = zoom_item_destroy(item)
-            if !@successful
-              break
-            end
+            break unless @successful
           end
         else
           @successful = true
         end
       end
-      if !@successful
-        break
-      end
+      break unless @successful
     end
 
-    if @successful
-      @successful = @basket.destroy
-    end
+    @successful = @basket.destroy if @successful
 
     if @successful
       flash[:notice] = t('baskets_controller.destroy.destroyed')
@@ -276,7 +268,7 @@ class BasketsController < ApplicationController
       if params[:return_to_homepage]
         redirect_to "/#{@basket.urlified_name}"
       else
-        redirect_to :action => 'homepage_options', :controller => 'baskets', :id => params[:index_for_basket]
+        redirect_to action: 'homepage_options', controller: 'baskets', id: params[:index_for_basket]
       end
     end
   end
@@ -298,21 +290,21 @@ class BasketsController < ApplicationController
     prepare_and_validate_profile_for(:appearance)
     set_settings
     flash[:notice] = t('baskets_controller.update_appearance.updated')
-    logger.debug("sanitized yes") if original_html != sanitized_html
+    logger.debug('sanitized yes') if original_html != sanitized_html
     flash[:notice] += t('baskets_controller.update_appearance.sanitized') if original_html != sanitized_html
-    redirect_to :action => :appearance
+    redirect_to action: :appearance
   end
 
   def choose_type
     # give the user the option to add the item to any place the have access to
-    @basket_list = Array.new
+    @basket_list = []
     if @site_admin
       @basket_list = Basket.list_as_names_and_urlified_names
     else
-      all_baskets_hash = Hash.new
+      all_baskets_hash = {}
       # get the add item setting for each of the baskets the user has access to
       Basket.find_all_by_urlified_name(@basket_access_hash.stringify_keys.keys).each do |b|
-        all_baskets_hash[b.urlified_name.to_sym] = { :basket => b, :privacy => b.setting(:show_add_links) }
+        all_baskets_hash[b.urlified_name.to_sym] = { basket: b, privacy: b.setting(:show_add_links) }
       end
       # collect baskets that they can see add item controls for
       @basket_list = @basket_access_hash.collect do |basket_urlified_name, basket_hash|
@@ -322,18 +314,22 @@ class BasketsController < ApplicationController
       end.compact
     end
 
-    @item_types = Array.new
-    ZOOM_CLASSES.each { |zoom_class| @item_types << [zoom_class_humanize(zoom_class),
-                                                     zoom_class_controller(zoom_class)] if zoom_class != 'Comment' }
+    @item_types = []
+    ZOOM_CLASSES.each do |zoom_class|
+      if zoom_class != 'Comment'
+        @item_types << [zoom_class_humanize(zoom_class),
+                        zoom_class_controller(zoom_class)]
+      end
+    end
 
     return unless request.post?
 
-    redirect_to :urlified_name => params[:new_item_basket],
-                :controller => params[:new_item_controller],
-                :action => 'new',
-                :relate_to_item => params[:relate_to_item],
-                :relate_to_type => params[:relate_to_type],
-                :related_item_private => params[:related_item_private]
+    redirect_to urlified_name: params[:new_item_basket],
+                controller: params[:new_item_controller],
+                action: 'new',
+                relate_to_item: params[:relate_to_item],
+                relate_to_type: params[:relate_to_type],
+                related_item_private: params[:related_item_private]
   end
 
   def render_item_form
@@ -342,7 +338,7 @@ class BasketsController < ApplicationController
     @relate_to_item = params[:relate_to_item]
     @relate_to_type = params[:relate_to_type]
     @related_item_private = params[:related_item_private]
-    params[:topic] = Hash.new
+    params[:topic] = {}
     params[:topic][:topic_type_id] = params[:new_item_topic_type]
 
     @item_class = zoom_class_from_controller(@new_item_controller)
@@ -350,7 +346,7 @@ class BasketsController < ApplicationController
     @content_type = ContentType.find_by_class_name(@item_class)
 
     respond_to do |format|
-      format.html { render :partial => 'topics/form', :layout => 'application' }
+      format.html { render partial: 'topics/form', layout: 'application' }
       format.js
     end
   end
@@ -360,14 +356,13 @@ class BasketsController < ApplicationController
   # and they are presented with options to continue
   # in the future this will present the join policy of the basket, etc
   # now it only says "login as different user or contact an administrator"
-  def permission_denied
-  end
+  def permission_denied; end
 
   def set_settings
     return unless params[:settings]
 
     # create a hash with setting keys and values for usage later
-    basket_settings = Hash.new
+    basket_settings = {}
     @basket.settings.each_with_key { |key, value| basket_settings[key.to_sym] = value }
 
     params[:settings].each do |name, value|
@@ -419,15 +414,15 @@ class BasketsController < ApplicationController
     form_types = [:edit, :appearance, :homepage_options]
 
     # make the params values hash if they aren't already
-    params[:basket] ||= Hash.new
-    params[:settings] ||= Hash.new
+    params[:basket] ||= {}
+    params[:settings] ||= {}
 
-    Rails.logger.debug "Before params validation and reset, basket was " + params[:basket].inspect
-    Rails.logger.debug "Before params validation and reset, settings was " + params[:settings].inspect
+    Rails.logger.debug 'Before params validation and reset, basket was ' + params[:basket].inspect
+    Rails.logger.debug 'Before params validation and reset, settings was ' + params[:settings].inspect
 
     # for each basket attribute, reset to the default value if not an allowed field
     Basket::EDITABLE_ATTRIBUTES.each do |setting|
-      if (@site_admin || allowed_field?(setting)) && params[:basket].has_key?(setting.to_sym)
+      if (@site_admin || allowed_field?(setting)) && params[:basket].key?(setting.to_sym)
         # if we run this, it means that the current user is allowed
         # to set this field and the field has a value already
         @basket.send("#{setting}=", params[:basket][setting.to_sym])
@@ -443,15 +438,14 @@ class BasketsController < ApplicationController
 
     # for each basket setting, reset to the default value if not an allowed field
     Basket::EDITABLE_SETTINGS.each do |setting|
-      if !(@site_admin || allowed_field?(setting)) && !params[:basket].has_key?(setting.to_sym)
-        # if we run this, it means that the current user is not allowed
-        # to set this field, or they are but the field has no value
-        params[:settings][setting.to_sym] = current_value_of(setting, true, form_types)
-      end
+      next unless !(@site_admin || allowed_field?(setting)) && !params[:basket].key?(setting.to_sym)
+      # if we run this, it means that the current user is not allowed
+      # to set this field, or they are but the field has no value
+      params[:settings][setting.to_sym] = current_value_of(setting, true, form_types)
     end
 
-    Rails.logger.debug "After params validation and reset, basket is " + params[:basket].inspect
-    Rails.logger.debug "After params validation and reset, settings is " + params[:settings].inspect
+    Rails.logger.debug 'After params validation and reset, basket is ' + params[:basket].inspect
+    Rails.logger.debug 'After params validation and reset, settings is ' + params[:settings].inspect
   end
 
   # gets the profile rules for this basket. Memoize the result to prevent needless queries
@@ -495,7 +489,7 @@ class BasketsController < ApplicationController
   # get the current value of a field, from either basket/setting submitted values,
   # profile if new record, or exsiting value of existing record
   # skip_posted_values will skip getting the value from params
-  def current_value_of(name, skip_posted_values=false, form_type=nil)
+  def current_value_of(name, skip_posted_values = false, form_type = nil)
     form_type ||= @form_type
 
     value = nil
@@ -508,14 +502,14 @@ class BasketsController < ApplicationController
 
     if value.nil? && @basket && !@basket.new_record?
       value = if @basket.respond_to?(name)
-        # if the basket responds to a value method
-        @basket.send(name)
-      elsif @basket.respond_to?("#{name}?")
-        # if the basket respond to a boolean method
-        @basket.send("#{name}?")
-      else
-        # else, see if it has a setting (which will returns nil if not)
-        @basket.settings[name.to_sym]
+                # if the basket responds to a value method
+                @basket.send(name)
+              elsif @basket.respond_to?("#{name}?")
+                # if the basket respond to a boolean method
+                @basket.send("#{name}?")
+              else
+                # else, see if it has a setting (which will returns nil if not)
+                @basket.settings[name.to_sym]
       end
     end
 
@@ -555,20 +549,22 @@ class BasketsController < ApplicationController
   # End of Basket Profile Helpers
   #
 
-  def list_baskets(per_page=10)
-    if !params[:type].blank? && @site_admin
-      @listing_type = params[:type]
-    else
-      @listing_type = 'approved'
-    end
+  def list_baskets(per_page = 10)
+    @listing_type = if !params[:type].blank? && @site_admin
+                      params[:type]
+                    else
+                      'approved'
+                    end
 
-    @default_sorting = {:order => 'created_at', :direction => 'desc'}
-    paginate_order = current_sorting_options(@default_sorting[:order], @default_sorting[:direction], ['name', 'created_at'])
+    @default_sorting = { order: 'created_at', direction: 'desc' }
+    paginate_order = current_sorting_options(
+      @default_sorting[:order],
+      @default_sorting[:direction], %w(name created_at))
 
-    options = { :page => params[:page],
-                :per_page => per_page,
-                :order => paginate_order }
-    options.merge!({ :conditions => ['status = ?', @listing_type] })
+    options = { page: params[:page],
+                per_page: per_page,
+                order: paginate_order }
+    options[:conditions] = ['status = ?', @listing_type]
 
     @baskets = Basket.paginate(options)
   end
@@ -581,12 +577,10 @@ class BasketsController < ApplicationController
     boolean_fields = [:show_privacy_controls, :private_default, :file_private_default, :allow_non_member_comments]
     boolean_fields.each do |field|
       params[:basket][field] = case params[:basket][field]
-      when 'true', true
-        true
-      when 'false', false
-        false
-      else
-        nil
+                               when 'true', true
+                                 true
+                               when 'false', false
+                                 false
       end
     end
   end
@@ -595,7 +589,7 @@ class BasketsController < ApplicationController
   # When a basket is created, edited, or deleted, we have to clear
   # the robots txt file caches to the new settings take effect
   def remove_robots_txt_cache
-    expire_page "/robots.txt"
+    expire_page '/robots.txt'
   end
 
   # Kieran Pilkington - 2008/09/22
@@ -606,5 +600,4 @@ class BasketsController < ApplicationController
       redirect_to DEFAULT_REDIRECTION_HASH
     end
   end
-
 end
