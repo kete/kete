@@ -24,7 +24,7 @@ module Merge
       # and there existing values
       # prune attributes that shouldn't be messed with
       ok_to_update = %w(title short_summary description)
-      
+
       attributes_to_update = Hash.new
       attributes.each do |k,v|
         next unless ok_to_update.include?(k)
@@ -40,12 +40,12 @@ module Merge
       source_versions.each do |version_number|
         revert_to(version_number)
         version_attributes = attributes
-        
+
         attributes_to_update.keys.each do |key|
           new_value = version_attributes[key]
           attributes_to_update[key] = new_value unless new_value.blank?
         end
-        
+
         extended_values = structured_extended_content
         unless extended_values.blank?
           extended_values.each do |k,v|
@@ -61,7 +61,7 @@ module Merge
       # now that we have merger of all versions' attributes
       # update them in place
       revert_to(starting_version)
-      
+
       attributes_to_update.each do |k,v|
         send(k + '=', v)
       end

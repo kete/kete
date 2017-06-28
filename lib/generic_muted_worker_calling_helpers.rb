@@ -22,7 +22,7 @@ module GenericMutedWorkerCallingHelpers
       logger.debug("what are worker options " + options.inspect)
 
       worker_key = worker_key_for(the_worker_name).to_s
-      
+
       options.delete(class_key)
 
       # TODO: replace this by queueing
@@ -48,7 +48,7 @@ module GenericMutedWorkerCallingHelpers
 
         backgroundrb_worker_started = true
       end
-      
+
       backgroundrb_worker_started
     end
   end

@@ -27,7 +27,7 @@ namespace :kete do
           yaml += "    #{role.id}:\n"
           basket = Basket.find_by_id(role.authorizable_id)
           yaml += "      basket: #{basket.urlified_name}\n"
-          yaml += "      name: #{role.name}\n"  
+          yaml += "      name: #{role.name}\n"
         end
       end
       write_to_file('users.yml', yaml)
@@ -57,9 +57,9 @@ namespace :kete do
       p "All users imported from RAILS_ROOT/tmp/users.yml"
     end
   end
-  
+
   private
-  
+
   def read_from_file(filename)
     if !File.exists?("#{RAILS_ROOT}/tmp/#{filename}")
       p "ERROR: Could not find RAILS_ROOT/tmp/#{filename}"; exit

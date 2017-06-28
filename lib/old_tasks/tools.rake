@@ -81,7 +81,7 @@ namespace :kete do
           puts "No backup needed. Last backup matches current #{locale}.yml."
         end
       end
-    
+
     end
 
     desc 'Resets the database and zebra to their preconfigured state.'
@@ -285,8 +285,8 @@ namespace :kete do
                        }
                       ]
         }
-        
-        
+
+
         # write out new file content
         conf_file_path = "#{Rails.root}/public/javascripts/image_selector_config/providers.json"
         dest = File.new(conf_file_path,'w+')
@@ -299,7 +299,7 @@ namespace :kete do
         return unless Kete.is_configured?
 
         this_site_sizes_config = Array.new
-        
+
         SystemSetting.image_sizes.each do |size_array|
           # decypher imagemagick rules
           width = nil
@@ -338,7 +338,7 @@ namespace :kete do
 
         # gather topics
         topics = Topic.find(:all, :conditions => ENV['CONDITIONS'])
-        
+
         raise "No matching topics." unless topics.size > 0
 
         user = User.find(ENV['USER'])
@@ -390,7 +390,7 @@ namespace :kete do
 
             # split things up into different types
             class_names = ZOOM_CLASSES - ['Topic', 'Comment']
-            
+
             kinds_to_process = ['child_related_topics'] + ['parent_related_topics'] + class_names.collect { |n| n.tableize }
             kinds_to_process.each do |kind|
               kind_count = topic.send(kind.to_sym).count
@@ -423,9 +423,9 @@ namespace :kete do
                                                              :conditions => [clause, clause_values],
                                                              :limit => batch_size,
                                                              :order => "#{table_name}.id")
-              
+
                 @logger.info("number to do in batch: " + related_items.size.to_s)
-                
+
                 related_items.each do |item|
                   kind_count_so_far += 1
                   # update extended_content references for this topic to new url
@@ -467,7 +467,7 @@ namespace :kete do
                 end
               end
             end
-            
+
             topic.prepare_and_save_to_zoom if should_rebuild
 
             topics_moved_count += 1

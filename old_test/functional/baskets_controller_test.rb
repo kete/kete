@@ -349,7 +349,7 @@ class BasketsControllerTest < ActionController::TestCase
 
       @basket = Factory(:basket, :allow_non_member_comments => false)
       @basket.profiles << @profile
-      
+
       set_constant("BASKET_CREATION_POLICY", 'open')
     end
 

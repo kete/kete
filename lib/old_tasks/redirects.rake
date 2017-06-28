@@ -5,7 +5,7 @@
 # Walter McGinnis, 2012-06-21
 
 namespace :redirects do
-  namespace :imports do 
+  namespace :imports do
     desc "Create RedirectRegistration instances based on Excel XML file (EXCEL_FILE=path_to_file_relative_to_calling_dir)."
     task :excel => :environment do
       source_file = pwd + '/' + ENV['EXCEL_FILE']

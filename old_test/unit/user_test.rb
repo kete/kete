@@ -30,7 +30,7 @@ class UserTest < ActiveSupport::TestCase
 
   # load in sets of tests and helper methods
   include KeteTestUnitHelper
-  
+
   include ExtendedContentTestUnitHelper
 
   # TODO: a number of Kete custom methods not tested
@@ -165,7 +165,7 @@ class UserTest < ActiveSupport::TestCase
   end
 
   context "After a site is configured there" do
-    should "be an anonymous user account" do 
+    should "be an anonymous user account" do
       assert User.find_by_login('anonymous')
     end
   end
@@ -181,7 +181,7 @@ class UserTest < ActiveSupport::TestCase
 
       non_anonymous = User.first
       assert_nil non_anonymous.website
-      
+
       non_anonymous.website = website
       assert_nil non_anonymous.website
 

@@ -429,7 +429,7 @@ namespace :kete do
 
         # we have template values in the hash
         # get the values final form
-        
+
         # if there are existing system settings
         # drop id from hash, as we want to determine it dynamically
         # else we want to use the bootstap versions

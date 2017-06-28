@@ -6,11 +6,11 @@ module ExtendedContentHelpersForTestSetUp
 
     # add a extended field to the base class or topic type in the case of topics
     create_extended_field(options)
-    
+
     if @should_create_extended_item
       @extended_item = Module.class_eval(@base_class).create! @new_model
     end
-    
+
     unless @base_class == 'Topic'
       @mapped_to_type_instance = ContentType.find_by_class_name(@base_class)
     else
@@ -18,7 +18,7 @@ module ExtendedContentHelpersForTestSetUp
     end
 
     @mapped_to_type_instance.form_fields << @extended_field
-    
+
     unless @base_class == 'Topic'
       @mapping = @extended_field.content_type_to_field_mappings.last
     else
