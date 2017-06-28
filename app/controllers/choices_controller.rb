@@ -1,33 +1,28 @@
+# frozen_string_literal: true
 class ChoicesController < ApplicationController
-  
-  before_filter :login_required, :only => [ :list, :index ]
+  before_action :login_required, only: [:list, :index]
 
-  before_filter :set_page_title
+  before_action :set_page_title
 
   # TODO: need to re-implemnet the intention of this
-  permit "site_admin", :except => [ :categories_list ]
-  
+  permit 'site_admin', except: [:categories_list]
+
   active_scaffold :choice do |config|
-    
     # Which columns to show
     config.columns = [:label, :value, :parent, :children]
     config.list.columns.exclude :updated_at, :created_at
-    
+
     # Column overrides
     config.columns[:label].required = true
     config.columns[:value].description = I18n.t('choices_controller.label_example')
-    
-    # Subform column overrides
-    # config.subform.columns = [:label]
   end
-  
+
   # Ensure that the ROOT for better_nested_set isn't shown on activescaffold pages.
   def conditions_for_collection
     ['label != ?', 'ROOT']
   end
 
-  def categories_list
-  end
+  def categories_list; end
 
   private
 
