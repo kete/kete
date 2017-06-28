@@ -1,0 +1,20 @@
+
+default: &default
+  adapter: postgresql
+  encoding: utf8
+
+development:
+  <<: *default
+  database: kete_development
+
+test:
+  <<: *default
+  database: kete_test
+
+horowhenua:
+  <<: *default
+  database: kete_horowhenua
+
+production:
+  <<: *default
+  database: <%= ENV["DATABASE_URL"] %>

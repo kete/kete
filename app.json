@@ -1,0 +1,15 @@
+{
+  "name": "Kete",
+  "description": "Kete is a knowledge basket of images, audio, video and documents which are collected and catalogued by the community.",
+  "repository": "https://github.com/kete/kete",
+  "keywords": ["node", "express", "static"],
+  "addons": [
+    {
+      "plan": "heroku-postgresql",
+      "options": {
+        "version": "9.6.1"
+      }
+    }
+  ]
+}
+

@@ -439,7 +439,6 @@ DEPENDENCIES
   xml-simple
   ya2yaml
 
-
 RUBY VERSION
    ruby 2.3.3p222
 
