@@ -600,7 +600,7 @@ module ApplicationHelper
     # Used to hide the empty, thin related items box on inset or sidebar display when no related items
     # are present. Only apply this if no items are present and only if we are on non-topic controller
     # (topic page related items have create/link etc controls that we don't want to hide)
-    class_names << 'no-items' if count && count == 0 && params[:controller] != 'topics'
+    class_names << 'no-items' if count && count.zero? && params[:controller] != 'topics'
 
     class_names.join(' ')
   end
@@ -623,7 +623,7 @@ module ApplicationHelper
     # Used to hide the empty, thin related items box on inset or sidebar display when no related items
     # are present. Only apply this if no items are present and only if we are on non-topic controller
     # (topic page related items have create/link etc controls that we don't want to hide)
-    class_names << 'no-items' if count && count == 0 && params[:controller] != 'topics'
+    class_names << 'no-items' if count && count.zero? && params[:controller] != 'topics'
 
     { class: class_names.join(' '), style: styles.join }
   end
@@ -701,13 +701,13 @@ module ApplicationHelper
     return '' if items.blank?
     unless options[:display_num].nil?
       display_num = options[:display_num]
-      items = [] if display_num == 0
+      items = [] if display_num.zero?
       items = items[0..(display_num - 1)] if display_num > 0
     end
     display_html = ''
     display_html += options[:are_still_images] ? '<ul class="results-list images-list">' : '<ul>'
     items.each_with_index do |related_item, index|
-      li_class = index == 0 ? 'first' : ''
+      li_class = index.zero? ? 'first' : ''
       if related_item.is_a?(Hash)
         if related_item.is_a?(Hash) && !related_item[:thumbnail].blank?
           display_html += "<li class='#{li_class}'>#{related_image_link_for(related_item, options)}</li>"
@@ -1550,7 +1550,7 @@ module ApplicationHelper
       html += "<div id='category_level_#{time}' class='category_list'>"
       html += '<ul>'
       # If we're in the first column, provide a link to go back to all results
-      if time == 0
+      if time.zero?
         html += content_tag('li', link_to(t('application_helper.browse_by_category_columns.all_items',
                                             item_type: zoom_class_plural_humanize(@current_class)),
                                           view_as: 'choice_hierarchy'),
@@ -1576,12 +1576,12 @@ module ApplicationHelper
     choices = ''
     I18n.available_locales_with_labels.each_with_index do |(key, value), index|
       choices << if I18n.locale.to_sym == key.to_sym
-                   content_tag(:li, value, class: "current #{'first' if index == 0}")
+                   content_tag(:li, value, class: "current #{'first' if index.zero?}")
                  else
                    content_tag(:li, link_to(value, urlified_name: @current_basket.urlified_name,
                                                    controller: 'account',
                                                    action: 'change_locale',
-                                                   override_locale: key), class: ('first' if index == 0))
+                                                   override_locale: key), class: ('first' if index.zero?))
                  end
     end
     content_tag(:ul, choices)
