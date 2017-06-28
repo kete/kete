@@ -21,7 +21,6 @@ class CommentsController < ApplicationController
     end
 
     respond_to do |format|
-      # format.html { redirect_to(@comment.commmentable, {commenty: 'things'})  }
       format.html { redirect_to(comment_inplace_url(@comment)) }
       format.xml { render_oai_record_xml(item: @comment) }
     end
