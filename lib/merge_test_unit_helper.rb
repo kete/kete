@@ -21,7 +21,7 @@ module MergeTestUnitHelper
 
           @item.second = "version 3"
           @item.save!
-          
+
           @item.reload
         end
 

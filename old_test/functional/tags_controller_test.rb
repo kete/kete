@@ -15,7 +15,7 @@ class TagsControllerTest < ActionController::TestCase
     assert_response :success
     assert_not_nil(:tags)
   end
-  
+
   def test_rss_feed_accessible_logged_in
     login_as(:admin)
     get :rss, :urlified_name => 'site', :controller => 'list', :action => 'rss'

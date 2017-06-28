@@ -5,7 +5,7 @@ module ConfigureAsKeteContentItem
       klass.send :belongs_to, :basket
 
       klass.send :scope, :in_basket, lambda { |basket| { :conditions => { :basket_id => basket } } }
-      
+
       # where we handle creator and contributor tracking
       klass.send :include, HasContributors
 
@@ -29,7 +29,7 @@ module ConfigureAsKeteContentItem
       # these convenience methods actually work for comments, too
       # and are conceptually the same to end user
       klass.send :include, RelatedItems
-      
+
       # methods for merging values from versions together
       klass.send :include, Merge
 

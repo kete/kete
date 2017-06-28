@@ -40,7 +40,7 @@ class HasValue
     def method_missing(method_sym, *args, &block)
       method_name = method_sym.to_s
       var_name = method_name.sub(/\=$/, "")
-      
+
       # test if class variable exists
       begin
         var_value = class_variable_get('@@' + var_name)
@@ -58,7 +58,7 @@ class HasValue
         if value.present? && (value.match(/^([0-9\{\[]|true|false)/) || has_substitution)
           # see if hash of key/values to declare as variable in a binding exist
           the_binding = args[0]
-          
+
           if the_binding
             raise "This should be a binding object." unless the_binding.is_a?(Binding)
             value = eval(value, the_binding)

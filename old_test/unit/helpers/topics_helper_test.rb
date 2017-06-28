@@ -40,7 +40,7 @@ class TopicsHelperTest < ActionView::TestCase
   end
 
   context "A topic" do
-    setup do 
+    setup do
       @topic_type_list_to_first_item = "<ul class=\"breadcrumb\">" +
         "<li class=\"first selected-topic-type\">" +
         "<a href=\"/en/site/all/topics/of/topic\">Topic</a>" +
@@ -50,11 +50,11 @@ class TopicsHelperTest < ActionView::TestCase
       def params
         Hash.new
       end
-      
+
       @site_basket = Basket.first
     end
 
-    should "return list of single topic type if it is of root level topic type" do 
+    should "return list of single topic type if it is of root level topic type" do
       topic_with_root_topic_type = Factory(:topic)
 
       single_topic_type_list = @topic_type_list_to_first_item + "</ul>"

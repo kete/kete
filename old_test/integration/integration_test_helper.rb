@@ -77,7 +77,7 @@ class ActionController::IntegrationTest
                 :logout_first => false,
                 :test_success => false,
                 :should_fail_login => false }.merge(options)
-  
+
     options[:logout_first] = true if options[:navigate_to_login]
     options[:test_success] = true if options[:navigate_to_login]
 

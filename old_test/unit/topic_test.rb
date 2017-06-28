@@ -485,7 +485,7 @@ class TopicTest < ActiveSupport::TestCase
 
       t.structured_extended_content = default_expected_hash_plus("father"=> [{"label" => title,
                                                                                "value" => url}])
-                                                    
+
       expected_value = "<first_names xml_element_name=\"dc:description\">Joe</first_names><last_name>Bloggs</last_name><place_of_birth xml_element_name=\"dc:subject\"></place_of_birth><father xml_element_name=\"dc:description\" label=\"#{title}\">#{url}</father>"
 
       assert_equal expected_value, t.extended_content
@@ -509,7 +509,7 @@ class TopicTest < ActiveSupport::TestCase
                                                                                    "value" => f_url}],
                                                                                 [{"label" => m_title,
                                                                                    "value" => m_url}]])
-                                                    
+
       expected_value = "<first_names xml_element_name=\"dc:description\">Joe</first_names><last_name>Bloggs</last_name><place_of_birth xml_element_name=\"dc:subject\"></place_of_birth><relatives_multiple><1><relatives xml_element_name=\"dc:description\" label=\"#{f_title}\">#{f_url}</relatives></1><2><relatives xml_element_name=\"dc:description\" label=\"#{m_title}\">#{m_url}</relatives></2></relatives_multiple>"
 
       assert_equal expected_value, t.extended_content
@@ -644,14 +644,14 @@ class TopicTest < ActiveSupport::TestCase
                                                                                "value" => url}])
       assert_equal "Joe", t.first_names
       assert_nil t.place_of_birth
-      father_hash = { 'label' => title, 'value' => url} 
+      father_hash = { 'label' => title, 'value' => url}
       assert_equal father_hash, t.father
 
       father_2 = create_person('first_names' => 'Step Dad')
       f_2_title, f_2_url = father_2.title, url_for_dc_identifier(father_2)
 
       t.father = "#{f_2_title} (#{f_2_url})"
-      father_hash_2 = { 'label' => f_2_title, 'value' => f_2_url} 
+      father_hash_2 = { 'label' => f_2_title, 'value' => f_2_url}
       assert_equal father_hash_2, t.father
 
       assert t.extended_content.include?("<father xml_element_name=\"dc:description\" label=\"#{f_2_title}\">#{f_2_url}</father>")
@@ -714,7 +714,7 @@ class TopicTest < ActiveSupport::TestCase
       @topic.save
       @topic.creator = User.first
     end
-    
+
     should "have an oembed_response" do
       assert @topic.respond_to?(:oembed_response)
       assert @topic.oembed_response
@@ -773,7 +773,7 @@ class TopicTest < ActiveSupport::TestCase
       ExtendedField.last.destroy
       TopicTypeToFieldMapping.last.destroy
     end
-    
+
     def create_person(options = {})
       do_not_save = options.delete(:do_not_save)
 
@@ -786,7 +786,7 @@ class TopicTest < ActiveSupport::TestCase
       person.save! unless do_not_save
       person
     end
-    
+
     def set_up_father_for_father_field
       # set which topic type (Person) for the father field
       ef = ExtendedField.find_by_label('Father')
@@ -830,7 +830,7 @@ class TopicTest < ActiveSupport::TestCase
     def married_dating_array
       %w(Married Dating)
     end
-    
+
     def married_dating_as_hashes(in_array = true)
       values = married_dating_array.collect { |s| { 'label' => s, 'value' => s } }
       if in_array
