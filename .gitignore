@@ -30,7 +30,6 @@ db/*.sqlite3
 .rspec
 .redcar/
 .sass-cache
-/config/database.yml
 # /config/gmaps_api_key.yml
 # /config/google_map_api.yml
 # /config/importers.yml
