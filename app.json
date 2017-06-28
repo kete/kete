@@ -2,7 +2,9 @@
   "name": "Kete",
   "description": "Kete is a knowledge basket of images, audio, video and documents which are collected and catalogued by the community.",
   "repository": "https://github.com/kete/kete",
-  "keywords": ["node", "express", "static"],
+  "scripts": {
+    "postdeploy": "bundle exec rake db:setup"
+  },
   "addons": [
     {
       "plan": "heroku-postgresql",
