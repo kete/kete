@@ -319,7 +319,7 @@ class BasketsController < ApplicationController
       if zoom_class != 'Comment'
         @item_types << [zoom_class_humanize(zoom_class),
                         zoom_class_controller(zoom_class)]
-                                     end
+      end
     end
 
     return unless request.post?
