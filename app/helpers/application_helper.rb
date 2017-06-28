@@ -1476,7 +1476,6 @@ module ApplicationHelper
   end
 
   def kete_time_ago_in_words(from_time)
-    string = ''
     string = if from_time < Time.now - 1.week
                t('application_helper.kete_time_ago_in_words.longer_than_a_week',
                  date: from_time.to_s(:euro_date_time))
