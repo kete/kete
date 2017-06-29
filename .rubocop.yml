@@ -19,3 +19,8 @@ AllCops:
 # Not in rails 3
 Rails/DynamicFindBy:
   Enabled: false
+
+Style/FileName:
+  Exclude:
+    - Gemfile
+    - Gemile.lock
