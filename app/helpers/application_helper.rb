@@ -252,7 +252,7 @@ module ApplicationHelper
 
     html = ''
     basket_permissions.each do |basket_name, role|
-      basket = Basket.find_by(urlified_name: basket_name.to_s)
+      basket = Basket.find_by_urlified_name(basket_name.to_s)
       next unless user == current_user || current_user_can_see_memberlist_for?(basket)
       pending = basket.status == 'requested' ? t('application_helper.users_baskets_list.basket_pending') : ''
       link = link_to(basket.name + pending, basket_index_url(urlified_name: basket_name))
@@ -929,7 +929,7 @@ module ApplicationHelper
     mappings = if item.is_a?(Topic)
                  item.all_field_mappings
                else
-                 ContentType.find_by(class_name: item.class.name).content_type_to_field_mappings
+                 ContentType.find_by_class_name(item.class.name).content_type_to_field_mappings
                end
 
     content = item.extended_content_pairs
@@ -1511,7 +1511,7 @@ module ApplicationHelper
   end
 
   def categories_field
-    @categories ||= ExtendedField.find_by(label: 'categories')
+    @categories ||= ExtendedField.find_by_label('categories')
   end
 
   def browse_by_category_columns
