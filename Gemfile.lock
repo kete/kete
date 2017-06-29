@@ -272,7 +272,7 @@ GEM
       rake
     raindrops (0.18.0)
     rake (10.5.0)
-    rb-fsevent (0.9.8)
+    rb-fsevent (0.10.1)
     rb-inotify (0.9.10)
       ffi (>= 0.5.0, < 2)
     rdoc (3.12.2)
@@ -438,6 +438,7 @@ DEPENDENCIES
   will_paginate (~> 3.0.5)
   xml-simple
   ya2yaml
+
 
 RUBY VERSION
    ruby 2.3.3p222
