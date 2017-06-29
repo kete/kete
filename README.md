@@ -3,6 +3,8 @@
 [![Build Status](https://travis-ci.org/kete/kete.svg?branch=kete2)](https://travis-ci.org/kete/kete)
 [![security](https://hakiri.io/github/kete/kete/master.svg)](https://hakiri.io/github/kete/kete/master)
 [![Code Climate](https://codeclimate.com/github/kete/kete/badges/gpa.svg)](https://codeclimate.com/github/kete/kete)
+[![Test Coverage](https://codeclimate.com/github/kete/kete/badges/coverage.svg)](https://codeclimate.com/github/kete/kete/coverage)
+[![Issue Count](https://codeclimate.com/github/kete/kete/badges/issue_count.svg)](https://codeclimate.com/github/kete/kete)
 
 Kete is a knowledge basket of images, audio, video and documents which are collected and catalogued by the community.
 
