@@ -15,3 +15,7 @@ AllCops:
     - 'vendor/**/*'
     - 'horowhenua_spec/**/*'
     - 'db/schema.rb'
+
+# Not in rails 3
+Rails/DynamicFindBy:
+  Enabled: false
