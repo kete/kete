@@ -5,11 +5,14 @@ KeteApp::Application.configure do
   # test suite. You never need to work with it otherwise. Remember that
   # your test database is "scratch space" for the test suite and is wiped
   # and recreated between test runs. Don't rely on the data there!
-  config.cache_classes = false # RABID: there are still lots of errors in the full rails env so turn this off so we can run specs on a few models without crashing
+
+  # RABID: there are still lots of errors in the full rails env so turn this off
+  # so we can run specs on a few models without crashing
+  config.cache_classes = false
 
   # Configure static asset server for tests with Cache-Control for performance
   config.serve_static_assets = true
-  config.static_cache_control = "public, max-age=3600"
+  config.static_cache_control = 'public, max-age=3600'
 
   # Log error messages when you accidentally call methods on nil
   config.whiny_nils = true
@@ -22,7 +25,7 @@ KeteApp::Application.configure do
   config.action_dispatch.show_exceptions = false
 
   # Disable request forgery protection in test environment
-  config.action_controller.allow_forgery_protection    = false
+  config.action_controller.allow_forgery_protection = false
 
   # Tell Action Mailer not to deliver emails to the real world.
   # The :test delivery method accumulates sent emails in the
@@ -36,7 +39,7 @@ KeteApp::Application.configure do
   config.active_support.deprecation = :stderr
 
   # ActionMailer Config
-  config.action_mailer.default_url_options = { :host => 'kete.org.nz' }
+  config.action_mailer.default_url_options = { host: 'kete.org.nz' }
 
   # Attachments (images/audio) link files on the local disk.
   # config.attachments_overide_url = nil
