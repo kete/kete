@@ -221,6 +221,7 @@ group :development, :test do
   gem 'factory_girl_rails', '~> 4.5.0'
   gem 'pry-byebug'
   gem 'pry-rails'
+  gem 'rspec-rails', '~> 3.5'
   gem 'rubocop', '~> 0.47.0', require: false
 end
 
@@ -228,7 +229,6 @@ group :test do
   gem 'capybara', '~> 2.4.4'
   gem 'database_cleaner', '~> 1.4.1'
   gem 'poltergeist'
-  gem 'rspec-rails', '~> 3.0.0'
   gem 'selenium-webdriver', '~> 2.45.0'
 end
 
