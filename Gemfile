@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 source 'https://rubygems.org'
 
 ruby '2.3.3'
@@ -206,10 +207,6 @@ gem 'strong_parameters'
 gem 'test-unit', '~> 3.0'
 
 group :development do
-  gem 'capistrano', '~> 3.2.1'
-  gem 'capistrano-bundler', '~> 1.1.3'
-  gem 'capistrano-rails', '~> 1.1.2'
-  gem 'capistrano-rbenv', '~> 2.0.2'
   gem 'quiet_assets'
   gem 'rails-erd'
 end
