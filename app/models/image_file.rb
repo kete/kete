@@ -91,7 +91,7 @@ class ImageFile < ActiveRecord::Base
         content_type: content_type,
         filename: thumbnail_name_for(file_name_suffix),
         thumbnail_resize_options: size,
-        file_private: (self.item_private || false) # <- attr_accessor, not a model attribute
+        file_private: (item_private || false) # <- attr_accessor, not a model attribute
       }
       if defined?(Rails) && Rails::VERSION::MAJOR == 3
         # assign_attributes API in Rails 2.3 doesn't take a second argument

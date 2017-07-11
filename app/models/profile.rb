@@ -69,12 +69,12 @@ class Profile < ActiveRecord::Base
   # if raw is true, it'll return the hash we stored which can be
   # used on the forms for hiding/showing fields and setting values
   def rules(raw=false)
-    return unless self.setting(:rules)
+    return unless setting(:rules)
 
-    return self.setting(:rules) if raw
+    return setting(:rules) if raw
 
     data = Array.new
-    self.setting(:rules).each do |k,v|
+    setting(:rules).each do |k,v|
       value = "#{k.humanize}: "
       value += if v['rule_type'] == 'all'
         I18n.t('profile_model.rules.all')
@@ -98,7 +98,7 @@ class Profile < ActiveRecord::Base
 
   # an after_save callback method that saves the rules to settings
   def set_rules
-    self.set_setting(:rules, @rules) unless @rules.blank?
+    set_setting(:rules, @rules) unless @rules.blank?
   end
 
   # active scaffold uses this method to determine

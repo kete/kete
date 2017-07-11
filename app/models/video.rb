@@ -34,8 +34,8 @@ class Video < ActiveRecord::Base
   include ItemPrivacy::All
 
   # Do not version self.file_private
-  self.non_versioned_columns << 'file_private'
-  self.non_versioned_columns << 'private_version_serialized'
+  non_versioned_columns << 'file_private'
+  non_versioned_columns << 'private_version_serialized'
 
   def self.updated_since(date)
     # Video.where( <Video or its join tables is newer than date>  )

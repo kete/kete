@@ -37,8 +37,8 @@ class StillImage < ActiveRecord::Base
   include ItemPrivacy::All
 
   # Do not version self.file_private
-  self.non_versioned_columns << 'file_private'
-  self.non_versioned_columns << 'private_version_serialized'
+  non_versioned_columns << 'file_private'
+  non_versioned_columns << 'private_version_serialized'
 
   def self.updated_since(date)
     # StillImage.where( <StillImage or its join tables is newer than date>  )
@@ -78,7 +78,7 @@ class StillImage < ActiveRecord::Base
   after_update :update_image_file_locations
 
   def created_by?(user)
-    (self.creator || self.contributors.first) == user
+    (creator || contributors.first) == user
   end
 
   def is_portrait?
@@ -172,10 +172,10 @@ class StillImage < ActiveRecord::Base
   private
 
   def update_image_file_locations
-    unless self.original_file.nil?
-      self.original_file.update_attributes({ file_private: self.file_private })
-      self.image_files.reject { |i| i.id == self.original_file.id }.each do |thumb|
-        thumb.update_attributes({ file_private: self.private? })
+    unless original_file.nil?
+      original_file.update_attributes({ file_private: file_private })
+      image_files.reject { |i| i.id == original_file.id }.each do |thumb|
+        thumb.update_attributes({ file_private: private? })
       end
     end
   end

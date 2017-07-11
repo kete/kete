@@ -129,12 +129,12 @@ module OaiZoom
 
       # Redo the save for the private version
       if !skip_private &&
-          (respond_to?(:private) && has_private_version? && !self.private?) ||
+          (respond_to?(:private) && has_private_version? && !private?) ||
           (is_a?(Comment) && commentable_private)
 
         # have to reset self.oai_record, so that private version gets loaded in
         @oai_record = nil
-        self.private_version do
+        private_version do
           unless already_at_blank_version?
             if write_files
               # write oai_record to appropriate directory for later indexing by zebraidx
@@ -145,7 +145,7 @@ module OaiZoom
           end
         end
 
-        raise 'Could not return to public version' if private? && !self.is_a?(Comment)
+        raise 'Could not return to public version' if private? && !is_a?(Comment)
 
       end
 

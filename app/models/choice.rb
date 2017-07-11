@@ -4,7 +4,7 @@ class Choice < ActiveRecord::Base
 
   # find a choice based on params[:limit_to_choice]
   def self.from_id_or_value(id_or_label)
-    self.find_by_value(id_or_label) || self.find_by_id(id_or_label)
+    find_by_value(id_or_label) || find_by_id(id_or_label)
   end
 
   # Ensure any newly created choices become a child of root.
@@ -127,7 +127,7 @@ class Choice < ActiveRecord::Base
   # if both blank, fails validation, of course
   def construct_value_if_not_set
     self.label = value if label.blank?
-    self.value = self.label if value.blank?
+    self.value = label if value.blank?
   end
 
   def reassign_children_to_grandparent

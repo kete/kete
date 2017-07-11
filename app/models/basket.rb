@@ -18,7 +18,7 @@ class Basket < ActiveRecord::Base
   end
 
   def to_param
-    self.urlified_name
+    urlified_name
   end
 
   # we use these for who can see what
@@ -204,7 +204,7 @@ class Basket < ActiveRecord::Base
     elsif index_topic == 'destroy'
       self.index_topic = nil
     end
-    self.save
+    save
   end
 
   # stuff related to taggings in a basket
@@ -217,8 +217,8 @@ class Basket < ActiveRecord::Base
   # special case is site basket
   # want to grab all tags from across all baskets
   def tag_counts_array(options = {})
-    tag_limit = !options[:limit].nil? ? options[:limit] : self.index_page_number_of_tags
-    tag_order = !options[:order].nil? ? options[:order] : self.index_page_order_tags_by
+    tag_limit = !options[:limit].nil? ? options[:limit] : index_page_number_of_tags
+    tag_order = !options[:order].nil? ? options[:order] : index_page_order_tags_by
     tag_direction = ['asc', 'desc'].include?(options[:direction]) ? options[:direction] : (tag_order == 'alphabetical' ? 'asc' : 'desc')
     private_tags = options[:allow_private] || false
 
@@ -241,7 +241,7 @@ class Basket < ActiveRecord::Base
 
     conditions = "taggings.context = 'public_tags'"
     conditions += "taggings.context IN ('public_tags', 'private_tags')" if private_tags
-    conditions += " AND taggings.basket_id = #{self.id}" unless self == site_basket
+    conditions += " AND taggings.basket_id = #{id}" unless self == site_basket
 
     tags = ActsAsTaggableOn::Tag.select('tags.id, tags.name, count(taggings.id) AS taggings_count')
       .where(conditions)
@@ -264,7 +264,7 @@ class Basket < ActiveRecord::Base
   def tag_publicity_conditions(private_tags = false)
     conditions = "taggings.context = 'public_tags'"
     conditions = "taggings.context IN ('public_tags', 'private_tags')" if private_tags
-    conditions += " AND taggings.basket_id = #{self.id}" unless self == site_basket
+    conditions += " AND taggings.basket_id = #{id}" unless self == site_basket
     conditions
   end
 
@@ -277,7 +277,7 @@ class Basket < ActiveRecord::Base
       conditions: "taggings.context = 'public_tags'"
     }
     tag_options[:conditions] = "taggings.context IN ('public_tags', 'private_tags')" if private_tags
-    tag_options[:conditions] += " AND taggings.basket_id = #{self.id}" unless self == site_basket
+    tag_options[:conditions] += " AND taggings.basket_id = #{id}" unless self == site_basket
 
     ActsAsTaggableOn::Tag.count(tag_options)
   end
@@ -285,38 +285,38 @@ class Basket < ActiveRecord::Base
   # attribute options methods
   # TODO clean this up using define_method (meta programming magic)
   def show_flagging_as_options(site_basket, default=nil)
-    current_show_flagging_value = default || self.setting(:show_flagging) || site_basket.setting(:show_flagging) || 'all users'
-    select_options = self.array_to_options_list_with_defaults(Basket.user_level_options,current_show_flagging_value)
+    current_show_flagging_value = default || setting(:show_flagging) || site_basket.setting(:show_flagging) || 'all users'
+    select_options = array_to_options_list_with_defaults(Basket.user_level_options,current_show_flagging_value)
   end
 
   def show_add_links_as_options(site_basket, default=nil)
-    current_show_add_links_value = default || self.setting(:show_add_links) || site_basket.setting(:show_add_links) || 'all users'
-    select_options = self.array_to_options_list_with_defaults(Basket.user_level_options,current_show_add_links_value)
+    current_show_add_links_value = default || setting(:show_add_links) || site_basket.setting(:show_add_links) || 'all users'
+    select_options = array_to_options_list_with_defaults(Basket.user_level_options,current_show_add_links_value)
   end
 
   def show_action_menu_as_options(site_basket, default=nil)
-    current_show_actions_value = default || self.setting(:show_action_menu) || site_basket.setting(:show_action_menu) || 'all users'
-    select_options = self.array_to_options_list_with_defaults(Basket.user_level_options,current_show_actions_value)
+    current_show_actions_value = default || setting(:show_action_menu) || site_basket.setting(:show_action_menu) || 'all users'
+    select_options = array_to_options_list_with_defaults(Basket.user_level_options,current_show_actions_value)
   end
 
   def show_discussion_as_options(site_basket, default=nil)
-    current_show_discussion_value = default || self.setting(:show_discussion) || site_basket.setting(:show_discussion) || 'all users'
-    select_options = self.array_to_options_list_with_defaults(Basket.user_level_options,current_show_discussion_value)
+    current_show_discussion_value = default || setting(:show_discussion) || site_basket.setting(:show_discussion) || 'all users'
+    select_options = array_to_options_list_with_defaults(Basket.user_level_options,current_show_discussion_value)
   end
 
   def side_menu_ordering_of_topics_as_options(site_basket, default=nil)
-    current_value = default || self.setting(:side_menu_ordering_of_topics) || site_basket.setting(:side_menu_ordering_of_topics) || 'updated_at'
+    current_value = default || setting(:side_menu_ordering_of_topics) || site_basket.setting(:side_menu_ordering_of_topics) || 'updated_at'
     options_array = [['Latest', 'latest'],['Alphabetical', 'alphabetical']]
-    select_options = self.array_to_options_list_with_defaults(options_array,current_value)
+    select_options = array_to_options_list_with_defaults(options_array,current_value)
   end
 
   def private_file_visibility_as_options(site_basket, default=nil)
-    current_value = default || self.setting(:private_file_visibility) || site_basket.setting(:private_file_visibility) || 'at least member'
-    select_options = self.array_to_options_list_with_defaults(Basket.member_level_options,current_value)
+    current_value = default || setting(:private_file_visibility) || site_basket.setting(:private_file_visibility) || 'at least member'
+    select_options = array_to_options_list_with_defaults(Basket.member_level_options,current_value)
   end
 
   def private_file_visibilty_selected_or_default(value, site_basket)
-    current_value = self.setting(:private_file_visibility) || site_basket.setting(:private_file_visibility) || 'at least member'
+    current_value = setting(:private_file_visibility) || site_basket.setting(:private_file_visibility) || 'at least member'
     value == current_value
   end
 
@@ -329,43 +329,43 @@ class Basket < ActiveRecord::Base
   # Privacy related methods, taking into account inheritance from Site Basket
 
   def show_privacy_controls_with_inheritance?
-    (self.show_privacy_controls == true || (self.show_privacy_controls.nil? && self.site_basket.show_privacy_controls == true))
+    (show_privacy_controls == true || (show_privacy_controls.nil? && site_basket.show_privacy_controls == true))
   end
 
   def private_default_with_inheritance?
-    (self.private_default == true || (self.private_default.nil? && self.site_basket.private_default == true))
+    (private_default == true || (private_default.nil? && site_basket.private_default == true))
   end
 
   def file_private_default_with_inheritance?
-    (self.file_private_default == true || (self.file_private_default.nil? && self.site_basket.file_private_default == true))
+    (file_private_default == true || (file_private_default.nil? && site_basket.file_private_default == true))
   end
 
   def private_file_visibility_with_inheritance
-    self.setting(:private_file_visibility) || self.site_basket.setting(:private_file_visibility) || 'at least member'
+    setting(:private_file_visibility) || site_basket.setting(:private_file_visibility) || 'at least member'
   end
 
   def allow_non_member_comments_with_inheritance?
-    (self.allow_non_member_comments == true || (self.allow_non_member_comments.nil? && self.site_basket.allow_non_member_comments == true))
+    (allow_non_member_comments == true || (allow_non_member_comments.nil? && site_basket.allow_non_member_comments == true))
   end
 
   def additional_footer_content_with_inheritance
-    (!setting(:additional_footer_content).nil? && !self.setting(:additional_footer_content).to_s.squish.blank? ? self.setting(:additional_footer_content) : self.site_basket.setting(:additional_footer_content))
+    (!setting(:additional_footer_content).nil? && !setting(:additional_footer_content).to_s.squish.blank? ? setting(:additional_footer_content) : site_basket.setting(:additional_footer_content))
   end
 
   def replace_existing_footer_with_inheritance?
-    (self.setting(:replace_existing_footer) == true || (self.setting(:replace_existing_footer).nil? && self.site_basket.setting(:replace_existing_footer) == true))
+    (setting(:replace_existing_footer) == true || (setting(:replace_existing_footer).nil? && site_basket.setting(:replace_existing_footer) == true))
   end
 
   def memberlist_policy_or_default(default=nil)
     current_value = default || memberlist_policy_with_inheritance
-    self.array_to_options_list_with_defaults(Basket.all_level_options, current_value, false)
+    array_to_options_list_with_defaults(Basket.all_level_options, current_value, false)
   end
 
   def memberlist_policy_with_inheritance
-    if !self.setting(:memberlist_policy).blank?
-      self.setting(:memberlist_policy)
-    elsif !self.site_basket.setting(:memberlist_policy).blank?
-      self.site_basket.setting(:memberlist_policy)
+    if !setting(:memberlist_policy).blank?
+      setting(:memberlist_policy)
+    elsif !site_basket.setting(:memberlist_policy).blank?
+      site_basket.setting(:memberlist_policy)
     else
       'at least admin'
     end
@@ -373,27 +373,27 @@ class Basket < ActiveRecord::Base
 
   def import_archive_set_policy_or_default(default=nil)
     current_value = default || import_archive_set_policy_with_inheritance
-    self.array_to_options_list_with_defaults(Basket.member_level_options, current_value, false)
+    array_to_options_list_with_defaults(Basket.member_level_options, current_value, false)
   end
 
   def import_archive_set_policy_with_inheritance
-    if !self.setting(:import_archive_set_policy).blank?
-      self.setting(:import_archive_set_policy)
-    elsif !self.site_basket.setting(:import_archive_set_policy).blank?
-      self.site_basket.setting(:import_archive_set_policy)
+    if !setting(:import_archive_set_policy).blank?
+      setting(:import_archive_set_policy)
+    elsif !site_basket.setting(:import_archive_set_policy).blank?
+      site_basket.setting(:import_archive_set_policy)
     else
       'at least admin'
     end
   end
 
   def browse_type_with_inheritance
-    case self.setting(:browse_view_as)
+    case setting(:browse_view_as)
     when 'inherit'
-      self.site_basket.browse_type_with_inheritance
+      site_basket.browse_type_with_inheritance
     when '' # if blank, return nil
       nil
     else
-      self.setting(:browse_view_as)
+      setting(:browse_view_as)
     end
   end
 
@@ -493,8 +493,8 @@ class Basket < ActiveRecord::Base
   # if no admins for basket, go with basket 1 (site) admins
   # if no admins for site, go with any site_admins
   def moderators_or_next_in_line
-    moderators = self.has_moderators
-    moderators = self.has_admins if moderators.size == 0
+    moderators = has_moderators
+    moderators = has_admins if moderators.size == 0
     moderators = Basket.site_basket.has_admins if moderators.size == 0
     moderators << Basket.site_basket.has_site_admins if moderators.size == 0 || SystemSetting.notify_site_admins_of_flaggings
 
@@ -507,7 +507,7 @@ class Basket < ActiveRecord::Base
   %w{ disputed reviewed rejected }.each do |type|
     define_method("all_#{type}_revisions") do
       revisions = ZOOM_CLASSES.collect do |zoom_class|
-        self.send(zoom_class.tableize.to_sym).send("find_#{type}", self.id)
+        send(zoom_class.tableize.to_sym).send("find_#{type}", id)
       end.flatten.compact
       revisions.sort_by { |item| item.flagged_at }
     end
@@ -536,7 +536,7 @@ class Basket < ActiveRecord::Base
       value = option[1]
       select_options += "<option value=\"#{value}\""
       if (default && default == value) ||
-         (!self.setting(:theme_font_family).blank? && self.setting(:theme_font_family) == value)
+         (!setting(:theme_font_family).blank? && setting(:theme_font_family) == value)
         select_options += ' selected="selected"'
       end
       select_options += '>' + label + '</option>'
@@ -547,44 +547,44 @@ class Basket < ActiveRecord::Base
   # find if we should let users access the basket contact form
   # get the baskets setting or if nil, get it from the site basket
   def allows_contact_with_inheritance?
-    (self.setting(:allow_basket_admin_contact) == true || (self.setting(:allow_basket_admin_contact).class == NilClass && site_basket.setting(:allow_basket_admin_contact) == true))
+    (setting(:allow_basket_admin_contact) == true || (setting(:allow_basket_admin_contact).class == NilClass && site_basket.setting(:allow_basket_admin_contact) == true))
   end
 
   # return a boolean for whether basket join requests (with inheritance) are enabled
   # open / request = true
   # closed = false
   def allows_join_requests_with_inheritance?
-    ['open', 'request'].include?(self.join_policy_with_inheritance)
+    ['open', 'request'].include?(join_policy_with_inheritance)
   end
 
   # get the current basket join policy. If nil, use the site baskets
   def join_policy_with_inheritance
-    (!self.setting(:basket_join_policy).blank?) ? self.setting(:basket_join_policy) : self.site_basket.setting(:basket_join_policy)
+    (!setting(:basket_join_policy).blank?) ? setting(:basket_join_policy) : site_basket.setting(:basket_join_policy)
   end
 
   # get a list of administrators (including site administrators
   # if the current basket is the site basket)
   # uses auto-generated methods from the authorization plugin
   def administrators
-    if self == self.site_basket
-      self.has_site_admins_or_admins
+    if self == site_basket
+      has_site_admins_or_admins
     else
-      self.has_admins
+      has_admins
     end
   end
 
   # we need at least one site admin at all times
   def more_than_one_site_admin?
-    self.has_site_admins.size > 1
+    has_site_admins.size > 1
   end
 
   # we need at least one admin in a basket at all times
   def more_than_one_basket_admin?
-    self.has_admins.size > 1
+    has_admins.size > 1
   end
 
   def delete_roles_for(user)
-    self.accepted_roles.each do |role|
+    accepted_roles.each do |role|
       user.has_no_role(role.name, self)
     end
   end
@@ -625,7 +625,7 @@ class Basket < ActiveRecord::Base
       versions = Module.class_eval(zoom_class + '::Version').find_all_by_basket_id(self)
       versions.each do |version|
         new_version_comment = version.version_comment.nil? ? String.new : version.version_comment + '. '
-        new_version_comment += I18n.t('basket_model.now_in_site_basket', basket_name: self.name)
+        new_version_comment += I18n.t('basket_model.now_in_site_basket', basket_name: name)
 
         version.update_attributes(basket_id: 1, version_comment: new_version_comment )
       end
@@ -637,7 +637,7 @@ class Basket < ActiveRecord::Base
   # otherwise authorizable tries to get the basket which no longer exists
   # when called in user.basket_permissions
   def remove_users_and_roles
-    self.accepted_roles.each do |role|
+    accepted_roles.each do |role|
       # authentication plugin's accepts_no_role was problematic
       # rolling our own
       role.users.each { |user| user.drop(role) }

@@ -37,11 +37,11 @@ module HasContributors
     # method definitions
     def add_as_contributor(user, version = nil)
       user.version = version.nil? ? self.version : version
-      self.contributors << user
+      contributors << user
     end
 
     def creator=(user)
-      self.creators << user
+      creators << user
       if user.present? && user.anonymous?
         contribution = contributions.find_by_version(1)
         contribution.email_for_anonymous = user.email
@@ -66,9 +66,9 @@ module HasContributors
     def submitter_of(version)
       submitter = nil
       if version == 1
-        submitter = self.creator
+        submitter = creator
       else
-        contribution = self.contributions.find_by_version(version)
+        contribution = contributions.find_by_version(version)
         begin
           submitter = contribution.user
         rescue
@@ -76,7 +76,7 @@ module HasContributors
           message = I18n.t('has_contributors_lib.submitter_of.no_contributor',
                            version: version.to_s,
                            item_class: self.class.name,
-                           item_id: self.id) + "\n"
+                           item_id: id) + "\n"
           message += I18n.t('has_contributors_lib.submitter_of.data_corruption')
           raise message
         end

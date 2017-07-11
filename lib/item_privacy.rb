@@ -67,7 +67,7 @@ module ItemPrivacy
       # "No public version available", the only private versions exist)
       def has_public_version?
         # EOIN: it seems this code has a dependency on the flagging code
-        !self.at_placeholder_public_version?
+        !at_placeholder_public_version?
       end
 
       # EOIN: if the model has 'private' and 'private_version_serialized'
@@ -241,7 +241,7 @@ module ItemPrivacy
 
             # Update without callbacks
             # EOIN: this also saves the record in the DB
-            self.update_attributes!(update_hash)
+            update_attributes!(update_hash)
 
             # EOIN: this seems to assume that the first user in the DB will be the admin. This seems dangerous ???
             add_as_contributor(User.find(:first))
@@ -360,8 +360,8 @@ module ItemPrivacy
       # File privacy can only go private => public as a public file cannot
       # be made private at a later time due to the need for previous
       # versions have file access.
-      unless !self.force_privacy && self.file_private === false
-        @old_filename ||= full_filename unless !self.respond_to?(:filename) || filename.nil?
+      unless !force_privacy && file_private === false
+        @old_filename ||= full_filename unless !respond_to?(:filename) || filename.nil?
         super(*args)
       end
     end

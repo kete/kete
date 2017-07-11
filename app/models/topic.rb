@@ -190,7 +190,7 @@ class Topic < ActiveRecord::Base
   # Private Item mixin
   include ItemPrivacy::ActsAsVersionedOverload
   include ItemPrivacy::TaggingOverload
-  self.non_versioned_columns << 'private_version_serialized'
+  non_versioned_columns << 'private_version_serialized'
 
 
   after_save :store_correct_versions_after_save
@@ -204,8 +204,8 @@ class Topic < ActiveRecord::Base
   after_save :update_taggings_basket_id
 
   def update_taggings_basket_id
-    self.taggings.each do |tagging|
-      tagging.update_attribute(:basket_id, self.basket_id)
+    taggings.each do |tagging|
+      tagging.update_attribute(:basket_id, basket_id)
     end
   end
 

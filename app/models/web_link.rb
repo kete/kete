@@ -17,8 +17,8 @@ class WebLink < ActiveRecord::Base
   include ConfigureAsKeteContentItem
 
   # Tweak the versioning that was configured in the line above
-  self.non_versioned_columns << 'file_private'
-  self.non_versioned_columns << 'private_version_serialized'
+  non_versioned_columns << 'file_private'
+  non_versioned_columns << 'private_version_serialized'
 
   def self.updated_since(date)
     # WebLink.where( <WebLink or its join tables is newer than date>  )

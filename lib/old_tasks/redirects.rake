@@ -62,7 +62,7 @@ class ExcelPreProcessor < Nokogiri::XML::SAX::Document
     when :Row
       self.within_row = true
       self.current_row += 1
-      self.records << Hash.new
+      records << Hash.new
     when :Cell
       # ss:Index helps compact filesize but causes issues with our column header
       # allocation so make use of it to prevent any issues from popping up
@@ -75,8 +75,8 @@ class ExcelPreProcessor < Nokogiri::XML::SAX::Document
       attributes_and_values = attributes.flatten
       if self.current_row > 1 && attributes_and_values.include?('ss:HRef')
         href = attributes_and_values[attributes_and_values.index('ss:HRef') + 1]
-        element_name = self.column_headers[self.current_cell - 1]
-        self.records.last[element_name] = href.strip
+        element_name = column_headers[self.current_cell - 1]
+        records.last[element_name] = href.strip
       end
     when :Data, :"ss:Data"
       self.within_data = true
@@ -99,7 +99,7 @@ class ExcelPreProcessor < Nokogiri::XML::SAX::Document
     when :Row
       self.within_row = false
       self.current_cell = 0
-      self.records.pop if self.records.last.empty?
+      records.pop if records.last.empty?
     when :Cell, :"ss:Cell"
       self.within_cell = false
     when :Data, :"ss:Data"
@@ -113,10 +113,10 @@ class ExcelPreProcessor < Nokogiri::XML::SAX::Document
   # unless we are on the first row
   # in which case we set column headers
   def process_value(value)
-    return unless self.within_table && self.within_data
+    return unless within_table && within_data
 
     if self.current_row == 1
-      self.column_headers << (value.strip.empty? ? '__No_Name__' : value.strip)
+      column_headers << (value.strip.empty? ? '__No_Name__' : value.strip)
     # else
 #       return if value.strip.empty?
 #       element_name = self.column_headers[self.current_cell - 1]
