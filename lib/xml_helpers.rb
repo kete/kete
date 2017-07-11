@@ -27,9 +27,9 @@ module XmlHelpers
       if (item.respond_to?(:public_filename) && !item.public_filename.blank?) ||
           (item.respond_to?(:original_file) && !item.original_file.blank?)
         protocol = protocol || "http"
-        args = { :type => item.content_type,
-          :length => item.size.to_s,
-          :url => file_url_from_bits_for(item, host, protocol) }
+        args = { type: item.content_type,
+          length: item.size.to_s,
+          url: file_url_from_bits_for(item, host, protocol) }
 
         if item.class.name == 'ImageFile'
           args[:width] = item.width
@@ -60,13 +60,13 @@ module XmlHelpers
       host = !passed_request.nil? ? passed_request[:host] : request.host
 
       thumb = item.thumbnail_file
-      xml.thumbnail(:height  => thumb.height, :width => thumb.width, :size => thumb.size, :src => protocol + '://' + host + thumb.public_filename)
+      xml.thumbnail(height: thumb.height, width: thumb.width, size: thumb.size, src: protocol + '://' + host + thumb.public_filename)
 
       # http://cooliris.com/'s cooliris tool likes larger thumbnails for things to look good
       # include the medium version here, so that we may use it in Media RSS media:thumbnail tag
       # instead of the smaller thumbnail
       medium = item.medium_file
-      xml.medium(:height  => medium.height, :width => medium.width, :size => medium.size, :src => protocol + '://' + host + medium.public_filename)
+      xml.medium(height: medium.height, width: medium.width, size: medium.size, src: protocol + '://' + host + medium.public_filename)
     end
 
     # output xml intended to give us all we need to know
@@ -97,17 +97,17 @@ module XmlHelpers
         # which we can tell by seeing if the version is private
         # (in which case we are building the private search index)
         return if item.file_private? && !item.private?
-        xml.media_content(:size => item.size,
-                          :content_type => item.content_type,
-                          :src => protocol + '://' + host + item.public_filename)
+        xml.media_content(size: item.size,
+                          content_type: item.content_type,
+                          src: protocol + '://' + host + item.public_filename)
       else
         # if there is any non-placeholder public version it is ok to return large version
         # for still images
         large = item.large_file
-        xml.media_content(:height  => large.height, :width => large.width,
-                          :size => large.size,
-                          :content_type => large.content_type,
-                          :src => protocol + '://' + host + large.public_filename)
+        xml.media_content(height: large.height, width: large.width,
+                          size: large.size,
+                          content_type: large.content_type,
+                          src: protocol + '://' + host + large.public_filename)
       end
     end
 
@@ -150,13 +150,13 @@ module XmlHelpers
             # and generating them also slows down the create/update actions for items
             # limiting here, since we are likely to only want this many
             # if the item is not private, don't allow private related still images
-            options = { :limit => SystemSetting.number_of_related_things_to_display_per_type,
-              :conditions => PUBLIC_CONDITIONS}
+            options = { limit: SystemSetting.number_of_related_things_to_display_per_type,
+              conditions: PUBLIC_CONDITIONS}
 
             options.delete(:conditions) if item.private
 
             item.still_images.find(:all, options).each do |image|
-              xml.still_image(:title => image.title, :id => image.id, :relation_order => count ) do
+              xml.still_image(title: image.title, id: image.id, relation_order: count ) do
                 xml_for_thumbnail_image_file(xml, image, request)
               end
               count += 1

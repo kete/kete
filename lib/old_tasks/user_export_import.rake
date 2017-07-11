@@ -7,7 +7,7 @@
 namespace :kete do
   namespace :export do
     desc 'Export the Users table to a Yaml formatted file'
-    task :users => :environment do
+    task users: :environment do
       yaml = ""
       User.all.each do |user|
         next if user.login == 'admin'
@@ -37,11 +37,11 @@ namespace :kete do
 
   namespace :import do
     desc 'Import the Users table from a Yaml formatted file'
-    task :users => :environment do
+    task users: :environment do
       users = read_from_file('users.yml')
       users.each do |user|
         user_data = user.last['fields'].merge({"agree_to_terms" => '1', "security_code" => "bleh"})
-        if User.count(:conditions => ["login = ?", user_data['login']]) > 0
+        if User.count(conditions: ["login = ?", user_data['login']]) > 0
           p "#{user_data['login']} already exists"
           next
         else

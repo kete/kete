@@ -466,7 +466,7 @@ require 'xmlsimple'
             parent = Choice.find(1)
 
             begin
-              choice = Choice.create!(:value => v, :label => l)
+              choice = Choice.create!(value: v, label: l)
               choice.move_to_child_of(parent)
               choice.save!
               field.choices << choice
@@ -668,12 +668,12 @@ require 'xmlsimple'
                   unless value.to_s.blank? || (value.is_a?(Hash) && value.values.to_s.blank?)
                     xml.safe_send(key) do
                       extended_content_field_xml_tag(
-                        :xml => xml,
-                        :field => field_name,
-                        :value => value,
-                        :xml_element_name => field_to_xml.extended_field_xml_element_name,
-                        :xsi_type => field_to_xml.extended_field_xsi_type,
-                        :extended_field => field_to_xml.extended_field
+                        xml: xml,
+                        field: field_name,
+                        value: value,
+                        xml_element_name: field_to_xml.extended_field_xml_element_name,
+                        xsi_type: field_to_xml.extended_field_xsi_type,
+                        extended_field: field_to_xml.extended_field
                       )
                     end
                   end
@@ -686,12 +686,12 @@ require 'xmlsimple'
                 key = 1.to_s
                 xml.safe_send(key) do
                     extended_content_field_xml_tag(
-                      :xml => xml,
-                      :field => field_name,
-                      :value => '',
-                      :xml_element_name => field_to_xml.extended_field_xml_element_name,
-                      :xsi_type => field_to_xml.extended_field_xsi_type,
-                      :extended_field => field_to_xml.extended_field
+                      xml: xml,
+                      field: field_name,
+                      value: '',
+                      xml_element_name: field_to_xml.extended_field_xml_element_name,
+                      xsi_type: field_to_xml.extended_field_xsi_type,
+                      extended_field: field_to_xml.extended_field
                     )
                 end
               end
@@ -706,12 +706,12 @@ require 'xmlsimple'
             next if final_value.is_a?(Hash) && final_value['circa'] && final_value['value'].blank?
 
             extended_content_field_xml_tag(
-              :xml => xml,
-              :field => field_name,
-              :value => final_value,
-              :xml_element_name => field_to_xml.extended_field_xml_element_name,
-              :xsi_type => field_to_xml.extended_field_xsi_type,
-              :extended_field => field_to_xml.extended_field
+              xml: xml,
+              field: field_name,
+              value: final_value,
+              xml_element_name: field_to_xml.extended_field_xml_element_name,
+              xsi_type: field_to_xml.extended_field_xsi_type,
+              extended_field: field_to_xml.extended_field
             )
           end
 
@@ -818,7 +818,7 @@ require 'xmlsimple'
          extended_field_mapping.extended_field.ftype != "checkbox"
 
         errors.add_to_base(I18n.t('extended_content_lib.validate_extended_content_single_value.cannot_be_blank',
-                                  :label => extended_field_mapping.extended_field.label)) unless \
+                                  label: extended_field_mapping.extended_field.label)) unless \
           extended_field_mapping.extended_field.ftype != 'year' && \
           xml_attributes_without_position[extended_field_mapping.extended_field.label_for_params].nil? && \
           allow_nil_values_for_extended_content
@@ -845,7 +845,7 @@ require 'xmlsimple'
         extended_field_mapping.extended_field.ftype != "checkbox"
 
         errors.add_to_base(I18n.t('extended_content_lib.validate_extended_content_multiple_values.need_at_least_one',
-                                  :label => extended_field_mapping.extended_field.label)) unless \
+                                  label: extended_field_mapping.extended_field.label)) unless \
           xml_attributes_without_position[extended_field_mapping.extended_field.label_for_params + "_multiple"].nil? && \
           allow_nil_values_for_extended_content
 
@@ -875,7 +875,7 @@ require 'xmlsimple'
 
       unless value =~ /^((Y|y)es|(N|n)o)$/
         I18n.t('extended_content_lib.validate_extended_checkbox_field_content.must_be_valid',
-               :label => extended_field_mapping.extended_field_label)
+               label: extended_field_mapping.extended_field_label)
       end
     end
 
@@ -893,7 +893,7 @@ require 'xmlsimple'
 
       unless value =~ /^[0-9]{4}\-[0-9]{2}\-[0-9]{2}$/
         I18n.t('extended_content_lib.validate_extended_date_field_content.must_be_valid',
-               :label => extended_field_mapping.extended_field_label)
+               label: extended_field_mapping.extended_field_label)
       end
     end
 
@@ -903,14 +903,14 @@ require 'xmlsimple'
       return nil if values.blank?
       # the values passed in should form an array
       return I18n.t('extended_content_lib.validate_extended_year_field_content.not_a_hash',
-                    :label => extended_field_mapping.extended_field_label,
-                    :class => values.class.name, :value => values.inspect) unless values.is_a?(Hash)
+                    label: extended_field_mapping.extended_field_label,
+                    class: values.class.name, value: values.inspect) unless values.is_a?(Hash)
       # allow the value to be blank
       return nil if values['value'].blank?
       # verify that we have a proper formatted value (YYYY)
       unless values['value'] =~ /^[0-9]{4}$/
         I18n.t('extended_content_lib.validate_extended_year_field_content.must_be_valid',
-               :label => extended_field_mapping.extended_field_label)
+               label: extended_field_mapping.extended_field_label)
       end
     end
 
@@ -948,7 +948,7 @@ require 'xmlsimple'
 
       if !values_array.all? { |v| valid_choice_values.member?(v) }
         I18n.t('extended_content_lib.validate_extended_choice_field_content.must_be_valid',
-               :label => extended_field_mapping.extended_field_label)
+               label: extended_field_mapping.extended_field_label)
       end
     end
 
@@ -969,19 +969,19 @@ require 'xmlsimple'
       end
 
       # this will tell us whether there is a matching topic
-      topic = Topic.find_by_id(value.split('/').last.to_i, :select => 'topic_type_id')
+      topic = Topic.find_by_id(value.split('/').last.to_i, select: 'topic_type_id')
 
       # if this is nil, we were unable to find a matching topic
       return I18n.t('extended_content_lib.validate_extended_topic_type_field_content.no_such_topic',
-                    :label => extended_field_mapping.extended_field_label) unless topic
+                    label: extended_field_mapping.extended_field_label) unless topic
 
       parent_topic_type = TopicType.find(extended_field_mapping.extended_field.topic_type.to_i)
       valid_topic_type_ids = parent_topic_type.full_set.collect { |topic_type| topic_type.id }
 
       unless valid_topic_type_ids.include?(topic.topic_type_id)
         I18n.t('extended_content_lib.validate_extended_topic_type_field_content.must_be_valid',
-               :label => extended_field_mapping.extended_field_label,
-               :topic_type => parent_topic_type.name)
+               label: extended_field_mapping.extended_field_label,
+               topic_type: parent_topic_type.name)
       end
     end
 

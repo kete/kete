@@ -24,33 +24,33 @@ class IndexPageController < ApplicationController
       end
 
       if !@current_basket.index_topic.nil? && @current_basket.index_page_topic_is_entire_page
-        render :action => :topic_as_full_page
+        render action: :topic_as_full_page
       else
         @url_to_full_topic = nil
         @url_to_comments = nil
         if !@topic.nil? # if @topic is not nil do ...
           case @current_basket.index_page_link_to_index_topic_as
           when 'full topic and comments'
-            @url_to_full_topic = url_for( :urlified_name => @topic.basket.urlified_name,
-                                          :action => :show,
-                                          :controller => 'topics',
-                                          :id => @topic )
-            @url_to_comments = url_for(:action => 'show',
-                                       :urlified_name => @topic.basket.urlified_name,
-                                       :controller => 'topics',
-                                       :id => @topic,
-                                       :anchor => 'comments')
+            @url_to_full_topic = url_for( urlified_name: @topic.basket.urlified_name,
+                                          action: :show,
+                                          controller: 'topics',
+                                          id: @topic )
+            @url_to_comments = url_for(action: 'show',
+                                       urlified_name: @topic.basket.urlified_name,
+                                       controller: 'topics',
+                                       id: @topic,
+                                       anchor: 'comments')
           when 'full topic'
-            @url_to_full_topic = url_for( :urlified_name => @topic.basket.urlified_name,
-                                          :action => :show,
-                                          :controller => 'topics',
-                                          :id => @topic )
+            @url_to_full_topic = url_for( urlified_name: @topic.basket.urlified_name,
+                                          action: :show,
+                                          controller: 'topics',
+                                          id: @topic )
           when 'comments'
-            @url_to_comments = url_for(:action => 'show',
-                                       :urlified_name => @topic.basket.urlified_name,
-                                       :controller => 'topics',
-                                       :id => @topic,
-                                       :anchor => 'comments')
+            @url_to_comments = url_for(action: 'show',
+                                       urlified_name: @topic.basket.urlified_name,
+                                       controller: 'topics',
+                                       id: @topic,
+                                       anchor: 'comments')
           end
 
           # prepare blog list of most recent topics
@@ -140,8 +140,8 @@ class IndexPageController < ApplicationController
         # because it changes constantly, and
         # doesnt rely on the homepage topic
         if @current_basket.index_page_number_of_tags && @current_basket.index_page_number_of_tags > 0
-          @tag_counts_array = @current_basket.tag_counts_array(:allow_private => @allow_private)
-          @tag_counts_total = @current_basket.tag_counts_total(:allow_private => @allow_private)
+          @tag_counts_array = @current_basket.tag_counts_array(allow_private: @allow_private)
+          @tag_counts_total = @current_basket.tag_counts_total(allow_private: @allow_private)
         end
 
       end
@@ -166,18 +166,18 @@ class IndexPageController < ApplicationController
     @last_contributor = @topic.contributors.last || @creator
     @comments = @topic.comments
 
-    render :action => :topic_as_full_page, :layout => "simple"
+    render action: :topic_as_full_page, layout: "simple"
   end
 
   def uptime
-    render(:text => "success")
+    render(text: "success")
   end
 
   # run a query to make sure the db is available
   # comments are usually the smallest set of items
   def db_uptime
     comment_count = Comment.count
-    render(:text => "success")
+    render(text: "success")
   end
 
   # let's check to make sure zebra is responding
@@ -187,8 +187,8 @@ class IndexPageController < ApplicationController
   def zebra_uptime
     zoom_dbs = [ZoomDb.find_by_database_name('public')]
     # zoom_dbs <<  ZoomDb.find_by_database_name('private')
-    zoom_dbs.each { |db| Module.class_eval('Topic').process_query(:zoom_db => db, :query => "@attr 1=_ALLRECORDS @attr 2=103 ''")}
-    render(:text => "success")
+    zoom_dbs.each { |db| Module.class_eval('Topic').process_query(zoom_db: db, query: "@attr 1=_ALLRECORDS @attr 2=103 ''")}
+    render(text: "success")
   end
 
   # let's check to make sure backgroundrb is responding
@@ -196,11 +196,11 @@ class IndexPageController < ApplicationController
   include BackgroundrbHelpers
   def bdrb_uptime
     raise "Backgroundrb not running!" unless backgroundrb_started?
-    render(:text => "success")
+    render(text: "success")
   end
 
   def validate_kete_net_link
-    render(:xml => { :url => "/", :datetime => "#{Time.new.utc.xmlschema}" })
+    render(xml: { url: "/", datetime: "#{Time.new.utc.xmlschema}" })
   end
 
   # page that tells search engines where not to go
@@ -208,12 +208,12 @@ class IndexPageController < ApplicationController
   def robots
     @baskets = Basket.all
     @controller_names = ZOOM_CLASSES.collect { |name| zoom_class_controller(name) }
-    render :action => 'robots', :layout => false, :content_type => 'text/plain'
+    render action: 'robots', layout: false, content_type: 'text/plain'
   end
 
   def opensearchdescription
     respond_to do |format|
-      format.xml { render :layout => false }
+      format.xml { render layout: false }
     end
   end
 

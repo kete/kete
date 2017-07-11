@@ -1,7 +1,7 @@
 class AddFilePrivateToImport < ActiveRecord::Migration
   def self.up
     change_table :imports do |t|
-      t.boolean :file_private, :default => false
+      t.boolean :file_private, default: false
     end
   end
 

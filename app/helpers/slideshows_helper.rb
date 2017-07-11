@@ -39,7 +39,7 @@ module SlideshowsHelper
   end
 
   def link_to_stop_slideshow(text = t('slideshows_helper.stop'))
-    link_to text, :controller => "search", :action => 'clear_slideshow', :return_to => request.url
+    link_to text, controller: "search", action: 'clear_slideshow', return_to: request.url
   end
 
   def show_slideshow_controls?(current_url = request.url)

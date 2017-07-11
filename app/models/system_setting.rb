@@ -284,7 +284,7 @@ class SystemSetting
     end
 
     def image_sizes
-      {:small_sq => '50x50!', :small => '50', :medium => '200>', :large => '400>'}
+      {small_sq: '50x50!', small: '50', medium: '200>', large: '400>'}
     end
 
     def audio_content_types

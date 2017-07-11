@@ -17,7 +17,7 @@ namespace :kete do
     end
 
     desc 'Remove /robots.txt (will rebuild next time a bot visits the page)'
-    task :remove_robots_txt => :environment do
+    task remove_robots_txt: :environment do
       path = "#{RAILS_ROOT}/public/robots.txt"
       File.delete(path) if File.exist?(path)
     end
@@ -85,11 +85,11 @@ namespace :kete do
     end
 
     desc 'Resets the database and zebra to their preconfigured state.'
-    task :reset => ['kete:tools:reset:zebra', 'db:bootstrap', 'kete:tools:restart']
+    task reset: ['kete:tools:reset:zebra', 'db:bootstrap', 'kete:tools:restart']
     namespace :reset do
 
       desc 'Stops and clears zebra'
-      task :zebra => :environment do
+      task zebra: :environment do
         Rake::Task["zebra:stop"].invoke
         Rake::Task["zebra:init"].invoke
         ENV['ZEBRA_DB'] = 'private'
@@ -98,7 +98,7 @@ namespace :kete do
     end
 
     desc 'Resize original images based on current SystemSetting.image_sizes and add new ones if needed. Does not remove no longer needed ones (to prevent links breaking). By default image files that match new sizes will be skipped. If you need new versions recreated even if there is an existing file that matches the size, use FORCE_RESIZE=true.'
-    task :resize_images => :environment do
+    task resize_images: :environment do
       @logger = Logger.new(RAILS_ROOT + "/log/resize_images_#{Time.now.strftime('%Y-%m-%d_%H:%M:%S')}.log")
 
       puts "Resizing/created images based on SystemSetting.image_sizes..."
@@ -120,7 +120,7 @@ namespace :kete do
       @logger.info "Looping through parent items"
 
       # loop over every parent image file
-      ImageFile.all(:conditions => ["parent_id IS NULL"]).each do |parent_image_file|
+      ImageFile.all(conditions: ["parent_id IS NULL"]).each do |parent_image_file|
 
         @logger.info "  Fetched parent image #{parent_image_file.id}"
 
@@ -128,7 +128,7 @@ namespace :kete do
         missing_image_size_keys = image_size_keys.dup
 
         # loop over the parent images files children thumbnails
-        ImageFile.all(:conditions => ["parent_id = ?", parent_image_file]).each do |child_image_file|
+        ImageFile.all(conditions: ["parent_id = ?", parent_image_file]).each do |child_image_file|
 
           @logger.info "    Fetched child image #{child_image_file.id}"
 
@@ -163,10 +163,10 @@ namespace :kete do
           # create a new image file based on the parent (details will be updated later)
           image_file = ImageFile.create!(
             parent_image_file.attributes.merge(
-              :id => nil,
-              :parent_id => parent_image_file.id,
-              :thumbnail => size.to_s,
-              :filename => filename
+              id: nil,
+              parent_id: parent_image_file.id,
+              thumbnail: size.to_s,
+              filename: filename
             )
           )
           @logger.info "      Created new image record for #{filename}, id #{image_file.id}"
@@ -250,38 +250,38 @@ namespace :kete do
     namespace :tiny_mce do
 
       desc "Do everything that we need done, like adding data to the db, for an upgrade."
-      task :configure_imageselector => ['kete:tools:tiny_mce:write_default_imageselector_providers_json',
+      task configure_imageselector: ['kete:tools:tiny_mce:write_default_imageselector_providers_json',
                           'kete:tools:tiny_mce:write_default_imageselector_sizes_json']
 
       desc 'Write javascripts/image_selector_config/providers.json file that reflects this site. Will replace file if it exists.'
-      task :write_default_imageselector_providers_json => :environment do
+      task write_default_imageselector_providers_json: :environment do
         return unless Kete.is_configured?
 
         this_site_config = {
-          :title => SystemSetting.pretty_site_name,
-          :domain => SystemSetting.site_name,
-          :oembed_endpoint => SystemSetting.site_url + 'oembed',
-          :upload_startpoint => { :label => 'Upload New Image',
-            :url => SystemSetting.site_url + 'site/images/new?as_service=true&append_show_url=true' },
-          :insertIntoEditor => { :editor => 'TinyMCE' },
-          :sources => [
-                       { :name => 'Latest',
-                         :media_type => 'image',
-                         :media_type_plural => 'images',
-                         :url => SystemSetting.site_url + 'site/all/images/rss.xml',
-                         :searchable_stub => false,
-                         :limit_parameter => '?count=',
-                         :display_limit => 4,
-                         :page_parameter => '&page='
+          title: SystemSetting.pretty_site_name,
+          domain: SystemSetting.site_name,
+          oembed_endpoint: SystemSetting.site_url + 'oembed',
+          upload_startpoint: { label: 'Upload New Image',
+            url: SystemSetting.site_url + 'site/images/new?as_service=true&append_show_url=true' },
+          insertIntoEditor: { editor: 'TinyMCE' },
+          sources: [
+                       { name: 'Latest',
+                         media_type: 'image',
+                         media_type_plural: 'images',
+                         url: SystemSetting.site_url + 'site/all/images/rss.xml',
+                         searchable_stub: false,
+                         limit_parameter: '?count=',
+                         display_limit: 4,
+                         page_parameter: '&page='
                        },
-                       { :name =>'Search',
-                         :media_type => 'image',
-                         :media_type_plural => 'images',
-                         :url => SystemSetting.site_url + 'site/search/images/for/terms/rss.xml?search_terms=',
-                         :searchable_stub => true,
-                         :limit_parameter => '&count=',
-                         :display_limit => 4,
-                         :page_parameter => '&page='
+                       { name: 'Search',
+                         media_type: 'image',
+                         media_type_plural: 'images',
+                         url: SystemSetting.site_url + 'site/search/images/for/terms/rss.xml?search_terms=',
+                         searchable_stub: true,
+                         limit_parameter: '&count=',
+                         display_limit: 4,
+                         page_parameter: '&page='
                        }
                       ]
         }
@@ -295,7 +295,7 @@ namespace :kete do
       end
 
       desc 'Write javascripts/image_selector_config/sizes.json file that reflects this site settings. Will replace file if it exists.'
-      task :write_default_imageselector_sizes_json => :environment do
+      task write_default_imageselector_sizes_json: :environment do
         return unless Kete.is_configured?
 
         this_site_sizes_config = Array.new
@@ -332,12 +332,12 @@ namespace :kete do
     # tools for data massaging of existing items
     namespace :topics do
       desc "Given a passed in CONDITIONS string (conditions in sql form), move topics that fit CONDITIONS to TARGET (as specified by passed in id) and also USER for id that should be attributed with the move actions. E.g. 'rake kete:tools:topics:move_to_basket TARGET=6 CONDITIONS=\"topic_type_id = 4\" USER=1'. You can optionally specify whether zoom records should be built progressively with ZOOM=true (false by default). If you have a large number of topics that match CONDITIONS, you may want to alter this task to handle batches (otherwise you risk memory issues). Other thing to keep in mind is that this doesn't currently leave any sort of redirect behind for a moved item. Best done before you have a public site. Also Comments are not currently dealt with here."
-      task :move_to_basket => :environment do
+      task move_to_basket: :environment do
         to_basket = Basket.find(ENV['TARGET'])
         target_basket_path = to_basket.urlified_name
 
         # gather topics
-        topics = Topic.find(:all, :conditions => ENV['CONDITIONS'])
+        topics = Topic.find(:all, conditions: ENV['CONDITIONS'])
 
         raise "No matching topics." unless topics.size > 0
 
@@ -403,7 +403,7 @@ namespace :kete do
               clause = "#{table_name}.id >= :start_id"
               clause_values = Hash.new
               clause_values[:start_id] = topic.send(kind.to_sym).find(:first,
-                                                                      :order => "#{table_name}.id").id
+                                                                      order: "#{table_name}.id").id
 
               # load up to batch_size results into memory at a time
               batch_count = 1
@@ -415,14 +415,14 @@ namespace :kete do
               while kind_count > kind_count_so_far
                 if kind_count_so_far > 0
                   clause_values[:start_id] = topic.send(kind.to_sym).find(:first,
-                                                                          :conditions => "#{table_name}.id > #{last_id}",
-                                                                          :order => "#{table_name}.id").id
+                                                                          conditions: "#{table_name}.id > #{last_id}",
+                                                                          order: "#{table_name}.id").id
                 end
 
                 related_items = topic.send(kind.to_sym).find(:all,
-                                                             :conditions => [clause, clause_values],
-                                                             :limit => batch_size,
-                                                             :order => "#{table_name}.id")
+                                                             conditions: [clause, clause_values],
+                                                             limit: batch_size,
+                                                             order: "#{table_name}.id")
 
                 @logger.info("number to do in batch: " + related_items.size.to_s)
 
@@ -493,9 +493,9 @@ namespace :kete do
 
     def set_related_items_inset_to(item_class, position)
       # update all items
-      item_class.constantize.update_all(:related_items_position => position)
+      item_class.constantize.update_all(related_items_position: position)
       # update all versions of every item
-      item_class.constantize::Version.update_all(:related_items_position => position)
+      item_class.constantize::Version.update_all(related_items_position: position)
       # then go through and update the private attributes of any items with them
       each_item_with_private_version(item_class) do |private_data|
         # loop through each key/value array (starts as [[key,value],[key,value]])
@@ -512,7 +512,7 @@ namespace :kete do
 
     def each_item_with_private_version(item_class, &block)
       # find all items with private version data present, then loop through each
-      item_class.constantize.all(:conditions => "private_version_serialized IS NOT NULL AND private_version_serialized != ''").each do |item|
+      item_class.constantize.all(conditions: "private_version_serialized IS NOT NULL AND private_version_serialized != ''").each do |item|
         # load the data from YML to an array of key/value arrays (e.g. [[key,value],[key,value]])
         current_data = YAML.load(item.private_version_serialized)
         # yield the block passed in (passing the current data to it) and capture the return data
@@ -520,7 +520,7 @@ namespace :kete do
         # dump the changed data into a YAML representation
         private_data = YAML.dump(changed_data)
         # and update the private version serialized field (update_all means we avoid annoying validations)
-        item_class.constantize.update_all({ :private_version_serialized => private_data }, { :id => item.id })
+        item_class.constantize.update_all({ private_version_serialized: private_data }, { id: item.id })
       end
     end
 
@@ -568,9 +568,9 @@ namespace :kete do
         image_file.send :save_to_storage, image_file.full_filename
         # make sure we update the image file size, width, and height based on the new resized image
         image_file.update_attributes!(
-          :size => File.size(image_file.full_filename),
-          :width => img.columns,
-          :height => img.rows
+          size: File.size(image_file.full_filename),
+          width: img.columns,
+          height: img.rows
         )
         @logger.info "      Child image record updated"
       end

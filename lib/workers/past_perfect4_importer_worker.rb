@@ -81,7 +81,7 @@ class PastPerfect4ImporterWorker < BackgrounDRb::MetaWorker
 
       @import_accessions_xml_root = @import_accessions_xml.root
 
-      @import.update_attributes(:status => 'in progress')
+      @import.update_attributes(status: 'in progress')
 
       # we work from the photos
       # and grab information from the accessions file
@@ -163,7 +163,7 @@ class PastPerfect4ImporterWorker < BackgrounDRb::MetaWorker
           related_topic = @last_related_topic
         else
           related_topic = Topic.find(:first,
-                                     :conditions => "extended_content like \'%<user_reference xml_element_name=\"dc:identifier\">#{related_topic_pp4_objectid}</user_reference>%\' AND topic_type_id = #{@related_topic_type.id}")
+                                     conditions: "extended_content like \'%<user_reference xml_element_name=\"dc:identifier\">#{related_topic_pp4_objectid}</user_reference>%\' AND topic_type_id = #{@related_topic_type.id}")
 
         end
 
@@ -201,7 +201,7 @@ class PastPerfect4ImporterWorker < BackgrounDRb::MetaWorker
               else
                 logger.info("looking for cleaned up accession: looking for existing topic")
                 related_topic = Topic.find(:first,
-                                           :conditions => "extended_content like \'%<user_reference xml_element_name=\"dc:identifier\">#{cleaned_up_accessno}</user_reference>%\' AND topic_type_id = #{@related_topic_type.id}")
+                                           conditions: "extended_content like \'%<user_reference xml_element_name=\"dc:identifier\">#{cleaned_up_accessno}</user_reference>%\' AND topic_type_id = #{@related_topic_type.id}")
 
               end
 
@@ -216,14 +216,14 @@ class PastPerfect4ImporterWorker < BackgrounDRb::MetaWorker
 
               # create a new topic from related_accession_record
               # prepare user_reference for extended_content
-              accession_topic = { "topic" => { :topic_type_id => @related_topic_type.id,
-                  :title => record_hash["COLLECTION"]} }
+              accession_topic = { "topic" => { topic_type_id: @related_topic_type.id,
+                  title: record_hash["COLLECTION"]} }
 
               descrip = RedCloth.new accession_record_hash['DESCRIP']
               accession_topic["topic"][:description] = descrip.to_html
               accession_topic["topic"][:short_summary] = importer_prepare_short_summary(descrip)
 
-              topic_params = importer_prepare_extended_field(:value => related_topic_pp4_objectid, :field => 'OBJECTID', :zoom_class_for_params => 'topic', :params => accession_topic)
+              topic_params = importer_prepare_extended_field(value: related_topic_pp4_objectid, field: 'OBJECTID', zoom_class_for_params: 'topic', params: accession_topic)
 
               related_topic = importer_create_related_topic(topic_params)
               logger.info("after related topic creation")
@@ -247,8 +247,8 @@ class PastPerfect4ImporterWorker < BackgrounDRb::MetaWorker
       # User Reference may be used by multiple images (all under same parent record)
       # they will have different filenames, but same user reference...
       # so adding filename check as criteria
-      existing_item = StillImage.find(:first, :joins => 'join image_files on still_images.id = image_files.still_image_id',
-                                      :conditions => "filename = \'#{File.basename(path_to_file_to_grab)}\' and extended_content like \'%<user_reference xml_element_name=\"dc:identifier\">#{objectid}</user_reference>%\'")
+      existing_item = StillImage.find(:first, joins: 'join image_files on still_images.id = image_files.still_image_id',
+                                      conditions: "filename = \'#{File.basename(path_to_file_to_grab)}\' and extended_content like \'%<user_reference xml_element_name=\"dc:identifier\">#{objectid}</user_reference>%\'")
 
       new_record = nil
       if existing_item.nil?
@@ -260,7 +260,7 @@ class PastPerfect4ImporterWorker < BackgrounDRb::MetaWorker
           end
         end
 
-        new_record = create_new_item_from_record(record, @zoom_class, {:params => params, :record_hash => record_hash, :description_end_template => description_end_template })
+        new_record = create_new_item_from_record(record, @zoom_class, {params: params, record_hash: record_hash, description_end_template: description_end_template })
       else
         logger.info("what is existing item: " + existing_item.id.to_s)
         # record exists in kete already
@@ -384,15 +384,15 @@ class PastPerfect4ImporterWorker < BackgrounDRb::MetaWorker
           if zoom_class == 'StillImage'
             # we do a check earlier in the script for imagefile
             # so we should have something to work with here
-            params[:image_file] = { :uploaded_data => copy_and_load_to_temp_file(importer_prepare_path_to_image_file(value)) }
+            params[:image_file] = { uploaded_data: copy_and_load_to_temp_file(importer_prepare_path_to_image_file(value)) }
           end
         when "OBJECTID"
           if zoom_class == 'Topic'
             value = record_hash["ACCESSNO"]
           end
-          params = importer_prepare_extended_field(:value => value, :field => record_field, :zoom_class_for_params => zoom_class_for_params, :params => params)
+          params = importer_prepare_extended_field(value: value, field: record_field, zoom_class_for_params: zoom_class_for_params, params: params)
         else
-          params = importer_prepare_extended_field(:value => value, :field => record_field, :zoom_class_for_params => zoom_class_for_params, :params => params)
+          params = importer_prepare_extended_field(value: value, field: record_field, zoom_class_for_params: zoom_class_for_params, params: params)
         end
       end
       field_count += 1
@@ -477,13 +477,13 @@ class PastPerfect4ImporterWorker < BackgrounDRb::MetaWorker
       # we use our version of this method
       # that calls xml builder directly, rather than using partial template
       params[zoom_class_for_params.to_sym] = params[zoom_class_for_params]
-      params = importer_extended_fields_update_hash_for_item(:item_key => zoom_class_for_params, :params => params)
+      params = importer_extended_fields_update_hash_for_item(item_key: zoom_class_for_params, params: params)
     end
 
     logger.info("after field set up")
 
     # replace with something that isn't reliant on params
-    replacement_zoom_item_hash = importer_extended_fields_replacement_params_hash(:item_key => zoom_class_for_params, :item_class => zoom_class, :params => params)
+    replacement_zoom_item_hash = importer_extended_fields_replacement_params_hash(item_key: zoom_class_for_params, item_class: zoom_class, params: params)
 
     new_record = Module.class_eval(zoom_class).new(replacement_zoom_item_hash)
 

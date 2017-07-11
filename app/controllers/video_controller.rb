@@ -31,7 +31,7 @@ class VideoController < ApplicationController
 
     respond_to do |format|
       format.html
-      format.xml { render_oai_record_xml(:item => @video) }
+      format.xml { render_oai_record_xml(item: @video) }
     end
   end
 
@@ -52,7 +52,7 @@ class VideoController < ApplicationController
 
       @video.do_notifications_if_pending(1, current_user)
     end
-    setup_related_topic_and_zoom_and_redirect(@video, nil, :private => (params[:video][:private] == "true"))
+    setup_related_topic_and_zoom_and_redirect(@video, nil, private: (params[:video][:private] == "true"))
   end
 
   def edit
@@ -73,9 +73,9 @@ class VideoController < ApplicationController
       after_successful_zoom_item_update(@video, version_after_update)
       flash[:notice] = t('video_controller.update.updated')
 
-      redirect_to_show_for(@video, :private => (params[:video][:private] == "true"))
+      redirect_to_show_for(@video, private: (params[:video][:private] == "true"))
     else
-      render :action => 'edit'
+      render action: 'edit'
     end
   end
 

@@ -136,8 +136,8 @@ module ExtendedContentHelpers
         end
 
         options = {}
-        options.merge!(:xml_element_name => xml_element_name) unless xml_element_name.blank?
-        options.merge!(:xsi_type => xsi_type) unless xsi_type.blank?
+        options.merge!(xml_element_name: xml_element_name) unless xml_element_name.blank?
+        options.merge!(xsi_type: xsi_type) unless xsi_type.blank?
 
         if value.is_a?(Hash)
           xml.safe_send(field, options) do |tag|
@@ -181,7 +181,7 @@ module ExtendedContentHelpers
                   if matching_choice
                     choice = matching_choice
                   else
-                    choice = Choice.create!(:value => v, :label => l)
+                    choice = Choice.create!(value: v, label: l)
                     choice.move_to_child_of(parent)
                     choice.save!
                   end
@@ -189,7 +189,7 @@ module ExtendedContentHelpers
                   extended_field.save!
 
                   # for possible translation purposes, we always specify label now
-                  tag.safe_send(k, choice.value, :label => choice.label)
+                  tag.safe_send(k, choice.value, label: choice.label)
 
                 rescue
                   next
@@ -198,7 +198,7 @@ module ExtendedContentHelpers
               # Handle the normal case
               else
                 if matching_choice
-                  tag.safe_send(k, matching_choice.value, :label => matching_choice.label)
+                  tag.safe_send(k, matching_choice.value, label: matching_choice.label)
                 else
                   # otherwise leave value to handled by validation
                   # will likely fail, but they will get error feedback and can modify
@@ -229,7 +229,7 @@ module ExtendedContentHelpers
             end
 
             unless parts.blank?
-              options.merge!(:label => parts[1].chomp(' '))
+              options.merge!(label: parts[1].chomp(' '))
               value = parts[2]
             end
           end

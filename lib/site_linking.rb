@@ -14,7 +14,7 @@ module SiteLinking
       check_nessesary_constants_set
       set_kete_net_urls
       @site_listing = nil
-      SiteLinkingResource.find(:all, :params => { :url => SystemSetting.full_site_url }).each do |link|
+      SiteLinkingResource.find(:all, params: { url: SystemSetting.full_site_url }).each do |link|
         link = link.attributes
         if link['url'].chomp('/') == SystemSetting.full_site_url.chomp('/') # take off the / on the end so it won't fail in some cases
           @site_listing = link
@@ -34,10 +34,10 @@ module SiteLinking
       site_listing
       if @site_listing.blank?
         top_message += I18n.t('site_linking_lib.error_linking_site.manual_linking',
-                              :new_kete_site => @new_kete_site)
+                              new_kete_site: @new_kete_site)
       else
         top_message += I18n.t('site_linking_lib.error_linking_site.appears_listed',
-                              :new_kete_site => @new_kete_site)
+                              new_kete_site: @new_kete_site)
       end
       render :update do |page|
         page.hide('spinner')

@@ -60,7 +60,7 @@ namespace :zebra do
 
   # Added by James Stradling - 2008-05-21
   desc "Insert initial blank records into the public and private zebra instances"
-  task :load_initial_records => :environment do
+  task load_initial_records: :environment do
     # Load and render the OAI-PHM record to load
     template = File.read(File.join(Rails.root.to_s, 'zebradb/bootstrap.xml.erb'))
     zoom_record = ERB.new(template).result

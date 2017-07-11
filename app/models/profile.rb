@@ -28,8 +28,8 @@
 # basket.profiles << Profile.find(id)
 #
 class Profile < ActiveRecord::Base
-  has_many :profile_mappings, :dependent => :destroy
-  has_many :baskets, :through => :profile_mappings
+  has_many :profile_mappings, dependent: :destroy
+  has_many :baskets, through: :profile_mappings
 
   def setting(name, *args)
     ProfileSettings.get(name, *args)
@@ -137,7 +137,7 @@ class Profile < ActiveRecord::Base
         missing_rule_types << k.humanize if v['rule_type'].blank?
       end
       unless missing_rule_types.blank?
-        errors.add_to_base(I18n.t('profile_model.all_form_types_have_rule_type.missing_rules_types', :missing => missing_rule_types.join(', ')))
+        errors.add_to_base(I18n.t('profile_model.all_form_types_have_rule_type.missing_rules_types', missing: missing_rule_types.join(', ')))
       end
     else
       errors.add_to_base(I18n.t('profile_model.all_form_types_have_rule_type.no_rules_submitted'))

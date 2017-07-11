@@ -1,7 +1,7 @@
 class AddTechAdminRole < ActiveRecord::Migration
   def self.up
     if !Role.find_by_name('tech_admin')
-      Role.create(:name => 'tech_admin', :authorizable_id => 1, :authorizable_type => 'Basket')
+      Role.create(name: 'tech_admin', authorizable_id: 1, authorizable_type: 'Basket')
     end
   end
 

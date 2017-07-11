@@ -8,19 +8,19 @@ class SearchController < ApplicationController
 
   # James - 2008-09-03
   # Check for access before running private searches
-  before_filter :require_login_if_private_search, :only => [:rss, :for, :all]
-  before_filter :private_search_authorisation, :only => [:rss, :for, :all]
+  before_filter :require_login_if_private_search, only: [:rss, :for, :all]
+  before_filter :private_search_authorisation, only: [:rss, :for, :all]
 
   # RSS caching has now moved to fragement caching
   # for finer grain caching (and to suit a larger number of cases)
   # after_filter :write_rss_cache, :only => [:rss]
 
   # Reset slideshow object on new searches
-  before_filter :reset_slideshow, :only => [:for, :all]
+  before_filter :reset_slideshow, only: [:for, :all]
 
   # After running a search, store the results in a session
   # for slideshow functionality.
-  after_filter :store_results_for_slideshow, :only => [:for, :all]
+  after_filter :store_results_for_slideshow, only: [:for, :all]
 
   def for
     query = SearchQuery.new(params)
@@ -69,7 +69,7 @@ class SearchController < ApplicationController
     if params[:search_id].to_i > 0
       clear_users_previous_searches(params[:search_id].to_i)
       flash[:notice] = t('search_controller.clear.selected_search_removed')
-      redirect_to :action => 'list'
+      redirect_to action: 'list'
     else
       clear_users_previous_searches
       flash[:notice] = t('search_controller.clear.previous_searches_removed')
@@ -256,8 +256,8 @@ class SearchController < ApplicationController
 
     if from_result_set.size > 0
       # get the raw xml results from zoom
-      raw_results = from_result_set.records_from(:start_record => @start_record,
-                                                 :end_record => @end_record)
+      raw_results = from_result_set.records_from(start_record: @start_record,
+                                                 end_record: @end_record)
       # create a hash of link, title, description for each record
       raw_results.each do |raw_record|
         result_from_xml_hash = parse_from_xml_in(raw_record)
@@ -280,10 +280,10 @@ class SearchController < ApplicationController
 
     # limit query to within our zoom_class
     unless zoom_class == 'Combined'
-      @search.pqf_query.kind_is(zoom_class, :operator => 'none')
+      @search.pqf_query.kind_is(zoom_class, operator: 'none')
     else
       # we have to put something into this inorder to get results
-      @search.pqf_query.kind_is("oai", :operator => 'none')
+      @search.pqf_query.kind_is("oai", operator: 'none')
     end
 
     # limit baskets searched within
@@ -303,7 +303,7 @@ class SearchController < ApplicationController
     # get the item
     # we use should_be_exact rather than _equals_completely method here
     # because relations have a key index on them and should be exact uses that
-    @search.pqf_query.relations_include(url_for_dc_identifier(@source_item, { :force_http => true, :minimal => true }), :should_be_exact => true) if !@source_item.nil?
+    @search.pqf_query.relations_include(url_for_dc_identifier(@source_item, { force_http: true, minimal: true }), should_be_exact: true) if !@source_item.nil?
 
     # this looks in the dc_subject index in the z30.50 server
     @search.pqf_query.subjects_equals_completely("#{@tag.name}") if !@tag.nil?
@@ -383,10 +383,10 @@ class SearchController < ApplicationController
     sort_direction = @current_basket.setting(:sort_direction_reversed_default)
     search_sort_type = (params[:sort_type].blank? and !sort_type.blank?) ? sort_type : params[:sort_type]
     search_sort_direction = (params[:sort_type].blank? and !sort_direction.blank?) ? sort_direction : params[:sort_direction]
-    @search.add_sort_to_query_if_needed(:user_specified => search_sort_type,
-                                        :direction => search_sort_direction,
-                                        :action => params[:action],
-                                        :search_terms => @search_terms)
+    @search.add_sort_to_query_if_needed(user_specified: search_sort_type,
+                                        direction: search_sort_direction,
+                                        action: params[:action],
+                                        search_terms: @search_terms)
 
     logger.debug("what is query: " + @search.pqf_query.to_s.inspect)
 
@@ -407,7 +407,7 @@ class SearchController < ApplicationController
   end
 
   def redirect_to_default_all
-    redirect_to basket_all_url(:controller_name_for_zoom_class => zoom_class_controller(SystemSetting.default_search_class))
+    redirect_to basket_all_url(controller_name_for_zoom_class: zoom_class_controller(SystemSetting.default_search_class))
   end
 
   # takes search_terms from form
@@ -419,69 +419,69 @@ class SearchController < ApplicationController
     controller_name = params[:controller_name_for_zoom_class].nil? ? \
       zoom_class_controller(SystemSetting.default_search_class) : params[:controller_name_for_zoom_class]
 
-    location_hash = { :urlified_name => basket_name,
-                      :controller_name_for_zoom_class => controller_name,
-                      :existing_array_string => params[:existing_array_string],
+    location_hash = { urlified_name: basket_name,
+                      controller_name_for_zoom_class: controller_name,
+                      existing_array_string: params[:existing_array_string],
 
                       # sort_direction is a boolean, so we need to force a blank value if not
                       # sent through to ensure the users choice of direction is maintained
-                      :sort_direction => params[:sort_direction] || '',
+                      sort_direction: params[:sort_direction] || '',
 
-                      :sort_type => params[:sort_type],
-                      :limit_to_choice => params[:limit_to_choice],
-                      :extended_field => params[:extended_field],
-                      :authenticity_token => nil }
+                      sort_type: params[:sort_type],
+                      limit_to_choice: params[:limit_to_choice],
+                      extended_field: params[:extended_field],
+                      authenticity_token: nil }
 
     if is_a_private_search?
-      location_hash.merge!({ :privacy_type => params[:privacy_type] })
+      location_hash.merge!({ privacy_type: params[:privacy_type] })
     end
 
     if !params[:search_terms].blank?
       # we are searching
-      location_hash.merge!({ :search_terms_slug => to_search_terms_slug(params[:search_terms]),
-                             :search_terms => params[:search_terms],
-                             :action => 'for' })
+      location_hash.merge!({ search_terms_slug: to_search_terms_slug(params[:search_terms]),
+                             search_terms: params[:search_terms],
+                             action: 'for' })
     else
       # we are viewing all
-      location_hash.merge!({ :action => 'all' })
+      location_hash.merge!({ action: 'all' })
     end
 
     # If we're searching by tag, this will be set
     if !params[:tag].blank?
-      location_hash.merge!({ :tag => params[:tag] })
+      location_hash.merge!({ tag: params[:tag] })
     end
 
     # If we're searching by contributor, this will be set
     if !params[:contributor].blank?
-      location_hash.merge!({ :contributor => params[:contributor] })
+      location_hash.merge!({ contributor: params[:contributor] })
     end
 
     # If we're searching by relation, these will be set
     if !params[:source_controller_singular].blank?
-      location_hash.merge!({ :source_controller_singular => params[:source_controller_singular] })
+      location_hash.merge!({ source_controller_singular: params[:source_controller_singular] })
     end
     if !params[:source_item].blank?
-      location_hash.merge!({ :source_item => params[:source_item] })
+      location_hash.merge!({ source_item: params[:source_item] })
     end
 
     # James
     # Handle choice specific searching.
     if !params[:limit_to_choice].blank?
-      location_hash.merge!({ :limit_to_choice => params[:limit_to_choice] })
+      location_hash.merge!({ limit_to_choice: params[:limit_to_choice] })
     end
     if !params[:extended_field].blank?
-      location_hash.merge({ :extended_field => params[:extended_field] })
+      location_hash.merge({ extended_field: params[:extended_field] })
     end
 
     if !params[:topic_type].blank?
-      location_hash.merge!({ :topic_type => params[:topic_type] })
+      location_hash.merge!({ topic_type: params[:topic_type] })
     end
 
     if !params[:date_since].blank?
-      location_hash.merge!({ :date_since => params[:date_since] })
+      location_hash.merge!({ date_since: params[:date_since] })
     end
     if !params[:date_until].blank?
-      location_hash.merge!({ :date_until => params[:date_until] })
+      location_hash.merge!({ date_until: params[:date_until] })
     end
 
     logger.debug("terms_to_page_url_redirect hash: " + location_hash.inspect)
@@ -587,7 +587,7 @@ class SearchController < ApplicationController
           flash[:error] = t('search_controller.find_index.failed')
         end
     end
-    render :action => 'homepage_topic_form', :layout => "popup_dialog"
+    render action: 'homepage_topic_form', layout: "popup_dialog"
   end
 
   # #related_items
@@ -712,7 +712,7 @@ class SearchController < ApplicationController
       end
     end
 
-    render :action => 'related_form', :layout => "popup_dialog"
+    render action: 'related_form', layout: "popup_dialog"
   end
 
   # keep the user's preference for number of results per page
@@ -798,7 +798,7 @@ class SearchController < ApplicationController
 
     # We want to retain the original search action name for future use
     altered_params = params
-    altered_params.merge!(:search_action => params[:action]) unless params[:action] == "slideshow_page_load"
+    altered_params.merge!(search_action: params[:action]) unless params[:action] == "slideshow_page_load"
 
     if slideshow.results.nil?
       slideshow.search_params = { "page" => "1" }
@@ -861,7 +861,7 @@ class SearchController < ApplicationController
           redirect_to DEFAULT_REDIRECTION_HASH
         end
         format.xml do
-          render :text => "<error>#{t('search_controller.private_search_authorisation.forbidden')}</error>", :status => 403
+          render text: "<error>#{t('search_controller.private_search_authorisation.forbidden')}</error>", status: 403
         end
       end
 

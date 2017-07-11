@@ -104,7 +104,7 @@ module ExtendedContentTestUnitHelper
       context "An extended field mapped to a type" do
 
         setup do
-          create_and_map_extended_field_to_type(:label => 'Some tag')
+          create_and_map_extended_field_to_type(label: 'Some tag')
         end
 
         should "have a method that will set its value" do
@@ -131,15 +131,15 @@ module ExtendedContentTestUnitHelper
         should "build xml unless for private fields and the item isn't private" do
           return if @base_class == 'User' # users do not have private fields
 
-          @extended_item.update_attributes(:extended_content_values => { "some_tag" => "something" })
+          @extended_item.update_attributes(extended_content_values: { "some_tag" => "something" })
           assert @extended_item.extended_content.include?('<some_tag>something</some_tag>')
 
           @mapping.update_attribute(:private_only, true)
 
-          @extended_item.update_attributes(:extended_content_values => { "some_tag" => "something" }, :private => false)
+          @extended_item.update_attributes(extended_content_values: { "some_tag" => "something" }, private: false)
           assert !@extended_item.extended_content.include?('<some_tag>something</some_tag>')
 
-          @extended_item.update_attributes(:extended_content_values => { "some_tag" => "something" }, :private => true)
+          @extended_item.update_attributes(extended_content_values: { "some_tag" => "something" }, private: true)
 
           if @base_class == 'Comment'
             # comments don't have private_version_serialized

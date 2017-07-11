@@ -6,11 +6,11 @@ class CreateImageFiles < ActiveRecord::Migration
       # including thumbnails
       t.column :still_image_id, :integer
       # parent_id is the original version of the file
-      t.column :parent_id, :integer, :references => nil
+      t.column :parent_id, :integer, references: nil
       t.column :thumbnail, :string
-      t.column :filename, :string, :null => false
-      t.column :content_type, :string, :null => false
-      t.column :size, :integer, :null => false
+      t.column :filename, :string, null: false
+      t.column :content_type, :string, null: false
+      t.column :size, :integer, null: false
       t.column :width, :integer
       t.column :height, :integer
     end

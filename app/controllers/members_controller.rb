@@ -1,16 +1,16 @@
 class MembersController < ApplicationController
 
-  permit "site_admin or admin of :current_basket", :except => [:index, :list, :join, :remove, :rss]
+  permit "site_admin or admin of :current_basket", except: [:index, :list, :join, :remove, :rss]
 
-  before_filter :permitted_to_view_memberlist, :only => [:index, :list, :rss]
+  before_filter :permitted_to_view_memberlist, only: [:index, :list, :rss]
 
-  before_filter :permitted_to_remove_basket_members, :only => [:remove]
+  before_filter :permitted_to_remove_basket_members, only: [:remove]
 
   # action menu uses a basket helper we need
   helper :baskets
 
   def index
-    redirect_to :action => 'list'
+    redirect_to action: 'list'
   end
 
   def list
@@ -42,7 +42,7 @@ class MembersController < ApplicationController
       instance_variable_set("@#{role_plural}_count", @current_basket.send("has_#{role_plural}_count"))
     end
 
-    @default_sorting = {:order => 'roles_users.created_at', :direction => 'desc'}
+    @default_sorting = {order: 'roles_users.created_at', direction: 'desc'}
     acceptable_sort_types = ['users.resolved_name', 'roles_users.created_at', 'users.email']
     acceptable_sort_types << 'users.login' if @site_admin
     paginate_order = current_sorting_options(@default_sorting[:order], @default_sorting[:direction], acceptable_sort_types)
@@ -52,8 +52,8 @@ class MembersController < ApplicationController
     list_members_in(@listing_type, paginate_order)
 
     # turn on rss
-    @rss_tag_auto = rss_tag(:replace_page_with_rss => true)
-    @rss_tag_link = rss_tag(:replace_page_with_rss => true, :auto_detect => false)
+    @rss_tag_auto = rss_tag(replace_page_with_rss: true)
+    @rss_tag_link = rss_tag(replace_page_with_rss: true, auto_detect: false)
   end
 
   def list_members_in(role_name, order='users.login asc')
@@ -78,10 +78,10 @@ class MembersController < ApplicationController
     # members are paginated
     # since we are paginating we need to break a part
     # what the @current_basket.has_members method would do
-    @role = Role.where(:name => role_name, :authorizable_type => 'Basket', :authorizable_id => @current_basket).first
+    @role = Role.where(name: role_name, authorizable_type: 'Basket', authorizable_id: @current_basket).first
     if @role.nil?
       # no members
-      @members = User.paginate_by_id(0, :page => 1)
+      @members = User.paginate_by_id(0, page: 1)
     else
       not_anonymous_condition = "login != 'anonymous'"
       if params[:action] == 'rss'
@@ -92,13 +92,13 @@ class MembersController < ApplicationController
         end
 
       else
-        options = { :include => :contributions, :order => order, :page => params[:page], :per_page => 20 }
+        options = { include: :contributions, order: order, page: params[:page], per_page: 20 }
         options[:conditions] = not_anonymous_condition unless site_admin?
 
         @members = @role.users.paginate(options)
       end
 
-      @all_roles = RolesUser.all(:conditions => ["role_id = ? AND user_id IN (?)", @role, @members])
+      @all_roles = RolesUser.all(conditions: ["role_id = ? AND user_id IN (?)", @role, @members])
       @role_creations = Hash.new
       @members.each do |member|
         @role_creations[member.id] = @all_roles.reject { |r| r.user_id != member.id }.first.created_at
@@ -113,7 +113,7 @@ class MembersController < ApplicationController
     # don't allow, at least for now, anonymous users to be added to other baskets
     # besides site
     # may change in the future if there is a use case
-    @users_to_exclude = User.where(:login => 'anonymous')
+    @users_to_exclude = User.where(login: 'anonymous')
     @existing_users = @existing_users + @users_to_exclude
 
     @potential_new_members = Array.new
@@ -134,7 +134,7 @@ class MembersController < ApplicationController
         @current_basket.administrators.each do |admin|
           UserNotifier.join_notification_to(admin, current_user, @current_basket, 'joined').deliver
         end
-        flash[:notice] = t('members_controller.join.joined', :basket_name => @current_basket.name)
+        flash[:notice] = t('members_controller.join.joined', basket_name: @current_basket.name)
       when 'request'
         current_user.has_role('membership_requested', @current_basket)
         @current_basket.administrators.each do |admin|
@@ -187,7 +187,7 @@ class MembersController < ApplicationController
     else
       flash[:notice] = t('members_controller.change_membership_type.need_site_admin')
     end
-    redirect_to :action => 'list'
+    redirect_to action: 'list'
   end
 
   # added so site admins can assume identities of users if necessary
@@ -203,7 +203,7 @@ class MembersController < ApplicationController
     # now login as new user
     self.current_user = User.find(params[:id])
     if logged_in?
-      redirect_back_or_default(:controller => '/account', :action => 'index')
+      redirect_back_or_default(controller: '/account', action: 'index')
       flash[:notice] = t('members_controller.become_user.logged_in')
     end
   end
@@ -213,7 +213,7 @@ class MembersController < ApplicationController
     @user.banned_at = Time.now
     if @user.save
       flash[:notice] = t('members_controller.ban.banned')
-      redirect_to :action => 'list'
+      redirect_to action: 'list'
     end
   end
 
@@ -222,7 +222,7 @@ class MembersController < ApplicationController
     @user.banned_at = nil
     if @user.save
       flash[:notice] = t('members_controller.unban.unbanned')
-      redirect_to :action => 'list'
+      redirect_to action: 'list'
     end
   end
 
@@ -245,7 +245,7 @@ class MembersController < ApplicationController
       flash[:notice] = t('members_controller.add_members.added_singular')
     end
 
-    redirect_to :action => 'list'
+    redirect_to action: 'list'
   end
 
   # Remove is called from non-site baskets, only usable when
@@ -265,11 +265,11 @@ class MembersController < ApplicationController
     # the user can be successfully removed, so lets do that
     else
       @current_basket.delete_roles_for(@user)
-      flash[:notice] = t('members_controller.remove.removed', :basket_name => @current_basket.name)
+      flash[:notice] = t('members_controller.remove.removed', basket_name: @current_basket.name)
     end
 
     if current_user_can_see_memberlist_for?(@current_basket)
-      redirect_location = { :action => 'list' }
+      redirect_location = { action: 'list' }
     else
       redirect_location = "/#{@site_basket.urlified_name}/"
     end
@@ -283,14 +283,14 @@ class MembersController < ApplicationController
   def destroy
     @user = User.find(params[:id])
     if @user.contributions.size > 0
-      flash[:error] = t('members_controller.destroy.has_contributions', :user_name => @user.user_name)
+      flash[:error] = t('members_controller.destroy.has_contributions', user_name: @user.user_name)
     elsif !@site_basket.more_than_one_site_admin?
       flash[:error] = t('members_controller.destroy.need_site_admin')
     else
       @user.destroy
-      flash[:notice] = t('members_controller.destroy.destroyed', :user_name => @user.user_name)
+      flash[:notice] = t('members_controller.destroy.destroyed', user_name: @user.user_name)
     end
-    redirect_to :action => 'list'
+    redirect_to action: 'list'
   end
 
   def change_request_status
@@ -300,14 +300,14 @@ class MembersController < ApplicationController
     approved = (params[:status] && params[:status] == 'approved')
     if approved
       @user.has_role('member', @current_basket)
-      flash[:notice] = t('members_controller.change_request_status.accepted', :user_name => @user.user_name)
+      flash[:notice] = t('members_controller.change_request_status.accepted', user_name: @user.user_name)
     else
       @user.has_role('membership_rejected', @current_basket)
-      flash[:notice] = t('members_controller.change_request_status.rejected', :user_name => @user.user_name)
+      flash[:notice] = t('members_controller.change_request_status.rejected', user_name: @user.user_name)
     end
 
     UserNotifier.join_notification_to(@user, current_user, @current_basket, params[:status]).deliver
-    redirect_to :action => 'list'
+    redirect_to action: 'list'
   end
 
   def rss

@@ -14,7 +14,7 @@ namespace :db do
   Defaults to development database.  Set RAILS_ENV to override.'
 
   # modified to dump to either db/bootstrap or test/fixtures
-  task :extract_table_rows_to_fixture => :environment do
+  task extract_table_rows_to_fixture: :environment do
     table_name = ENV['TABLE']
     rows = ENV['ROWS']
     sql  = "SELECT * FROM #{table_name} "

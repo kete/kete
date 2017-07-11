@@ -5,9 +5,9 @@ class SiteLinkingWorker < BackgrounDRb::MetaWorker
   include SiteLinking
 
   def create(args = nil)
-    results = { :linking_success => false,
-                :linking_validation_errors => Array.new,
-                :linking_complete => false }
+    results = { linking_success: false,
+                linking_validation_errors: Array.new,
+                linking_complete: false }
 
     cache[:results] = results
   end
@@ -20,10 +20,10 @@ class SiteLinkingWorker < BackgrounDRb::MetaWorker
 
     begin
       linking = SiteLinkingResource.create(
-        :name => SystemSetting.pretty_site_name,
-        :url => SystemSetting.full_site_url,
-        :description => params[:site_description],
-        :address => params[:site_publisher_address]
+        name: SystemSetting.pretty_site_name,
+        url: SystemSetting.full_site_url,
+        description: params[:site_description],
+        address: params[:site_publisher_address]
       )
     rescue
       linking = nil
@@ -44,9 +44,9 @@ class SiteLinkingWorker < BackgrounDRb::MetaWorker
   end
 
   def reset_worker
-    results = { :linking_success => false,
-                :linking_validation_errors => Array.new,
-                :linking_complete => false }
+    results = { linking_success: false,
+                linking_validation_errors: Array.new,
+                linking_complete: false }
 
     cache[:results] = results
   end

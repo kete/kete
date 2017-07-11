@@ -53,8 +53,8 @@ module SslHelpers
     # ActionView::Helpers::PrototypeHelper#remote_form_for
 
     def form_remote_tag(options = {}, &block)
-      options[:url].merge!(:protocol => 'https://') if options[:url].kind_of?(Hash)
-      options[:html].merge!(:protocol => 'https://') if !options[:html].nil? && options[:html].kind_of?(Hash)
+      options[:url].merge!(protocol: 'https://') if options[:url].kind_of?(Hash)
+      options[:html].merge!(protocol: 'https://') if !options[:html].nil? && options[:html].kind_of?(Hash)
 
       super(options, &block)
     end
@@ -72,7 +72,7 @@ module SslHelpers
 
     def url_for(options = nil)
       if options.kind_of?(Hash)
-        options.merge!(:protocol => "https://") if options[:private] == "true"
+        options.merge!(protocol: "https://") if options[:private] == "true"
 
         # If the protocol is HTTPS and we're not already there, and we haven't explicitly
         # asked for the path only, send the whole address so we're forced to HTTPS
@@ -80,7 +80,7 @@ module SslHelpers
         # There is potential for issues with this when the only the path is expected as
         # this is normally default behaviour, and we are modifying it here.
         if options[:protocol] =~ /^https/ and !request.ssl? and !options[:only_path]
-          options.merge!(:only_path => false)
+          options.merge!(only_path: false)
         end
       end
 
@@ -89,7 +89,7 @@ module SslHelpers
 
     def polymorphic_url(record_or_hash_or_array, options = {})
       raise "called polymorphic_url"
-      options.merge!(:protocol => 'https://') if options.kind_of?(Hash)
+      options.merge!(protocol: 'https://') if options.kind_of?(Hash)
       super(record_or_hash_or_array, options)
     end
 
@@ -101,7 +101,7 @@ module SslHelpers
     # Used in contexts other than ActionController and ActionView
     def url_for(options)
       if options.kind_of?(Hash) && options[:private] == "true"
-        options.merge!(:protocol => "https://")
+        options.merge!(protocol: "https://")
       end
 
       super(options)
@@ -116,7 +116,7 @@ module SslHelpers
     return true unless request.get?
     if request.port == 80 && (params[:privacy_type] == 'private' ||
                               params[:private] == 'true')
-      redirect_to params.merge(:protocol => 'https')
+      redirect_to params.merge(protocol: 'https')
       return false
     elsif request.port == 443 && !ssl_required? &&
         ( (params[:privacy_type].blank? && params[:private].blank?) ||
@@ -124,7 +124,7 @@ module SslHelpers
             (params[:privacy_type].blank? || params[:privacy_type] != 'private') &&
             (params[:private].blank? || params[:private] != 'true') ) )
 
-      redirect_to params.merge(:protocol => 'http')
+      redirect_to params.merge(protocol: 'http')
       return false
     end
     true

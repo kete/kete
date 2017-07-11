@@ -65,7 +65,7 @@ module AccountHelper
   end
 
   def captcha_url(id)
-    return url_for(:controller => "account", :action => "show_captcha",
-                   :id => id, :time => Time.now())
+    return url_for(controller: "account", action: "show_captcha",
+                   id: id, time: Time.now())
   end
 end

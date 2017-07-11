@@ -10,7 +10,7 @@
 class Kete
   class << self
     def extensions
-      @@extensions ||= { :blocks => nil }
+      @@extensions ||= { blocks: nil }
     end
 
     def extensions=(extensions)

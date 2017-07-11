@@ -141,7 +141,7 @@ class Basket < ActiveRecord::Base
   # whether Site basket should keep its privacy browsing controls on
   # putting in the wrapper respond_to? logic so that upgrades of older Kete sites works
   if Basket.columns.any? { |c| c.name == 'show_privacy_controls' }
-    scope :should_show_privacy_controls, lambda { where(:show_privacy_controls => true) }
+    scope :should_show_privacy_controls, lambda { where(show_privacy_controls: true) }
     cattr_accessor :privacy_exists
     @@privacy_exists = all_baskets.any? { |basket| basket.show_privacy_controls? }
     after_save :any_privacy_enabled_baskets?
@@ -156,35 +156,35 @@ class Basket < ActiveRecord::Base
   # ZOOM_CLASSES.each do |zoom_class|
   #  has_many zoom_class.tableize.to_sym, :dependent => :destroy
   # end
-  has_many :topics, :dependent => :destroy
-  has_many :comments, :dependent => :destroy
-  has_many :documents, :dependent => :destroy
-  has_many :videos, :dependent => :destroy
-  has_many :audio_recordings, :dependent => :destroy
-  has_many :still_images, :dependent => :destroy
-  has_many :web_links, :dependent => :destroy
+  has_many :topics, dependent: :destroy
+  has_many :comments, dependent: :destroy
+  has_many :documents, dependent: :destroy
+  has_many :videos, dependent: :destroy
+  has_many :audio_recordings, dependent: :destroy
+  has_many :still_images, dependent: :destroy
+  has_many :web_links, dependent: :destroy
 
   # a topic may be the designated index page for it's basket
-  has_one :index_topic, :class_name => 'Topic', :foreign_key => 'index_for_basket_id'
+  has_one :index_topic, class_name: 'Topic', foreign_key: 'index_for_basket_id'
 
   # each basket was made by someone (admin or otherwise)
-  belongs_to :creator, :class_name => 'User'
+  belongs_to :creator, class_name: 'User'
 
   # imports are processes to bring in content to a basket
-  has_many :imports, :dependent => :destroy
+  has_many :imports, dependent: :destroy
 
   # each basket can have multiple feeds displayed in the sidebar
-  has_many :feeds, :dependent => :destroy
-  accepts_nested_attributes_for :feeds, :reject_if => proc { |attributes| attributes['url'].blank? }
+  has_many :feeds, dependent: :destroy
+  accepts_nested_attributes_for :feeds, reject_if: proc { |attributes| attributes['url'].blank? }
 
   # each basket may have a profile (or in the future, possibly more than one)
   # that declares the rules of what options a basket admin may see/set
   # as opposed to a site administrator
-  has_many :profile_mappings, :as => :profilable, :dependent => :destroy
-  has_many :profiles, :through => :profile_mappings
+  has_many :profile_mappings, as: :profilable, dependent: :destroy
+  has_many :profiles, through: :profile_mappings
 
   validates_presence_of :name
-  validates_uniqueness_of :name, :case_sensitive => false
+  validates_uniqueness_of :name, case_sensitive: false
 
   # DEPRECIATED - urlified_name handles things correctly
   # and our xml escaping does the rest for plain old name attribute
@@ -209,8 +209,8 @@ class Basket < ActiveRecord::Base
 
   # stuff related to taggings in a basket
 
-  has_many :taggings, :dependent => :destroy
-  has_many :tags, :through => :taggings
+  has_many :taggings, dependent: :destroy
+  has_many :tags, through: :taggings
 
   # it's easy to get a basket's topics tag_counts
   # but we want all zoom_class's totals added together
@@ -253,10 +253,10 @@ class Basket < ActiveRecord::Base
 
     tags.map do |tag|
       {
-        :id => tag.id,
-        :name => tag.name,
-        :to_param => tag.to_param,
-        :total_taggings_count => tag.taggings_count
+        id: tag.id,
+        name: tag.name,
+        to_param: tag.to_param,
+        total_taggings_count: tag.taggings_count
       }
     end
   end
@@ -272,9 +272,9 @@ class Basket < ActiveRecord::Base
     private_tags = options[:allow_private] || false
 
     tag_options = {
-      :select => 'distinct taggings.tag_id',
-      :joins => 'INNER JOIN taggings ON (tags.id = taggings.tag_id)',
-      :conditions => "taggings.context = 'public_tags'"
+      select: 'distinct taggings.tag_id',
+      joins: 'INNER JOIN taggings ON (tags.id = taggings.tag_id)',
+      conditions: "taggings.context = 'public_tags'"
     }
     tag_options[:conditions] = "taggings.context IN ('public_tags', 'private_tags')" if private_tags
     tag_options[:conditions] += " AND taggings.basket_id = #{self.id}" unless self == site_basket
@@ -604,13 +604,13 @@ class Basket < ActiveRecord::Base
     formatted_name = name.to_s
 
     self.urlified_name = format_friendly_unicode_for(formatted_name,
-                                                     :demarkator => "_",
-                                                     :at_start => false,
-                                                     :at_end => false)
+                                                     demarkator: "_",
+                                                     at_start: false,
+                                                     at_end: false)
   end
 
   def self.list_as_names_and_urlified_names
-    all(:select => 'name, urlified_name').collect { |basket| [basket.name, basket.urlified_name] }
+    all(select: 'name, urlified_name').collect { |basket| [basket.name, basket.urlified_name] }
   end
 
   private
@@ -625,9 +625,9 @@ class Basket < ActiveRecord::Base
       versions = Module.class_eval(zoom_class + '::Version').find_all_by_basket_id(self)
       versions.each do |version|
         new_version_comment = version.version_comment.nil? ? String.new : version.version_comment + '. '
-        new_version_comment += I18n.t('basket_model.now_in_site_basket', :basket_name => self.name)
+        new_version_comment += I18n.t('basket_model.now_in_site_basket', basket_name: self.name)
 
-        version.update_attributes(:basket_id => 1, :version_comment => new_version_comment )
+        version.update_attributes(basket_id: 1, version_comment: new_version_comment )
       end
     end
   end
@@ -671,9 +671,9 @@ class Basket < ActiveRecord::Base
   before_update :register_redirect_if_necessary
 
   def register_redirect_if_necessary
-    old_urlified_name = self.class.select("urlified_name").where(:id => id).first.urlified_name
+    old_urlified_name = self.class.select("urlified_name").where(id: id).first.urlified_name
     if old_urlified_name != urlified_name
-      RedirectRegistration.create!(:source_url_pattern => "/#{old_urlified_name}/", :target_url_pattern => "/#{urlified_name}/")
+      RedirectRegistration.create!(source_url_pattern: "/#{old_urlified_name}/", target_url_pattern: "/#{urlified_name}/")
     end
   end
 end

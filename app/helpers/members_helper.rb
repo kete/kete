@@ -10,9 +10,9 @@ module MembersHelper
       if user_contributions == 0
         html_string = li_with_correct_class(tool_count) +
                         link_to( action_label,
-                                 { :action => :destroy, :id => user, :authenticity_token => form_authenticity_token },
-                                 :confirm => t('members_helper.admin_actions_correct_list_item.are_you_sure'),
-                                 :method => :post )
+                                 { action: :destroy, id: user, authenticity_token: form_authenticity_token },
+                                 confirm: t('members_helper.admin_actions_correct_list_item.are_you_sure'),
+                                 method: :post )
       else
         html_string = li_with_correct_class(tool_count) +
                         user_contributions.to_s +
@@ -24,23 +24,23 @@ module MembersHelper
                         t('members_helper.admin_actions_correct_list_item.banned') +
                         user.banned_at.to_s(:euro_date_time) +
                         link_to( t('members_helper.admin_actions_correct_list_item.undo'),
-                                 { :action => 'unban', :id => user, :authenticity_token => form_authenticity_token },
-                                 :confirm => t('members_helper.admin_actions_correct_list_item.are_you_sure'),
-                                 :method => :post )
+                                 { action: 'unban', id: user, authenticity_token: form_authenticity_token },
+                                 confirm: t('members_helper.admin_actions_correct_list_item.are_you_sure'),
+                                 method: :post )
       else
         html_string = li_with_correct_class(tool_count) +
-          link_to( action_label, { :action => action_key,
-                                   :id => user,
-                                   :authenticity_token => form_authenticity_token },
-                                 :confirm => t('members_helper.admin_actions_correct_list_item.are_you_sure'),
-                                 :method => :post )
+          link_to( action_label, { action: action_key,
+                                   id: user,
+                                   authenticity_token: form_authenticity_token },
+                                 confirm: t('members_helper.admin_actions_correct_list_item.are_you_sure'),
+                                 method: :post )
       end
     else
       html_string = li_with_correct_class(tool_count) +
                       link_to( action_label,
-                               { :action => action_key, :id => user, :authenticity_token => form_authenticity_token },
-                               :confirm => t('members_helper.admin_actions_correct_list_item.are_you_sure'),
-                               :method => :post )
+                               { action: action_key, id: user, authenticity_token: form_authenticity_token },
+                               confirm: t('members_helper.admin_actions_correct_list_item.are_you_sure'),
+                               method: :post )
     end
   end
 

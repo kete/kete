@@ -62,12 +62,12 @@ module FlaggingTestUnitHelper
   def test_find_flagged_returns_as_expected
     @basket = Basket.find(:first)
 
-    not_flagged = @base_class.constantize.create!(@new_model.merge(:title => 'not flagged'))
+    not_flagged = @base_class.constantize.create!(@new_model.merge(title: 'not flagged'))
 
     flagged_items = Array.new
     %w{ flagged1 flagged2 flagged3 }.each do |title|
-      @new_model = @new_model.merge(:url => "http://google.com/#{(rand * 10000).to_i}") if @base_class == 'WebLink'
-      model = @base_class.constantize.create!(@new_model.merge(:title => title))
+      @new_model = @new_model.merge(url: "http://google.com/#{(rand * 10000).to_i}") if @base_class == 'WebLink'
+      model = @base_class.constantize.create!(@new_model.merge(title: title))
       model.flag_at_with(1, 'bad title')
       flagged_items << model
     end

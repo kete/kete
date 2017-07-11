@@ -3,7 +3,7 @@ module SearchDcDateFormulator
 
     def dc_date_display_of(dc_dates)
       return String.new unless SystemSetting.dc_date_display_on_search_results?
-      content_tag(:div, select_and_format_dc_dates_from(dc_dates), :class => 'generic-result-dc-dates')
+      content_tag(:div, select_and_format_dc_dates_from(dc_dates), class: 'generic-result-dc-dates')
     end
 
     def dc_date_separator; ", "; end

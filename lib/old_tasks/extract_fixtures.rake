@@ -14,7 +14,7 @@ namespace :db do
   Defaults to development database.  Set RAILS_ENV to override.'
 
   # modified to dump to either db/bootstrap or test/fixtures
-  task :extract_fixtures => :environment do
+  task extract_fixtures: :environment do
     sql  = "SELECT * FROM %s"
     skip_tables = ["schema_info"]
     ActiveRecord::Base.establish_connection

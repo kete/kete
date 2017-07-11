@@ -41,8 +41,8 @@ module KeteAuthorisationSettings
   # James - Allow us to flag a version as except from moderation
   def exempt_next_version_from_moderation!(item)
     session[:moderation_exempt_item] = {
-      :item_class_name => item.class.name,
-      :item_id => item.id.to_s
+      item_class_name: item.class.name,
+      item_id: item.id.to_s
     }
   end
 
@@ -132,9 +132,9 @@ module KeteAuthorisationSettings
     url = url.split("?")[0]
     from_url = String.new
     begin
-      from_url = ActionController::Routing::Routes.recognize_path(url, :method => :get)
+      from_url = ActionController::Routing::Routes.recognize_path(url, method: :get)
     rescue
-      from_url = ActionController::Routing::Routes.recognize_path(url, :method => :post)
+      from_url = ActionController::Routing::Routes.recognize_path(url, method: :post)
     end
     value = from_url[:controller] + '/' + from_url[:action]
 
@@ -200,11 +200,11 @@ module KeteAuthorisationSettings
     return if item.skip_email_notification == '1'
     return unless show_notification_controls?(item.basket)
 
-    url_options = { :private => true }
+    url_options = { private: true }
 
     if item.is_a?(Comment)
       email_type = 'comment'
-      url_options.merge!(:anchor => item.to_anchor)
+      url_options.merge!(anchor: item.to_anchor)
     else
       email_type = 'item'
     end

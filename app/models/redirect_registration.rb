@@ -30,7 +30,7 @@ class RedirectRegistration < ActiveRecord::Base
     without_host_url = url.sub(request.protocol, '').sub(request.host, '')
     without_file_and_query_string = without_host_url.sub(without_host_url.match(/[^\/]*$/)[0], '')
 
-    { :conditions => "LOWER(source_url_pattern) = \'#{url}\' OR
+    { conditions: "LOWER(source_url_pattern) = \'#{url}\' OR
                       LOWER(source_url_pattern) = \'#{without_host_url}\' OR
                       LOWER(source_url_pattern) LIKE \'#{without_host_url}%\' OR
                       LOWER(source_url_pattern) LIKE \'#{without_file_and_query_string}%\'"

@@ -26,8 +26,8 @@ class Choice < ActiveRecord::Base
   # Associations (polymorphic has_many :through)
   has_many :choice_mappings
 
-  has_many :extended_fields, :through => :choice_mappings,
-    :source => :field, :source_type => 'ExtendedField'
+  has_many :extended_fields, through: :choice_mappings,
+    source: :field, source_type: 'ExtendedField'
 
   # Use better nested set for STI
   acts_as_nested_set
@@ -37,8 +37,8 @@ class Choice < ActiveRecord::Base
   validates_presence_of :value
 
   # Label and value must be unique (for lookup reasons)
-  validates_uniqueness_of :label, :message => lambda { I18n.t('choice_model.must_be_unique') }
-  validates_uniqueness_of :value, :message => lambda { I18n.t('choice_model.must_be_unique') }
+  validates_uniqueness_of :label, message: lambda { I18n.t('choice_model.must_be_unique') }
+  validates_uniqueness_of :value, message: lambda { I18n.t('choice_model.must_be_unique') }
 
   # class methods
   class << self

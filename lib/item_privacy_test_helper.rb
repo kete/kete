@@ -54,21 +54,21 @@ module ItemPrivacyTestHelper
     module FilePrivate
 
       def test_attachment_fu_uses_correct_path_prefix
-        item = eval(@base_class).create(@new_model.merge({ :file_private => false }))
+        item = eval(@base_class).create(@new_model.merge({ file_private: false }))
         assert_match(attachment_fu_test_path("public", @uploads_folder), item.full_filename)
         assert File.exists?(item.full_filename)
         assert item.valid?
       end
 
       def test_attachment_fu_uses_correct_path_prefix2
-        item2 = eval(@base_class).create(@new_model.merge({ :file_private => true }))
+        item2 = eval(@base_class).create(@new_model.merge({ file_private: true }))
         assert_match(attachment_fu_test_path("private", @uploads_folder), item2.full_filename)
         assert File.exists?(item2.full_filename)
         assert item2.valid?
       end
 
       def test_attachment_fu_does_not_move_files_when_going_from_public_to_private
-        item = eval(@base_class).create(@new_model.merge({ :file_private => false }))
+        item = eval(@base_class).create(@new_model.merge({ file_private: false }))
         assert_match(attachment_fu_test_path("public", @uploads_folder), item.full_filename)
         assert File.exists?(item.full_filename)
         assert item.valid?
@@ -76,7 +76,7 @@ module ItemPrivacyTestHelper
         id = item.id
 
         item = eval(@base_class).find(id)
-        item.update_attributes({ :file_private => true })
+        item.update_attributes({ file_private: true })
         assert_match(attachment_fu_test_path("public", @uploads_folder), item.full_filename)
         assert File.exists?(item.full_filename), "File is not where we expected. Should be at #{item.full_filename} but is not present."
         assert_equal old_filename, item.full_filename
@@ -84,7 +84,7 @@ module ItemPrivacyTestHelper
       end
 
       def test_attachment_fu_moves_files_to_correct_path_when_going_from_private_to_public
-        item = eval(@base_class).create(@new_model.merge({ :file_private => true }))
+        item = eval(@base_class).create(@new_model.merge({ file_private: true }))
         assert_match(attachment_fu_test_path("private", @uploads_folder), item.full_filename)
         assert File.exists?(item.full_filename)
         assert item.valid?
@@ -92,7 +92,7 @@ module ItemPrivacyTestHelper
         id = item.id
 
         item = eval(@base_class).find(id)
-        item.update_attributes({ :file_private => false })
+        item.update_attributes({ file_private: false })
         assert_match(attachment_fu_test_path("public", @uploads_folder), item.full_filename)
         assert File.exists?(item.full_filename), "File is not where we expected. Should be at #{item.full_filename} but is not present."
         assert !File.exists?(old_filename), "File is not where we expected. Should NOT be at #{old_filename} but IS present."
@@ -100,23 +100,23 @@ module ItemPrivacyTestHelper
       end
 
       def test_attachment_path_prefix
-        d = eval(@base_class).create(@new_model.merge({ :file_private => true }))
+        d = eval(@base_class).create(@new_model.merge({ file_private: true }))
         assert_equal d.send(:attachment_path_prefix), "private"
 
-        d = eval(@base_class).create(@new_model.merge({ :file_private => false }))
+        d = eval(@base_class).create(@new_model.merge({ file_private: false }))
         assert_equal d.send(:attachment_path_prefix), "public"
       end
 
       def test_attachment_full_filename
-        d = eval(@base_class).create(@new_model.merge({ :file_private => true }))
+        d = eval(@base_class).create(@new_model.merge({ file_private: true }))
         assert_equal File.join(RAILS_ROOT, "tmp", "attachment_fu_test", "private", @uploads_folder, *d.send(:partitioned_path, d.send(:thumbnail_name_for, nil))), d.full_filename
 
-        d = eval(@base_class).create(@new_model.merge({ :file_private => false }))
+        d = eval(@base_class).create(@new_model.merge({ file_private: false }))
         assert_equal File.join(RAILS_ROOT, "tmp", "attachment_fu_test", "public", @uploads_folder, *d.send(:partitioned_path, d.send(:thumbnail_name_for, nil))), d.full_filename
       end
 
       def test_file_private_setter_false_to_true_does_not_work
-        d = eval(@base_class).create(@new_model.merge({ :file_private => false }))
+        d = eval(@base_class).create(@new_model.merge({ file_private: false }))
         d.file_private = true
         assert d.save
 
@@ -128,14 +128,14 @@ module ItemPrivacyTestHelper
           ['member', 'moderator', 'administrator', 'site_admin', 'tech_admin'].member?(role)
 
         user = User.create(
-          :login => 'quire',
-          :email => 'quire@example.com',
-          :password => 'quire',
-          :password_confirmation => 'quire',
-          :agree_to_terms => '1',
-          :security_code => 'test',
-          :security_code_confirmation => 'test',
-          :locale => 'en'
+          login: 'quire',
+          email: 'quire@example.com',
+          password: 'quire',
+          password_confirmation: 'quire',
+          agree_to_terms: '1',
+          security_code: 'test',
+          security_code_confirmation: 'test',
+          locale: 'en'
         )
         basket_instance.accepts_role(role, user)
 
@@ -151,12 +151,12 @@ module ItemPrivacyTestHelper
     module VersioningAndModeration
 
       def test_responds_to_private_and_is_set_properly_with_private_false
-        doc = eval(@base_class).create(@new_model.merge({ :private => false }))
+        doc = eval(@base_class).create(@new_model.merge({ private: false }))
         assert_equal false, doc.private?
       end
 
       def test_responds_to_private_and_is_set_properly_with_private_true
-        doc = eval(@base_class).create(@new_model.merge({ :private => true }))
+        doc = eval(@base_class).create(@new_model.merge({ private: true }))
         assert_equal false, doc.private?
         assert_equal 2, doc.versions.size
         assert_equal true, doc.versions.find_by_version(1).private?
@@ -166,11 +166,11 @@ module ItemPrivacyTestHelper
       def test_latest_version
 
         # Set up some versions
-        d = eval(@base_class).create(@new_model.merge({ :private => false }))
-        d.update_attributes(:description => "Version 2")
-        d.update_attributes(:description => "Version 3")
-        d.update_attributes(:description => "Version 4", :private => true)
-        d.update_attributes(:description => "Version 5", :private => true)
+        d = eval(@base_class).create(@new_model.merge({ private: false }))
+        d.update_attributes(description: "Version 2")
+        d.update_attributes(description: "Version 3")
+        d.update_attributes(description: "Version 4", private: true)
+        d.update_attributes(description: "Version 5", private: true)
 
         d.reload
 
@@ -184,11 +184,11 @@ module ItemPrivacyTestHelper
       def test_revert_to
 
         # Set up some versions
-        d = eval(@base_class).create(@new_model.merge({ :private => false }))
-        d.update_attributes(:description => "Version 2")
-        d.update_attributes(:description => "Version 3")
-        d.update_attributes(:description => "Version 4", :private => true)
-        d.update_attributes(:description => "Version 5")
+        d = eval(@base_class).create(@new_model.merge({ private: false }))
+        d.update_attributes(description: "Version 2")
+        d.update_attributes(description: "Version 3")
+        d.update_attributes(description: "Version 4", private: true)
+        d.update_attributes(description: "Version 5")
 
         d.reload
 
@@ -202,11 +202,11 @@ module ItemPrivacyTestHelper
       def test_private_version_newest_public
 
         # Set up some versions
-        d = eval(@base_class).create(@new_model.merge({ :private => false }))
-        d.update_attributes!(:description => "Version 2")
-        d.update_attributes!(:description => "Version 3")
-        d.update_attributes!(:description => "Version 4", :private => true)
-        d.update_attributes!(:description => "Version 5", :private => false)
+        d = eval(@base_class).create(@new_model.merge({ private: false }))
+        d.update_attributes!(description: "Version 2")
+        d.update_attributes!(description: "Version 3")
+        d.update_attributes!(description: "Version 4", private: true)
+        d.update_attributes!(description: "Version 5", private: false)
         d.reload
 
         assert_not_nil d.private_version_serialized
@@ -224,11 +224,11 @@ module ItemPrivacyTestHelper
       def test_private_version_newest_private
 
         # Set up some versions
-        d = eval(@base_class).create(@new_model.merge({ :private => false }))
-        d.update_attributes(:description => "Version 2")
-        d.update_attributes(:description => "Version 3")
-        d.update_attributes(:description => "Version 4")
-        d.update_attributes(:description => "Version 5", :private => true)
+        d = eval(@base_class).create(@new_model.merge({ private: false }))
+        d.update_attributes(description: "Version 2")
+        d.update_attributes(description: "Version 3")
+        d.update_attributes(description: "Version 4")
+        d.update_attributes(description: "Version 5", private: true)
         d.reload
 
         assert_equal "Version 4", d.description
@@ -243,8 +243,8 @@ module ItemPrivacyTestHelper
 
       def test_private_version_returns_nil_when_no_private_version!
 
-        d = eval(@base_class).create(@new_model.merge({ :private => false }))
-        d.update_attributes(:description => "Version 2")
+        d = eval(@base_class).create(@new_model.merge({ private: false }))
+        d.update_attributes(description: "Version 2")
         d.reload
 
         assert_equal "Version 2", d.description
@@ -253,8 +253,8 @@ module ItemPrivacyTestHelper
 
       def test_store_correct_version_after_save
 
-        d = eval(@base_class).create(@new_model.merge({ :description => "Version 1", :private => false }))
-        d.update_attributes(:description => "Version 2", :private => true)
+        d = eval(@base_class).create(@new_model.merge({ description: "Version 1", private: false }))
+        d.update_attributes(description: "Version 2", private: true)
         d.reload
 
         assert_equal "Version 1", d.description
@@ -264,8 +264,8 @@ module ItemPrivacyTestHelper
 
       def test_has_private_version!
 
-        d = eval(@base_class).create(@new_model.merge({ :description => "Version 1", :private => false }))
-        d.update_attributes(:description => "Version 2")
+        d = eval(@base_class).create(@new_model.merge({ description: "Version 1", private: false }))
+        d.update_attributes(description: "Version 2")
 
         assert_equal false, d.has_private_version?
         assert_nil d.private_version!
@@ -273,9 +273,9 @@ module ItemPrivacyTestHelper
 
       def test_has_private_version2
 
-        d = eval(@base_class).create(@new_model.merge({ :description => "Version 1", :private => false }))
-        d.update_attributes(:description => "Version 2", :private => true)
-        d.update_attributes(:description => "Version 3")
+        d = eval(@base_class).create(@new_model.merge({ description: "Version 1", private: false }))
+        d.update_attributes(description: "Version 2", private: true)
+        d.update_attributes(description: "Version 3")
 
         assert_not_nil d.private_version_serialized
         assert_kind_of Array, YAML.load(d.private_version_serialized)
@@ -287,27 +287,27 @@ module ItemPrivacyTestHelper
       end
 
       def test_latest_public_version_and_has_public_version
-        d = eval(@base_class).create(@new_model.merge({ :description => "Version 1", :private => false }))
-        d.update_attributes(:description => "Version 2", :private => true)
-        d.update_attributes(:description => "Version 3")
+        d = eval(@base_class).create(@new_model.merge({ description: "Version 1", private: false }))
+        d.update_attributes(description: "Version 2", private: true)
+        d.update_attributes(description: "Version 3")
 
         assert_equal 3, d.send(:latest_public_version).version
         assert_equal true, d.has_private_version?
       end
 
       def test_latest_public_version_and_has_public_version_again
-        d = eval(@base_class).create(@new_model.merge({ :description => "Version 1", :private => false }))
-        d.update_attributes(:description => "Version 2")
-        d.update_attributes(:description => "Version 3", :private => true)
+        d = eval(@base_class).create(@new_model.merge({ description: "Version 1", private: false }))
+        d.update_attributes(description: "Version 2")
+        d.update_attributes(description: "Version 3", private: true)
 
         assert_equal 2, d.send(:latest_public_version).version
         assert_equal true, d.has_private_version?
       end
 
       def test_latest_public_version_and_has_public_version_with_none
-        d = eval(@base_class).create(@new_model.merge({ :description => "Version 1", :private => true }))
-        d.update_attributes(:description => "Version 2", :private => true)
-        d.update_attributes(:description => "Version 3", :private => true)
+        d = eval(@base_class).create(@new_model.merge({ description: "Version 1", private: true }))
+        d.update_attributes(description: "Version 2", private: true)
+        d.update_attributes(description: "Version 3", private: true)
         d.reload
 
         assert_equal 4, d.versions.size
@@ -319,9 +319,9 @@ module ItemPrivacyTestHelper
       end
 
       def test_revert_to_latest_unflagged_version_or_create_new_version_public
-        d = eval(@base_class).create(@new_model.merge({ :description => "Version 1", :private => false }))
-        d.update_attributes(:description => "Version 2")
-        d.update_attributes(:description => "Version 3", :private => true)
+        d = eval(@base_class).create(@new_model.merge({ description: "Version 1", private: false }))
+        d.update_attributes(description: "Version 2")
+        d.update_attributes(description: "Version 3", private: true)
 
         # Check flagging a public version works as expected
         assert_equal 2, d.version
@@ -334,9 +334,9 @@ module ItemPrivacyTestHelper
       end
 
       def test_revert_to_latest_unflagged_version_or_create_new_version_private
-        d = eval(@base_class).create(@new_model.merge({ :description => "Version 1", :private => false }))
-        d.update_attributes(:description => "Version 2")
-        d.update_attributes(:description => "Version 3", :private => true)
+        d = eval(@base_class).create(@new_model.merge({ description: "Version 1", private: false }))
+        d.update_attributes(description: "Version 2")
+        d.update_attributes(description: "Version 3", private: true)
         d.reload
         assert_equal 2, d.version
 
@@ -365,8 +365,8 @@ module ItemPrivacyTestHelper
       end
 
       def test_reload_returns_model_to_public_version
-        d = eval(@base_class).create(@new_model.merge({ :description => "Version 1", :private => false }))
-        d.update_attributes(:description => "Version 2", :private => true)
+        d = eval(@base_class).create(@new_model.merge({ description: "Version 1", private: false }))
+        d.update_attributes(description: "Version 2", private: true)
         d.reload
 
         assert_equal false, d.private?
@@ -389,7 +389,7 @@ module ItemPrivacyTestHelper
       def test_new_private_item_with_moderated_basket
 
         # Set up
-        d = eval(@base_class).new(@new_model.merge({ :description => "Version 1", :private => true }))
+        d = eval(@base_class).new(@new_model.merge({ description: "Version 1", private: true }))
         d.instance_eval do
           def fully_moderated?
             true
@@ -432,7 +432,7 @@ module ItemPrivacyTestHelper
       def test_new_public_item_with_moderated_basket
 
         # Set up
-        d = eval(@base_class).new(@new_model.merge({ :description => "Version 1", :private => false }))
+        d = eval(@base_class).new(@new_model.merge({ description: "Version 1", private: false }))
         d.instance_eval do
           def fully_moderated?
             true
@@ -504,7 +504,7 @@ module ItemPrivacyTestHelper
         d = new_moderated_public_item
         # this will save as version 4
         # (but because basket is moderated, result will revert to public version 3)
-        d.update_attributes!(:title => "Version 4", :description => "Version 4")
+        d.update_attributes!(title: "Version 4", description: "Version 4")
 
         assert_equal 4, d.versions.size
         assert_equal 3, d.version
@@ -519,7 +519,7 @@ module ItemPrivacyTestHelper
         d = new_moderated_public_item
         # this will save as version 4
         # (but because basket is moderated, result will revert to public version 3)
-        d.update_attributes!(:title => "Version 4", :description => "Version 4", :private => true)
+        d.update_attributes!(title: "Version 4", description: "Version 4", private: true)
 
         assert_equal 5, d.versions.size
 
@@ -534,9 +534,9 @@ module ItemPrivacyTestHelper
       end
 
       def test_private_version_with_block
-        d = eval(@base_class).create(@new_model.merge({ :description => "Version 1", :private => false }))
-        d.update_attributes(:description => "Version 2")
-        d.update_attributes(:description => "Version 3", :private => true)
+        d = eval(@base_class).create(@new_model.merge({ description: "Version 1", private: false }))
+        d.update_attributes(description: "Version 2")
+        d.update_attributes(description: "Version 3", private: true)
         d.reload
         assert_equal 2, d.version
 
@@ -595,7 +595,7 @@ module ItemPrivacyTestHelper
       end
 
       def test_tags_are_preserved_on_public_items
-        d = eval(@base_class).create(@new_model.merge({ :description => "Version 1", :private => false, :tag_list => "one, two, three", :raw_tag_list => "one, two, three" }))
+        d = eval(@base_class).create(@new_model.merge({ description: "Version 1", private: false, tag_list: "one, two, three", raw_tag_list: "one, two, three" }))
         d.reload
 
         assert_equal 1, d.versions.size
@@ -607,7 +607,7 @@ module ItemPrivacyTestHelper
       end
 
       def test_tags_are_preserved_on_private_items
-        d = eval(@base_class).create(@new_model.merge({ :description => "Version 1", :private => true, :tag_list => "one, two, three", :raw_tag_list => "one, two, three" }))
+        d = eval(@base_class).create(@new_model.merge({ description: "Version 1", private: true, tag_list: "one, two, three", raw_tag_list: "one, two, three" }))
 
         assert_equal 0, d.tags.size
 
@@ -622,7 +622,7 @@ module ItemPrivacyTestHelper
       end
 
       def test_tags_on_private_items_are_kept_private
-        d = eval(@base_class).create(@new_model.merge({ :description => "Version 1", :private => true, :tag_list => "one, two, three", :raw_tag_list => "one, two, three" }))
+        d = eval(@base_class).create(@new_model.merge({ description: "Version 1", private: true, tag_list: "one, two, three", raw_tag_list: "one, two, three" }))
         d.reload
 
         # Check there are no tags on public version
@@ -656,7 +656,7 @@ module ItemPrivacyTestHelper
       end
 
       def test_tags_on_private_items_are_kept_private_on_re_find
-        d = eval(@base_class).create(@new_model.merge({ :description => "Version 1", :private => true, :tag_list => "one, two, three", :raw_tag_list => "one, two, three" }))
+        d = eval(@base_class).create(@new_model.merge({ description: "Version 1", private: true, tag_list: "one, two, three", raw_tag_list: "one, two, three" }))
 
         d = eval(@base_class).find(d.id)
 
@@ -686,15 +686,15 @@ module ItemPrivacyTestHelper
       def test_tags_are_preserved_separately_by_privacy_setting
 
         # Create a private version
-        d = eval(@base_class).create(@new_model.merge({ :description => "Version 1", :private => true, :tag_list => "one, two, three", :raw_tag_list => "one, two, three" }))
+        d = eval(@base_class).create(@new_model.merge({ description: "Version 1", private: true, tag_list: "one, two, three", raw_tag_list: "one, two, three" }))
         d.reload
 
         # Create a public version with different tags
-        d.update_attributes!(:private => false, :title => "A public version", :description => "Version 3", :tag_list => "four, five, six", :raw_tag_list => "four, five, six")
+        d.update_attributes!(private: false, title: "A public version", description: "Version 3", tag_list: "four, five, six", raw_tag_list: "four, five, six")
 
         # Create a second private version without tags
         d.private_version!
-        d.update_attributes!(:private => true, :title => "Another private version", :description => "Version 4")
+        d.update_attributes!(private: true, title: "Another private version", description: "Version 4")
 
         # Check the public version has tags from public version
         assert_equal false, d.private?
@@ -718,7 +718,7 @@ module ItemPrivacyTestHelper
       end
 
       def test_tags_on_private_items_are_of_private_context
-        d = eval(@base_class).create(@new_model.merge({ :description => "Version 1", :private => true, :tag_list => "one, two, three", :raw_tag_list => "one, two, three" }))
+        d = eval(@base_class).create(@new_model.merge({ description: "Version 1", private: true, tag_list: "one, two, three", raw_tag_list: "one, two, three" }))
         d.reload
 
         d.private_version!
@@ -731,7 +731,7 @@ module ItemPrivacyTestHelper
       end
 
       def test_tags_on_public_items_are_of_public_context
-        d = eval(@base_class).create(@new_model.merge({ :description => "Version 1", :private => false, :tag_list => "one, two, three", :raw_tag_list => "one, two, three" }))
+        d = eval(@base_class).create(@new_model.merge({ description: "Version 1", private: false, tag_list: "one, two, three", raw_tag_list: "one, two, three" }))
         d.reload
 
         assert_equal false, d.private?
@@ -744,7 +744,7 @@ module ItemPrivacyTestHelper
       protected
 
         def new_moderated_public_item
-          d = eval(@base_class).new(@new_model.merge({ :title => "Version 1", :description => "Version 1", :private => false }))
+          d = eval(@base_class).new(@new_model.merge({ title: "Version 1", description: "Version 1", private: false }))
           d.instance_eval do
             def fully_moderated?
               true
@@ -774,20 +774,20 @@ module ItemPrivacyTestHelper
     module MovingItemsBetweenBasketsWithDifferentPrivacies
       def test_moving_public_item_to_public_basket
         setup_new_baskets
-        @new_topic = @base_class.constantize.create(@new_model.merge({:private => false, :basket => @new_either_basket}))
-        @new_topic.update_attributes({:basket => @new_public_basket})
+        @new_topic = @base_class.constantize.create(@new_model.merge({private: false, basket: @new_either_basket}))
+        @new_topic.update_attributes({basket: @new_public_basket})
         assert_equal @new_public_basket, @new_topic.basket
         assert !@new_topic.has_private_version?
       end
 
       def test_moving_private_item_to_public_basket
         setup_new_baskets
-        @new_topic = @base_class.constantize.create(@new_model.merge({:private => true, :basket => @new_either_basket}))
+        @new_topic = @base_class.constantize.create(@new_model.merge({private: true, basket: @new_either_basket}))
         assert @new_topic.has_private_version?
         @new_topic.private_version!
         assert @new_topic.is_private?
         assert_equal @new_either_basket, @new_topic.basket
-        @new_topic.update_attributes({:basket => @new_public_basket})
+        @new_topic.update_attributes({basket: @new_public_basket})
         @new_topic.private_version!
         assert @new_topic.is_private?
         assert_equal @new_public_basket, @new_topic.basket
@@ -795,20 +795,20 @@ module ItemPrivacyTestHelper
 
       def test_moving_public_item_to_private_basket
         setup_new_baskets
-        @new_topic = @base_class.constantize.create(@new_model.merge({:private => false, :basket => @new_either_basket}))
-        @new_topic.update_attributes({:basket => @new_private_basket})
+        @new_topic = @base_class.constantize.create(@new_model.merge({private: false, basket: @new_either_basket}))
+        @new_topic.update_attributes({basket: @new_private_basket})
         assert_equal @new_private_basket, @new_topic.basket
         assert !@new_topic.has_private_version?
       end
 
       def test_moving_private_item_to_private_basket
         setup_new_baskets
-        @new_topic = @base_class.constantize.create(@new_model.merge({:private => true, :basket => @new_either_basket}))
+        @new_topic = @base_class.constantize.create(@new_model.merge({private: true, basket: @new_either_basket}))
         assert @new_topic.has_private_version?
         @new_topic.private_version!
         assert @new_topic.is_private?
         assert_equal @new_either_basket, @new_topic.basket
-        @new_topic.update_attributes({:basket => @new_private_basket})
+        @new_topic.update_attributes({basket: @new_private_basket})
         @new_topic.private_version!
         assert @new_topic.is_private?
         assert_equal @new_private_basket, @new_topic.basket
@@ -816,21 +816,21 @@ module ItemPrivacyTestHelper
 
       def test_not_moving_public_item_to_new_basket
         setup_new_baskets
-        @new_topic = @base_class.constantize.create(@new_model.merge({:private => false, :basket => @new_either_basket}))
+        @new_topic = @base_class.constantize.create(@new_model.merge({private: false, basket: @new_either_basket}))
         @old_basket = @new_topic.basket
-        @new_topic.update_attributes({:description => 'hey'})
+        @new_topic.update_attributes({description: 'hey'})
         assert_equal @old_basket, @new_topic.basket
         assert !@new_topic.has_private_version?
       end
 
       def test_not_moving_private_item_to_new_basket
         setup_new_baskets
-        @new_topic = @base_class.constantize.create(@new_model.merge({:private => true, :basket => @new_either_basket}))
+        @new_topic = @base_class.constantize.create(@new_model.merge({private: true, basket: @new_either_basket}))
         assert @new_topic.has_private_version?
         @new_topic.private_version!
         assert @new_topic.is_private?
         assert_equal @new_either_basket, @new_topic.basket
-        @new_topic.update_attributes({:description => 'hey'})
+        @new_topic.update_attributes({description: 'hey'})
         @new_topic.private_version!
         assert @new_topic.is_private?
         assert_equal @new_either_basket, @new_topic.basket
@@ -838,10 +838,10 @@ module ItemPrivacyTestHelper
 
       def test_moving_public_version_updates_private_version_basket_id
         setup_new_baskets
-        @new_topic = @base_class.constantize.create(@new_model.merge({:private => false, :basket => @new_either_basket}))
-        @new_topic.update_attributes({:private => true, :description => 'hey'})
+        @new_topic = @base_class.constantize.create(@new_model.merge({private: false, basket: @new_either_basket}))
+        @new_topic.update_attributes({private: true, description: 'hey'})
         assert @new_topic.has_private_version?
-        @new_topic.update_attributes({:basket => @new_private_basket})
+        @new_topic.update_attributes({basket: @new_private_basket})
         assert_equal @new_private_basket, @new_topic.basket
         @new_topic.private_version!
         assert @new_topic.is_private?
@@ -850,12 +850,12 @@ module ItemPrivacyTestHelper
 
       def test_moving_private_version_updates_public_version_basket_id
         setup_new_baskets
-        @new_topic = @base_class.constantize.create(@new_model.merge({:private => false, :basket => @new_either_basket}))
-        @new_topic.update_attributes({:private => true, :description => 'hey'})
+        @new_topic = @base_class.constantize.create(@new_model.merge({private: false, basket: @new_either_basket}))
+        @new_topic.update_attributes({private: true, description: 'hey'})
         assert @new_topic.has_private_version?
         @new_topic.private_version!
         assert @new_topic.is_private?
-        @new_topic.update_attributes({:basket => @new_private_basket})
+        @new_topic.update_attributes({basket: @new_private_basket})
         assert_equal @new_private_basket, @new_topic.basket
         @new_topic.private_version!
         assert @new_topic.is_private?
@@ -865,9 +865,9 @@ module ItemPrivacyTestHelper
       private
 
       def setup_new_baskets
-        @new_either_basket = Basket.create({:name => 'Either Basket', :show_privacy_controls => true, :private_default => false})
-        @new_public_basket = Basket.create({:name => 'Public Basket', :show_privacy_controls => false, :private_default => false})
-        @new_private_basket = Basket.create({:name => 'Private Basket', :show_privacy_controls => true, :private_default => true})
+        @new_either_basket = Basket.create({name: 'Either Basket', show_privacy_controls: true, private_default: false})
+        @new_public_basket = Basket.create({name: 'Public Basket', show_privacy_controls: false, private_default: false})
+        @new_private_basket = Basket.create({name: 'Private Basket', show_privacy_controls: true, private_default: true})
       end
     end
 

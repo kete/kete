@@ -7,7 +7,7 @@
 namespace :redirects do
   namespace :imports do
     desc "Create RedirectRegistration instances based on Excel XML file (EXCEL_FILE=path_to_file_relative_to_calling_dir)."
-    task :excel => :environment do
+    task excel: :environment do
       source_file = pwd + '/' + ENV['EXCEL_FILE']
 
       records = ExcelPreProcessor.new(source_file).records

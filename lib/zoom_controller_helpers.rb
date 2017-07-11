@@ -51,9 +51,9 @@ module ZoomControllerHelpers
         end
 
         flash[:notice] = I18n.t('zoom_controller_helpers_lib.zoom_destroy_and_redirect.destroyed',
-                                :pretty_zoom_class => pretty_zoom_class)
+                                pretty_zoom_class: pretty_zoom_class)
       end
-      redirect_to :action => 'list'
+      redirect_to action: 'list'
     end
 
     # called by either before filter on destroy

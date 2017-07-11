@@ -15,7 +15,7 @@ module AnonymousFinishedAfterFilter
 
       finished_after_actions = specs.collect { |pair| pair.split('/')[1].to_sym }
 
-      klass.send :after_filter, :finished_as_anonymous_after, :only => finished_after_actions
+      klass.send :after_filter, :finished_as_anonymous_after, only: finished_after_actions
     end
   end
 end

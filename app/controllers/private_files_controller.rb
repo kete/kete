@@ -29,10 +29,10 @@ class PrivateFilesController < ApplicationController
     if current_user_can_see_private_files_for?(@item)
       
       send_file_options = {
-        :type => @record.content_type, 
-        :length => @record.size,
-        :disposition => 'inline',
-        :status => "200 OK"
+        type: @record.content_type, 
+        length: @record.size,
+        disposition: 'inline',
+        status: "200 OK"
       }
       
       # If we're using Nginx's send_file method, send the X-Accel-Redirect header.
@@ -45,7 +45,7 @@ class PrivateFilesController < ApplicationController
 
         # Use Apache's X-SendFile if appropriate.
         if SENDFILE_METHOD == "apache"
-          send_file_options.merge!(:x_sendfile => true)
+          send_file_options.merge!(x_sendfile: true)
         end
 
         # Use the normal send_file method if we're not working with Nginx.
@@ -59,10 +59,10 @@ class PrivateFilesController < ApplicationController
       # return one here
       no_public_version = File.join(Rails.root, 'public', 'images', 'no_public_version.gif')
       send_file_options = {
-        :type => 'image/gif',
-        :length => File.size(no_public_version),
-        :disposition => 'inline',
-        :status => "200 OK"
+        type: 'image/gif',
+        length: File.size(no_public_version),
+        disposition: 'inline',
+        status: "200 OK"
       }
       send_file(no_public_version, send_file_options)
     else
@@ -71,13 +71,13 @@ class PrivateFilesController < ApplicationController
 
   rescue ActiveRecord::RecordNotFound
     logger.warn("#{Time.now} - Requested File Not Found: #{params.inspect}")
-    render :text => t('private_files_controller.not_found'), :status => 404
+    render text: t('private_files_controller.not_found'), status: 404
   rescue UnknownTypeError
     logger.warn("#{Time.now} - Unknown type requested: #{params.inspect}")
-    render :text => t('private_files_controller.bad_request'), :status => 400
+    render text: t('private_files_controller.bad_request'), status: 400
   rescue PermissionDeniedError
     logger.warn("#{Time.now} - Permission Denied While Requesting Private Item: #{params.inspect}")
-    render :text => t('private_files_controller.unauthorized'), :status => 401
+    render text: t('private_files_controller.unauthorized'), status: 401
   end
   
 end

@@ -68,9 +68,9 @@ module Importer
       @import_field_to_extended_field_map = Hash.new
       @description_end_templates = Hash.new
       @collections_to_skip = Array.new
-      @results = { :do_work_time => Time.now.to_s,
-        :done_with_do_work => false,
-        :records_processed => 0 }
+      @results = { do_work_time: Time.now.to_s,
+        done_with_do_work: false,
+        records_processed: 0 }
 
       cache[:results] = @results
     end
@@ -134,7 +134,7 @@ module Importer
           @related_topic = Topic.find(params[:related_topic])
 
           # variables assigned, files good to go, we're started
-          @import.update_attributes(:status => I18n.t('importer_lib.do_work.in_progress'))
+          @import.update_attributes(status: I18n.t('importer_lib.do_work.in_progress'))
 
           importer_records_from_directory_at(@import_dir_path, params)
 
@@ -153,7 +153,7 @@ module Importer
           @import_records_xml = Nokogiri::XML File.open(@path_to_trimmed_records)
 
           # variables assigned, files good to go, we're started
-          @import.update_attributes(:status => I18n.t('importer_lib.do_work.in_progress'))
+          @import.update_attributes(status: I18n.t('importer_lib.do_work.in_progress'))
 
           @import_records_xml.xpath(@xml_path_to_record).each do |record|
             importer_process(record, params) unless record.content.blank?
@@ -233,7 +233,7 @@ module Importer
           if @import_topic_type
             extended_fields = @import_topic_type.mapped_fields
           else
-            extended_fields = ExtendedField.all(:conditions => "import_synonyms like \'%#{field}%\'")
+            extended_fields = ExtendedField.all(conditions: "import_synonyms like \'%#{field}%\'")
           end
 
           if extended_fields.present?
@@ -280,11 +280,11 @@ module Importer
               logger.info 'finding topic in topic type: ' + topic_type.inspect
 
               topics = importer_fetch_related_topics(value, params, {
-                                                      :item_type => 'topics',
-                                                      :topic_type => topic_type,
-                                                      :extended_field_data => {
-                                                        :label => @extended_field_that_contains_related_topics_reference.label_for_params,
-                                                        :value => value
+                                                      item_type: 'topics',
+                                                      topic_type: topic_type,
+                                                      extended_field_data: {
+                                                        label: @extended_field_that_contains_related_topics_reference.label_for_params,
+                                                        value: value
                                                       }
                                                      })
               logger.info 'what is found topics? ' + topics.inspect
@@ -303,13 +303,13 @@ module Importer
               multiple_values.each do |m_field_value|
                 circa = m_field_value =~ /(circa|c.?\d+)/i # circa 2010, c 2010, c.2010
                 m_field_value = (m_field_value =~ /(\d+)/ && $1) if circa
-                params[zoom_class_for_params]['extended_content_values'][extended_field.label_for_params][m_field_count] = { :value => m_field_value.to_s.strip, :circa => (circa ? '1' : '0') }
+                params[zoom_class_for_params]['extended_content_values'][extended_field.label_for_params][m_field_count] = { value: m_field_value.to_s.strip, circa: (circa ? '1' : '0') }
                 m_field_count += 1
               end
             else
               circa = value =~ /(circa|c.?\d+)/i # circa 2010, c 2010, c.2010
               value = (value =~ /(\d+)/ && $1) if circa
-              params[zoom_class_for_params]['extended_content_values'][extended_field.label_for_params] = { :value => value.to_s.strip, :circa => (circa ? '1' : '0') }
+              params[zoom_class_for_params]['extended_content_values'][extended_field.label_for_params] = { value: value.to_s.strip, circa: (circa ? '1' : '0') }
             end
 
           else
@@ -350,24 +350,24 @@ module Importer
                   xml.safe_send(key.to_s) do
                     logger.debug("inside hash: key: " + key.to_s)
                     m_value = hash_of_values[key]
-                    extended_content_field_xml_tag(:xml => xml,
-                                                   :field => field_name,
-                                                   :value => m_value,
-                                                   :xml_element_name => field_to_xml.extended_field_xml_element_name,
-                                                   :xsi_type => field_to_xml.extended_field_xsi_type,
-                                                   :extended_field => field_to_xml.extended_field)
+                    extended_content_field_xml_tag(xml: xml,
+                                                   field: field_name,
+                                                   value: m_value,
+                                                   xml_element_name: field_to_xml.extended_field_xml_element_name,
+                                                   xsi_type: field_to_xml.extended_field_xsi_type,
+                                                   extended_field: field_to_xml.extended_field)
                   end
                 end
               end
             end
           else
             value = (params[item_key]['extended_content_values'][field_name] || "") rescue ""
-            extended_content_field_xml_tag(:xml => xml,
-                                           :field => field_name,
-                                           :value => value,
-                                           :xml_element_name => field_to_xml.extended_field_xml_element_name,
-                                           :xsi_type => field_to_xml.extended_field_xsi_type,
-                                           :extended_field => field_to_xml.extended_field)
+            extended_content_field_xml_tag(xml: xml,
+                                           field: field_name,
+                                           value: value,
+                                           xml_element_name: field_to_xml.extended_field_xml_element_name,
+                                           xsi_type: field_to_xml.extended_field_xsi_type,
+                                           extended_field: field_to_xml.extended_field)
           end
         end
 
@@ -470,7 +470,7 @@ module Importer
       @successful = true
       @results[:records_processed] += 1
       cache[:results] = @results
-      @import.update_attributes(:records_processed => @results[:records_processed])
+      @import.update_attributes(records_processed: @results[:records_processed])
     end
 
     def stop_worker
@@ -481,7 +481,7 @@ module Importer
       if @successful
         @results[:notice] = I18n.t('importer_lib.importer_update_processing_vars_at_end.import_successful')
         @results[:done_with_do_work] = true
-        @import.update_attributes(:status => 'complete')
+        @import.update_attributes(status: 'complete')
       else
         @results[:notice] = I18n.t('importer_lib.importer_update_processing_vars_at_end.import_failed')
         if !@results[:error].nil?
@@ -489,7 +489,7 @@ module Importer
           @results[:notice] += @results[:error]
         end
         @results[:done_with_do_work] = true
-        @import.update_attributes(:status => I18n.t('importer_lib.importer_update_processing_vars_at_end.failed_status'))
+        @import.update_attributes(status: I18n.t('importer_lib.importer_update_processing_vars_at_end.failed_status'))
       end
       cache[:results] = @results
       stop_worker
@@ -499,7 +499,7 @@ module Importer
       @results[:error], @successful  = $!.to_s, false
       @results[:done_with_do_work] = true
       cache[:results] = @results
-      @import.update_attributes(:status => I18n.t('importer_lib.importer_update_processing_vars_if_rescue.failed_status'))
+      @import.update_attributes(status: I18n.t('importer_lib.importer_update_processing_vars_if_rescue.failed_status'))
       stop_worker
     end
 
@@ -508,11 +508,11 @@ module Importer
       return [] if @related_topic.present?
 
       options = {
-        :item_type => @zoom_class_for_params.pluralize,
-        :title => nil,
-        :topic_type => nil,
-        :extended_field_data => {},
-        :filename => nil
+        item_type: @zoom_class_for_params.pluralize,
+        title: nil,
+        topic_type: nil,
+        extended_field_data: {},
+        filename: nil
       }.merge(options)
 
       conditions = Array.new
@@ -556,7 +556,7 @@ module Importer
       conditions = conditions + " AND " + image_file_conditions if options[:item_type] == 'still_images'
       conditions = [conditions, params] unless params.blank?
       logger.debug("what are conditions: " + conditions.inspect)
-      @current_basket.send(options[:item_type]).find(:all, :conditions => conditions)
+      @current_basket.send(options[:item_type]).find(:all, conditions: conditions)
     end
 
     def formulate_conditions(conditions, item_type)
@@ -601,14 +601,14 @@ module Importer
       # and topic type if available
       # Otherwise, do a very basic check againts items with the same title and topic type
       options = {
-        :title => title,
-        :topic_type => @import_topic_type
+        title: title,
+        topic_type: @import_topic_type
       }
 
       if record_hash[@record_identifier_xml_field].present? && @extended_field_that_contains_record_identifier.present?
-        options.merge!(:extended_field_data => {
-          :label => @extended_field_that_contains_record_identifier.label_for_params,
-          :value => record_hash[@record_identifier_xml_field]
+        options.merge!(extended_field_data: {
+          label: @extended_field_that_contains_record_identifier.label_for_params,
+          value: record_hash[@record_identifier_xml_field]
         })
       end
 
@@ -626,7 +626,7 @@ module Importer
       new_record = nil
       if existing_item.blank?
         description_end_template = @description_end_templates['default']
-        new_record = create_new_item_from_record(record, @zoom_class, {:params => params, :record_hash => record_hash, :description_end_template => description_end_template })
+        new_record = create_new_item_from_record(record, @zoom_class, {params: params, record_hash: record_hash, description_end_template: description_end_template })
       else
         logger.info("what is existing item: " + existing_item.id.to_s)
         # record exists in kete already
@@ -780,10 +780,10 @@ module Importer
 
       if record_value.present?
         # if it's mapped to an extended field, params are updated
-        params = importer_prepare_extended_field(:value => record_value,
-                                                 :field => record_field,
-                                                 :zoom_class_for_params => zoom_class_for_params,
-                                                 :params => params)
+        params = importer_prepare_extended_field(value: record_value,
+                                                 field: record_field,
+                                                 zoom_class_for_params: zoom_class_for_params,
+                                                 params: params)
 
         # the field may also be mapped to non-extended fields
         # such as tags, description, title
@@ -822,7 +822,7 @@ module Importer
           if ::Import::VALID_ARCHIVE_CLASSES.include?(zoom_class) && File.exist?(record_value)
             # we do a check earlier in the script for imagefile
             # so we should have something to work with here
-            upload_hash = { :uploaded_data => copy_and_load_to_temp_file(record_value) }
+            upload_hash = { uploaded_data: copy_and_load_to_temp_file(record_value) }
             if zoom_class == 'StillImage'
               logger.debug("in image")
               params[:image_file] = upload_hash
@@ -984,13 +984,13 @@ module Importer
         # we use our version of this method
         # that calls xml builder directly, rather than using partial template
         params[zoom_class_for_params.to_sym] = params[zoom_class_for_params]
-        params = importer_extended_fields_update_hash_for_item(:item_key => zoom_class_for_params, :params => params)
+        params = importer_extended_fields_update_hash_for_item(item_key: zoom_class_for_params, params: params)
       end
 
       logger.info("after field set up")
 
       # replace with something that isn't reliant on params
-      replacement_zoom_item_hash = importer_extended_fields_replacement_params_hash(:item_key => zoom_class_for_params, :item_class => zoom_class, :params => params)
+      replacement_zoom_item_hash = importer_extended_fields_replacement_params_hash(item_key: zoom_class_for_params, item_class: zoom_class, params: params)
 
       logger.info 'what is replacement_zoom_item_hash? ' + replacement_zoom_item_hash.inspect
 
@@ -1090,11 +1090,11 @@ module Importer
 
             if @last_related_topic_identifier.blank? || @last_related_topic_identifier != related_topic_identifier
               related_topics = importer_fetch_related_topics(related_topic_identifier, params, {
-                :item_type => 'topics',
-                :topic_type => @related_topic_type,
-                :extended_field_data => {
-                  :label => @extended_field_that_contains_related_topics_reference.label_for_params,
-                  :value => related_topic_identifier
+                item_type: 'topics',
+                topic_type: @related_topic_type,
+                extended_field_data: {
+                  label: @extended_field_that_contains_related_topics_reference.label_for_params,
+                  value: related_topic_identifier
                 }
               }) if @extended_field_that_contains_related_topics_reference.present?
             else
@@ -1142,7 +1142,7 @@ module Importer
       # duplicate
       temp_params = Hash.new
       temp_params[:topic] = topic_params["topic"]
-      topic_params = importer_extended_fields_update_hash_for_item(:item_key => 'topic', :params => temp_params)
+      topic_params = importer_extended_fields_update_hash_for_item(item_key: 'topic', params: temp_params)
 
       topic_params[:topic][:basket_id] = @current_basket.id
 
@@ -1159,15 +1159,15 @@ module Importer
       # we set the virtual attribute, do_not_moderate to true
       # so that our imported topics go live right away
       # and thus can be found (since then they won't have blank attributes)
-      related_topic = Topic.create!(:title => topic_params[:topic][:title],
-                                    :description => topic_params[:topic][:description],
-                                    :short_summary => topic_params[:topic][:short_summary],
-                                    :extended_content => topic_params[:topic][:extended_content],
-                                    :basket_id => topic_params[:topic][:basket_id],
-                                    :license_id => topic_params[:topic][:license_id],
-                                    :topic_type_id => topic_params[:topic][:topic_type_id],
-                                    :do_not_moderate => true,
-                                    :related_items_position => (SystemSetting.related_items_position_default ? SystemSetting.related_items_position_default : 'inset')
+      related_topic = Topic.create!(title: topic_params[:topic][:title],
+                                    description: topic_params[:topic][:description],
+                                    short_summary: topic_params[:topic][:short_summary],
+                                    extended_content: topic_params[:topic][:extended_content],
+                                    basket_id: topic_params[:topic][:basket_id],
+                                    license_id: topic_params[:topic][:license_id],
+                                    topic_type_id: topic_params[:topic][:topic_type_id],
+                                    do_not_moderate: true,
+                                    related_items_position: (SystemSetting.related_items_position_default ? SystemSetting.related_items_position_default : 'inset')
                                     )
 
       related_topic.creator =  @contributing_user

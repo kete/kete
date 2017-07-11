@@ -1,11 +1,11 @@
 class AddParentIdToAttachmentTables < ActiveRecord::Migration
   def self.up
-    add_column :documents, :parent_id, :integer, :references => nil
-    add_column :document_versions, :parent_id, :integer, :references => nil
-    add_column :videos, :parent_id, :integer, :references => nil
-    add_column :video_versions, :parent_id, :integer, :references => nil
-    add_column :audio_recordings, :parent_id, :integer, :references => nil
-    add_column :audio_recording_versions, :parent_id, :integer, :references => nil
+    add_column :documents, :parent_id, :integer, references: nil
+    add_column :document_versions, :parent_id, :integer, references: nil
+    add_column :videos, :parent_id, :integer, references: nil
+    add_column :video_versions, :parent_id, :integer, references: nil
+    add_column :audio_recordings, :parent_id, :integer, references: nil
+    add_column :audio_recording_versions, :parent_id, :integer, references: nil
   end
 
   def self.down

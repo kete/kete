@@ -2,7 +2,7 @@ class TopicTypesController < ApplicationController
   include FieldMappingsController
 
   def list
-    @topic_types = TopicType.find(1).full_set.paginate(:page => params[:page], :per_page => 10)
+    @topic_types = TopicType.find(1).full_set.paginate(page: params[:page], per_page: 10)
   end
 
   def new

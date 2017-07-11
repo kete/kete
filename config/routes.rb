@@ -202,7 +202,7 @@
 
   # active_scaffold routes
   ACTIVE_SCAFFOLD_CONTROLLERS.each do |as_controller|
-    resources as_controller.to_sym, :active_scaffold => true, :path_prefix => ':urlified_name'
+    resources as_controller.to_sym, active_scaffold: true, path_prefix: ':urlified_name'
   end
 
   match ':urlified_name' => 'index_page#index', :as => :basket_index
@@ -216,7 +216,7 @@
   # match ':urlified_name/:controller/:action/:id.:format' => ':controller#:action', :as => :basket_with_format
   match ':urlified_name(/:controller(/:action(/:id)))'         => ':controller#:action', :as => :basket
 
-  root :to => 'index_page#index', :urlified_name => 'site'
+  root to: 'index_page#index', urlified_name: 'site'
 
   # If none of the above routes match, send the browser to application#rescue_404
   match '*path' => 'application#rescue_404' unless Rails.env.development?

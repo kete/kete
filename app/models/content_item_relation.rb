@@ -1,7 +1,7 @@
 class ContentItemRelation < ActiveRecord::Base
   # this is where we store our polymorphic "related to" between topics and items, and topics and topics
   belongs_to :topic
-  belongs_to :related_item, :polymorphic => true
+  belongs_to :related_item, polymorphic: true
   # by using has_many :through associations we gain some bidirectional flexibility
   # with our polymorphic join model
   # basicaly specifically name the classes on the other side of the relationship here
@@ -10,13 +10,13 @@ class ContentItemRelation < ActiveRecord::Base
     if zoom_class == 'Topic'
       # a topic can be related to another topic
       # but it needs a special name
-      belongs_to :child_related_topic, :class_name => "Topic", :foreign_key => "related_item_id"
+      belongs_to :child_related_topic, class_name: "Topic", foreign_key: "related_item_id"
     else
-      belongs_to zoom_class.tableize.singularize.to_sym, :class_name => zoom_class, :foreign_key => "related_item_id"
+      belongs_to zoom_class.tableize.singularize.to_sym, class_name: zoom_class, foreign_key: "related_item_id"
     end
   end
 
-  acts_as_list :scope => :topic_id
+  acts_as_list scope: :topic_id
 
   # Keep deleted instances in ContentItemRelation::Deleted instead of removing them
   # from table.
@@ -29,14 +29,14 @@ class ContentItemRelation < ActiveRecord::Base
   def self.new_relation_to_topic(topic_id, related_item)
 
     # Undestroy a previous version if present, rather than creating a new relationship.
-    if content_item_relation = self.find_relation_to_topic(topic_id, related_item, :deleted => true)
+    if content_item_relation = self.find_relation_to_topic(topic_id, related_item, deleted: true)
       content_item_relation.undestroy!
 
     else
       content_item_relation = self.create!(
         # Handle topic_id being passed in as Topic instead of Integer or String.
-        :topic_id => topic_id.is_a?(Topic) ? topic_id.id : topic_id,
-        :related_item => related_item
+        topic_id: topic_id.is_a?(Topic) ? topic_id.id : topic_id,
+        related_item: related_item
       ) unless self.find_relation_to_topic(topic_id, related_item)
     end
   end
@@ -50,7 +50,7 @@ class ContentItemRelation < ActiveRecord::Base
 
     def self.find_relation_to_topic(topic_id, related_item, options = {})
       topic_id = topic_id.is_a?(Topic) ? topic_id.id : topic_id
-      options = { :deleted => false }.merge(options)
+      options = { deleted: false }.merge(options)
 
       # Set the class to run the find on.
       find_class = options[:deleted] ? ContentItemRelation::Deleted : ContentItemRelation

@@ -4,15 +4,15 @@ class AddChoices < ActiveRecord::Migration
     create_table 'choices' do |t|
       t.column 'label', :string
       t.column 'value', :string
-      t.column 'parent_id', :integer, :null => true, :references => nil
+      t.column 'parent_id', :integer, null: true, references: nil
       t.column 'lft', :integer
       t.column 'rgt', :integer
       t.column 'data', :string
     end
     
     create_table 'choice_mappings' do |t|
-      t.column 'choice_id', :integer, :references => nil
-      t.column 'field_id', :integer, :references => nil
+      t.column 'choice_id', :integer, references: nil
+      t.column 'field_id', :integer, references: nil
       t.column 'field_type', :string
     end
     
@@ -20,9 +20,9 @@ class AddChoices < ActiveRecord::Migration
     raise "Choices already exist. Please truncate choice table before continuing." \
       if Choice.count_by_sql("SELECT COUNT(*) FROM choices") > 0
         
-    Choice.create!(:label => "ROOT", :value => "ROOT")
+    Choice.create!(label: "ROOT", value: "ROOT")
     
-    change_column :extended_fields, :ftype, :string, :limit => 15
+    change_column :extended_fields, :ftype, :string, limit: 15
     add_column :extended_fields, :user_choice_addition, :boolean
     
   end
@@ -32,7 +32,7 @@ class AddChoices < ActiveRecord::Migration
     drop_table 'choices'
     drop_table 'choice_mappings'
     
-    change_column :extended_fields, :ftype, :string, :limit => 10
+    change_column :extended_fields, :ftype, :string, limit: 10
     remove_column :extended_fields, :user_choice_addition
     
   end

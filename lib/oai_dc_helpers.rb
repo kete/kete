@@ -18,7 +18,7 @@ module OaiDcHelpers
         request_uri = simulated_request[:original_url]
       end
 
-      xml.request(request_uri, :verb => "GetRecord", :identifier => "#{ZoomDb.zoom_id_stub}#{basket_urlified_name}:#{self.class.name}:#{self.id}", :metadataPrefix => "oai_dc")
+      xml.request(request_uri, verb: "GetRecord", identifier: "#{ZoomDb.zoom_id_stub}#{basket_urlified_name}:#{self.class.name}:#{self.id}", metadataPrefix: "oai_dc")
     end
 
     def oai_dc_xml_oai_identifier(xml)
@@ -89,29 +89,29 @@ module OaiDcHelpers
       end
 
       uri_attrs = {
-        :controller => zoom_class_controller(self.class.name),
-        :action => 'show',
-        :id => self,
-        :format => nil,
-        :urlified_name => basket_urlified_name
+        controller: zoom_class_controller(self.class.name),
+        action: 'show',
+        id: self,
+        format: nil,
+        urlified_name: basket_urlified_name
       }
 
       if self.class.name == 'Comment'
         # comments always point back to the thing they are commenting on
         commented_on_item = self.commentable
         uri_attrs = {
-          :controller => zoom_class_controller(commented_on_item.class.name),
-          :action => 'show',
-          :id => commented_on_item,
-          :urlified_name => commented_on_item.basket.urlified_name,
-          :anchor => "comment-#{self.id}",
-          :private => self.commentable_private?.to_s
+          controller: zoom_class_controller(commented_on_item.class.name),
+          action: 'show',
+          id: commented_on_item,
+          urlified_name: commented_on_item.basket.urlified_name,
+          anchor: "comment-#{self.id}",
+          private: self.commentable_private?.to_s
         }
       else
         # Link to private version if generating OAI record for it..
         if respond_to?(:private) && private?
           # don't put title in url for private items
-          uri_attrs.merge!({ :private => "true", :id => self.id.to_s })
+          uri_attrs.merge!({ private: "true", id: self.id.to_s })
         end
       end
 
@@ -119,9 +119,9 @@ module OaiDcHelpers
       # record.
       protocol = appropriate_protocol_for(self)
 
-      xml.send("dc:identifier", utf8_url_for(uri_attrs.merge(:protocol => protocol,
-                                                             :host => host,
-                                                             :locale => false)))
+      xml.send("dc:identifier", utf8_url_for(uri_attrs.merge(protocol: protocol,
+                                                             host: host,
+                                                             locale: false)))
     end
 
     def oai_dc_xml_dc_title(xml, options = {})
@@ -182,7 +182,7 @@ module OaiDcHelpers
     # contribution_date = contributor.version_created_at.to_date
     # xml.send("dcterms:modified", contribution_date)
     def oai_dc_xml_dc_contributors_and_modified_dates(xml)
-      contributors.all(:select => "distinct(users.login), users.resolved_name").each do |contributor|
+      contributors.all(select: "distinct(users.login), users.resolved_name").each do |contributor|
         user_name = contributor.user_name
         xml.send("dc:contributor", user_name)
         # we also add user.login, which is unique per site
@@ -205,7 +205,7 @@ module OaiDcHelpers
         xml.send("dc:subject") {
           xml.cdata commented_on_item.title
         } unless [SystemSetting.blank_title, SystemSetting.no_public_version_title].include?(commented_on_item.title)
-        xml.send("dc:relation", url_for_dc_identifier(commented_on_item, { :force_http => true, :minimal => true }.merge(passed_request)))
+        xml.send("dc:relation", url_for_dc_identifier(commented_on_item, { force_http: true, minimal: true }.merge(passed_request)))
       else
         related_count = related_items.count
         related_items.each do |related|
@@ -216,7 +216,7 @@ module OaiDcHelpers
               xml.cdata related.title
             } unless [SystemSetting.blank_title, SystemSetting.no_public_version_title].include?(related.title)
           end
-          xml.send("dc:relation", url_for_dc_identifier(related, { :force_http => true, :minimal => true }.merge(passed_request)))
+          xml.send("dc:relation", url_for_dc_identifier(related, { force_http: true, minimal: true }.merge(passed_request)))
         end
       end
     end
@@ -275,20 +275,20 @@ module OaiDcHelpers
     # otherwise site's terms and conditions url
     def oai_dc_xml_dc_rights(xml)
       terms_and_conditions_topic = Basket.about_basket.topics.find(:first,
-                                                                   :conditions => "UPPER(title) like '%TERMS AND CONDITIONS'")
+                                                                   conditions: "UPPER(title) like '%TERMS AND CONDITIONS'")
       terms_and_conditions_topic ||= 4
 
       if respond_to?(:license) && !license.blank?
         rights = license.url
       else
         rights = utf8_url_for(
-          :host => SITE_NAME,
-          :id => terms_and_conditions_topic,
-          :urlified_name => Basket.about_basket.urlified_name,
-          :action => 'show',
-          :controller => 'topics',
-          :escape => false,
-          :locale => false
+          host: SITE_NAME,
+          id: terms_and_conditions_topic,
+          urlified_name: Basket.about_basket.urlified_name,
+          action: 'show',
+          controller: 'topics',
+          escape: false,
+          locale: false
         )
       end
 

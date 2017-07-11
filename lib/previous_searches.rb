@@ -13,7 +13,7 @@ module PreviousSearches
     def users_previous_searches
       if logged_in?
         @previous_searches ||= current_user.searches.collect do |s|
-          { :id => s.id, :title => s.title, :url => s.url }
+          { id: s.id, title: s.title, url: s.url }
         end
       else
         @previous_searches ||= session[:searches] || Array.new
@@ -33,7 +33,7 @@ module PreviousSearches
         if previous_same_search
           previous_same_search.update_attribute(:updated_at, Time.now)
         else
-          current_user.searches.create(:title => search[:title], :url => search[:url])
+          current_user.searches.create(title: search[:title], url: search[:url])
         end
       end
       session[:searches] = Array.new
@@ -61,7 +61,7 @@ module PreviousSearches
           previous_search = session[:searches].delete_at(index_in_searches)
           session[:searches].unshift(previous_search)
         else
-          session[:searches].unshift({ :title => title, :url => url })
+          session[:searches].unshift({ title: title, url: url })
         end
       end
     end
@@ -86,21 +86,21 @@ module PreviousSearches
       zoom_class = zoom_class_from_controller(params[:controller_name_for_zoom_class])
       plural_item_type = zoom_class_plural_humanize(zoom_class)
       title_parts = Array.new
-      title_parts << libt(:search_terms, :search_terms => params[:search_terms]) if params[:action] == 'for'
-      title_parts << libt(:topic_type, :topic_type_name => @topic_type.name) if @topic_type
-      title_parts << libt(:tag, :tag_name => @tag.name) if @tag
-      title_parts << libt(:contributor, :contributor_name => @contributor.user_name) if @contributor
-      title_parts << libt(:extended_field, :extended_field => @extended_field.label.singularize.downcase) if @extended_field
-      title_parts << libt(:limit_to_choice, :choice_name => @limit_to_choice.label) if @limit_to_choice
+      title_parts << libt(:search_terms, search_terms: params[:search_terms]) if params[:action] == 'for'
+      title_parts << libt(:topic_type, topic_type_name: @topic_type.name) if @topic_type
+      title_parts << libt(:tag, tag_name: @tag.name) if @tag
+      title_parts << libt(:contributor, contributor_name: @contributor.user_name) if @contributor
+      title_parts << libt(:extended_field, extended_field: @extended_field.label.singularize.downcase) if @extended_field
+      title_parts << libt(:limit_to_choice, choice_name: @limit_to_choice.label) if @limit_to_choice
       if @source_item
         @source_item.private_version! if permitted_to_view_private_items? && @source_item.latest_version_is_private?
-        title_parts << libt(:source_item, :source_item_name => @source_item.title)
+        title_parts << libt(:source_item, source_item_name: @source_item.title)
       end
-      title_parts << libt(:date_since, :since => @date_since) if @date_since
-      title_parts << libt(:date_until, :until => @date_until) if @date_until
-      title_parts << libt(:type_and_basket, :all => ('all' if params[:action] != 'for').to_s, :privacy => @privacy.to_s,
-                                            :item_type => plural_item_type, :basket_name => @current_basket.name).strip
-      title_parts << libt(:sort_type, :sort_type => params[:sort_type]) if params[:sort_type] && params[:sort_type] != 'none'
+      title_parts << libt(:date_since, since: @date_since) if @date_since
+      title_parts << libt(:date_until, until: @date_until) if @date_until
+      title_parts << libt(:type_and_basket, all: ('all' if params[:action] != 'for').to_s, privacy: @privacy.to_s,
+                                            item_type: plural_item_type, basket_name: @current_basket.name).strip
+      title_parts << libt(:sort_type, sort_type: params[:sort_type]) if params[:sort_type] && params[:sort_type] != 'none'
       title_parts << libt(:in_reverse) if params[:sort_direction] == 'reverse'
       title_parts.compact.join(', ')
     end

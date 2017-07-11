@@ -1,6 +1,6 @@
 class ModerateController < ApplicationController
   # everything else is handled by application.rb
-  before_filter :login_required, :only => [:list, :index, :rss]
+  before_filter :login_required, only: [:list, :index, :rss]
 
   permit "site_admin or admin of :current_basket"
 
@@ -12,14 +12,14 @@ class ModerateController < ApplicationController
   helper :baskets
 
   def index
-    redirect_to :action => 'list'
+    redirect_to action: 'list'
   end
 
   # limit to items in this basket
   # that have disputed versions
   def list
-    @rss_tag_auto = rss_tag(:replace_page_with_rss => true)
-    @rss_tag_link = rss_tag(:auto_detect => false, :replace_page_with_rss => true)
+    @rss_tag_auto = rss_tag(replace_page_with_rss: true)
+    @rss_tag_link = rss_tag(auto_detect: false, replace_page_with_rss: true)
     fetch_revisions
   end
 

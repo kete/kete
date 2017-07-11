@@ -1,6 +1,6 @@
 class SystemSettingsController < ApplicationController
   # everything else is handled by application.rb
-  before_filter :login_required, :only => [:list, :index]
+  before_filter :login_required, only: [:list, :index]
 
   permit "tech_admin of :site"
 

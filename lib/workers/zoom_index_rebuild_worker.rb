@@ -7,12 +7,12 @@ class ZoomIndexRebuildWorker < BackgrounDRb::MetaWorker
   include ZoomControllerHelpers
 
   def create(args = nil)
-    results = { :do_work_time => Time.now.utc.to_s,
-      :done_with_do_work => false,
-      :done_with_do_work_time => nil,
-      :records_processed => 0,
-      :records_skipped => 0,
-      :records_failed => 0 }
+    results = { do_work_time: Time.now.utc.to_s,
+      done_with_do_work: false,
+      done_with_do_work_time: nil,
+      records_processed: 0,
+      records_skipped: 0,
+      records_failed: 0 }
 
     cache[:results] = results
   end
@@ -120,7 +120,7 @@ class ZoomIndexRebuildWorker < BackgrounDRb::MetaWorker
           logger.info("Done with #{class_name}")
         end
 
-        clause_values[:start_id] = the_class.find(:first, :select => 'id').id if @start_id.to_s == 'first'
+        clause_values[:start_id] = the_class.find(:first, select: 'id').id if @start_id.to_s == 'first'
 
         # this will only load up to 1k results into memory at a time
         batch_count = 1
@@ -131,14 +131,14 @@ class ZoomIndexRebuildWorker < BackgrounDRb::MetaWorker
         while the_class_count > class_count_so_far
           if class_count_so_far > 0
             clause_values[:start_id] = the_class.find(:first,
-                                                     :select => 'id',
-                                                     :conditions => "id > #{@last_id}").id
+                                                     select: 'id',
+                                                     conditions: "id > #{@last_id}").id
           end
 
 
         # the_class.find_in_batches(:conditions => [clause, clause_values]) do |batch_of_the_class|
           # batch_of_the_class.each do |item|
-        the_class.find(:all, :conditions => [clause, clause_values], :limit => batch_size, :order => 'id').each do |item|
+        the_class.find(:all, conditions: [clause, clause_values], limit: batch_size, order: 'id').each do |item|
             class_count_so_far += 1
             logger.info(item.id.to_s)
 
@@ -155,11 +155,11 @@ class ZoomIndexRebuildWorker < BackgrounDRb::MetaWorker
             end
 
             unless @use_zebraidx
-              item.prepare_and_save_to_zoom(:public_existing_connectiond => @public_zoom_connection,
-                                            :private_existing_connectiond => @private_zoom_connection,
-                                            :import_private => false,
-                                            :skip_private => @skip_private,
-                                            :import_request => @import_request)
+              item.prepare_and_save_to_zoom(public_existing_connectiond: @public_zoom_connection,
+                                            private_existing_connectiond: @private_zoom_connection,
+                                            import_private: false,
+                                            skip_private: @skip_private,
+                                            import_request: @import_request)
 
               if @public_zoom_db.has_zoom_record?(item.zoom_id, @public_zoom_connection) || (@skip_private == false && @private_zoom_db.has_zoom_record?(item.zoom_id, @private_zoom_connection))
                 @record_count += 1
@@ -173,10 +173,10 @@ class ZoomIndexRebuildWorker < BackgrounDRb::MetaWorker
                 logger.info("failed: " + item.inspect)
               end
             else
-              item.prepare_and_save_to_zoom(:write_files => true,
-                                            :import_private => false,
-                                            :skip_private => @skip_private,
-                                            :import_request => @import_request)
+              item.prepare_and_save_to_zoom(write_files: true,
+                                            import_private: false,
+                                            skip_private: @skip_private,
+                                            import_request: @import_request)
             end
 
             # do any work necessary by being at end of batch
@@ -191,8 +191,8 @@ class ZoomIndexRebuildWorker < BackgrounDRb::MetaWorker
                 zebraidx_message = Rake::Task["zebra:index"].execute(ENV)
 
                 # rm data subdirectories now that we are done zebraidx batch processing
-                FileUtils.rm_r("#{Rails.root}/zebradb/public/data/#{class_name.tableize}", :force => true)
-                FileUtils.rm_r("#{Rails.root}/zebradb/private/data/#{class_name.tableize}", :force => true) unless @skip_private
+                FileUtils.rm_r("#{Rails.root}/zebradb/public/data/#{class_name.tableize}", force: true)
+                FileUtils.rm_r("#{Rails.root}/zebradb/private/data/#{class_name.tableize}", force: true) unless @skip_private
 
                 # TODO: more reporting on failed records?
                 @record_count += batch_size
@@ -218,8 +218,8 @@ class ZoomIndexRebuildWorker < BackgrounDRb::MetaWorker
             zebraidx_message = Rake::Task["zebra:index"].execute(ENV)
 
             # rm data subdirectories now that we are done zebraidx batch processing
-            FileUtils.rm_r("#{Rails.root}/zebradb/public/data/#{class_name.tableize}", :force => true)
-            FileUtils.rm_r("#{Rails.root}/zebradb/private/data/#{class_name.tableize}", :force => true) unless @skip_private
+            FileUtils.rm_r("#{Rails.root}/zebradb/public/data/#{class_name.tableize}", force: true)
+            FileUtils.rm_r("#{Rails.root}/zebradb/private/data/#{class_name.tableize}", force: true) unless @skip_private
 
             # TODO: more reporting on failed records?
             @record_count += batch_count

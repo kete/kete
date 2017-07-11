@@ -2,8 +2,8 @@ class ExtendedField < ActiveRecord::Base
   include ExtendedFieldsHelpers
 
   # Choices/enumerations
-  has_many :choice_mappings, :as => :field
-  has_many :choices, :through => :choice_mappings
+  has_many :choice_mappings, as: :field
+  has_many :choices, through: :choice_mappings
 
   # find an extended field based on params[:extended_field]
   def self.from_id_or_label(id_or_label)
@@ -84,28 +84,28 @@ class ExtendedField < ActiveRecord::Base
     self.choices = array_of_ids.collect { |id| Choice.find(id) }
   end
 
-  has_many :topic_type_to_field_mappings, :dependent => :destroy
+  has_many :topic_type_to_field_mappings, dependent: :destroy
   # if we ever use this association, we'll want to add a test for it
-  has_many :topic_type_forms, :through => :topic_type_to_field_mappings, :source => :topic_type, :order => 'position'
+  has_many :topic_type_forms, through: :topic_type_to_field_mappings, source: :topic_type, order: 'position'
 
-  has_many :content_type_to_field_mappings, :dependent => :destroy
+  has_many :content_type_to_field_mappings, dependent: :destroy
   # if we ever use this association, we'll want to add a test for it
-  has_many :content_type_forms, :through => :content_type_to_field_mappings, :source => :content_type, :order => 'position'
+  has_many :content_type_forms, through: :content_type_to_field_mappings, source: :content_type, order: 'position'
 
   validates_presence_of :label
-  validates_uniqueness_of :label, :case_sensitive => false
+  validates_uniqueness_of :label, case_sensitive: false
 
   # don't allow special characters in label that will break our xml
-  validates_format_of :label, :with => /^[^\'\":<>\&,\/\\\?\.\-]*$/, :message => lambda { I18n.t('extended_field_model.invalid_chars', :invalid_chars => ": \', \\, /, &, \", ?, <, >, -, and .") }
+  validates_format_of :label, with: /^[^\'\":<>\&,\/\\\?\.\-]*$/, message: lambda { I18n.t('extended_field_model.invalid_chars', invalid_chars: ": \', \\, /, &, \", ?, <, >, -, and .") }
 
   # don't allow spaces
-  validates_format_of :xml_element_name, :xsi_type, :with => /^[^\s]*$/, :message => lambda { I18n.t('extended_field_model.no_spaces') }
+  validates_format_of :xml_element_name, :xsi_type, with: /^[^\s]*$/, message: lambda { I18n.t('extended_field_model.no_spaces') }
 
   # TODO: add validation that prevents adding xsi_type without xml_element_name
 
   # don't allow topic or content base attributes: title, description
   invalid_label_names = TopicType.column_names + ContentType.column_names
-  validates_exclusion_of :label, :in => invalid_label_names, :message => lambda { I18n.t('extended_field_model.already_used', :invalid_label_names => invalid_label_names.join(", ")) }
+  validates_exclusion_of :label, in: invalid_label_names, message: lambda { I18n.t('extended_field_model.already_used', invalid_label_names: invalid_label_names.join(", ")) }
 
   # TODO: might want to reconsider using subselects here
   def self.find_available_fields(type,type_of)

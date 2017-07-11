@@ -8,11 +8,11 @@
 # $ID: $
 namespace :db do
   desc "Load initial datamodel, then fixtures (in db/bootstrap/, but include default set here for ordering purposes) into the current environment's database.  Load specific fixtures using BOOTSTRAP_FIXTURES=x,y"
-  task :bootstrap => ['db:drop', 'db:create', 'db:bootstrap:load']
+  task bootstrap: ['db:drop', 'db:create', 'db:bootstrap:load']
   namespace :bootstrap do
 
     desc "Going back to VERSION 0 is currently broken for Kete, use db:drop the db:create instead."
-    task :rewind => :environment do
+    task rewind: :environment do
       # migrate back to the stone age
       ENV['VERSION'] = '0'
       Rake::Task["db:migrate"].invoke
@@ -23,7 +23,7 @@ namespace :db do
     end
 
     desc "Migrate clean db (no tables) to current VERSION and load specified or default fixtures for Kete."
-    task :load => :environment do
+    task load: :environment do
       if ENV['RAILS_ENV'] == 'test'
         # assumes that migrations have been run previous to testing
         # Rake::Task["db:schema:load"].invoke
