@@ -18,10 +18,10 @@ module OaiZoom
     def simulated_request
       @simulated_request ||= { host: SITE_NAME,
         protocol: appropriate_protocol_for(self),
-        request_uri: url_for_dc_identifier(self)}
+        request_uri: url_for_dc_identifier(self) }
     end
 
-    def oai_record_xml(options = { })
+    def oai_record_xml(options = {})
       item = options[:item] || self
       request = @import_request || simulated_request
       record = Nokogiri::XML::Builder.new(encoding: 'UTF-8') { |xml|
@@ -101,7 +101,7 @@ module OaiZoom
       record
     end
 
-    def prepare_and_save_to_zoom(options = { })
+    def prepare_and_save_to_zoom(options = {})
       public_existing_connection = options[:public_existing_connection]
       private_existing_connection = options[:private_existing_connection]
 
@@ -159,7 +159,7 @@ module OaiZoom
         host = request.host
       end
       # HACK, brittle, but can't use url_for here
-      xml.send('dc:identifier', fully_qualified_item_url({host: host, controller: zoom_class_controller(item.class.name), item: item, urlified_name: item.basket.urlified_name, locale: false}))
+      xml.send('dc:identifier', fully_qualified_item_url({ host: host, controller: zoom_class_controller(item.class.name), item: item, urlified_name: item.basket.urlified_name, locale: false }))
     end
 
     # TODO: this may not be needed anymore
@@ -183,7 +183,7 @@ module OaiZoom
             xml.send('dc:subject') {
               xml.cdata related.title
             } unless [SystemSetting.blank_title, SystemSetting.no_public_version_title].include?(related.title)
-            xml.send('dc:relation', importer_item_url({host: host, controller: zoom_class_controller(zoom_class), item: related, urlified_name: related.basket.urlified_name, locale: false}, true))
+            xml.send('dc:relation', importer_item_url({ host: host, controller: zoom_class_controller(zoom_class), item: related, urlified_name: related.basket.urlified_name, locale: false }, true))
           end
         end
       when 'Comment'
@@ -192,13 +192,13 @@ module OaiZoom
         xml.send('dc:subject') {
           xml.cdata commented_on_item.title
         } unless [SystemSetting.blank_title, SystemSetting.no_public_version_title].include?(commented_on_item.title)
-        xml.send('dc:relation', importer_item_url({host: host, controller: zoom_class_controller(commented_on_item.class.name), item: commented_on_item, urlified_name: commented_on_item.basket.urlified_name, locale: false}, true))
+        xml.send('dc:relation', importer_item_url({ host: host, controller: zoom_class_controller(commented_on_item.class.name), item: commented_on_item, urlified_name: commented_on_item.basket.urlified_name, locale: false }, true))
       else
         item.topics.each do |related|
           xml.send('dc:subject') {
             xml.cdata related.title
           } unless [SystemSetting.blank_title, SystemSetting.no_public_version_title].include?(related.title)
-          xml.send('dc:relation', importer_item_url({host: host, controller: :topics, item: related, urlified_name: related.basket.urlified_name, locale: false}, true))
+          xml.send('dc:relation', importer_item_url({ host: host, controller: :topics, item: related, urlified_name: related.basket.urlified_name, locale: false }, true))
         end
       end
     end
@@ -214,7 +214,7 @@ module OaiZoom
       if item.respond_to?(:license) && !item.license.blank?
         rights = item.license.url
       else
-        rights = importer_item_url({host: host, controller: 'topics', item: item, urlified_name: Basket.find(SystemSetting.about_basket).urlified_name, id: 4, locale: false})
+        rights = importer_item_url({ host: host, controller: 'topics', item: item, urlified_name: Basket.find(SystemSetting.about_basket).urlified_name, id: 4, locale: false })
       end
 
       xml.send('dc:rights', rights)

@@ -8,7 +8,7 @@ module FriendlyUrls
       Unicode::normalize_KD('-'+string+'-').downcase.gsub('&', 'and').gsub(/[^a-z0-9\s_-]+/, '').gsub(/[\s_-]+/, '-')[0..-2]
     end
 
-    def format_friendly_unicode_for(string, options = { })
+    def format_friendly_unicode_for(string, options = {})
       demarkator = options[:demarkator].nil? ? '-' : options[:demarkator]
       at_start = options[:at_start].nil? ? true : options[:at_start]
       at_end = options[:at_end].nil? ? false : options[:at_end]

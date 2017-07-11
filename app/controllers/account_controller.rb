@@ -409,7 +409,7 @@ class AccountController < ApplicationController
     notice = t('account_controller.change_locale.locale_changed')
     notice += t('account_controller.change_locale.change_permanently') if logged_in?
     flash[:notice] = notice
-    redirect_back_or_default({controller: 'account', action: 'index'}, params[:override_locale])
+    redirect_back_or_default({ controller: 'account', action: 'index' }, params[:override_locale])
   end
 
   #####################################################################
