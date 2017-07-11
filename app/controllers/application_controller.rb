@@ -2,7 +2,7 @@
 # Likewise, all the methods added will be available for all controllers.
 
 class ApplicationController < ActionController::Base
-  #helper :all # include all helpers, all the time
+  # helper :all # include all helpers, all the time
   protect_from_forgery # See ActionController::RequestForgeryProtection for details
 
   include DefaultUrlOptions
@@ -874,7 +874,7 @@ class ApplicationController < ActionController::Base
 
   # ROB:  see rescue_404() #custom_error_pages
   def rescue_action_in_public(exception)
-    #logger.info("ERROR: #{exception.to_s}")
+    # logger.info("ERROR: #{exception.to_s}")
 
     @displaying_error = true
 

@@ -63,11 +63,11 @@ class SearchPresenter
   end
 
   def date_since
-    query.date_since #unless clear_values
+    query.date_since # unless clear_values
   end
 
   def date_until
-    query.date_until #unless clear_values
+    query.date_until # unless clear_values
   end
 
   def extended_field

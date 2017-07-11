@@ -267,7 +267,7 @@ require 'xmlsimple'
       end
     end
 
-    #turns choice hashes into arrays
+    # turns choice hashes into arrays
     def hashes_to_arrays(values)
       values.collect do |value|
         if value.is_a?(Hash) && value.keys.include?('value') && value.keys.include?('label')

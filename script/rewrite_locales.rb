@@ -45,7 +45,7 @@ class LocaleFileNormaliser
     ['pluralize', 'capitalize', 'downcase', 'upcase'].each do |function|
       search_key = "{{t.#{pair[0]}.#{function}}}"
       replace_value = "#{pair[1].send(function)}"
-      #puts search_key +"  --  "+ replace_value
+      # puts search_key +"  --  "+ replace_value
 
       @yaml_text.gsub!(search_key, replace_value)
         # i.e. @yaml_text.gsub("{{t.base.can_be.capitalize}}", tree['base']['can_be'].capitalize)

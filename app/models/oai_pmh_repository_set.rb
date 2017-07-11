@@ -16,7 +16,7 @@
 class OaiPmhRepositorySet < ActiveRecord::Base
   # belongs_to :zoom_db
 
-  validates_presence_of :name, :set_spec, :match_code, :value#, :zoom_db
+  validates_presence_of :name, :set_spec, :match_code, :value# , :zoom_db
   validates_uniqueness_of :name, :set_spec, case_sensitive: false
 
   # don't allow special characters in name or set_spec that will break our xml
