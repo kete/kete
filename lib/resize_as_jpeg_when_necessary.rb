@@ -26,14 +26,14 @@ module ResizeAsJpegWhenNecessary
           allowed_content_types.delete(:image)
           allowed_content_types += Technoweenie::AttachmentFu.content_types
         end
-        content_type_parts = content_type.split("/")
+        content_type_parts = content_type.split('/')
         format = content_type_parts[1].upcase
         allowed_content_types.include?(content_type) && rmagick_can_read_format?(format)
       end
 
       # Not in attachment_fu
       def should_be_converted?(name)
-        ext = File.extname(name).gsub(".", "")
+        ext = File.extname(name).gsub('.', '')
         # we leave along formats that make thumbnails fine themselves
         !%w( gif jpg jpeg png ).include?(ext.downcase) && rmagick_can_read_extension?(ext)
       end
@@ -53,7 +53,7 @@ module ResizeAsJpegWhenNecessary
         # char 3: w if it can read this file, - otherwise
         # char 4: + if it put multiple images into a single image e.g. animated gif
         return false if code.nil?
-        code[1] == "r"
+        code[1] == 'r'
       end
     end
 
@@ -76,7 +76,7 @@ module ResizeAsJpegWhenNecessary
       # rather than hardcode the pattern, we derive it from attachment_fu's thumbnails setting
       if self.class.should_be_converted?(name)
         attachment_options[:thumbnails].keys.each do |key|
-          if name.include?("_" + key.to_s)
+          if name.include?('_' + key.to_s)
             name.sub!(/\.\w+$/, '.jpg')
             break
           end

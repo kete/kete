@@ -1,6 +1,6 @@
 namespace :rabid do
 
-  desc "Merges users who have multiple accounts on same email address."
+  desc 'Merges users who have multiple accounts on same email address.'
   task fixup_duplicate_users: :environment do
 
     all_emails = User.select(:email).all.map(&:email)
@@ -18,13 +18,13 @@ namespace :rabid do
 
       alias_accs.each do |alias_acc|
 
-        log("Contribution")
+        log('Contribution')
         change_has_one(Contribution.where(user_id: alias_acc.id),         alias_acc, primary_acc)
-        log("Import")
+        log('Import')
         change_has_one(Import.where(user_id: alias_acc.id),               alias_acc, primary_acc)
-        log("Search")
+        log('Search')
         change_has_one(Search.where(user_id: alias_acc.id),               alias_acc, primary_acc)
-        log("UserPortraitRelation")
+        log('UserPortraitRelation')
         change_has_one(UserPortraitRelation.where(user_id: alias_acc.id), alias_acc, primary_acc)
 
         change_has_many(alias_acc.roles, alias_acc, primary_acc)
@@ -42,7 +42,7 @@ namespace :rabid do
     instances.each do |instance|
       log("Editing #{instance.id} to reference User #{to_user.id} (from User #{from_user.id})")
       instance.user = to_user
-      log("Saving")
+      log('Saving')
       instance.save
     end
   end
@@ -57,7 +57,7 @@ namespace :rabid do
       ids = instance.user_ids - [from_user.id] + [to_user.id]
       instance.user_ids = ids.uniq
       log("New user ids: #{instance.user_ids}")
-      log("Saving")
+      log('Saving')
       instance.save
     end
   end

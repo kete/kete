@@ -6,9 +6,9 @@
 #
 # $ID: $
 
-desc "Tasks related to running the Zebra search index server for Kete"
+desc 'Tasks related to running the Zebra search index server for Kete'
 namespace :zebra do
-  desc "Set the kete user password in the zebradb/keteaccess file"
+  desc 'Set the kete user password in the zebradb/keteaccess file'
   task :set_keteaccess do
     `htpasswd -cbp #{Rails.root}/zebradb/keteaccess kete #{ENV['ZEBRA_PASSWORD']}`
   end
@@ -37,7 +37,7 @@ namespace :zebra do
     dest.close
   end
 
-  desc "Initialize a specific Zebra server database.  This will erase any existing data.  Be careful."
+  desc 'Initialize a specific Zebra server database.  This will erase any existing data.  Be careful.'
   task :init do
     # have to run the command from inside #{Rails.root}/zebradb/database_directory
     db = ENV['ZEBRA_DB'] || 'public'
@@ -45,13 +45,13 @@ namespace :zebra do
     `cd #{Rails.root}/zebradb/#{db}; zebraidx -c ../conf/zebra-#{db}.cfg -d #{db} commit`
   end
 
-  desc "Start the Zebra server instance for this Kete"
+  desc 'Start the Zebra server instance for this Kete'
   task :start do
     # have to run the command from inside #{Rails.root}/zebradb
     `cd #{Rails.root}/zebradb; zebrasrv -f conf/kete-zebra-servers.xml -l #{Rails.root}/log/zebra.log -p #{Rails.root}/log/zebra.pid -D`
   end
 
-  desc "Stop the Zebra server instance for this Kete and all its child processes"
+  desc 'Stop the Zebra server instance for this Kete and all its child processes'
   task :stop do
     # have to run the command from inside #{Rails.root}/zebradb
     pid_file = Rails.root.to_s + '/log/zebra.pid'
@@ -59,7 +59,7 @@ namespace :zebra do
   end
 
   # Added by James Stradling - 2008-05-21
-  desc "Insert initial blank records into the public and private zebra instances"
+  desc 'Insert initial blank records into the public and private zebra instances'
   task load_initial_records: :environment do
     # Load and render the OAI-PHM record to load
     template = File.read(File.join(Rails.root.to_s, 'zebradb/bootstrap.xml.erb'))
@@ -68,7 +68,7 @@ namespace :zebra do
     # Save the record into both public and private zoom indexes
     # Assumes that both databases will be local and accessible by public and
     # private respectively
-    ["public", "private"].each do |prefix|
+    ['public', 'private'].each do |prefix|
       begin
         zoom_db = ZoomDb.find_by_database_name(prefix)
         the_record_id = "#{ZoomDb.zoom_id_stub}bootstrap:Bootstrap:1"
@@ -91,7 +91,7 @@ namespace :zebra do
   # Walter McGinnis, 2010-06-17
   # use zebra index tool rather than ZOOM External services
   # to add search records
-  desc "Zebra index records for this Kete"
+  desc 'Zebra index records for this Kete'
   task :index do
     ['public', 'private'].each do |db|
       # have to run the command from inside #{Rails.root}/zebradb/#{db}
@@ -100,7 +100,7 @@ namespace :zebra do
     puts "Zebra index completed. See #{Rails.root}/log/zebra.log for details."
   end
 
-  desc "What version of Zebra are we running."
+  desc 'What version of Zebra are we running.'
   task :version do
     # HACK: no version flag on zebrasrv, read value out of last line of man entry
     # pretty friggin brittle

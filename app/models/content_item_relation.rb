@@ -10,9 +10,9 @@ class ContentItemRelation < ActiveRecord::Base
     if zoom_class == 'Topic'
       # a topic can be related to another topic
       # but it needs a special name
-      belongs_to :child_related_topic, class_name: "Topic", foreign_key: "related_item_id"
+      belongs_to :child_related_topic, class_name: 'Topic', foreign_key: 'related_item_id'
     else
-      belongs_to zoom_class.tableize.singularize.to_sym, class_name: zoom_class, foreign_key: "related_item_id"
+      belongs_to zoom_class.tableize.singularize.to_sym, class_name: zoom_class, foreign_key: 'related_item_id'
     end
   end
 
@@ -56,7 +56,7 @@ class ContentItemRelation < ActiveRecord::Base
       find_class = options[:deleted] ? ContentItemRelation::Deleted : ContentItemRelation
 
       if related_item.instance_of?(Topic)
-        relation = find_class.where(topic_id: related_item.id).where(related_item_id: topic_id).where(related_item_type: "Topic").first
+        relation = find_class.where(topic_id: related_item.id).where(related_item_id: topic_id).where(related_item_type: 'Topic').first
       end
 
       # If no relationship has been found above, check the correct way around.

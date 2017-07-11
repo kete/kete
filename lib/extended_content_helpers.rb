@@ -29,7 +29,7 @@ module ExtendedContentHelpers
       end
 
       # Build the anonymous fields that have no dc:* attributes.
-      @builder_instance.send("dc:description") do |nested|
+      @builder_instance.send('dc:description') do |nested|
         @anonymous_fields.each do |k, v|
           nested.safe_send(k, v)
         end
@@ -44,29 +44,29 @@ module ExtendedContentHelpers
         # In the most simple case, the content is represented as "key" => "value", so use this directly
         # now if it's available.
         @anonymous_fields << [original_field_key, data]
-      elsif data.has_key?("value")
+      elsif data.has_key?('value')
         # We add a dc:date for 5 years before and after the value specified
         # We also convert the single YYYY value to a format Zebra can search against
         # Note: We use DateTime instead of just Date/Time so that we can get dates before 1900
-        if data.has_key?("circa")
+        if data.has_key?('circa')
           data['value'] = Time.zone.parse("#{data['value']}-01-01").xmlschema
           if data['circa'] == '1'
             five_years_before, five_years_after = (data['value'].to_i - 5), (data['value'].to_i + 5)
-            @builder_instance.send("dc:date", Time.zone.parse("#{five_years_before}-01-01").xmlschema)
-            @builder_instance.send("dc:date", Time.zone.parse("#{five_years_after}-12-31").xmlschema)
+            @builder_instance.send('dc:date', Time.zone.parse("#{five_years_before}-01-01").xmlschema)
+            @builder_instance.send('dc:date', Time.zone.parse("#{five_years_after}-12-31").xmlschema)
           end
         end
 
         # When xml_element_name is an attribute, the value is stored in a value key in a Hash.
-        if data["xml_element_name"].blank?
-          @anonymous_fields << [original_field_key, data["value"]]
+        if data['xml_element_name'].blank?
+          @anonymous_fields << [original_field_key, data['value']]
         else
           # safe_send will drop the namespace from the element and therefore our dc elements
           # will not be parsed by zebra, only use safe_send on non-dc elements
-          if data["xml_element_name"].include?("dc:")
-            @builder_instance.send(data["xml_element_name"], data["value"])
+          if data['xml_element_name'].include?('dc:')
+            @builder_instance.send(data['xml_element_name'], data['value'])
           else
-            @builder_instance.safe_send(data["xml_element_name"], data["value"])
+            @builder_instance.safe_send(data['xml_element_name'], data['value'])
           end
         end
       else
@@ -88,14 +88,14 @@ module ExtendedContentHelpers
 
         return nil if data_for_values.empty?
 
-        if data["xml_element_name"].blank?
+        if data['xml_element_name'].blank?
           @anonymous_fields << [original_field_key, ":#{data_for_values.join(":")}:"]
         else
-          if data["xml_element_name"].include?("dc:")
+          if data['xml_element_name'].include?('dc:')
             # we want the namespace for dc xml_element_name
-            @builder_instance.send(data["xml_element_name"], ":#{data_for_values.join(":")}:")
+            @builder_instance.send(data['xml_element_name'], ":#{data_for_values.join(":")}:")
           else
-            @builder_instance.safe_send(data["xml_element_name"], ":#{data_for_values.join(":")}:")
+            @builder_instance.safe_send(data['xml_element_name'], ":#{data_for_values.join(":")}:")
           end
         end
       end

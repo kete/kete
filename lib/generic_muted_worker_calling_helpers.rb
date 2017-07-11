@@ -19,7 +19,7 @@ module GenericMutedWorkerCallingHelpers
 
       options = options.merge({ class_key => the_object }) if class_key
 
-      logger.debug("what are worker options " + options.inspect)
+      logger.debug('what are worker options ' + options.inspect)
 
       worker_key = worker_key_for(the_worker_name).to_s
 
@@ -37,8 +37,8 @@ module GenericMutedWorkerCallingHelpers
         MiddleMan.new_worker( worker: worker_type,
                               worker_key: worker_key)
 
-        logger.debug("what is worker_key: " + worker_key.inspect)
-        logger.debug("what are worker options last " + options.inspect)
+        logger.debug('what is worker_key: ' + worker_key.inspect)
+        logger.debug('what are worker options last ' + options.inspect)
 
         MiddleMan.worker( worker_type,
                           worker_key ).async_do_work( arg: {

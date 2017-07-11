@@ -12,7 +12,7 @@ namespace :kete do
                   'kete:repair:correct_site_basket_roles',
                   'kete:repair:extended_fields']
 
-    desc "Fix invalid topic versions (adds version column value or prunes on a case-by-case basis."
+    desc 'Fix invalid topic versions (adds version column value or prunes on a case-by-case basis.'
     task fix_topic_versions: :environment do
 
       # This task repairs all Topic::Versions where #version is nil. This is a problem because it causes
@@ -47,7 +47,7 @@ namespace :kete do
 
           topic_version.update_attributes!(
             version: missing,
-            version_comment: topic_version.version_comment.to_s + " NOTE: Version number fixed automatically."
+            version_comment: topic_version.version_comment.to_s + ' NOTE: Version number fixed automatically.'
           )
 
           print "Fixed missing version for Topic with id = #{topic_version.topic_id} (version #{missing}).\n"
@@ -65,7 +65,7 @@ namespace :kete do
           # Check the associations have been cleared
           topic_version.reload
 
-          raise "Could not clear associations" if \
+          raise 'Could not clear associations' if \
             topic_version.flags.size > 0 || topic_version.tags.size > 0
 
           # Prune if we're still here..
@@ -82,7 +82,7 @@ namespace :kete do
       print "Finished. Fixed #{fixed} topic versions with missing version attributes.\n"
     end
 
-    desc "Set missing contributors on topic versions."
+    desc 'Set missing contributors on topic versions.'
     task set_missing_contributors: :environment do
       fixed = 0
 
@@ -114,11 +114,11 @@ namespace :kete do
         Contribution.create(
           contributed_item: topic_version.topic,
           version: topic_version.version,
-          contributor_role: topic_version.version == 1 ? "creator" : "contributor",
+          contributor_role: topic_version.version == 1 ? 'creator' : 'contributor',
           user_id: 1
         )
 
-        topic_version.update_attribute(:version_comment, topic_version.version_comment.to_s + " NOTE: Contributor added automatically. Actual contributor unknown.")
+        topic_version.update_attribute(:version_comment, topic_version.version_comment.to_s + ' NOTE: Contributor added automatically. Actual contributor unknown.')
 
         print "Added contributor for version #{topic_version.version} of Topic with id = #{topic_version.topic.id}.\n"
         fixed = fixed + 1
@@ -127,24 +127,24 @@ namespace :kete do
       print "Finished. Added contributor to #{fixed} topic versions.\n"
     end
 
-    desc "Copies incorrectly located uploads to the correct location"
+    desc 'Copies incorrectly located uploads to the correct location'
     task correct_upload_locations: :environment do
 
       # Display a warning to the user, since we're copying files around on the file system
       # and there is a possibility of overwriting something important.
 
       puts "\n/!\\ IMPORTANT /!\\\n\n"
-      puts "This task will copy files from audio_recordings/ into audio/, and videos/ into video/, "
+      puts 'This task will copy files from audio_recordings/ into audio/, and videos/ into video/, '
       puts "where they should be stored.\n\n"
 
       puts "You should only run this once, to avoid overwriting files.\n\n"
 
-      puts "Please ensure you have backed up your application directory before continuing. If you "
+      puts 'Please ensure you have backed up your application directory before continuing. If you '
       puts "have not done this, press Ctrl+C now to abort. Otherwise, press any key to continue.\n\n"
 
-      puts "Press any key to continue, or Ctrl+C to abort.."
+      puts 'Press any key to continue, or Ctrl+C to abort..'
       STDIN.gets
-      puts "Running.. please wait.."
+      puts 'Running.. please wait..'
 
       # A list of folders to copy files between
 
@@ -157,7 +157,7 @@ namespace :kete do
 
       ['public', 'private'].each do |privacy_folder|
         copy_directives.each_pair do |src, dest|
-          from  = File.join(RAILS_ROOT, privacy_folder, src, ".")
+          from  = File.join(RAILS_ROOT, privacy_folder, src, '.')
           to    = File.join(RAILS_ROOT, privacy_folder, dest)
 
           # Skip if the wrongly named folder doesn't exist
@@ -177,7 +177,7 @@ namespace :kete do
       Rake::Task['kete:repair:check_uploaded_files'].invoke
     end
 
-    desc "Check uploaded files for accessibility"
+    desc 'Check uploaded files for accessibility'
     task check_uploaded_files: :environment do
 
       puts "Checking files.. please wait.\n\n"
@@ -189,7 +189,7 @@ namespace :kete do
       end.flatten.compact
 
       if inaccessible_files.empty?
-        puts "All files could be found. No further action required."
+        puts 'All files could be found. No further action required.'
       else
         puts "WARNING: Some files could not be found. See below for details:\n\n"
         inaccessible_files.each do |instance|
@@ -198,14 +198,14 @@ namespace :kete do
         puts "\nRun rake kete:repair:correct_upload_locations to relocate files to the correct "
         puts "location.\n\n"
 
-        puts "If you have used Capistrano to deploy your Kete instance, you may also need to copy"
-        puts "archived files from previous versions of your Kete application, which are saved "
+        puts 'If you have used Capistrano to deploy your Kete instance, you may also need to copy'
+        puts 'archived files from previous versions of your Kete application, which are saved '
         puts "under 'releases' in your main application folder."
-        puts "See http://kete.net.nz/documentation/topics/show/207 for complete instructions."
+        puts 'See http://kete.net.nz/documentation/topics/show/207 for complete instructions.'
       end
     end
 
-    desc "Makes sure thumbnails are stored in the correct privacy for their still image"
+    desc 'Makes sure thumbnails are stored in the correct privacy for their still image'
     task correct_thumbnail_privacies: :environment do
       puts "Getting all private StillImages and their public ImageFiles\n"
       StillImage.all.each do |still_image|
@@ -226,7 +226,7 @@ namespace :kete do
     end
 
     # this is not a standard repair, but useful for some legacy sites with bad attached file privacy setting for specific files
-    desc "Move original files that have been mistakenly made publicly downloadable to private original files, specify still images ids with IDS= or a basket with the still images with BASKET_ID="
+    desc 'Move original files that have been mistakenly made publicly downloadable to private original files, specify still images ids with IDS= or a basket with the still images with BASKET_ID='
     task fix_still_image_originals_privacies: :environment do
       puts "Getting specified StillImages and updating their originals to be file_private\n"
       still_images = Array.new
@@ -269,32 +269,32 @@ namespace :kete do
       image_file.save!
     end
 
-    desc "Correct site basket role creation dates for legacy databases"
+    desc 'Correct site basket role creation dates for legacy databases'
     task correct_site_basket_roles: :environment do
       site_basket = Basket.site_basket
       member_role = Role.find_by_name_and_authorizable_type_and_authorizable_id('member', 'Basket', site_basket)
       if member_role # skip this task incase there is no member role in site basket
-        puts "Syncing basket role creation dates with user creation dates"
+        puts 'Syncing basket role creation dates with user creation dates'
         user_roles = member_role.user_roles.all(include: :user)
         user_roles.each do |role|
           next if role.created_at == role.user.created_at
           RolesUser.update_all({created_at: role.user.created_at}, {user_id: role.user, role_id: member_role})
           puts "Updated role creation date for #{role.user.user_name}"
         end
-        puts "Synced basket role creation dates"
+        puts 'Synced basket role creation dates'
       end
     end
 
-    desc "Run all extended field repair tasks"
+    desc 'Run all extended field repair tasks'
     task extended_fields: ['kete:repair:extended_fields:legacy_google_map',
                               'kete:repair:extended_fields:repopulate_related_items_from_topic_type_choices']
 
     namespace :extended_fields do
 
-      desc "Run the legacy google map repair tasks"
+      desc 'Run the legacy google map repair tasks'
       task legacy_google_map: :environment do
         map_types = ['map', 'map_address']
-        map_fields = ExtendedField.all(conditions: ["ftype IN (?)", map_types]).collect { |f| f.label_for_params }
+        map_fields = ExtendedField.all(conditions: ['ftype IN (?)', map_types]).collect { |f| f.label_for_params }
         if map_fields.size > 0
           map_sql = map_fields.collect { |f| "extended_content LIKE '%<#{f}%'" }.join(' OR ')
           each_item_with_extended_fields("(#{map_sql})") do |item|
@@ -327,7 +327,7 @@ namespace :kete do
         end
       end
 
-      desc "Repopulate related items from Topic Type choices extended field"
+      desc 'Repopulate related items from Topic Type choices extended field'
       task repopulate_related_items_from_topic_type_choices: :environment do
         topic_type_extended_fields = ExtendedField.find_all_by_ftype('topic_type')
         if topic_type_extended_fields.size > 0
@@ -385,9 +385,9 @@ namespace :kete do
             db.save!
           end
 
-          p "changed zoom db hosts updated to 127.0.0.1"
+          p 'changed zoom db hosts updated to 127.0.0.1'
         else
-          p "no change to zoom db host necessary"
+          p 'no change to zoom db host necessary'
         end
       end
 
@@ -401,9 +401,9 @@ namespace :kete do
             db.host = 'localhost' if db.host == '127.0.0.1'
             db.save!
           end
-          p "changed zoom db hosts updated to localhost"
+          p 'changed zoom db hosts updated to localhost'
         else
-          p "no change to zoom db host necessary"
+          p 'no change to zoom db host necessary'
         end
       end
     end

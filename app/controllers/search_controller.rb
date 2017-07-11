@@ -73,7 +73,7 @@ class SearchController < ApplicationController
     else
       clear_users_previous_searches
       flash[:notice] = t('search_controller.clear.previous_searches_removed')
-      redirect_to "/" # go to the homepage to avoid another search
+      redirect_to '/' # go to the homepage to avoid another search
     end
   end
 
@@ -215,7 +215,7 @@ class SearchController < ApplicationController
 
     # James Stradling <james@katipo.co.nz> - 2008-05-02
     # Only allow private search if permitted
-    @privacy = "private" if is_a_private_search?
+    @privacy = 'private' if is_a_private_search?
 
     # Load the correct zoom_db instance and connect to it
     @search.zoom_db = ZoomDb.find_by_database_name(zoom_database)
@@ -283,7 +283,7 @@ class SearchController < ApplicationController
       @search.pqf_query.kind_is(zoom_class, operator: 'none')
     else
       # we have to put something into this inorder to get results
-      @search.pqf_query.kind_is("oai", operator: 'none')
+      @search.pqf_query.kind_is('oai', operator: 'none')
     end
 
     # limit baskets searched within
@@ -318,11 +318,11 @@ class SearchController < ApplicationController
 
     # Handle searching against a specific extended field.
     begin
-      dc_element = @extended_field ? @extended_field.xml_element_name.gsub(/^(dc:)/, "") : nil
+      dc_element = @extended_field ? @extended_field.xml_element_name.gsub(/^(dc:)/, '') : nil
     rescue
 
       # We need to handle the case where no xml_element_name has been given.
-      dc_element = "description"
+      dc_element = 'description'
     end
 
     plural_aliased_dc_methods = %w(relation subject creator contributor)
@@ -388,7 +388,7 @@ class SearchController < ApplicationController
                                         action: params[:action],
                                         search_terms: @search_terms)
 
-    logger.debug("what is query: " + @search.pqf_query.to_s.inspect)
+    logger.debug('what is query: ' + @search.pqf_query.to_s.inspect)
 
     this_result_set = @search.zoom_db.process_query(query_options)
 
@@ -484,7 +484,7 @@ class SearchController < ApplicationController
       location_hash.merge!({ date_until: params[:date_until] })
     end
 
-    logger.debug("terms_to_page_url_redirect hash: " + location_hash.inspect)
+    logger.debug('terms_to_page_url_redirect hash: ' + location_hash.inspect)
 
     redirect_to url_for(location_hash)
   end
@@ -511,8 +511,8 @@ class SearchController < ApplicationController
     single_phrases = search_terms.scan(/'(.*?)'/).flatten
 
     # Remove those phrases from the original string
-    left_over = search_terms.gsub(/"(.*?)"/, "").squeeze(" ").strip
-    left_over = left_over.gsub(/'(.*?)'/, "").squeeze(" ").strip
+    left_over = search_terms.gsub(/"(.*?)"/, '').squeeze(' ').strip
+    left_over = left_over.gsub(/'(.*?)'/, '').squeeze(' ').strip
 
     # Break up the remaining keywords on whitespace
     keywords = left_over.split(/ /)
@@ -543,7 +543,7 @@ class SearchController < ApplicationController
     @current_homepage = @current_basket.index_topic
 
     case params[:function]
-      when "find"
+      when 'find'
         @results = Array.new
         @search_terms = params[:search_terms]
         search unless @search_terms.blank?
@@ -553,7 +553,7 @@ class SearchController < ApplicationController
           end
           @results.collect! { |result| Module.class_eval(result[:class]).find(result[:id]) }
         end
-      when "change"
+      when 'change'
         @new_homepage_topic = Topic.find(params[:homepage_topic_id])
         version_after_update = @new_homepage_topic.max_version + 1
         @homepage_different = (@current_homepage != @new_homepage_topic)
@@ -587,7 +587,7 @@ class SearchController < ApplicationController
           flash[:error] = t('search_controller.find_index.failed')
         end
     end
-    render action: 'homepage_topic_form', layout: "popup_dialog"
+    render action: 'homepage_topic_form', layout: 'popup_dialog'
   end
 
   # #related_items
@@ -624,9 +624,9 @@ class SearchController < ApplicationController
     params[:relate_to_type] = 'Topic' if params[:relate_to_type] == 'IndexPage'
 
     @relate_to_item = params[:relate_to_type].constantize.find(params[:relate_to_item])
-    @related_class = (params[:related_class] || "Topic")
+    @related_class = (params[:related_class] || 'Topic')
 
-    related_class_is_topic = @related_class == "Topic" ? true : false
+    related_class_is_topic = @related_class == 'Topic' ? true : false
     # this will throw exception if passed in related_class isn't valid
     related_class = only_valid_zoom_class(@related_class)
     related_class_name = related_class.name
@@ -641,13 +641,13 @@ class SearchController < ApplicationController
     existing = @relate_to_item.send(method_name_for_related_items) unless params[:function] == 'restore'
 
     case params[:function]
-    when "remove"
+    when 'remove'
       @verb = t('search_controller.find_related.remove')
-      @next_action = "unlink"
+      @next_action = 'unlink'
       @results = existing
-    when "restore"
+    when 'restore'
       @verb = t('search_controller.find_related.restore')
-      @next_action = "link"
+      @next_action = 'link'
 
       # Find resulting items through deleted relationships
       @results = ContentItemRelation::Deleted.find_all_by_topic_id_and_related_item_type(@relate_to_item, related_class_name) \
@@ -656,9 +656,9 @@ class SearchController < ApplicationController
         @results += ContentItemRelation::Deleted.find_all_by_related_item_id_and_related_item_type(@relate_to_item, 'Topic') \
                                                 .collect { |r| Topic.find(r.topic_id) }
       end
-    when "add"
+    when 'add'
       @verb = t('search_controller.find_related.add')
-      @next_action = "link"
+      @next_action = 'link'
       @results = Array.new
 
       # Run a search if necessary
@@ -712,7 +712,7 @@ class SearchController < ApplicationController
       end
     end
 
-    render action: 'related_form', layout: "popup_dialog"
+    render action: 'related_form', layout: 'popup_dialog'
   end
 
   # keep the user's preference for number of results per page
@@ -737,7 +737,7 @@ class SearchController < ApplicationController
     store_results_for_slideshow
 
     # Redirect to the first or last object on the page, depending on the direction we're going..
-    url = (params[:direction] == "up") ? session[:slideshow][:results].first : session[:slideshow][:results].last
+    url = (params[:direction] == 'up') ? session[:slideshow][:results].first : session[:slideshow][:results].last
 
     # Preserve the image view size when redirecting to the next page.
     url = append_options_to_url(url, "view_size=#{slideshow.image_view_size}") if slideshow.image_view_size
@@ -777,11 +777,11 @@ class SearchController < ApplicationController
 
   # Check whether we are searching for candidate related items or not
   def searching_for_related_items?
-    params[:controller] == "search" and params[:action] == "find_related"
+    params[:controller] == 'search' and params[:action] == 'find_related'
   end
 
   def searching_for_index_topics?
-    params[:controller] == "search" and params[:action] == "find_index"
+    params[:controller] == 'search' and params[:action] == 'find_index'
   end
 
   # James - 2008-07-04
@@ -798,10 +798,10 @@ class SearchController < ApplicationController
 
     # We want to retain the original search action name for future use
     altered_params = params
-    altered_params.merge!(search_action: params[:action]) unless params[:action] == "slideshow_page_load"
+    altered_params.merge!(search_action: params[:action]) unless params[:action] == 'slideshow_page_load'
 
     if slideshow.results.nil?
-      slideshow.search_params = { "page" => "1" }
+      slideshow.search_params = { 'page' => '1' }
     end
 
     slideshow.results         = results
@@ -870,12 +870,12 @@ class SearchController < ApplicationController
 
   # Check if we are meant to be running a private search #=> Boolean
   def is_a_private_search?
-    @private_search ||= params[:privacy_type] == "private"
+    @private_search ||= params[:privacy_type] == 'private'
   end
 
   # Which zoom database to use #=> String (public/private)
   def zoom_database
-    @zoom_database ||= is_a_private_search? ? "private" : "public"
+    @zoom_database ||= is_a_private_search? ? 'private' : 'public'
   end
 
   # Ensure RSS errors are handled with a suitable response

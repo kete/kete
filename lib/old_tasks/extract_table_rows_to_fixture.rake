@@ -22,7 +22,7 @@ namespace :db do
       sql += "where id in (#{rows})"
     end
     ActiveRecord::Base.establish_connection
-    i = "000"
+    i = '000'
     base_path = ENV['OUTPUT_FIXTURES_TO_PATH']
     if base_path.blank?
       base_path = "#{RAILS_ROOT}/test/fixtures"

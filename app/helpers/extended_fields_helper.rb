@@ -6,7 +6,7 @@ module ExtendedFieldsHelper
   def topic_type_form_column(record, input_name)
     topic_types = TopicType.find(1).full_set
     select = topic_type_select_with_indent('record', 'topic_type', topic_types, :id, :name, nil,
-                                          { class: "select", tabindex: '1' })
+                                          { class: 'select', tabindex: '1' })
     content_tag('div', select, { id: "hidden_choices_topic_type_select_#{record.id.to_s}", style: 'display:none;' })
   end
 
@@ -19,25 +19,25 @@ module ExtendedFieldsHelper
   # Using YUI TreeView
   def pseudo_choices_form_column(record, input_name)
     top_level = Choice.find_top_level
-    id = "tree_" + record.id.to_s
+    id = 'tree_' + record.id.to_s
 
     # Containing DIV for theme
     '<div class="yui-skin-sam" style="float: left" id="hidden_choices_select_' + record.id.to_s + '">' +
 
     # Expand all and collapse all links
-    content_tag("p", link_to_function(t('extended_fields_helper.pseudo_choices_form_column.expand_all'), "", id: "#{id}_expand") + " | " + link_to_function(t('extended_fields_helper.pseudo_choices_form_column.collapse_all'), "", id: "#{id}_collapse")) +
+    content_tag('p', link_to_function(t('extended_fields_helper.pseudo_choices_form_column.expand_all'), '', id: "#{id}_expand") + ' | ' + link_to_function(t('extended_fields_helper.pseudo_choices_form_column.collapse_all'), '', id: "#{id}_collapse")) +
 
     # Actual XHTML list that is shown in the case JS fails or is not supported
     '<div id="choice_selection_' + record.id.to_s + '"><ul>' +
-    top_level.inject("") do |m, choice|
+    top_level.inject('') do |m, choice|
       m = m + build_ul_for_choice(choice, record)
     end +
     '</ul></div>' +
     '<div id="allow_user_additions">' +
-      "#{t('extended_fields_helper.pseudo_choices_form_column.allow_user_choices')} #{t('extended_fields_helper.pseudo_choices_form_column.allow_user_choices_yes')} " + radio_button_tag("record[user_choice_addition]", 1, record.user_choice_addition?) + " #{t('extended_fields_helper.pseudo_choices_form_column.allow_user_choices_no')} " +   radio_button_tag("record[user_choice_addition]", 0, !record.user_choice_addition?) +
+      "#{t('extended_fields_helper.pseudo_choices_form_column.allow_user_choices')} #{t('extended_fields_helper.pseudo_choices_form_column.allow_user_choices_yes')} " + radio_button_tag('record[user_choice_addition]', 1, record.user_choice_addition?) + " #{t('extended_fields_helper.pseudo_choices_form_column.allow_user_choices_no')} " +   radio_button_tag('record[user_choice_addition]', 0, !record.user_choice_addition?) +
     '</div>' +
     '<div id="link_choice_values">' +
-      "#{t('extended_fields_helper.pseudo_choices_form_column.link_choice_values')} #{t('extended_fields_helper.pseudo_choices_form_column.link_choice_values_yes')} " + radio_button_tag("record[link_choice_values]", 1, !record.dont_link_choice_values?) + " #{t('extended_fields_helper.pseudo_choices_form_column.link_choice_values_no')} " + radio_button_tag("record[link_choice_values]", 0, record.dont_link_choice_values?) +
+      "#{t('extended_fields_helper.pseudo_choices_form_column.link_choice_values')} #{t('extended_fields_helper.pseudo_choices_form_column.link_choice_values_yes')} " + radio_button_tag('record[link_choice_values]', 1, !record.dont_link_choice_values?) + " #{t('extended_fields_helper.pseudo_choices_form_column.link_choice_values_no')} " + radio_button_tag('record[link_choice_values]', 0, record.dont_link_choice_values?) +
     '</div>' +
     '</div>'
 
@@ -45,27 +45,27 @@ module ExtendedFieldsHelper
 
   # Build hierarchical UL, LI structure for a choice and recurse through children elements
   def build_ul_for_choice(choice, record)
-    content_tag("li", check_box_tag("record[pseudo_choices][]", choice.id.to_s, record.choices.member?(choice)) + " " + choice.label + build_ul_for_children_of(choice, record))
+    content_tag('li', check_box_tag('record[pseudo_choices][]', choice.id.to_s, record.choices.member?(choice)) + ' ' + choice.label + build_ul_for_children_of(choice, record))
   end
 
   def user_choice_addition_form_column(record, input_name)
-    ""
+    ''
   end
 
   def link_choice_values_form_column(record, input_name)
-    ""
+    ''
   end
 
   # Build hierarchicial UL, LI for children elements of a choice
   def build_ul_for_children_of(choice, record)
     if choice.children.empty?
-      ""
+      ''
     else
-      "<ul>" +
-      choice.children.inject("") do |m, child|
+      '<ul>' +
+      choice.children.inject('') do |m, child|
         m = m + build_ul_for_choice(child, record)
       end +
-      "</ul>"
+      '</ul>'
     end
   end
 
@@ -102,7 +102,7 @@ module ExtendedFieldsHelper
   # Ensure that label value cannot be changed (attr_readonly)
   def label_form_column(record, input_name)
     if record.new_record?
-      text_field(:record, :label, class: "label-input text-input", id: "record_label_", size: "20", autocomplete: "off")
+      text_field(:record, :label, class: 'label-input text-input', id: 'record_label_', size: '20', autocomplete: 'off')
     else
       "#{record.label} #{t('extended_fields_helper.label_form_column.cannot_be_changed')}"
     end
@@ -111,7 +111,7 @@ module ExtendedFieldsHelper
   # Ensure that multiple value cannot be changed (attr_readonly)
   def multiple_form_column(record, input_name)
     if record.new_record?
-      select(:record, :multiple, [["True", true], ["False", false]])
+      select(:record, :multiple, [['True', true], ['False', false]])
     else
       "#{record.multiple.to_s.capitalize} #{t('extended_fields_helper.multiple_form_column.cannot_be_changed')}"
     end
@@ -144,30 +144,30 @@ module ExtendedFieldsHelper
     else
 
       currently_selected = record.children.map do |choice|
-        check_box_tag("record[children][]", choice.id, true) + " " + choice.label
+        check_box_tag('record[children][]', choice.id, true) + ' ' + choice.label
       end
 
       candidates = Choice.root.children.reject { |c| record.parent == c || record == c }.map do |choice|
-        check_box_tag("record[children][]", choice.id, false) + " " + choice.label
+        check_box_tag('record[children][]', choice.id, false) + ' ' + choice.label
       end
 
-      output = content_tag("h6", t('extended_fields_helper.children_form_column.existing_sub_choices'))
-      output << "<ul>" + currently_selected.inject("") do |memo, choice|
-        memo = memo + content_tag("li", choice)
-      end + "</ul>"
+      output = content_tag('h6', t('extended_fields_helper.children_form_column.existing_sub_choices'))
+      output << '<ul>' + currently_selected.inject('') do |memo, choice|
+        memo = memo + content_tag('li', choice)
+      end + '</ul>'
 
-      output << content_tag("h6", t('extended_fields_helper.children_form_column.add_more_sub_choices'))
-      output << "<ul>" + candidates.inject("") do |memo, choice|
-        memo = memo + content_tag("li", choice)
-      end + "</ul>"
+      output << content_tag('h6', t('extended_fields_helper.children_form_column.add_more_sub_choices'))
+      output << '<ul>' + candidates.inject('') do |memo, choice|
+        memo = memo + content_tag('li', choice)
+      end + '</ul>'
 
-      content_tag("div", output, style: "float: left")
+      content_tag('div', output, style: 'float: left')
     end
   end
 
   # Ensure children of a choice are displayed in a reasonable manner
   def children_column(record)
-    record.children.map { |c| c.label }.join(", ")
+    record.children.map { |c| c.label }.join(', ')
   end
 
   # Generates label and editor for extended field
@@ -209,9 +209,9 @@ module ExtendedFieldsHelper
     builder = "extended_field_#{extended_field.ftype}_editor".to_sym
     if %w(choice autocomplete).member?(extended_field.ftype)
       send(:extended_field_choice_editor, name, value, tag_options, extended_field)
-    elsif extended_field.ftype == "topic_type"
+    elsif extended_field.ftype == 'topic_type'
       send(:extended_field_topic_type_editor, name, value, tag_options, extended_field)
-    elsif extended_field.ftype == "year"
+    elsif extended_field.ftype == 'year'
       send(:extended_field_year_editor, name, value, tag_options, extended_field)
     elsif %w(map map_address).member?(extended_field.ftype)
       send(builder, name, value, extended_field, tag_options)
@@ -223,20 +223,20 @@ module ExtendedFieldsHelper
   end
 
   def extended_field_checkbox_editor(name, value, options)
-    check_box_tag(name, "yes", (value.to_s =~ /^(Yes|yes)$/), options)
+    check_box_tag(name, 'yes', (value.to_s =~ /^(Yes|yes)$/), options)
   end
 
   def extended_field_radio_editor(name, existing_value, options)
-    default_choices = [[t('extended_fields_helper.extended_field_radio_editor.yes'), "yes"], [t('extended_fields_helper.extended_field_radio_editor.no'), "no"], [t('extended_fields_helper.extended_field_radio_editor.no_value'), ""]]
+    default_choices = [[t('extended_fields_helper.extended_field_radio_editor.yes'), 'yes'], [t('extended_fields_helper.extended_field_radio_editor.no'), 'no'], [t('extended_fields_helper.extended_field_radio_editor.no_value'), '']]
 
     # In the future we might allow radio buttons to be used for selecting choices
     # choices = extended_field.choices.empty? ? default_choices : extended_field.choices.find_top_level.map { |c| [c.label, c.value] }
 
     html = default_choices.map do |label, value|
-      radio_button_tag(name, value, existing_value.to_s == value) + " " + label
+      radio_button_tag(name, value, existing_value.to_s == value) + ' ' + label
     end.join("<br />\n")
 
-    content_tag("div", html, "class" => "extended_field_radio_button_collection")
+    content_tag('div', html, 'class' => 'extended_field_radio_button_collection')
   end
 
   def extended_field_date_editor(name, value, options)
@@ -248,7 +248,7 @@ module ExtendedFieldsHelper
   end
 
   def extended_field_textarea_editor(name, value, options)
-    text_area_tag(name, value, options.merge(rows: 5, class: "extended_field_textarea"))
+    text_area_tag(name, value, options.merge(rows: 5, class: 'extended_field_textarea'))
   end
 
   def extended_field_choice_editor(name, value, options, extended_field)
@@ -265,7 +265,7 @@ module ExtendedFieldsHelper
     end
 
     # Provide an appropriate selection interface..
-    partial = extended_field.ftype == "choice" ? 'choice_select_editor' : 'choice_autocomplete_editor'
+    partial = extended_field.ftype == 'choice' ? 'choice_select_editor' : 'choice_autocomplete_editor'
 
     # Generate the choices we need to populate the SELECT or autocomplete.
     choices = extended_field.choices.find_top_level
@@ -331,19 +331,19 @@ module ExtendedFieldsHelper
                                   before: "Element.show('#{id_for_extended_field(extended_field)}_#{level}_spinner')",
                                   complete: "Element.hide('#{id_for_extended_field(extended_field)}_#{level}_spinner')")
 
-    text_field_tag("#{name}[#{level}]", value, options.merge(id: "#{id_for_extended_field(extended_field)}_#{level}", autocomplete: "off", tabindex: 1)) +
+    text_field_tag("#{name}[#{level}]", value, options.merge(id: "#{id_for_extended_field(extended_field)}_#{level}", autocomplete: 'off', tabindex: 1)) +
     "<img src='#{image_path('indicator.gif')}' width='16' height='16' alt='#{t('extended_fields_helper.extended_field_choice_autocomplete_editor.getting_choices')}' id='#{id_for_extended_field(extended_field)}_#{level}_spinner' style='display:none;' />" +
-    tag("br") +
-    content_tag("div", nil,
-      class: "extended_field_autocomplete",
+    tag('br') +
+    content_tag('div', nil,
+      class: 'extended_field_autocomplete',
       id: id_for_extended_field(extended_field) + "_autocomplete_#{level}",
-      style: "display: none"
+      style: 'display: none'
     ) +
 
     # We need to let our controller know that we're using autocomplete for this field.
     # We know the field we expect should be something like topic[extended_content][someonething]..
 
-    hidden_field_tag("#{name.split(/\[/).first}[extended_content][#{name.scan(/\[([a-z_]*)\]/).flatten.at(1)}_from_autocomplete]", "true", id: id_for_extended_field(extended_field) + "_from_autocomplete")
+    hidden_field_tag("#{name.split(/\[/).first}[extended_content][#{name.scan(/\[([a-z_]*)\]/).flatten.at(1)}_from_autocomplete]", 'true', id: id_for_extended_field(extended_field) + '_from_autocomplete')
   end
 
   def extended_field_topic_type_editor(name, value, tag_options, extended_field)
@@ -388,17 +388,17 @@ module ExtendedFieldsHelper
   end
 
   def extended_field_year_editor(name, value, tag_options, extended_field)
-    html = text_field_tag(name+"[value]", (value['value'] if value), tag_options)
+    html = text_field_tag(name+'[value]', (value['value'] if value), tag_options)
     if extended_field.circa?
-      html += hidden_field_tag(name+"[circa]", "0")
-      html += (check_box_tag(name+"[circa]", "1", (value && value['circa'].to_s == '1')) + "Circa?")
+      html += hidden_field_tag(name+'[circa]', '0')
+      html += (check_box_tag(name+'[circa]', '1', (value && value['circa'].to_s == '1')) + 'Circa?')
     end
     html
   end
 
   # Generates label XHTML
   def extended_field_label(extended_field, required = false)
-    options = required ? { class: "required" } : Hash.new
+    options = required ? { class: 'required' } : Hash.new
     required_icon = required ? ' <em>*</em>' : ''
 
     label_tag(id_for_extended_field(extended_field), display_label_for(extended_field) + required_icon, options)
@@ -409,7 +409,7 @@ module ExtendedFieldsHelper
   end
 
   def additional_extended_field_control(extended_field, n)
-    id = id_for_extended_field(extended_field) + "_additional"
+    id = id_for_extended_field(extended_field) + '_additional'
     text = t( 'extended_fields_helper.additional_extended_field_control.add_another', 
               field_name: display_label_for(extended_field).singularize.downcase)
     url = { controller: 'extended_fields',
@@ -421,7 +421,7 @@ module ExtendedFieldsHelper
   end
 
   def qualified_name_for_field(extended_field)
-    extended_field.label.downcase.gsub(/\s/, "_")
+    extended_field.label.downcase.gsub(/\s/, '_')
   end
 
   # Get the existing value for a single extended field
@@ -431,7 +431,7 @@ module ExtendedFieldsHelper
   def field_value_from_hash(extended_field, array)
     array.select { |k, v| k == qualified_name_for_field(extended_field) }.last.last
   rescue
-    ""
+    ''
   end
 
   # Get the existing values for a multiple value capable extended field.
@@ -440,17 +440,17 @@ module ExtendedFieldsHelper
   # * position_in_set: A number offset of the value want. The collection starts with key 1, not 0 as in a traditional associative
   #   array.
   def field_value_from_multiples_hash(extended_field, hash, position_in_set, level = 1)
-    field_values = hash[qualified_name_for_field(extended_field) + "_multiple"]
-    field_values = field_values[position_in_set.to_s][qualified_name_for_field(extended_field)] || ""
+    field_values = hash[qualified_name_for_field(extended_field) + '_multiple']
+    field_values = field_values[position_in_set.to_s][qualified_name_for_field(extended_field)] || ''
 
     if field_values.is_a?(Hash) && extended_field.ftype != 'year'
-      field_values.reject { |k, v| k == "xml_element_name" }.sort.collect { |v| v.last } || []
+      field_values.reject { |k, v| k == 'xml_element_name' }.sort.collect { |v| v.last } || []
     else
       field_values
     end
 
   rescue
-    ""
+    ''
   end
 
   # Get the keys of existing values for a 'multiple' extended field.
@@ -458,7 +458,7 @@ module ExtendedFieldsHelper
   # * extended_field: An instance of ExtendedField
   # * hash: xml_attributes from the model.
   def existing_multiples_in(extended_field, hash)
-    multiples = hash[qualified_name_for_field(extended_field) + "_multiple"]
+    multiples = hash[qualified_name_for_field(extended_field) + '_multiple']
     # We need to to .last.last because what we get initially is like [['field_name', ['value', 'value,..]]] and we need to unnest
     # without flatten the values into the same dimension of the array as the field name.
     multiples.blank? ? nil : multiples.keys
@@ -467,15 +467,15 @@ module ExtendedFieldsHelper
   # Get a list of choices for display
   def extended_field_choices_unordered_list
     if top_level = Choice.find_top_level
-      content_tag("ul",
+      content_tag('ul',
 
-        top_level.inject("") { |memo, choice|
+        top_level.inject('') { |memo, choice|
           memo + list_item_for_choice(choice)
         }
 
       )
     else
-      ""
+      ''
     end
   end
 
@@ -497,16 +497,16 @@ module ExtendedFieldsHelper
       url_hash.merge!(privacy_type: params[:privacy_type])
     end
 
-    base = content_tag("li", link_to(choice.label, send(method, url_hash.merge(limit_to_choice: choice)),
+    base = content_tag('li', link_to(choice.label, send(method, url_hash.merge(limit_to_choice: choice)),
                                                                 { title: choice.value }),
                              { class: (options[:current] ? 'current' : '') })
 
     children = ''
     if options[:include_children]
-      children = choice.children.inject("") { |memo, child| list_item_for_choice(child) }
+      children = choice.children.inject('') { |memo, child| list_item_for_choice(child) }
     end
 
-    children.blank? ? base : base + content_tag("ul", children.to_s)
+    children.blank? ? base : base + content_tag('ul', children.to_s)
   end
 
   private
@@ -525,7 +525,7 @@ module ExtendedFieldsHelper
     end
 
     def create_safe_extended_field_string(string)
-      string.gsub(/\]/, "").gsub(/\[/, '_')
+      string.gsub(/\]/, '').gsub(/\[/, '_')
     end
 
 end

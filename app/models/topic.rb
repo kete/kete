@@ -44,20 +44,20 @@ class Topic < ActiveRecord::Base
 
   # Content Item Relationships when the topic is on the related_item end
   # of the relationship, and another topic occupies topic_id.
-  has_many :child_content_item_relations, class_name: "ContentItemRelation", as: :related_item, dependent: :delete_all
+  has_many :child_content_item_relations, class_name: 'ContentItemRelation', as: :related_item, dependent: :delete_all
   has_many :parent_related_topics, through: :child_content_item_relations, source: :topic
 
   def self.updated_since(date)
     # Topic.where( <Topic or its join tables is newer than date>  )
 
-    taggings_sql =                         Tagging.uniq.select(:taggable_id).where(taggable_type: 'Topic').where("created_at > ?", date).to_sql
-    contributions_sql =                    Contribution.uniq.select(:contributed_item_id).where(contributed_item_type: 'Topic').where("updated_at > ?", date).to_sql
-    content_item_relations_sql_1 =         ContentItemRelation.uniq.select(:related_item_id).where(related_item_type: 'Topic').where("updated_at > ?", date).to_sql
-    content_item_relations_sql_2 =         ContentItemRelation.uniq.select(:topic_id).where("updated_at > ?", date).to_sql
+    taggings_sql =                         Tagging.uniq.select(:taggable_id).where(taggable_type: 'Topic').where('created_at > ?', date).to_sql
+    contributions_sql =                    Contribution.uniq.select(:contributed_item_id).where(contributed_item_type: 'Topic').where('updated_at > ?', date).to_sql
+    content_item_relations_sql_1 =         ContentItemRelation.uniq.select(:related_item_id).where(related_item_type: 'Topic').where('updated_at > ?', date).to_sql
+    content_item_relations_sql_2 =         ContentItemRelation.uniq.select(:topic_id).where('updated_at > ?', date).to_sql
     deleted_content_item_relations_sql_1 = "SELECT DISTINCT related_item_id FROM deleted_content_item_relations WHERE related_item_type = 'Topic' AND updated_at > ?"
-    deleted_content_item_relations_sql_2 = "SELECT DISTINCT topic_id FROM deleted_content_item_relations WHERE updated_at > ?"
+    deleted_content_item_relations_sql_2 = 'SELECT DISTINCT topic_id FROM deleted_content_item_relations WHERE updated_at > ?'
 
-    and_query = Topic.where("topics.  updated_at > ?", date).
+    and_query = Topic.where('topics.  updated_at > ?', date).
                       where("topics.id IN ( #{taggings_sql} )"). # Tagging doesn't have an updated_at column.
                       where("topics.id IN ( #{contributions_sql} )").
                       where("topics.id IN ( #{content_item_relations_sql_1} )").
@@ -65,7 +65,7 @@ class Topic < ActiveRecord::Base
                       where("topics.id IN ( #{deleted_content_item_relations_sql_1} )", date).
                       where("topics.id IN ( #{deleted_content_item_relations_sql_2} )", date)
 
-    or_query = and_query.where_values.join(" OR ")
+    or_query = and_query.where_values.join(' OR ')
 
     Topic.where(or_query).uniq    # avoid repeated results from repeating ids.
   end
@@ -91,27 +91,27 @@ class Topic < ActiveRecord::Base
   # It'll probably be fixed in a later Rails.
 
   def still_images
-    still_image_content_relations = content_item_relations.where(related_item_type: "StillImage").order(:position)
+    still_image_content_relations = content_item_relations.where(related_item_type: 'StillImage').order(:position)
     StillImage.joins(:content_item_relations).merge(still_image_content_relations).includes(:basket)
   end
 
   def audio_recordings
-    audio_recording_content_relations = content_item_relations.where(related_item_type: "AudioRecording").order(:position)
+    audio_recording_content_relations = content_item_relations.where(related_item_type: 'AudioRecording').order(:position)
     AudioRecording.joins(:content_item_relations).merge(audio_recording_content_relations).includes(:basket)
   end
 
   def videos
-    video_content_relations = content_item_relations.where(related_item_type: "Video").order(:position)
+    video_content_relations = content_item_relations.where(related_item_type: 'Video').order(:position)
     Video.joins(:content_item_relations).merge(video_content_relations).includes(:basket)
   end
 
   def web_links
-    web_link_content_relations = content_item_relations.where(related_item_type: "WebLink").order(:position)
+    web_link_content_relations = content_item_relations.where(related_item_type: 'WebLink').order(:position)
     WebLink.joins(:content_item_relations).merge(web_link_content_relations).includes(:basket)
   end
 
   def documents
-    document_content_relations = content_item_relations.where(related_item_type: "Document").order(:position)
+    document_content_relations = content_item_relations.where(related_item_type: 'Document').order(:position)
     ::Document.joins(:content_item_relations).merge(document_content_relations).includes(:basket)
   end
 
@@ -190,7 +190,7 @@ class Topic < ActiveRecord::Base
   # Private Item mixin
   include ItemPrivacy::ActsAsVersionedOverload
   include ItemPrivacy::TaggingOverload
-  self.non_versioned_columns << "private_version_serialized"
+  self.non_versioned_columns << 'private_version_serialized'
 
 
   after_save :store_correct_versions_after_save
@@ -199,7 +199,7 @@ class Topic < ActiveRecord::Base
   # Named scopes used in the index page controller for recent topics
   scope :recent, lambda { where('1 = 1').order('created_at DESC').limit(5) }
   scope :public, lambda { where('title != ?', SystemSetting.no_public_version_title) }
-  scope :exclude_baskets_and_id, lambda {|basket_ids, id| where("basket_id NOT IN (?) AND id != ?", basket_ids, id) }
+  scope :exclude_baskets_and_id, lambda {|basket_ids, id| where('basket_id NOT IN (?) AND id != ?', basket_ids, id) }
 
   after_save :update_taggings_basket_id
 
@@ -236,7 +236,7 @@ class Topic < ActiveRecord::Base
   end
 
   def still_images
-    content_item_relations.where(related_item_type: "StillImage").map(&:related_item)
+    content_item_relations.where(related_item_type: 'StillImage').map(&:related_item)
   end
 
   def first_related_image

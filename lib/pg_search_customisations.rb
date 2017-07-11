@@ -22,7 +22,7 @@ module PgSearchCustomisations
     # * extract the values from the XML in the model's 'extended_content' attribute
     # * return them as a concatentated string suitable for adding to the search index
     def searchable_extended_content_values
-      return "" if extended_content.blank? || extended_content.nil?
+      return '' if extended_content.blank? || extended_content.nil?
 
       # * extended_content_values returns a hash similar to:
       #

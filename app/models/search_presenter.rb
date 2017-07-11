@@ -39,7 +39,7 @@ class SearchPresenter
   end
 
   def count_for(content_item_type)
-    if query.action == "contributed_by"
+    if query.action == 'contributed_by'
       # distinct statments in Content's SQL break arel's count.
       @results_by_class[content_item_type].size # => Fixnum
     else
@@ -92,7 +92,7 @@ class SearchPresenter
   end
 
   def topic_type
-    ""
+    ''
   end
 
   def pagination_link_params
@@ -101,7 +101,7 @@ class SearchPresenter
 
   def action
     # EOIN: this is heinous but Search.all_sort_types needs to be changed to fix it
-    "for"
+    'for'
   end
 
   def category_columns
@@ -124,7 +124,7 @@ class SearchPresenter
 
   def extended_field
     # expects a thing that implements #label
-    OpenStruct.new(label: "some label")
+    OpenStruct.new(label: 'some label')
   end
 
   def title
@@ -168,14 +168,14 @@ class SearchPresenter
   end
 
   def content_item_type_to_tab_nav_name(content_item_type)
-    mapping = {   "Topic" => "Topics",
-        "StillImage" => "Images",
-        "AudioRecording" => "Audio",
-        "Video" => "Video",
-        "WebLink" => "Web links",
-        "Document" => "Documents",
+    mapping = {   'Topic' => 'Topics',
+        'StillImage' => 'Images',
+        'AudioRecording' => 'Audio',
+        'Video' => 'Video',
+        'WebLink' => 'Web links',
+        'Document' => 'Documents',
     }
-    mapping[content_item_type] || "Unknown content_item_type"
+    mapping[content_item_type] || 'Unknown content_item_type'
   end
 
   def search_sources_amount
@@ -271,7 +271,7 @@ class SearchPresenter
   def search_link_to_searched_basket
     # html = String.new
     # html += ' ' + link_to_index_for(@current_basket, { :class => 'basket' }) if @current_basket != @site_basket
-    ""
+    ''
   end
 
 
@@ -284,7 +284,7 @@ class SearchPresenter
     # title_so_far += span_around_zoom_class \
     #                   ? content_tag('span', zoom_class_humanized, :class => 'current_zoom_class') \
     #                   : zoom_class_humanized
-    "the title"
+    'the title'
   end
 
   def last_part_of_title_if_refinement_of(add_links = true)
@@ -320,7 +320,7 @@ class SearchPresenter
     # end_of_title_parts << t('search_helper.last_part_of_title_if_refinement_of.privacy_type', :privacy => @privacy) if !@privacy.nil?
 
     # end_of_title = end_of_title_parts.join(t('search_helper.last_part_of_title_if_refinement_of.and'))
-    ""
+    ''
   end
 
 end

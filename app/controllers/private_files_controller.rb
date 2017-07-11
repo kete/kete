@@ -12,7 +12,7 @@ class PrivateFilesController < ApplicationController
     raise UnknownTypeError unless %w(documents image_files audio video).member?(params[:type])
     
     # Ensure we load the correct object type
-    type = params[:type] == "audio" ? "audio_recordings" : params[:type]
+    type = params[:type] == 'audio' ? 'audio_recordings' : params[:type]
     
     # Instantiate an object instance based on the request parameters
     id = (params[:a] + params[:b] + params[:c]).to_i
@@ -32,19 +32,19 @@ class PrivateFilesController < ApplicationController
         type: @record.content_type, 
         length: @record.size,
         disposition: 'inline',
-        status: "200 OK"
+        status: '200 OK'
       }
       
       # If we're using Nginx's send_file method, send the X-Accel-Redirect header.
-      if SENDFILE_METHOD == "nginx"
+      if SENDFILE_METHOD == 'nginx'
         path = @record.full_filename.gsub(Rails.root, '')
         logger.info "Sending X-Accel-Redirect header #{path}" if logger
-        head send_file_options[:status], "X-Accel-Redirect" => path, "Content-Type" => send_file_options[:type]
+        head send_file_options[:status], 'X-Accel-Redirect' => path, 'Content-Type' => send_file_options[:type]
         
       else
 
         # Use Apache's X-SendFile if appropriate.
-        if SENDFILE_METHOD == "apache"
+        if SENDFILE_METHOD == 'apache'
           send_file_options.merge!(x_sendfile: true)
         end
 
@@ -62,7 +62,7 @@ class PrivateFilesController < ApplicationController
         type: 'image/gif',
         length: File.size(no_public_version),
         disposition: 'inline',
-        status: "200 OK"
+        status: '200 OK'
       }
       send_file(no_public_version, send_file_options)
     else

@@ -18,7 +18,7 @@ class StillImage < ActiveRecord::Base
 
   # these correspond to sizes in image_file.rb
   SystemSetting.image_sizes.keys.each do |size|
-    has_one "#{size.to_s}_file".to_sym, conditions: ["parent_id is not null and thumbnail = ?", size.to_s], class_name: 'ImageFile'
+    has_one "#{size.to_s}_file".to_sym, conditions: ['parent_id is not null and thumbnail = ?', size.to_s], class_name: 'ImageFile'
   end
 
   has_many :resized_image_files, conditions: 'parent_id is not null', class_name: 'ImageFile'
@@ -37,18 +37,18 @@ class StillImage < ActiveRecord::Base
   include ItemPrivacy::All
 
   # Do not version self.file_private
-  self.non_versioned_columns << "file_private"
-  self.non_versioned_columns << "private_version_serialized"
+  self.non_versioned_columns << 'file_private'
+  self.non_versioned_columns << 'private_version_serialized'
 
   def self.updated_since(date)
     # StillImage.where( <StillImage or its join tables is newer than date>  )
 
-    taggings_sql =                       Tagging.uniq.select(:taggable_id).where(taggable_type: 'StillImage').where("created_at > ?", date).to_sql
-    contributions_sql =                  Contribution.uniq.select(:contributed_item_id).where(contributed_item_type: 'StillImage').where("updated_at > ?", date).to_sql
-    content_item_relations_sql =         ContentItemRelation.uniq.select(:related_item_id).where(related_item_type: 'StillImage').where("updated_at > ?", date).to_sql
+    taggings_sql =                       Tagging.uniq.select(:taggable_id).where(taggable_type: 'StillImage').where('created_at > ?', date).to_sql
+    contributions_sql =                  Contribution.uniq.select(:contributed_item_id).where(contributed_item_type: 'StillImage').where('updated_at > ?', date).to_sql
+    content_item_relations_sql =         ContentItemRelation.uniq.select(:related_item_id).where(related_item_type: 'StillImage').where('updated_at > ?', date).to_sql
     deleted_content_item_relations_sql = "SELECT DISTINCT related_item_id FROM deleted_content_item_relations WHERE related_item_type = 'StillImage' AND updated_at > ?"
 
-    and_query = StillImage.where("still_images.updated_at > ?", date).
+    and_query = StillImage.where('still_images.updated_at > ?', date).
                            where("still_images.id IN ( #{taggings_sql} )"). # Tagging doesn't have an updated_at column.
                            where("still_images.id IN ( #{contributions_sql} )").
                            where("still_images.id IN ( #{content_item_relations_sql} )").
@@ -56,7 +56,7 @@ class StillImage < ActiveRecord::Base
                            # I would liked to have searched for changed ImageFiles too
                            # but the table doesnt have created_at/updated_at.
 
-    or_query = and_query.where_values.join(" OR ")
+    or_query = and_query.where_values.join(' OR ')
 
     StillImage.where(or_query).uniq    # avoid repeated results from repeating ids.
   end

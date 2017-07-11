@@ -21,36 +21,36 @@ class PqfQuery
   # see #{RAILS_ROOT}zebradb/conf/oai2index.xsl
   # for mappings of oai dc xml elements to specific indexes
   QUALIFYING_ATTRIBUTE_SPECS = {
-    'relevance' => "@attr 2=102 @attr 5=3 ", # we specify @attr 5=103, or fuzzy, separately now
-    'exact' => "@attr 4=3 ", # this is meant for exact matches against key indexes
-    'complete' => "@attr 6=3 ", # this is like exact, except to find exact matches against word or phrase indexes
-    'partial' => "@attr 5=3 ",
-    'fuzzy_regexp' => "@attr 5=103 ",
-    'datetime' => "@attr 4=5 ",
-    'exact_url' => "@attr 4=104 ",
-    'lt' => "@attr 2=1 ",
-    'le' => "@attr 2=2 ",
-    'eq' => "@attr 2=3 ",
-    'ge' => "@attr 2=4 ",
-    'gt' => "@attr 2=5 ",
-    'sort_stub' => "@attr 7="
+    'relevance' => '@attr 2=102 @attr 5=3 ', # we specify @attr 5=103, or fuzzy, separately now
+    'exact' => '@attr 4=3 ', # this is meant for exact matches against key indexes
+    'complete' => '@attr 6=3 ', # this is like exact, except to find exact matches against word or phrase indexes
+    'partial' => '@attr 5=3 ',
+    'fuzzy_regexp' => '@attr 5=103 ',
+    'datetime' => '@attr 4=5 ',
+    'exact_url' => '@attr 4=104 ',
+    'lt' => '@attr 2=1 ',
+    'le' => '@attr 2=2 ',
+    'eq' => '@attr 2=3 ',
+    'ge' => '@attr 2=4 ',
+    'gt' => '@attr 2=5 ',
+    'sort_stub' => '@attr 7='
   } unless defined?(QUALIFYING_ATTRIBUTE_SPECS)
 
   ATTRIBUTE_SPECS = {
-    'oai_identifier' => "@attr 1=12 ",
-    'oai_setspec' => "@attr 1=20 ",
-    'description' => "@attr 1=1010 ",
-    'relations' => "@attr 1=1026 ",
-    'subjects' => "@attr 1=21 ",
-    'creators' => "@attr 1=1003 ",
-    'contributors' => "@attr 1=1020 ",
-    'title' => "@attr 1=4 ",
-    'coverage' => "@attr 1=29 ",
-    'any_text' => "@attr 1=1016 ",
+    'oai_identifier' => '@attr 1=12 ',
+    'oai_setspec' => '@attr 1=20 ',
+    'description' => '@attr 1=1010 ',
+    'relations' => '@attr 1=1026 ',
+    'subjects' => '@attr 1=21 ',
+    'creators' => '@attr 1=1003 ',
+    'contributors' => '@attr 1=1020 ',
+    'title' => '@attr 1=4 ',
+    'coverage' => '@attr 1=29 ',
+    'any_text' => '@attr 1=1016 ',
     'last_modified' => "@attr 1=1012 #{QUALIFYING_ATTRIBUTE_SPECS['datetime']}",
     'date' => "@attr 1=30 #{QUALIFYING_ATTRIBUTE_SPECS['datetime']}",
-    'last_modified_sort' => "@attr 1=1012 ",
-    'date_sort' => "@attr 1=30 "
+    'last_modified_sort' => '@attr 1=1012 ',
+    'date_sort' => '@attr 1=30 '
   } unless defined?(ATTRIBUTE_SPECS)
 
   # TODO: my hash_fu is failing me, DRY this up
@@ -124,7 +124,7 @@ class PqfQuery
 
       full_query = String.new
       full_query += full_query_parts[0] unless full_query_parts[0].nil?
-      full_query += "@or " + prepend_at_pattern
+      full_query += '@or ' + prepend_at_pattern
       full_query += full_query_parts[1] unless full_query_parts[1].nil?
       full_query += QUALIFYING_ATTRIBUTE_SPECS['exact_url'] + ' ' + ATTRIBUTE_SPECS['subjects'] +
                     @title_or_any_text_operators_string +
@@ -186,7 +186,7 @@ class PqfQuery
     
     # oai is a special case, can't have : precede it
     # replace it with proper version if found
-    terms << "oai:" if terms.delete(":oai:")
+    terms << 'oai:' if terms.delete(':oai:')
 
     oai_identifier_include(terms, options)
   end
@@ -318,7 +318,7 @@ class PqfQuery
                   if last_term_an_operator == false
                     # need to add an operator
                     # assume "and" since none-specified
-                    operators_array << "@and "
+                    operators_array << '@and '
                   end
 
                   terms_array << term
@@ -338,24 +338,24 @@ class PqfQuery
         end
 
         if operators_array.size > 0
-          @title_or_any_text_operators_string = operators_array.join(" ") + " "
+          @title_or_any_text_operators_string = operators_array.join(' ') + ' '
 
           title_query += @title_or_any_text_operators_string
           all_content_query += @title_or_any_text_operators_string
         end
 
         if query_starts_with_not == true
-          operator += "@not"
+          operator += '@not'
         end
 
-        @title_or_any_text_query_string = "\"" + terms_array.join("\" \"") + "\" "
+        @title_or_any_text_query_string = '"' + terms_array.join('" "') + '" '
         title_query += @title_or_any_text_query_string
         all_content_query += @title_or_any_text_query_string
 
         query_part += title_query + all_content_query
       else
         # @and will break query if only single term
-        @title_or_any_text_query_string = "\"" + terms.join("\" \"") + "\" "
+        @title_or_any_text_query_string = '"' + terms.join('" "') + '" '
         query_part += "#{title_query} #{@title_or_any_text_query_string} #{all_content_query} #{@title_or_any_text_query_string} "
       end
     end
@@ -379,7 +379,7 @@ class PqfQuery
     # handles case were someone is searching for a url
     # there may be other special characters to handle
     # but this seems to do the trick
-    terms = terms.gsub("/", "\/")
+    terms = terms.gsub('/', "\/")
 
     # this is sort of cheating
     # we know that Topic class has the acts_as_zoom instance methods...
@@ -422,7 +422,7 @@ class PqfQuery
         operators_string += " #{inner_operator}"
       end
       # we always quote since it won't hurt when they aren't needed
-      query_part += "#{operators_string} \"" + term_or_terms.join("\" \"") + "\""
+      query_part += "#{operators_string} \"" + term_or_terms.join('" "') + '"'
     end
 
     push_to_appropriate_variables(options.merge(query_part: query_part))

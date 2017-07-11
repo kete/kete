@@ -22,7 +22,7 @@ class RedirectRegistration < ActiveRecord::Base
     I18n.available_locales.each do |locale|
       re = Regexp.new("#{request.protocol}#{request.host}/#{locale}/")
       if url =~ re
-        url = url.sub("/#{locale}/", "/")
+        url = url.sub("/#{locale}/", '/')
         break
       end
     end

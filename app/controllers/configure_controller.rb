@@ -9,8 +9,8 @@ class ConfigureController < ApplicationController
                                            :zoom_dbs_update, :start_zebra,
                                            :index]
 
-  permit "tech_admin of :site"
-  permit "site_admin of :site", only: [:add_link_to_kete_net, :send_information, :get_site_linking_progress]
+  permit 'tech_admin of :site'
+  permit 'site_admin of :site', only: [:add_link_to_kete_net, :send_information, :get_site_linking_progress]
 
   include SiteLinking
 
@@ -18,14 +18,14 @@ class ConfigureController < ApplicationController
     @advanced = params[:advanced] || false
     @sections = SystemSetting.setup_sections.collect { |s| s }
     if @advanced
-      SystemSetting.select(:section).distinct.where("technically_advanced = ? and section not in (?)", true, @sections).each { |advanced_section| @sections << advanced_section.section }
+      SystemSetting.select(:section).distinct.where('technically_advanced = ? and section not in (?)', true, @sections).each { |advanced_section| @sections << advanced_section.section }
     end
     @admin_password_changed = User.find(1).crypted_password != '00742970dc9e6319f8019fd54864d3ea740f04b1' ? true : false
 
     @ready_to_restart = params[:ready_to_restart] || false
     @finished = params[:finished] || false
 
-    stub = "search_engine_"
+    stub = 'search_engine_'
     ['show', 'setup', 'started', 'primed'].each do |step|
       var_name = stub + step
       instance_variable_set("@#{var_name}", params[var_name.to_sym] || false)
@@ -90,9 +90,9 @@ class ConfigureController < ApplicationController
       redirect_to action: 'index', search_engine_show: true
     else
       render :update do |page|
-        page.hide("settings")
-        page.show("zoom")
-        page.replace_html("completed-message", "<h3>#{t('configure_controller.done_with_settings.not_yet_completed')}</h3>")
+        page.hide('settings')
+        page.show('zoom')
+        page.replace_html('completed-message', "<h3>#{t('configure_controller.done_with_settings.not_yet_completed')}</h3>")
       end
     end
   end
@@ -126,7 +126,7 @@ class ConfigureController < ApplicationController
     if @zoom_dbs.all? { |zoom_db| zoom_db.errors.empty? and !@kete_password.blank? }
 
       ENV['ZEBRA_PASSWORD'] = @kete_password
-      Rails.logger.info Rake::Task["zebra:set_keteaccess"].execute(ENV)
+      Rails.logger.info Rake::Task['zebra:set_keteaccess'].execute(ENV)
 
       @zoom_dbs.each do |zoom_db|
         zoom_db.save!
@@ -140,7 +140,7 @@ class ConfigureController < ApplicationController
         end
       end
 
-      Rails.logger.info Rake::Task["zebra:set_ports"].execute(ENV)
+      Rails.logger.info Rake::Task['zebra:set_ports'].execute(ENV)
       ENV.delete 'PUBLIC_PORT'
       ENV.delete 'PRIVATE_PORT'
 
@@ -183,7 +183,7 @@ class ConfigureController < ApplicationController
 
       render :update do |page|
         page.show('prime-zebra-check')
-        page.replace_html("prime-zebra-message", t('configure_controller.prime_zebra.primed_zebra'))
+        page.replace_html('prime-zebra-message', t('configure_controller.prime_zebra.primed_zebra'))
         page.show('reload-site-index')
         page.hide('restart-before-continue-message')
       end
@@ -205,7 +205,7 @@ class ConfigureController < ApplicationController
       redirect_to @new_kete_site
     else
       begin
-        @worker_type = "site_linking_worker".to_sym
+        @worker_type = 'site_linking_worker'.to_sym
         @worker_key = worker_key_for(@worker_type)
 
         # if the site registration never completed, this worker may still be operational
@@ -217,11 +217,11 @@ class ConfigureController < ApplicationController
           MiddleMan.new_worker( worker: @worker_type, worker_key: @worker_key )
           MiddleMan.worker(@worker_type, @worker_key).async_do_work( arg: { params: params } )
           render :update do |page|
-            page.replace_html("updater", periodically_call_remote(url: { action: 'get_site_linking_progress' }, frequency: 10))
+            page.replace_html('updater', periodically_call_remote(url: { action: 'get_site_linking_progress' }, frequency: 10))
           end
         else
           render :update do |page|
-            page.replace_html("top_message", t('configure_controller.send_information.already_running'))
+            page.replace_html('top_message', t('configure_controller.send_information.already_running'))
             page.hide('spinner')
           end
         end
@@ -234,7 +234,7 @@ class ConfigureController < ApplicationController
   def get_site_linking_progress
     set_kete_net_urls
     begin
-      @worker_type = "site_linking_worker".to_sym
+      @worker_type = 'site_linking_worker'.to_sym
       @worker_key = worker_key_for(@worker_type)
       status = MiddleMan.worker(@worker_type, @worker_key).ask_result(:results)
       logger.debug(status.inspect)
@@ -250,8 +250,8 @@ class ConfigureController < ApplicationController
                             kete_sites_link: @kete_sites)
             render :update do |page|
               page.hide('spinner')
-              page.replace_html("updater", '')
-              page.replace_html("top_message", top_message)
+              page.replace_html('updater', '')
+              page.replace_html('top_message', top_message)
             end
           elsif !status[:linking_validation_errors].blank?
             linking_errors = "<strong>#{t('configure_controller.get_site_linking_progress.incorrect_fields')}</strong><br />"
@@ -259,8 +259,8 @@ class ConfigureController < ApplicationController
               linking_errors += "&nbsp;&nbsp;#{field.humanize} #{error}<br />"
             end
             render :update do |page|
-              page.replace_html("updater", '')
-              page.replace_html("linking_errors", linking_errors)
+              page.replace_html('updater', '')
+              page.replace_html('linking_errors', linking_errors)
               page.hide('spinner')
               page.show('form_fields')
             end
@@ -283,8 +283,8 @@ class ConfigureController < ApplicationController
   # if all required settings are supplied
   def finish
     set_not_completed
-    raise "Not all settings have been filled out." if @not_completed
-    @is_configured_setting = SystemSetting.find_by_name("Is Configured")
+    raise 'Not all settings have been filled out.' if @not_completed
+    @is_configured_setting = SystemSetting.find_by_name('Is Configured')
     @is_configured_setting.value = 'true'
     @success = @is_configured_setting.save
     if @success and !request.xhr?
@@ -300,7 +300,7 @@ class ConfigureController < ApplicationController
 
   def restart_server
     ENV['RAILS_ENV'] = Rails.env
-    rake_result = Rake::Task["kete:tools:restart"].execute(ENV)
+    rake_result = Rake::Task['kete:tools:restart'].execute(ENV)
     if rake_result
       flash[:notice] = t('configure_controller.restart_server.server_restarted')
     else
@@ -311,7 +311,7 @@ class ConfigureController < ApplicationController
 
   def clear_cache
     ENV['RAILS_ENV'] = Rails.env
-    rake_result = Rake::Task["tmp:cache:clear"].execute(ENV)
+    rake_result = Rake::Task['tmp:cache:clear'].execute(ENV)
     if rake_result
       flash[:notice] = t('configure_controller.clear_cache.cache_cleared')
     else

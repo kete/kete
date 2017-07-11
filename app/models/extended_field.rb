@@ -63,7 +63,7 @@ class ExtendedField < ActiveRecord::Base
     #@base_url ||= self.setting(:base_url)
     # ROB:  Turning this off as it doesn't make sense to use absolute links (kete.co.nz/...) 
     #       instead of relative onves (/...)
-    ""
+    ''
   end
 
   def base_url=(value)
@@ -105,16 +105,16 @@ class ExtendedField < ActiveRecord::Base
 
   # don't allow topic or content base attributes: title, description
   invalid_label_names = TopicType.column_names + ContentType.column_names
-  validates_exclusion_of :label, in: invalid_label_names, message: lambda { I18n.t('extended_field_model.already_used', invalid_label_names: invalid_label_names.join(", ")) }
+  validates_exclusion_of :label, in: invalid_label_names, message: lambda { I18n.t('extended_field_model.already_used', invalid_label_names: invalid_label_names.join(', ')) }
 
   # TODO: might want to reconsider using subselects here
   def self.find_available_fields(type,type_of)
     if type_of == 'TopicType'
       # exclude ancestor's fields as well
       topic_types_to_exclude = type.ancestors + [type]
-      where("id not in (select extended_field_id from topic_type_to_field_mappings where topic_type_id in (?))", topic_types_to_exclude).readonly(false).all
+      where('id not in (select extended_field_id from topic_type_to_field_mappings where topic_type_id in (?))', topic_types_to_exclude).readonly(false).all
     elsif type_of == 'ContentType'
-      where("id not in (select extended_field_id from content_type_to_field_mappings where content_type_id = ?)", type).readonly(false).all
+      where('id not in (select extended_field_id from content_type_to_field_mappings where content_type_id = ?)', type).readonly(false).all
     else
       # TODO: this is an error, say something meaningful
     end
@@ -134,12 +134,12 @@ class ExtendedField < ActiveRecord::Base
   def self.clauses_for_has_label_that_matches(params_key)
     params_key_words = params_key.to_s.gsub('_', ' ').split(' ')
 
-    match_keyword = "LIKE"
-    label_sql = "LOWER(label)"
+    match_keyword = 'LIKE'
+    label_sql = 'LOWER(label)'
 
-    if ActiveRecord::Base.connection.adapter_name == "PostgreSQL"
-      match_keyword = "ILIKE"
-      label_sql = "label"
+    if ActiveRecord::Base.connection.adapter_name == 'PostgreSQL'
+      match_keyword = 'ILIKE'
+      label_sql = 'label'
     end
 
     clauses = Array.new
@@ -175,7 +175,7 @@ class ExtendedField < ActiveRecord::Base
   end
 
   def is_required?(controller, topic_type_id=nil)
-    raise "ERROR: You must specify a topic type id since controller is topics" if controller == 'topics' && topic_type_id.nil?
+    raise 'ERROR: You must specify a topic type id since controller is topics' if controller == 'topics' && topic_type_id.nil?
     if controller == 'topics'
       # we have to check the submitted topic_type or its ancestors
       topic_type = TopicType.find(topic_type_id)

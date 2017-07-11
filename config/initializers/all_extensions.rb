@@ -12,9 +12,9 @@ module ParamToObjEquiv
   # converts "true", "1", "false", "0" and "nil" into their appropriate boolean/NilClass values
   def param_to_obj_equiv
     case self
-    when "1", "true", true then true
-    when "0", "false", false then false
-    when "nil", nil then nil
+    when '1', 'true', true then true
+    when '0', 'false', false then false
+    when 'nil', nil then nil
     else self
     end
   end
@@ -229,7 +229,7 @@ module Nokogiri
       # XML name and escape common patterns (spaces to
       # underscores) to prevent import errors
       def safe_send(*args, &block)
-        args[0] = args[0].to_s.gsub(/\W/, '_').gsub(/(^_*|_*$)/, '') + "_"
+        args[0] = args[0].to_s.gsub(/\W/, '_').gsub(/(^_*|_*$)/, '') + '_'
         send(*args, &block)
       end
 

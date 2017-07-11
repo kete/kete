@@ -3,7 +3,7 @@ class ZoomDbsController < ApplicationController
   before_filter :login_required, only: [:list, :index]
   before_filter :set_page_title
 
-  permit "tech_admin of :site"
+  permit 'tech_admin of :site'
 
   # active_scaffold :zoom_db do |config|
   #   list.columns.exclude [:updated_at, :created_at, :zoom_password, :oai_pmh_repository_sets]

@@ -89,7 +89,7 @@ class UserNotifier < ActionMailer::Base
       @subject += I18n.t('user_notifier_model.membership_rejected', basket_name: basket.name)
       @template_name = 'join_policy/rejected'
     else
-      raise "Invalid membership notification type. joined, request, approved and rejected only."
+      raise 'Invalid membership notification type. joined, request, approved and rejected only.'
     end
 
     mail(to: @recipients, subject: @subject, template_name: @template_name)
@@ -171,7 +171,7 @@ class UserNotifier < ActionMailer::Base
       @subject += I18n.t('user_notifier_model.basket_rejected', basket_name: basket.name)
       @template_name = 'basket_create_policy/rejected'
     else
-      raise "Invalid basket notification type. created, request, approved and rejected only."
+      raise 'Invalid basket notification type. created, request, approved and rejected only.'
     end
 
     mail(to: @recipients, subject: @subject, template_name: @template_name)
@@ -210,7 +210,7 @@ class UserNotifier < ActionMailer::Base
       @item = item
       @url = url
       @type = type
-      @template_name = "private_item_notification"
+      @template_name = 'private_item_notification'
 
       mail(to: @recipients, subject: @subject, template_name: @template_name)
     end

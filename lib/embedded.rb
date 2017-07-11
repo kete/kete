@@ -30,7 +30,7 @@ module Embedded
       begin
         mini_exiftool = MiniExiftool.new(file_path)
       rescue
-        logger.info("Embedded metadata harvesting skipped.  Details are: " + $!.message)
+        logger.info('Embedded metadata harvesting skipped.  Details are: ' + $!.message)
         return
       end
       embedded_hash = Hash.new
@@ -79,7 +79,7 @@ module Embedded
         # accept ; as demarkation of separate values
         # Adobe's Bridge software doesn't use commas
         if value.is_a?(String) && key.downcase == 'subject'
-          value = value.split(";").collect { |i| i.strip }
+          value = value.split(';').collect { |i| i.strip }
         end
 
         # get rid of nil, empty, or whitespace only items in array
@@ -133,7 +133,7 @@ module Embedded
         matching_extended_fields.each do |field|
           if %{ map map_address }.include?(field.ftype)
             unless SystemSetting.enable_maps?
-              raise "Error: Trying to use Google Maps without configuation (config/google_map_api.yml)"
+              raise 'Error: Trying to use Google Maps without configuation (config/google_map_api.yml)'
             end
             coords = convert_dms_to_decimal_degree(value)
             value = { 'zoom_lvl' => SystemSetting.default_zoom_level.to_s,

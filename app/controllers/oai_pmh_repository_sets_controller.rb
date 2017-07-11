@@ -3,7 +3,7 @@ class OaiPmhRepositorySetsController < ApplicationController
   before_filter :login_required, only: [:list, :index]
   before_filter :set_page_title
 
-  permit "site_admin or admin of :site or tech_admin of :site"
+  permit 'site_admin or admin of :site or tech_admin of :site'
 
   active_scaffold :oai_pmh_repository_set do |config|
     config.columns = [:zoom_db, :name, :set_spec, :description, :active, :match_code, :value, :dynamic]

@@ -17,8 +17,8 @@ class WebLink < ActiveRecord::Base
   include ConfigureAsKeteContentItem
 
   # Tweak the versioning that was configured in the line above
-  self.non_versioned_columns << "file_private"
-  self.non_versioned_columns << "private_version_serialized"
+  self.non_versioned_columns << 'file_private'
+  self.non_versioned_columns << 'private_version_serialized'
 
   def self.updated_since(date)
     # WebLink.where( <WebLink or its join tables is newer than date>  )
@@ -33,8 +33,8 @@ class WebLink < ActiveRecord::Base
     join_table = WebLink.outer_joins(:taggings).
                          outer_joins(:contributions).
                          outer_joins(:content_item_relations).
-                         joins("LEFT OUTER JOIN  deleted_content_item_relations " +
-                               "ON deleted_content_item_relations.related_item_id = web_links.id " +
+                         joins('LEFT OUTER JOIN  deleted_content_item_relations ' +
+                               'ON deleted_content_item_relations.related_item_id = web_links.id ' +
                                "AND deleted_content_item_relations.related_item_type = 'WebLink'")
 
     result = join_table.where(

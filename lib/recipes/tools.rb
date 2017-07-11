@@ -12,15 +12,15 @@ namespace :tools do
     'tmp:cache:clear', 'tmp:clear', 'tmp:create', 'tmp:pids:clear', 'tmp:sessions:clear', 'tmp:sockets:clear'
   ]
 
-  desc "Run a rake command on the deploy server (some are disabled). Set RAKE_CMD to the task name, and RAKE_ENV (if needed) to the environment you want to run the task in."
+  desc 'Run a rake command on the deploy server (some are disabled). Set RAKE_CMD to the task name, and RAKE_ENV (if needed) to the environment you want to run the task in.'
   task :rake_run do
-    abort "ERROR: Use RAKE_CMD to set the rake task you want to run (without the rake command itself)." unless ENV['RAKE_CMD']
-    abort "ERROR: Cannot run a rake task that could lead to corrupt data. Run it on the actual server." unless rake_whitelist.include?(ENV['RAKE_CMD'])
+    abort 'ERROR: Use RAKE_CMD to set the rake task you want to run (without the rake command itself).' unless ENV['RAKE_CMD']
+    abort 'ERROR: Cannot run a rake task that could lead to corrupt data. Run it on the actual server.' unless rake_whitelist.include?(ENV['RAKE_CMD'])
     environment = ENV['RAKE_ENV'] ? "RAILS_ENV=#{ENV['RAKE_ENV']}" : ''
     run "cd #{current_path} && #{environment} rake #{ENV['RAKE_CMD']}"
   end
 
-  desc "Shows tail of production log"
+  desc 'Shows tail of production log'
   task :tail do
     environment = ENV['RAILS_ENV'] || 'production'
     run "tail -f #{current_path}/log/#{environment}.log"
@@ -41,10 +41,10 @@ namespace :tools do
 
     # TODO Create SSH key generation task
 
-    desc "Copies contents of ssh public keys into authorized_keys file"
+    desc 'Copies contents of ssh public keys into authorized_keys file'
     task :setup do
-      sudo "test -d ~/.ssh || mkdir ~/.ssh"
-      sudo "chmod 0700 ~/.ssh"
+      sudo 'test -d ~/.ssh || mkdir ~/.ssh'
+      sudo 'chmod 0700 ~/.ssh'
       put(ssh_options[:keys].collect{|key| File.read(key+'.pub')}.join("\n"),
         File.join('/home', user, '.ssh/authorized_keys'),
         mode: 0600 )
@@ -52,12 +52,12 @@ namespace :tools do
   end
 
 
-  desc "Displays server uptime"
+  desc 'Displays server uptime'
   task :uptime do
-    run "uptime"
+    run 'uptime'
   end
 
-  desc "Look for necessary commands for Rails deployment on remote server."
+  desc 'Look for necessary commands for Rails deployment on remote server.'
   task :look_for_commands do
     %w(ruby rake svn).each do |command|
       run "which #{command}"
@@ -66,33 +66,33 @@ namespace :tools do
 
   namespace :aptitude do
 
-    desc "Runs aptitude update on remote server"
+    desc 'Runs aptitude update on remote server'
     task :update do
-      logger.info "Running aptitude update"
-      sudo "aptitude update"
+      logger.info 'Running aptitude update'
+      sudo 'aptitude update'
     end
 
-    desc "Runs aptitude upgrade on remote server"
+    desc 'Runs aptitude upgrade on remote server'
     task :upgrade do
-      sudo_with_input "aptitude upgrade", /^Do you want to continue\?/
+      sudo_with_input 'aptitude upgrade', /^Do you want to continue\?/
     end
 
-    desc "Search for aptitude packages on remote server"
+    desc 'Search for aptitude packages on remote server'
     task :search do
-      puts "Enter your search term:"
+      puts 'Enter your search term:'
       deb_pkg_term = $stdin.gets.chomp
-      logger.info "Running aptitude update"
-      sudo "aptitude update"
+      logger.info 'Running aptitude update'
+      sudo 'aptitude update'
       stream "aptitude search #{deb_pkg_term}"
     end
 
-    desc "Installs a package using the aptitude command on the remote server."
+    desc 'Installs a package using the aptitude command on the remote server.'
     task :install do
-      puts "What is the name of the package(s) you wish to install?"
+      puts 'What is the name of the package(s) you wish to install?'
       deb_pkg_name = $stdin.gets.chomp
-      raise "Please specify deb_pkg_name" if deb_pkg_name == ''
-      logger.info "Updating packages..."
-      sudo "aptitude update"
+      raise 'Please specify deb_pkg_name' if deb_pkg_name == ''
+      logger.info 'Updating packages...'
+      sudo 'aptitude update'
       logger.info "Installing #{deb_pkg_name}..."
       sudo_with_input "aptitude install #{deb_pkg_name}", /^Do you want to continue\?/
     end
@@ -100,39 +100,39 @@ namespace :tools do
 
   namespace :svn do
 
-    desc "remove and ignore log files and tmp from subversion"
+    desc 'remove and ignore log files and tmp from subversion'
     task :clean do
-      logger.info "removing log directory contents from svn"
-      system "svn remove log/*"
-      logger.info "ignoring log directory"
+      logger.info 'removing log directory contents from svn'
+      system 'svn remove log/*'
+      logger.info 'ignoring log directory'
       system "svn propset svn:ignore '*.log' log/"
-      system "svn update log/"
-      logger.info "ignoring tmp directory"
+      system 'svn update log/'
+      logger.info 'ignoring tmp directory'
       system "svn propset svn:ignore '*' tmp/"
-      system "svn update tmp/"
-      logger.info "committing changes"
+      system 'svn update tmp/'
+      logger.info 'committing changes'
       system "svn commit -m 'Removed and ignored log files and tmp'"
     end
 
-    desc "Add new files to subversion"
+    desc 'Add new files to subversion'
     task :add do
-      logger.info "Adding unknown files to svn"
+      logger.info 'Adding unknown files to svn'
       system "svn status | grep '^\?' | sed -e 's/? *//' | sed -e 's/ /\ /g' | xargs svn add"
     end
 
-    desc "Commits changes to subversion repository"
+    desc 'Commits changes to subversion repository'
     task :commit do
-      puts "Enter log message:"
+      puts 'Enter log message:'
       m = $stdin.gets.chomp
-      logger.info "Committing changes..."
+      logger.info 'Committing changes...'
       system "svn commit -m #{m}"
     end
 
     task :install do
       sudo "chown -R #{user}:#{group} /usr/local/src"
-      run "cd /usr/local/src && wget http://subversion.tigris.org/downloads/subversion-1.4.4.tar.gz"
-      stream "tar -zxvf /usr/local/src/subversion-1.4.4.tar.gz"
-      run "/usr/local/src/subversion-1.4.4/configure && make && sudo make install"
+      run 'cd /usr/local/src && wget http://subversion.tigris.org/downloads/subversion-1.4.4.tar.gz'
+      stream 'tar -zxvf /usr/local/src/subversion-1.4.4.tar.gz'
+      run '/usr/local/src/subversion-1.4.4/configure && make && sudo make install'
     end
 
   end
@@ -153,17 +153,17 @@ namespace :tools do
       puts desc
     end
 
-    desc "List gems on remote server"
+    desc 'List gems on remote server'
     task :list do
-      stream "gem list"
+      stream 'gem list'
     end
 
-    desc "Update gems on remote server"
+    desc 'Update gems on remote server'
     task :update do
-      sudo "gem update"
+      sudo 'gem update'
     end
 
-    desc "Install a gem on the remote server"
+    desc 'Install a gem on the remote server'
     task :install do
       # TODO Figure out how to use Highline with this
       puts "Enter the name of the gem you'd like to install:"
@@ -172,7 +172,7 @@ namespace :tools do
       sudo "gem install #{gem_name}"
     end
 
-    desc "Uninstall a gem from the remote server"
+    desc 'Uninstall a gem from the remote server'
     task :remove do
       puts "Enter the name of the gem you'd like to remove:"
       gem_name = $stdin.gets.chomp

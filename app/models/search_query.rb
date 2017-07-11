@@ -117,6 +117,6 @@ class SearchQuery
   end
 
   def default_content_item_type
-    "Topic"
+    'Topic'
   end
 end

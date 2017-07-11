@@ -1,9 +1,9 @@
-require "oai_dc_helpers"
-require "xml_helpers"
-require "zoom_helpers"
-require "zoom_controller_helpers"
-require "extended_content_helpers"
-require "kete_url_for"
+require 'oai_dc_helpers'
+require 'xml_helpers'
+require 'zoom_helpers'
+require 'zoom_controller_helpers'
+require 'extended_content_helpers'
+require 'kete_url_for'
 module OaiZoom
   unless included_modules.include? OaiZoom
     def self.included(klass)
@@ -25,10 +25,10 @@ module OaiZoom
       item = options[:item] || self
       request = @import_request || simulated_request
       record = Nokogiri::XML::Builder.new(encoding: 'UTF-8') { |xml|
-        xml.send("OAI-PMH",
-                 "xmlns:xsi" => "http://www.w3.org/2001/XMLSchema-instance",
-                 "xsi:schemaLocation" => "http://www.openarchives.org/OAI/2.0/ http://www.openarchives.org/OAI/2.0/OAI-PMH.xsd",
-                 "xmlns" => "http://www.openarchives.org/OAI/2.0/") do
+        xml.send('OAI-PMH',
+                 'xmlns:xsi' => 'http://www.w3.org/2001/XMLSchema-instance',
+                 'xsi:schemaLocation' => 'http://www.openarchives.org/OAI/2.0/ http://www.openarchives.org/OAI/2.0/OAI-PMH.xsd',
+                 'xmlns' => 'http://www.openarchives.org/OAI/2.0/') do
           xml.responseDate(Time.now.utc.xmlschema)
           oai_dc_xml_request(xml, request)
           xml.GetRecord do
@@ -39,10 +39,10 @@ module OaiZoom
                 oai_dc_xml_oai_set_specs(xml)
               end
               xml.metadata do
-                xml.send("oai_dc:dc",
-                         "xmlns:oai_dc" => "http://www.openarchives.org/OAI/2.0/oai_dc/",
-                         "xmlns:dc" => "http://purl.org/dc/elements/1.1/",
-                         "xmlns:dcterms" => "http://purl.org/dc/terms/") do
+                xml.send('oai_dc:dc',
+                         'xmlns:oai_dc' => 'http://www.openarchives.org/OAI/2.0/oai_dc/',
+                         'xmlns:dc' => 'http://purl.org/dc/elements/1.1/',
+                         'xmlns:dcterms' => 'http://purl.org/dc/terms/') do
                   oai_dc_xml_dc_identifier(xml, request)
                   oai_dc_xml_dc_title(xml)
                   oai_dc_xml_dc_publisher(xml, request[:host])
@@ -51,7 +51,7 @@ module OaiZoom
                   # since we call it without specifying
                   oai_dc_xml_dc_description(xml)
 
-                  xml.send("dc:subject") {
+                  xml.send('dc:subject') {
                     xml.cdata item.url
                   } if item.is_a?(WebLink)
 
@@ -98,7 +98,7 @@ module OaiZoom
         end
       }
       record = record.to_xml
-      logger.info("after record to_xml")
+      logger.info('after record to_xml')
       record
     end
 
@@ -120,7 +120,7 @@ module OaiZoom
         unless is_a?(Comment) && commentable_private
           if write_files
             # write oai_record to appropriate directory for later indexing by zebraidx
-            write_oai_record_file("public")
+            write_oai_record_file('public')
           else
             zoom_save(public_existing_connection)
           end
@@ -138,14 +138,14 @@ module OaiZoom
           unless already_at_blank_version?
             if write_files
               # write oai_record to appropriate directory for later indexing by zebraidx
-              write_oai_record_file("private")
+              write_oai_record_file('private')
             else
               zoom_save(private_existing_connection)
             end
           end
         end
 
-        raise "Could not return to public version" if private? && !self.is_a?(Comment)
+        raise 'Could not return to public version' if private? && !self.is_a?(Comment)
 
       end
 
@@ -160,7 +160,7 @@ module OaiZoom
         host = request.host
       end
       # HACK, brittle, but can't use url_for here
-      xml.send("dc:identifier", fully_qualified_item_url({host: host, controller: zoom_class_controller(item.class.name), item: item, urlified_name: item.basket.urlified_name, locale: false}))
+      xml.send('dc:identifier', fully_qualified_item_url({host: host, controller: zoom_class_controller(item.class.name), item: item, urlified_name: item.basket.urlified_name, locale: false}))
     end
 
     # TODO: this may not be needed anymore
@@ -181,25 +181,25 @@ module OaiZoom
             related_items = item.send(zoom_class.tableize)
           end
           related_items.each do |related|
-            xml.send("dc:subject") {
+            xml.send('dc:subject') {
               xml.cdata related.title
             } unless [SystemSetting.blank_title, SystemSetting.no_public_version_title].include?(related.title)
-            xml.send("dc:relation", importer_item_url({host: host, controller: zoom_class_controller(zoom_class), item: related, urlified_name: related.basket.urlified_name, locale: false}, true))
+            xml.send('dc:relation', importer_item_url({host: host, controller: zoom_class_controller(zoom_class), item: related, urlified_name: related.basket.urlified_name, locale: false}, true))
           end
         end
       when 'Comment'
         # comments always point back to the thing they are commenting on
         commented_on_item = item.commentable
-        xml.send("dc:subject") {
+        xml.send('dc:subject') {
           xml.cdata commented_on_item.title
         } unless [SystemSetting.blank_title, SystemSetting.no_public_version_title].include?(commented_on_item.title)
-        xml.send("dc:relation", importer_item_url({host: host, controller: zoom_class_controller(commented_on_item.class.name), item: commented_on_item, urlified_name: commented_on_item.basket.urlified_name, locale: false}, true))
+        xml.send('dc:relation', importer_item_url({host: host, controller: zoom_class_controller(commented_on_item.class.name), item: commented_on_item, urlified_name: commented_on_item.basket.urlified_name, locale: false}, true))
       else
         item.topics.each do |related|
-          xml.send("dc:subject") {
+          xml.send('dc:subject') {
             xml.cdata related.title
           } unless [SystemSetting.blank_title, SystemSetting.no_public_version_title].include?(related.title)
-          xml.send("dc:relation", importer_item_url({host: host, controller: :topics, item: related, urlified_name: related.basket.urlified_name, locale: false}, true))
+          xml.send('dc:relation', importer_item_url({host: host, controller: :topics, item: related, urlified_name: related.basket.urlified_name, locale: false}, true))
         end
       end
     end
@@ -218,7 +218,7 @@ module OaiZoom
         rights = importer_item_url({host: host, controller: 'topics', item: item, urlified_name: Basket.find(SystemSetting.about_basket).urlified_name, id: 4, locale: false})
       end
 
-      xml.send("dc:rights", rights)
+      xml.send('dc:rights', rights)
     end
 
     def write_oai_record_file(root_dir)
@@ -229,11 +229,11 @@ module OaiZoom
 
     def oai_record_file_dirs(root_dir)
       "#{Rails.root}/zebradb/#{root_dir}/data/#{self.class.name.tableize}/" +
-        ("%012d" % id).scan(/..../).join('/')
+        ('%012d' % id).scan(/..../).join('/')
     end
 
     def oai_record_file_path(root_dir)
-      oai_record_file_dirs(root_dir) + "/record.xml"
+      oai_record_file_dirs(root_dir) + '/record.xml'
     end
   end
 end

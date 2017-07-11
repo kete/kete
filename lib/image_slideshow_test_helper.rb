@@ -4,12 +4,12 @@ module ImageSlideshowTestHelper
       base.class_eval do
 
         if base.name == 'IndexPageControllerTest'
-          context "The index page" do
+          context 'The index page' do
 
             setup do
               3.times { |i| create_new_still_image_with(title: "site basket image #{i + 1}") }
 
-              @different_basket = create_new_basket({ name: "different basket" })
+              @different_basket = create_new_basket({ name: 'different basket' })
 
               3.times do |i|
                 create_new_still_image_with(title: "different basket image #{i + 1}",
@@ -17,13 +17,13 @@ module ImageSlideshowTestHelper
               end
             end
 
-            should "have slideshow be populated in the session on selected image visit when it is for the site basket with all images in both site and other basket" do
+            should 'have slideshow be populated in the session on selected image visit when it is for the site basket with all images in both site and other basket' do
               run_through_selected_images(selected_image_params: {
                                             urlified_name: Basket.first.urlified_name },
                                           total: 6)
             end
 
-            should "have slideshow be populated in the session on selected image visit when it is not for the site basket, but another basket limited to just the basket images" do
+            should 'have slideshow be populated in the session on selected image visit when it is not for the site basket, but another basket limited to just the basket images' do
               run_through_selected_images(selected_image_params: {
                                             urlified_name: @different_basket.urlified_name,
                                             controller: 'index_page' })
@@ -31,35 +31,35 @@ module ImageSlideshowTestHelper
           end
         else
 
-          context "The topic related image slideshow" do
+          context 'The topic related image slideshow' do
 
-            context "when several images are related to a topic" do
+            context 'when several images are related to a topic' do
 
               setup do
-                @non_site_basket_1 = create_new_basket({ name: "basket 1" })
+                @non_site_basket_1 = create_new_basket({ name: 'basket 1' })
 
                 @topic = Topic.create(title: 'Parent Topic', topic_type_id: TopicType.first, basket_id: @non_site_basket_1.id)
                 @topic.creator = User.first
               end
 
-              context "and the images are in the same basket" do
+              context 'and the images are in the same basket' do
                 setup do
                   3.times { |i| create_new_image_relation_to(@topic, title: "Child Image #{i + 1}") }
                 end
 
-                should "have slideshow be populated in the session on selected image visit" do
+                should 'have slideshow be populated in the session on selected image visit' do
                   run_through_selected_images
                 end
               end
 
-              context "and the images are in a different basket from topic" do
+              context 'and the images are in a different basket from topic' do
                 setup do
                   3.times { |i| create_new_image_relation_to(@topic,
                                                              basket_id: create_new_basket({ name: "basket #{i + 1}" }).id,
                                                              title: "Child Image in Another Basket #{i + 1}" )}
                 end
 
-                should "have slideshow be populated in the session on selected image visit" do
+                should 'have slideshow be populated in the session on selected image visit' do
                   run_through_selected_images
                 end
               end

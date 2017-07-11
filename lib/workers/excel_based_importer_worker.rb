@@ -1,7 +1,7 @@
-require "importer"
+require 'importer'
 
-require "nokogiri"
-require "logger"
+require 'nokogiri'
+require 'logger'
 class ExcelPreProcessor < Nokogiri::XML::SAX::Document
   def initialize(path_to_xl_xml_file, options = {})
     # maybe TODO: refactor assignment from options
@@ -11,7 +11,7 @@ class ExcelPreProcessor < Nokogiri::XML::SAX::Document
     @import_dir_path = options[:import_dir_path]
     @record_interval = options[:record_interval]
 
-    @logger = Logger.new("/home/kete/excel-parse.log")
+    @logger = Logger.new('/home/kete/excel-parse.log')
     excel_xml = File.read(path_to_xl_xml_file)
 
     # Wrap all data in CData tags to prevent parsing issues unless they already have one
@@ -22,9 +22,9 @@ class ExcelPreProcessor < Nokogiri::XML::SAX::Document
     end
 
     parser = Nokogiri::XML::SAX::Parser.new(self)
-    @logger.info "after new sax parser"
+    @logger.info 'after new sax parser'
     parser.parse(excel_xml)
-    @logger.info "after parsing"
+    @logger.info 'after parsing'
     self
   end
 
@@ -57,8 +57,8 @@ class ExcelPreProcessor < Nokogiri::XML::SAX::Document
     when :Cell
       # ss:Index helps compact filesize but causes issues with our column header
       # allocation so make use of it to prevent any issues from popping up
-      if attributes.include?("ss:Index")
-        self.current_cell = attributes[attributes.index("ss:Index") + 1].to_i
+      if attributes.include?('ss:Index')
+        self.current_cell = attributes[attributes.index('ss:Index') + 1].to_i
       else
         self.current_cell += 1
       end

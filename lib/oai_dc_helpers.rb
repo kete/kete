@@ -18,7 +18,7 @@ module OaiDcHelpers
         request_uri = simulated_request[:original_url]
       end
 
-      xml.request(request_uri, verb: "GetRecord", identifier: "#{ZoomDb.zoom_id_stub}#{basket_urlified_name}:#{self.class.name}:#{self.id}", metadataPrefix: "oai_dc")
+      xml.request(request_uri, verb: 'GetRecord', identifier: "#{ZoomDb.zoom_id_stub}#{basket_urlified_name}:#{self.class.name}:#{self.id}", metadataPrefix: 'oai_dc')
     end
 
     def oai_dc_xml_oai_identifier(xml)
@@ -111,7 +111,7 @@ module OaiDcHelpers
         # Link to private version if generating OAI record for it..
         if respond_to?(:private) && private?
           # don't put title in url for private items
-          uri_attrs.merge!({ private: "true", id: self.id.to_s })
+          uri_attrs.merge!({ private: 'true', id: self.id.to_s })
         end
       end
 
@@ -119,21 +119,21 @@ module OaiDcHelpers
       # record.
       protocol = appropriate_protocol_for(self)
 
-      xml.send("dc:identifier", utf8_url_for(uri_attrs.merge(protocol: protocol,
+      xml.send('dc:identifier', utf8_url_for(uri_attrs.merge(protocol: protocol,
                                                              host: host,
                                                              locale: false)))
     end
 
     def oai_dc_xml_dc_title(xml, options = {})
-      xml.send("dc:title", title, options)
+      xml.send('dc:title', title, options)
     end
 
     def oai_dc_xml_dc_publisher(xml, publisher = nil)
       # this website is the publisher by default
       if publisher.nil?
-        xml.send("dc:publisher", simulated_request[:host])
+        xml.send('dc:publisher', simulated_request[:host])
       else
-        xml.send("dc:publisher", publisher)
+        xml.send('dc:publisher', publisher)
       end
     end
 
@@ -142,7 +142,7 @@ module OaiDcHelpers
         # strip out embedded html
         # it only adds clutter at this point and fails oai_dc validation, too
         # also pulling out some entities that sneak in
-        xml.send("dc:description", options) {
+        xml.send('dc:description', options) {
           xml.cdata passed_description.strip_tags
         }
       else
@@ -166,15 +166,15 @@ module OaiDcHelpers
       # only turn it on if specified in the system setting
       if SystemSetting.add_date_created_to_item_search_record?
         item_created = created_at.utc.xmlschema
-        xml.send("dc:date", item_created)
+        xml.send('dc:date', item_created)
       end
       creators.each do |creator|
         user_name = creator.user_name
-        xml.send("dc:creator", user_name)
+        xml.send('dc:creator', user_name)
         # we also add user.login, which is unique per site
         # whereas user_name is not
         # this way we can limit exactly to one user
-        xml.send("dc:creator", creator.login) unless user_name == creator.login
+        xml.send('dc:creator', creator.login) unless user_name == creator.login
       end
     end
 
@@ -182,13 +182,13 @@ module OaiDcHelpers
     # contribution_date = contributor.version_created_at.to_date
     # xml.send("dcterms:modified", contribution_date)
     def oai_dc_xml_dc_contributors_and_modified_dates(xml)
-      contributors.all(select: "distinct(users.login), users.resolved_name").each do |contributor|
+      contributors.all(select: 'distinct(users.login), users.resolved_name').each do |contributor|
         user_name = contributor.user_name
-        xml.send("dc:contributor", user_name)
+        xml.send('dc:contributor', user_name)
         # we also add user.login, which is unique per site
         # whereas user_name is not
         # this way we can limit exactly to one user
-        xml.send("dc:contributor", contributor.login) unless user_name == contributor.login
+        xml.send('dc:contributor', contributor.login) unless user_name == contributor.login
       end
     end
 
@@ -202,28 +202,28 @@ module OaiDcHelpers
       when 'Comment'
         # comments always point back to the thing they are commenting on
         commented_on_item = self.commentable
-        xml.send("dc:subject") {
+        xml.send('dc:subject') {
           xml.cdata commented_on_item.title
         } unless [SystemSetting.blank_title, SystemSetting.no_public_version_title].include?(commented_on_item.title)
-        xml.send("dc:relation", url_for_dc_identifier(commented_on_item, { force_http: true, minimal: true }.merge(passed_request)))
+        xml.send('dc:relation', url_for_dc_identifier(commented_on_item, { force_http: true, minimal: true }.merge(passed_request)))
       else
         related_count = related_items.count
         related_items.each do |related|
           # we skip subject if there are a large amount of related items
           # as zebra has a maximum record size
           if related_count < 500
-            xml.send("dc:subject") {
+            xml.send('dc:subject') {
               xml.cdata related.title
             } unless [SystemSetting.blank_title, SystemSetting.no_public_version_title].include?(related.title)
           end
-          xml.send("dc:relation", url_for_dc_identifier(related, { force_http: true, minimal: true }.merge(passed_request)))
+          xml.send('dc:relation', url_for_dc_identifier(related, { force_http: true, minimal: true }.merge(passed_request)))
         end
       end
     end
 
     def oai_dc_xml_tags_to_dc_subjects(xml)
       tags.each do |tag|
-        xml.send("dc:subject") {
+        xml.send('dc:subject') {
           xml.cdata tag.name
         }
       end
@@ -231,7 +231,7 @@ module OaiDcHelpers
 
     def oai_dc_xml_dc_type(xml)
       # topic's type is the default
-      type = "InteractiveResource"
+      type = 'InteractiveResource'
       case self.class
       when AudioRecording
         type = 'Sound'
@@ -240,7 +240,7 @@ module OaiDcHelpers
       when Video
         type = 'MovingImage'
       end
-      xml.send("dc:type", type)
+      xml.send('dc:type', type)
     end
 
     def oai_dc_xml_dc_format(xml)
@@ -258,7 +258,7 @@ module OaiDcHelpers
         format = content_type
       end
       if !format.blank?
-        xml.send("dc:format", format)
+        xml.send('dc:format', format)
       end
     end
 
@@ -266,9 +266,9 @@ module OaiDcHelpers
     def oai_dc_xml_dc_coverage(xml)
       return unless self.is_a?(Topic)
       topic_type.ancestors.each do |ancestor|
-        xml.send("dc:coverage", ancestor.name)
+        xml.send('dc:coverage', ancestor.name)
       end
-      xml.send("dc:coverage", topic_type.name)
+      xml.send('dc:coverage', topic_type.name)
     end
 
     # if there is a license for item, put in its url
@@ -292,7 +292,7 @@ module OaiDcHelpers
         )
       end
 
-      xml.send("dc:rights", rights)
+      xml.send('dc:rights', rights)
     end
 
     def oai_dc_xml_dc_source_for_file(xml, passed_request = nil)
@@ -303,7 +303,7 @@ module OaiDcHelpers
       end
 
       if ::Import::VALID_ARCHIVE_CLASSES.include?(self.class.name)
-        xml.send("dc:source", file_url_from_bits_for(self, host))
+        xml.send('dc:source', file_url_from_bits_for(self, host))
       end
     end
   end

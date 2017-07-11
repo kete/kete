@@ -6,7 +6,7 @@ module SearchDcDateFormulator
       content_tag(:div, select_and_format_dc_dates_from(dc_dates), class: 'generic-result-dc-dates')
     end
 
-    def dc_date_separator; ", "; end
+    def dc_date_separator; ', '; end
 
     def select_and_format_dc_dates_from(dc_dates)
       # The dates are strings containing a UTC timestamp

@@ -13,7 +13,7 @@ class SystemSetting
 
 
     def contact_email
-      "kete@library.org.nz"
+      'kete@library.org.nz'
     end
 
     #def default_number_of_multiples
@@ -61,15 +61,15 @@ class SystemSetting
     end
 
     def rejected_flag
-      "rejected"
+      'rejected'
     end
 
     def blank_flag
-      "used for moderation"
+      'used for moderation'
     end
 
     def reviewed_flag
-      "reviewed by moderator"
+      'reviewed by moderator'
     end
 
     def frequency_of_moderation_email
@@ -101,7 +101,7 @@ class SystemSetting
     end
 
     def no_public_version_description
-      "There is currently no public version of this item."
+      'There is currently no public version of this item.'
     end
 
     #def uses_basket_list_navigation_menu_on_every_page
@@ -109,13 +109,13 @@ class SystemSetting
     #end
 
     def basket_creation_policy
-     "closed"
+     'closed'
     end
 
     def related_items_position_default
       # ROB: In the exisiting data this is often saved as the empty string. 
       #      Some models also have "inset" or "sidebar"
-      "below"
+      'below'
     end
 
     def hide_related_items_position_field
@@ -135,7 +135,7 @@ class SystemSetting
     #end
 
     def restricted_flag
-      "restricted"
+      'restricted'
     end
 
     def add_date_created_to_item_search_record
@@ -143,7 +143,7 @@ class SystemSetting
     end
 
     def default_search_privacy
-     "public"
+     'public'
     end
 
     #def language_choices_display_type
@@ -151,7 +151,7 @@ class SystemSetting
     #end
 
     def dc_date_display_detail_level
-      "year_month_and_day"
+      'year_month_and_day'
     end
 
     def dc_date_display_formulator
@@ -179,11 +179,11 @@ class SystemSetting
     end
 
     def default_page_keywords
-      ""
+      ''
     end
 
     def default_page_description
-      ""
+      ''
     end
 
     def uses_basket_list_navigation_menu_on_every_page
@@ -203,19 +203,19 @@ class SystemSetting
     end
 
     def display_search_terms_field
-      "menu"
+      'menu'
     end
 
     def display_date_range_fields
-      "menu"
+      'menu'
     end
 
     def display_privacy_fields
-      "menu"
+      'menu'
     end
 
     def display_item_type_field
-      "menu"
+      'menu'
     end
 
     def display_topic_type_field
@@ -223,7 +223,7 @@ class SystemSetting
     end
 
     def display_basket_field
-      "menu"
+      'menu'
     end
 
     # def display_sorting_fields
@@ -231,7 +231,7 @@ class SystemSetting
     # end
 
     def display_choices_field
-      "menu"
+      'menu'
     end
 
     def search_select_current_basket
@@ -247,15 +247,15 @@ class SystemSetting
     end
 
     def contact_url
-      "mailto:kete@library.org.nz"
+      'mailto:kete@library.org.nz'
     end
 
     def default_search_class
-      ""
+      ''
     end
 
     def site_name
-      "a-working-kete"
+      'a-working-kete'
     end
 
     def method_missing(meth, *args, &block)
@@ -264,15 +264,15 @@ class SystemSetting
     end
 
     def allowed_anonymous_actions
-      ""
+      ''
     end
 
     def admin_email
-      "kete@library.org.nz"
+      'kete@library.org.nz'
     end
 
     def pretty_site_name
-      "Kete Horowhenua"
+      'Kete Horowhenua'
     end
 
     def is_configured
@@ -312,15 +312,15 @@ class SystemSetting
     end
 
     def site_url
-      "horowhenua.kete.net.nz/"
+      'horowhenua.kete.net.nz/'
     end
 
     def site_domain
-      "horowhenua.kete.net.nz"
+      'horowhenua.kete.net.nz'
     end
 
     def notifier_email
-      "kete@library.org.nz"
+      'kete@library.org.nz'
     end
 
     def default_baskets_ids
@@ -333,11 +333,11 @@ class SystemSetting
     end
 
     def no_public_version_title
-      "no public version"
+      'no public version'
     end
 
     def blank_title
-      "Pending Moderation"
+      'Pending Moderation'
     end
 
     def available_syntax_highlighters
@@ -363,11 +363,11 @@ class SystemSetting
     end
 
     def additional_credits_html
-      ""
+      ''
     end
 
     def pending_flag
-      "pending"
+      'pending'
     end
 
     def image_slideshow_size
@@ -375,7 +375,7 @@ class SystemSetting
     end
 
     def captcha_type
-      "question"
+      'question'
     end
 
     def number_of_related_images_to_display
@@ -407,7 +407,7 @@ class SystemSetting
     end
 
     def search_selected_topic_type
-      ""
+      ''
     end
 
     def force_https_on_restricted_pages
@@ -415,11 +415,11 @@ class SystemSetting
     end
 
     def download_warning
-      "You are about to download a file from Kete. Kete is an open digital repository"+
-      "and as such we can not guarantee the integrity of any file in the repository.  "+
-      "Please ensure that your virus scan software is operating and is configured to "+
+      'You are about to download a file from Kete. Kete is an open digital repository'+
+      'and as such we can not guarantee the integrity of any file in the repository.  '+
+      'Please ensure that your virus scan software is operating and is configured to '+
       "scan this download.\n"+
-      "Are you sure you want to proceed?"
+      'Are you sure you want to proceed?'
     end
   end
 end

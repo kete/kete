@@ -1,4 +1,4 @@
-require "zoom_controller_helpers"
+require 'zoom_controller_helpers'
 class ZoomIndexRebuildWorker < BackgrounDRb::MetaWorker
   set_worker_name :zoom_index_rebuild_worker
   set_no_auto_load true
@@ -52,7 +52,7 @@ class ZoomIndexRebuildWorker < BackgrounDRb::MetaWorker
         end
       end
 
-      ENV['SKIP_PRIVATE'] = "true" if @skip_private && @use_zebraidx
+      ENV['SKIP_PRIVATE'] = 'true' if @skip_private && @use_zebraidx
 
       # a bit of a misnomer
       # but will allow us to use importer lib oai record rendering unaltered
@@ -61,15 +61,15 @@ class ZoomIndexRebuildWorker < BackgrounDRb::MetaWorker
       classes_to_rebuild = @zoom_class != 'all' ? @zoom_class.to_a : ZOOM_CLASSES
 
       if @zoom_class == 'all'
-        raise "Specifying a start id is not supported when you are rebuilding all types of items." if @start_id != 'first'
-        raise "Specifying an end id is not supported when you are rebuilding all types of items." if @end_id != 'last'
+        raise 'Specifying a start id is not supported when you are rebuilding all types of items.' if @start_id != 'first'
+        raise 'Specifying an end id is not supported when you are rebuilding all types of items.' if @end_id != 'last'
       end
 
-      raise "Specifying skip existing records is not supported when you are using the faster rebuild option." if @skip_existing && @use_zebraidx
+      raise 'Specifying skip existing records is not supported when you are using the faster rebuild option.' if @skip_existing && @use_zebraidx
 
-      raise "Erasing all existing search records is only allowed when you are starting from first record and ending with last record." if @clear_zebra && @start_id != 'first' || @end_id != 'last'
-      raise "Start must be a valid item id number." if @start_id != 'first' && @start_id.to_i == 0
-      raise "End must be a valid item id number." if @end_id != 'last' && @end_id.to_i ==  0
+      raise 'Erasing all existing search records is only allowed when you are starting from first record and ending with last record.' if @clear_zebra && @start_id != 'first' || @end_id != 'last'
+      raise 'Start must be a valid item id number.' if @start_id != 'first' && @start_id.to_i == 0
+      raise 'End must be a valid item id number.' if @end_id != 'last' && @end_id.to_i ==  0
 
       # Rake::Task is available inside Rails, but not backgroundrb workers
       # so we need to include rake and load the task(s) we need to use
@@ -86,9 +86,9 @@ class ZoomIndexRebuildWorker < BackgrounDRb::MetaWorker
       # add the bootstrap records
       # we always do this to handle upgrades (before the bootstrap records existed)
       # the rake task will skip the records if they already exist
-      Rake::Task["zebra:load_initial_records"].execute(ENV)
+      Rake::Task['zebra:load_initial_records'].execute(ENV)
 
-      clause = "id >= :start_id"
+      clause = 'id >= :start_id'
       clause_values = Hash.new
 
       unless @start_id.to_s == 'first'
@@ -96,7 +96,7 @@ class ZoomIndexRebuildWorker < BackgrounDRb::MetaWorker
       end
 
       unless @end_id.to_s == 'last'
-        clause += " and id <= :end_id"
+        clause += ' and id <= :end_id'
         clause_values[:end_id] = @end_id
       end
 
@@ -149,7 +149,7 @@ class ZoomIndexRebuildWorker < BackgrounDRb::MetaWorker
                 @skipped_record_count += 1
                 @results[:records_skipped] = @skipped_record_count
                 cache[:results] = @results
-                logger.info("skipped")
+                logger.info('skipped')
                 next
               end
             end
@@ -165,12 +165,12 @@ class ZoomIndexRebuildWorker < BackgrounDRb::MetaWorker
                 @record_count += 1
                 @results[:records_processed] = @record_count
                 cache[:results] = @results
-                logger.info("added")
+                logger.info('added')
               else
                 @failed_record_count += 1
                 @results[:records_failed] = @failed_record_count
                 cache[:results] = @results
-                logger.info("failed: " + item.inspect)
+                logger.info('failed: ' + item.inspect)
               end
             else
               item.prepare_and_save_to_zoom(write_files: true,
@@ -188,7 +188,7 @@ class ZoomIndexRebuildWorker < BackgrounDRb::MetaWorker
             elsif batch_count == batch_size
               if @use_zebraidx
                 # trigger zebraidx and capture results for reporting
-                zebraidx_message = Rake::Task["zebra:index"].execute(ENV)
+                zebraidx_message = Rake::Task['zebra:index'].execute(ENV)
 
                 # rm data subdirectories now that we are done zebraidx batch processing
                 FileUtils.rm_r("#{Rails.root}/zebradb/public/data/#{class_name.tableize}", force: true)
@@ -215,7 +215,7 @@ class ZoomIndexRebuildWorker < BackgrounDRb::MetaWorker
         if batch_count < batch_size && batch_count != 1
           if @use_zebraidx
             # trigger zebraidx and capture results for reporting
-            zebraidx_message = Rake::Task["zebra:index"].execute(ENV)
+            zebraidx_message = Rake::Task['zebra:index'].execute(ENV)
 
             # rm data subdirectories now that we are done zebraidx batch processing
             FileUtils.rm_r("#{Rails.root}/zebradb/public/data/#{class_name.tableize}", force: true)
@@ -257,18 +257,18 @@ class ZoomIndexRebuildWorker < BackgrounDRb::MetaWorker
   private
 
   def use_rake_to_clear_zebra
-    logger.info("in clear zebra")
-    Rake::Task["zebra:init"].execute(ENV)
+    logger.info('in clear zebra')
+    Rake::Task['zebra:init'].execute(ENV)
     # do the private zebra db, too if we should`rake zebra:init`
     unless @skip_private
       ENV['ZEBRA_DB'] = 'private'
-      Rake::Task["zebra:init"].execute(ENV)
+      Rake::Task['zebra:init'].execute(ENV)
     end
 
     # we stop and start zebra so that any changes to configuration files
     # (maybe the case with upgrades)
     # are loaded
-    Rake::Task["zebra:stop"].execute(ENV)
-    Rake::Task["zebra:start"].execute(ENV)
+    Rake::Task['zebra:stop'].execute(ENV)
+    Rake::Task['zebra:start'].execute(ENV)
   end
 end

@@ -6,7 +6,7 @@
 
 namespace :redirects do
   namespace :imports do
-    desc "Create RedirectRegistration instances based on Excel XML file (EXCEL_FILE=path_to_file_relative_to_calling_dir)."
+    desc 'Create RedirectRegistration instances based on Excel XML file (EXCEL_FILE=path_to_file_relative_to_calling_dir).'
     task excel: :environment do
       source_file = pwd + '/' + ENV['EXCEL_FILE']
 
@@ -20,8 +20,8 @@ namespace :redirects do
   end
 end
 
-require "logger"
-require "nokogiri"
+require 'logger'
+require 'nokogiri'
 class ExcelPreProcessor < Nokogiri::XML::SAX::Document
   def initialize(path_to_xl_xml_file, options = {})
     excel_xml = File.read(path_to_xl_xml_file)
@@ -66,15 +66,15 @@ class ExcelPreProcessor < Nokogiri::XML::SAX::Document
     when :Cell
       # ss:Index helps compact filesize but causes issues with our column header
       # allocation so make use of it to prevent any issues from popping up
-      if attributes.include?("ss:Index")
-        self.current_cell = attributes[attributes.index("ss:Index") + 1].to_i
+      if attributes.include?('ss:Index')
+        self.current_cell = attributes[attributes.index('ss:Index') + 1].to_i
       else
         self.current_cell += 1
       end
       self.within_cell = true
       attributes_and_values = attributes.flatten
-      if self.current_row > 1 && attributes_and_values.include?("ss:HRef")
-        href = attributes_and_values[attributes_and_values.index("ss:HRef") + 1]
+      if self.current_row > 1 && attributes_and_values.include?('ss:HRef')
+        href = attributes_and_values[attributes_and_values.index('ss:HRef') + 1]
         element_name = self.column_headers[self.current_cell - 1]
         self.records.last[element_name] = href.strip
       end

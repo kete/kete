@@ -8,23 +8,23 @@
 # * you can identify the objects by their <guid> tag which is the old <identifier> tag in <head>
 # * the url schema has changed slightly so <dc:identifier> is slightly different
 
-xml.instruct! :xml, version: "1.0" 
-xml.rss("version" => "2.0", "xmlns:dc" => "http://purl.org/dc/elements/1.1/") do
+xml.instruct! :xml, version: '1.0' 
+xml.rss('version' => '2.0', 'xmlns:dc' => 'http://purl.org/dc/elements/1.1/') do
   xml.channel do
     xml.title("#{SystemSetting.site_domain} #{@list_type} RSS Feed")
     xml.link "http://#{SystemSetting.site_url}"
     xml.description "#{SystemSetting.pretty_site_name} #{@list_type}s ordered by update-time. By default this shows items added/updated this month. "+
                     "An item is considered updated if it or it's tags/contributors/related_items has changed.\n"+
                     "\n"+
-                    "To see earlier records use the udpated_since=date_string HTTP query-field (iso8601, rfc3339, rfc2822, rfc822)"
-    xml.language "en-nz"
-    xml.ttl "60" 
+                    'To see earlier records use the udpated_since=date_string HTTP query-field (iso8601, rfc3339, rfc2822, rfc822)'
+    xml.language 'en-nz'
+    xml.ttl '60' 
 
     @items.each do |item|
       xml.item do
                 # oai_dc_xml_oai_datestamp(xml)
                 # oai_dc_xml_oai_set_specs(xml)
-        xml.guid "rss:#{SystemSetting.site_domain}:#{item.basket.urlified_name}:#{item.class.name}:#{item.id}", isPermaLink: "false"
+        xml.guid "rss:#{SystemSetting.site_domain}:#{item.basket.urlified_name}:#{item.class.name}:#{item.id}", isPermaLink: 'false'
         xml.title item.title        
         xml.pubDate item.updated_at.utc.xmlschema
         xml.link rss_link_for(item)

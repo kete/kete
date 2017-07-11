@@ -3,7 +3,7 @@ class FeedsWorker < BackgrounDRb::MetaWorker
   set_no_auto_load true
 
   def create(feed_id = nil)
-    raise "Trying to start worker with :data nil or less than 1 (needs Feed id > 0)" if feed_id.nil? || feed_id.to_i < 1
+    raise 'Trying to start worker with :data nil or less than 1 (needs Feed id > 0)' if feed_id.nil? || feed_id.to_i < 1
 
     feed = Feed.find_by_id(feed_id)
     raise "Feed of id #{feed_id} not found! Please supply valid feed id." unless feed

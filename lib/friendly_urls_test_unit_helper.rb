@@ -15,7 +15,7 @@ module FriendlyUrlsTestUnitHelper
     format_friendly = format_friendly_unicode_for('something wicked this way comes!')
     assert_equal '-something-wicked-this-way-comes', format_friendly, "#{@base_class}. format_friendly_unicode_for failed"
 
-    format_friendly = format_friendly_unicode_for('something wicked this way comes!', demarkator: "_", at_end: true, at_start: false)
+    format_friendly = format_friendly_unicode_for('something wicked this way comes!', demarkator: '_', at_end: true, at_start: false)
     assert_equal 'something_wicked_this_way_comes_', format_friendly, "#{@base_class}. format_friendly_unicode_for failed"
 
     format_friendly = format_friendly_unicode_for('& it is āēīōū and in your 家!')
@@ -29,7 +29,7 @@ module FriendlyUrlsTestUnitHelper
     formatted_title = model.format_for_friendly_urls
 
     # make sure the url starts with correct id
-    re = Regexp.new("^[^-]+")
+    re = Regexp.new('^[^-]+')
     friendly_id = formatted_title.scan(re)[0]
     assert_equal model.id.to_s, friendly_id.to_s, "#{@base_class}.format_for_friendly_urls didn't match the id of the model"
 

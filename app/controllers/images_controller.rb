@@ -13,7 +13,7 @@ class ImagesController < ApplicationController
         date = DateTime.parse(params[:updated_since]) if params[:updated_since]
         date = DateTime.now.beginning_of_month        if date.nil?
 
-        @list_type = "StillImage"
+        @list_type = 'StillImage'
         @items = StillImage.updated_since(date)
         render 'shared/list'
       end
@@ -29,7 +29,7 @@ class ImagesController < ApplicationController
 
     @related_item_topics = @still_image.related_items.select {|ri| ri.is_a? Topic}
 
-    @view_size = params[:view_size] || "medium"
+    @view_size = params[:view_size] || 'medium'
     @image_file = ImageFile.find_by_thumbnail_and_still_image_id(@view_size, params[:id])
 
     exclude = { conditions: "user_portrait_relations.position != 1 AND user_portrait_relations.still_image_id != #{@still_image.id}" }
@@ -96,7 +96,7 @@ class ImagesController < ApplicationController
         end
       end
 
-      setup_related_topic_and_zoom_and_redirect(@still_image, nil, private: (params[:still_image][:private] == "true"))
+      setup_related_topic_and_zoom_and_redirect(@still_image, nil, private: (params[:still_image][:private] == 'true'))
     else
       render action: 'new'
     end
@@ -122,7 +122,7 @@ class ImagesController < ApplicationController
       after_successful_zoom_item_update(@still_image, version_after_update)
       flash[:notice] = t('images_controller.update.updated')
 
-      redirect_to_show_for(@still_image, private: (params[:still_image][:private] == "true"))
+      redirect_to_show_for(@still_image, private: (params[:still_image][:private] == 'true'))
     else
       render action: 'edit'
     end

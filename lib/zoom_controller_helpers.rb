@@ -77,13 +77,13 @@ module ZoomControllerHelpers
     def zoom_class_controller(zoom_class)
       zoom_class_controller = String.new
       case zoom_class
-      when "StillImage"
+      when 'StillImage'
         zoom_class_controller = 'images'
-      when "Video"
+      when 'Video'
         zoom_class_controller = 'video'
-      when "Comment"
+      when 'Comment'
         zoom_class_controller = 'comments'
-      when "AudioRecording"
+      when 'AudioRecording'
         zoom_class_controller = 'audio'
       else
         zoom_class_controller = zoom_class.tableize
@@ -93,13 +93,13 @@ module ZoomControllerHelpers
     def zoom_class_from_controller(controller)
       zoom_class = String.new
       case controller
-      when "images"
+      when 'images'
         zoom_class = 'StillImage'
-      when "video"
+      when 'video'
         zoom_class = 'Video'
-      when "comments"
+      when 'comments'
         zoom_class = 'Comment'
-      when "audio"
+      when 'audio'
         zoom_class = 'AudioRecording'
       else
         zoom_class = controller.classify
@@ -142,7 +142,7 @@ module ZoomControllerHelpers
 
     def worker_zoom_for(options)
       if options[:zoom_items].blank? || options[:zoom_items].size < 1
-        Rails.logger.info("Error in worker_zoom_for call, item not specified. Passed in options are: " + options.inspect)
+        Rails.logger.info('Error in worker_zoom_for call, item not specified. Passed in options are: ' + options.inspect)
         raise ArguementError
       end
 

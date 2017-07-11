@@ -15,11 +15,11 @@ module ExtendedContentController
       if klass.name == 'CommentsController'
         klass.send :before_filter, :is_authorized?, only: [ :new, :create, :edit, :update ]
       else
-        klass.send :permit, "site_admin or moderator of :current_basket or member of :current_basket or admin of :current_basket",
+        klass.send :permit, 'site_admin or moderator of :current_basket or member of :current_basket or admin of :current_basket',
                             only: [ :new, :create, :edit, :update, :convert ]
       end
 
-      klass.send :permit, "site_admin or moderator of :current_basket or admin of :current_basket",
+      klass.send :permit, 'site_admin or moderator of :current_basket or admin of :current_basket',
                           only: [ :destroy, :restore, :reject, :make_theme ]
 
       # GETs should be safe (see http://www.w3.org/2001/tag/doc/whenToUseGet.html)
@@ -109,7 +109,7 @@ module ExtendedContentController
       # Taken from app/helpers/extended_fields_helper.rb
       # We only need this though, so should we include the whole set of helpers?
       def qualified_name_for_field(extended_field)
-        extended_field.label.downcase.gsub(/\s/, "_")
+        extended_field.label.downcase.gsub(/\s/, '_')
       end
 
     end

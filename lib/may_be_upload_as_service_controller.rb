@@ -7,7 +7,7 @@ module MayBeUploadAsServiceController
     private
 
     def simple_for_as_service_else_application
-      if params[:as_service].present? && params[:as_service] == "true"
+      if params[:as_service].present? && params[:as_service] == 'true'
         'simple'
       else
         'application'

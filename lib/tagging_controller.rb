@@ -1,7 +1,7 @@
 module TaggingController
   unless included_modules.include? TaggingController
     def self.included(klass)
-      controller = klass.name.gsub("Controller", "")
+      controller = klass.name.gsub('Controller', '')
       auto_complete_methods = Array.new
       # If we're in the Baskets controller, we have to make all zoom class tag completion methods on load
       if controller == 'Baskets'
@@ -14,9 +14,9 @@ module TaggingController
         # the following code is basicly a copy of zoom_class_from_controller in ZoomControllerHelpers
         # find a way to get that method in here without all the errors is brings with it
         case controller
-        when "Images"
+        when 'Images'
           zoom_class = 'StillImage'
-        when "Audio"
+        when 'Audio'
           zoom_class = 'AudioRecording'
         else
           zoom_class = controller.singularize
@@ -26,7 +26,7 @@ module TaggingController
         auto_complete_methods << "auto_complete_for_#{item_key}_tag_list".to_sym
       end
       auto_complete_methods = ([ :add_tags ] + auto_complete_methods).flatten.compact
-      klass.send :permit, "site_admin or moderator of :current_basket or member of :current_basket or admin of :current_basket", only: auto_complete_methods
+      klass.send :permit, 'site_admin or moderator of :current_basket or member of :current_basket or admin of :current_basket', only: auto_complete_methods
     end
 
     # Kieran Pilkington, 2008/10/23
@@ -56,7 +56,7 @@ module TaggingController
           after_successful_zoom_item_update(@item, version_after_update)
           respond_to do |format|
             flash[:notice] = I18n.t('tagging_controller_lib.add_tags.tags_added', item_title: @item.title)
-            format.html { redirect_to_show_for @item, private: (params[:private] == "true") }
+            format.html { redirect_to_show_for @item, private: (params[:private] == 'true') }
           end
           return true
         else
@@ -64,7 +64,7 @@ module TaggingController
             flash[:error] = I18n.t('tagging_controller_lib.add_tags.error_adding_tags',
                                    item_title: @item.title,
                                    errors: @item.errors['Tags'])
-            format.html { redirect_to_show_for @item, private: (params[:private] == "true") }
+            format.html { redirect_to_show_for @item, private: (params[:private] == 'true') }
           end
           return false
         end
@@ -72,7 +72,7 @@ module TaggingController
         @empty = true
         respond_to do |format|
           flash[:error] = I18n.t('tagging_controller_lib.add_tags.no_tags_entered', item_title: @item.title)
-          format.html { redirect_to_show_for @item, private: (params[:private] == "true") }
+          format.html { redirect_to_show_for @item, private: (params[:private] == 'true') }
         end
         return false
       end

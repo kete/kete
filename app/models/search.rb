@@ -4,9 +4,9 @@
 class Search < ActiveRecord::Base
   def self.view_as_types
     types = Array.new
-    types << ['', I18n.t("search_model.browse_default")]
-    types << ['choice_hierarchy', I18n.t("search_model.choice_hierarchy")] if ExtendedField.find_by_label('categories')
-    types << ['map', I18n.t("search_model.map")] if File.exists?(File.join(RAILS_ROOT, 'config/gmaps_api_key.yml'))
+    types << ['', I18n.t('search_model.browse_default')]
+    types << ['choice_hierarchy', I18n.t('search_model.choice_hierarchy')] if ExtendedField.find_by_label('categories')
+    types << ['map', I18n.t('search_model.map')] if File.exists?(File.join(RAILS_ROOT, 'config/gmaps_api_key.yml'))
     types
   end
 
@@ -50,7 +50,7 @@ class Search < ActiveRecord::Base
   # First sort by the updated_at. This gets updated when a same search is made
   # When updated_at values are identical (when you login, multiple ones are added
   # at once), then sort by the id desc, the order they were entered
-  default_scope order: "updated_at desc, id desc"
+  default_scope order: 'updated_at desc, id desc'
 
   attr_accessor :zoom_db, :pqf_query
 
@@ -69,12 +69,12 @@ class Search < ActiveRecord::Base
 
     full_sort_types.each do |type|
       if type == 'relevance'
-        sort_type_options += "<option class=\"none\" value=\"none\""
+        sort_type_options += '<option class="none" value="none"'
       else
         sort_type_options += "<option class=\"#{type}\" value=\"#{type}\""
       end
-      sort_type_options += " selected=\"selected\"" if !sort_type.nil? && type == sort_type
-      sort_type_options += ">" + I18n.t("search_model.#{type}") + "</option>"
+      sort_type_options += ' selected="selected"' if !sort_type.nil? && type == sort_type
+      sort_type_options += '>' + I18n.t("search_model.#{type}") + '</option>'
     end
     sort_type_options
   end

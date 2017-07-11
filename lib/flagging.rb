@@ -124,7 +124,7 @@ module Flagging
       if !message.blank?
         tagging = version.taggings.find_by_tag_id(Tag.find_by_name(flag))
         tagging.message = message
-        tagging.context = "flags"
+        tagging.context = 'flags'
         tagging.save
       end
 
@@ -215,7 +215,7 @@ module Flagging
     def revert_to_latest_unflagged_version_or_create_blank_version
       last_version_number = self.max_version
 
-      logger.debug("what is last_version_number: " + last_version_number.to_s)
+      logger.debug('what is last_version_number: ' + last_version_number.to_s)
 
       last_version = self.versions.find_by_version(last_version_number)
       last_version_tags_count = last_version.tags.size
@@ -459,8 +459,8 @@ module Flagging
 
     def find_non_pending(type = :all, conditions_string = String.new)
       if conditions_string.blank?
-        conditions_string = "title != :pending_title"
-        conditions_string += " or description is not null" if name != 'Comment'
+        conditions_string = 'title != :pending_title'
+        conditions_string += ' or description is not null' if name != 'Comment'
       end
       find(type, conditions: [conditions_string, { pending_title: SystemSetting.blank_title }])
     end

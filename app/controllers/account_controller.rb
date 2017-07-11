@@ -51,7 +51,7 @@ class AccountController < ApplicationController
           # see if the submitted website is valid
           # append protocol if they have left it off
           website = params[:website]
-          website = "http://" + website unless website.include?('http')
+          website = 'http://' + website unless website.include?('http')
 
           temp_weblink = WebLink.new(title: 'placeholder', url: website)
 
@@ -63,7 +63,7 @@ class AccountController < ApplicationController
 
       if logged_in?
         # anonymous users can't use remember me, check for login password
-        if @anonymous_user.blank? && params[:remember_me] == "1"
+        if @anonymous_user.blank? && params[:remember_me] == '1'
           self.current_user.remember_me
           cookies[:auth_token] = { value: self.current_user.remember_token , expires: self.current_user.remember_token_expires_at }
         end
@@ -81,7 +81,7 @@ class AccountController < ApplicationController
         else
           error_msgs = Array.new
 
-          if params[:email].blank? || !params[:email].include?("@")
+          if params[:email].blank? || !params[:email].include?('@')
             error_msgs << t('account_controller.login.invalid_email')
           end
 
@@ -184,7 +184,7 @@ class AccountController < ApplicationController
         render :update do |page|
           page.replace_html params[:avatar_id],
                             avatar_tag(User.new({ email: params[:email] || String.new }),
-                                                { size: 30, rating: 'G', gravatar_default_url: "/images/no-avatar.png" },
+                                                { size: 30, rating: 'G', gravatar_default_url: '/images/no-avatar.png' },
                                                 { width: 30, height: 30, alt: t('account_controller.fetch_gravatar.your_gravatar') })
         end
       end
@@ -235,7 +235,7 @@ class AccountController < ApplicationController
                     action: 'show',
                     id: @user })
     else
-      logger.debug("what is problem")
+      logger.debug('what is problem')
       render action: 'edit'
     end
   end
@@ -305,7 +305,7 @@ class AccountController < ApplicationController
     end
     redirect_back_or_default(controller: '/account', action: 'index')
   rescue
-    logger.error "Invalid Reset Code entered"
+    logger.error 'Invalid Reset Code entered'
     flash[:notice] = t('account_controller.reset_password.invalid_reset')
     redirect_back_or_default(controller: '/account', action: 'index')
   end

@@ -11,18 +11,18 @@ namespace :db do
   task bootstrap: ['db:drop', 'db:create', 'db:bootstrap:load']
   namespace :bootstrap do
 
-    desc "Going back to VERSION 0 is currently broken for Kete, use db:drop the db:create instead."
+    desc 'Going back to VERSION 0 is currently broken for Kete, use db:drop the db:create instead.'
     task rewind: :environment do
       # migrate back to the stone age
       ENV['VERSION'] = '0'
-      Rake::Task["db:migrate"].invoke
+      Rake::Task['db:migrate'].invoke
 
       # forward, comrades, to the future!
       ENV.delete('VERSION')
-      Rake::Task["db:migrate"].invoke
+      Rake::Task['db:migrate'].invoke
     end
 
-    desc "Migrate clean db (no tables) to current VERSION and load specified or default fixtures for Kete."
+    desc 'Migrate clean db (no tables) to current VERSION and load specified or default fixtures for Kete.'
     task load: :environment do
       if ENV['RAILS_ENV'] == 'test'
         # assumes that migrations have been run previous to testing
@@ -31,13 +31,13 @@ namespace :db do
         # which schema:load doesn't take care of
         # until we find a way of harvesting data population from migrations and running them
         # revert to db:migrate
-        Rake::Task["db:migrate"].invoke
+        Rake::Task['db:migrate'].invoke
       else
-        Rake::Task["db:migrate"].invoke
+        Rake::Task['db:migrate'].invoke
       end
       require 'active_record/fixtures'
       ActiveRecord::Base.establish_connection
-      default_fixtures = "zoom_dbs.yml,topic_types.yml,extended_fields.yml,topic_type_to_field_mappings.yml,baskets.yml,web_links.yml,web_link_versions.yml,users.yml,roles.yml,roles_users.yml,topics.yml,topic_versions.yml,contributions.yml,content_types.yml,content_type_to_field_mappings.yml,system_settings.yml,configurable_settings.yml"
+      default_fixtures = 'zoom_dbs.yml,topic_types.yml,extended_fields.yml,topic_type_to_field_mappings.yml,baskets.yml,web_links.yml,web_link_versions.yml,users.yml,roles.yml,roles_users.yml,topics.yml,topic_versions.yml,contributions.yml,content_types.yml,content_type_to_field_mappings.yml,system_settings.yml,configurable_settings.yml'
       ENV['BOOTSTRAP_FIXTURES'] ||= default_fixtures
       bootstrap_fixtures = ENV['BOOTSTRAP_FIXTURES'].split(/,/)
       bootstrap_fixtures.each do |fixture_file|

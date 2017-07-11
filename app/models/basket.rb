@@ -8,7 +8,7 @@ class Basket < ActiveRecord::Base
   def self.settings
     # * EOIN: we are pretty sure this is not called - raise an exception to be sure
     # * FIXME: this is temporary and should be removed before we go into production
-    raise "died in Basket.settings"
+    raise 'died in Basket.settings'
   end
 
   # EOIN: TEMP: just while we are figuring out how this works
@@ -89,22 +89,22 @@ class Basket < ActiveRecord::Base
 
   def self.documentation_basket
     b = Basket.where(name: 'Documentation').first
-    b or raise("Failed to find the required Documentation basket")
+    b or raise('Failed to find the required Documentation basket')
   end
 
   def self.about_basket
     b = Basket.where(name: 'About').first
-    b or raise("Failed to find the required About basket")
+    b or raise('Failed to find the required About basket')
   end
 
   def self.help_basket
     b = Basket.where(name: 'Help').first
-    b or raise("Failed to find the required Help basket")
+    b or raise('Failed to find the required Help basket')
   end
 
   def self.site_basket
     b = Basket.where(name: 'Site').first
-    b or raise("Failed to find the required Site basket")
+    b or raise('Failed to find the required Site basket')
   end
 
   # EOIN: possible future refactoring: make this return the actual baskets ???
@@ -113,7 +113,7 @@ class Basket < ActiveRecord::Base
   end
 
   def role(name)
-    Role.where(name: name).where(authorizable_type: "Basket").where(authorizable_id: id).last
+    Role.where(name: name).where(authorizable_type: 'Basket').where(authorizable_id: id).last
   end
 
   def documentation_basket
@@ -341,7 +341,7 @@ class Basket < ActiveRecord::Base
   end
 
   def private_file_visibility_with_inheritance
-    self.setting(:private_file_visibility) || self.site_basket.setting(:private_file_visibility) || "at least member"
+    self.setting(:private_file_visibility) || self.site_basket.setting(:private_file_visibility) || 'at least member'
   end
 
   def allow_non_member_comments_with_inheritance?
@@ -424,9 +424,9 @@ class Basket < ActiveRecord::Base
       next if label == I18n.t('basket_model.site_admin') && !site_admin
       select_options += "<option value=\"#{value}\""
       if default_value == value
-        select_options += " selected=\"selected\""
+        select_options += ' selected="selected"'
       end
-      select_options += ">" + (pluralize ? label.pluralize : label) + "</option>"
+      select_options += '>' + (pluralize ? label.pluralize : label) + '</option>'
     end
     select_options
   end
@@ -477,9 +477,9 @@ class Basket < ActiveRecord::Base
       select_options += "<option value=\"#{value}\""
       if (default && (default == value.to_s || (default.blank? && value == false))) ||
          (!default && fully_moderated? == value)
-        select_options += " selected=\"selected\""
+        select_options += ' selected="selected"'
       end
-      select_options += ">" + label + "</option>"
+      select_options += '>' + label + '</option>'
     end
     select_options
   end
@@ -537,9 +537,9 @@ class Basket < ActiveRecord::Base
       select_options += "<option value=\"#{value}\""
       if (default && default == value) ||
          (!self.setting(:theme_font_family).blank? && self.setting(:theme_font_family) == value)
-        select_options += " selected=\"selected\""
+        select_options += ' selected="selected"'
       end
-      select_options += ">" + label + "</option>"
+      select_options += '>' + label + '</option>'
     end
     select_options
   end
@@ -604,7 +604,7 @@ class Basket < ActiveRecord::Base
     formatted_name = name.to_s
 
     self.urlified_name = format_friendly_unicode_for(formatted_name,
-                                                     demarkator: "_",
+                                                     demarkator: '_',
                                                      at_start: false,
                                                      at_end: false)
   end
@@ -671,7 +671,7 @@ class Basket < ActiveRecord::Base
   before_update :register_redirect_if_necessary
 
   def register_redirect_if_necessary
-    old_urlified_name = self.class.select("urlified_name").where(id: id).first.urlified_name
+    old_urlified_name = self.class.select('urlified_name').where(id: id).first.urlified_name
     if old_urlified_name != urlified_name
       RedirectRegistration.create!(source_url_pattern: "/#{old_urlified_name}/", target_url_pattern: "/#{urlified_name}/")
     end

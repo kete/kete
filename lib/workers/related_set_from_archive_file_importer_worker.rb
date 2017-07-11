@@ -1,4 +1,4 @@
-require "importer"
+require 'importer'
 # generic simple topic importer
 # must have xml_to_record_path specified
 # in the Import object

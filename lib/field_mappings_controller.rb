@@ -3,7 +3,7 @@ module FieldMappingsController
 
     def self.included(klass)
       klass.send :before_filter, :login_required, only: [:list, :index]
-      klass.send :permit, "site_admin or admin of :site"
+      klass.send :permit, 'site_admin or admin of :site'
 
       # GETs should be safe (see
       # http://www.w3.org/2001/tag/doc/whenToUseGet.html)

@@ -7,9 +7,9 @@
 #
 # $ID: $
 
-desc "A wrapper task that does most everything that we need done after initial checkout of the codebase."
+desc 'A wrapper task that does most everything that we need done after initial checkout of the codebase.'
 task :prep_app do
-  p "This may take awhile and have a lot of output.  You can ignore warnings."
+  p 'This may take awhile and have a lot of output.  You can ignore warnings.'
 
   # can't do tasks that need rails environment, apparently
   # , 'db:bootstrap'

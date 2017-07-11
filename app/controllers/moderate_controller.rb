@@ -2,7 +2,7 @@ class ModerateController < ApplicationController
   # everything else is handled by application.rb
   before_filter :login_required, only: [:list, :index, :rss]
 
-  permit "site_admin or admin of :current_basket"
+  permit 'site_admin or admin of :current_basket'
 
   # GETs should be safe (see http://www.w3.org/2001/tag/doc/whenToUseGet.html)
   # verify :method => :post, :only => [ :destroy, :create, :update ],
