@@ -38,15 +38,15 @@ class AccountController < ApplicationController
         self.current_user = User.authenticate(params[:login], params[:password])
       else
         if anonymous_ok_for?(session[:return_to]) &&
-            @security_code == @security_code_confirmation &&
-            params[:email].present? && params[:email] =~ /^[^@\s]+@[^@\s]+$/i
+           @security_code == @security_code_confirmation &&
+           params[:email].present? && params[:email] =~ /^[^@\s]+@[^@\s]+$/i
 
           @anonymous_user = User.find_by_login('anonymous')
 
           anonymous_name = params[:name].blank? ? @anonymous_user.user_name : params[:name]
 
           session[:anonymous_user] = { name: anonymous_name,
-            email: params[:email]}
+                                       email: params[:email] }
 
           # see if the submitted website is valid
           # append protocol if they have left it off
@@ -174,10 +174,8 @@ class AccountController < ApplicationController
   include ExtendedContentController
   include EmailController
 
-
-
   def simple_return_tos
-      ['find_related']
+    ['find_related']
   end
 
   def fetch_gravatar
