@@ -2,7 +2,9 @@
 class ExternalSearchSources
   @@settings = Hash.new
   def self.settings;        @@settings;              end
+
   def self.[](key);         @@settings[key];         end
+
   def self.[]=(key, value); @@settings[key] = value; end
 end
 
