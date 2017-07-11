@@ -5,6 +5,7 @@ module KeteCommonOembedSupport
     def author_name
       creator.resolved_name
     end
+
     def author_url
       url_for(host: SystemSetting.site_name,
               controller: 'account',

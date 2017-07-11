@@ -432,6 +432,7 @@ class AccountController < ApplicationController
       'application'
     end
   end
+
   def redirect_if_user_portraits_arnt_enabled
     unless SystemSetting.enable_user_portraits?
       flash[:notice] = t('account_controller.redirect_if_user_portraits_arnt_enabled.not_enabled')

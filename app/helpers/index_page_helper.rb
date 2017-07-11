@@ -2,6 +2,7 @@ module IndexPageHelper
   def content_type_count_for(privacy, zoom_class)
     "#{number_with_delimiter(@items[privacy.to_sym]) || 0}"
   end
+
   def set_robots_txt_base_variables
     @actions = %w(new edit flag_version flag_form history preview selected_image)
     ZOOM_CLASSES.each do |stem|

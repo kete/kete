@@ -53,11 +53,17 @@ module FieldMappings
     # a performance problem.
 
     def extended_field_label ;                extended_field.label ; end
+
     def extended_field_xml_element_name ;     extended_field.xml_element_name ; end
+
     def extended_field_xsi_type ;             extended_field.xsi_type ; end
+
     def extended_field_multiple ;             extended_field.multiple ; end
+
     def extended_field_description ;          extended_field.description ; end
+
     def extended_field_user_choice_addition ; extended_field.user_choice_addition ; end
+
     def extended_field_ftype ;                extended_field.ftype ; end
 
     def used_by_items?
