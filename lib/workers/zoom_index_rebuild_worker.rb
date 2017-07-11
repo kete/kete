@@ -131,8 +131,8 @@ class ZoomIndexRebuildWorker < BackgrounDRb::MetaWorker
         while the_class_count > class_count_so_far
           if class_count_so_far > 0
             clause_values[:start_id] = the_class.find(:first,
-                                                     select: 'id',
-                                                     conditions: "id > #{@last_id}").id
+                                                      select: 'id',
+                                                      conditions: "id > #{@last_id}").id
           end
 
 

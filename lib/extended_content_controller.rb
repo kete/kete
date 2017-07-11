@@ -16,11 +16,11 @@ module ExtendedContentController
         klass.send :before_filter, :is_authorized?, only: [ :new, :create, :edit, :update ]
       else
         klass.send :permit, 'site_admin or moderator of :current_basket or member of :current_basket or admin of :current_basket',
-                            only: [ :new, :create, :edit, :update, :convert ]
+                   only: [ :new, :create, :edit, :update, :convert ]
       end
 
       klass.send :permit, 'site_admin or moderator of :current_basket or admin of :current_basket',
-                          only: [ :destroy, :restore, :reject, :make_theme ]
+                 only: [ :destroy, :restore, :reject, :make_theme ]
 
       # GETs should be safe (see http://www.w3.org/2001/tag/doc/whenToUseGet.html)
       # klass.send :verify, :method => :post,
@@ -30,7 +30,7 @@ module ExtendedContentController
       unless klass.name == 'TopicsController'
         # used to determined appropriate extended fields for the model you are operating on
         klass.send :before_filter, :load_content_type,
-                                   only: [:show, :new, :create, :edit, :update]
+                   only: [:show, :new, :create, :edit, :update]
       end
 
       klass.send :helper, :privacy_controls

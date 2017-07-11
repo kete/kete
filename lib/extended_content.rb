@@ -827,7 +827,7 @@ require 'xmlsimple'
 
         # Otherwise delegate to specialized method..
         if message = send("validate_extended_#{extended_field_mapping.extended_field.ftype}_field_content".to_sym, \
-          extended_field_mapping, value)
+                          extended_field_mapping, value)
 
           errors.add_to_base(message)
         end
@@ -859,7 +859,7 @@ require 'xmlsimple'
           v = v.to_s unless extended_field_mapping.extended_field.ftype == 'year'
 
           send("validate_extended_#{extended_field_mapping.extended_field.ftype}_field_content".to_sym, \
-            extended_field_mapping, v)
+               extended_field_mapping, v)
         end
 
         error_array.compact.each do |error|

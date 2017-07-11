@@ -5,7 +5,7 @@ module BasketsHelper
       action: 'find_index',
       current_basket_id: options[:current_basket_id],
       current_homepage_id: options[:current_homepage_id] },
-    popup: ['links', 'height=500,width=500,scrollbars=yes,top=100,left=100'], tabindex: '1'
+            popup: ['links', 'height=500,width=500,scrollbars=yes,top=100,left=100'], tabindex: '1'
   end
 
   def link_to_add_index_topic(options={})
