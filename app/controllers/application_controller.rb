@@ -874,8 +874,6 @@ class ApplicationController < ActionController::Base
 
   # ROB:  see rescue_404() #custom_error_pages
   def rescue_action_in_public(exception)
-    # logger.info("ERROR: #{exception.to_s}")
-
     @displaying_error = true
 
     # when an exception occurs, before filters arn't called, so we have to manually call them here
