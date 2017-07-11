@@ -59,7 +59,7 @@ class ApplicationController < ActionController::Base
   private :password_protect
 
   # only permit site members to add/delete things
-  before_filter :login_required, :only => [ :new, :create,
+  before_filter :login_required, only: [ :new, :create,
                                             :edit, :update, :destroy,
                                             :appearance, :homepage_options,
                                             :convert,
@@ -83,7 +83,7 @@ class ApplicationController < ActionController::Base
   # after filters on registered on specific controllers
   # based on SystemSetting.allowed_anonymous_actions specs
   # this should prevent url surgery to subvert logging out of anonymous user though
-  before_filter :logout_anonymous_user_unless_allowed, :except => [:logout,
+  before_filter :logout_anonymous_user_unless_allowed, except: [:logout,
                                                                    :login,
                                                                    :signup,
                                                                    :show_captcha]
@@ -102,32 +102,32 @@ class ApplicationController < ActionController::Base
   before_filter :update_basket_permissions_hash
 
   # keep track of tag_list input by version
-  before_filter :update_params_with_raw_tag_list, :only => [ :create, :update ]
+  before_filter :update_params_with_raw_tag_list, only: [ :create, :update ]
 
   # see method definition for details
 
   # we often need baskets for edits
-  before_filter :load_array_of_baskets, :only => [ :edit, :update, :restore ]
+  before_filter :load_array_of_baskets, only: [ :edit, :update, :restore ]
 
   # don't allow forms to set do_not_moderate
-  before_filter :security_check_of_do_not_moderate, :only => [ :create, :update, :restore ]
+  before_filter :security_check_of_do_not_moderate, only: [ :create, :update, :restore ]
 
   # set do_not_moderate if site_admin, otherwise things like moving from one basket to another
   # may get tripped up
-  before_filter :set_do_not_moderate_if_site_admin_or_exempted, :only => [ :create, :update ]
+  before_filter :set_do_not_moderate_if_site_admin_or_exempted, only: [ :create, :update ]
 
   # ensure that users who are in a basket where the action menu has been hidden can edit
   # by posting a dummy form
-  before_filter :current_user_can_see_action_menu?, :only => [:new, :create, :edit, :update]
+  before_filter :current_user_can_see_action_menu?, only: [:new, :create, :edit, :update]
 
   # TODO: NOT USED, delete code here and in lib/zoom_controller_helpers.rb
   # related items only track title and url, therefore only update will change those attributes
-  after_filter :update_zoom_record_for_related_items, :only => [ :update ]
+  after_filter :update_zoom_record_for_related_items, only: [ :update ]
 
   # setup return_to for the session
   # TODO: this needs to be updated to store location for newer actions
   # might be better to do an except?
-  after_filter :store_location, :only => [ :for, :all, :search, :index, :new, :show, :edit, :new_related_set_from_archive_file]
+  after_filter :store_location, only: [ :for, :all, :search, :index, :new, :show, :edit, :new_related_set_from_archive_file]
 
   # RSS feed related operations
   # no layout on rss pages
@@ -136,7 +136,7 @@ class ApplicationController < ActionController::Base
     params[:action] == 'rss' ? nil : "application"
   end
   # adjust request and response values
-  before_filter :adjust_http_headers_for_rss, :only => [ :rss ]
+  before_filter :adjust_http_headers_for_rss, only: [ :rss ]
   def adjust_http_headers_for_rss
     response.headers["Content-Type"] = "application/xml; charset=utf-8"
     request.format = :xml
@@ -170,7 +170,7 @@ class ApplicationController < ActionController::Base
       when @documentation_basket.urlified_name
         @current_basket = @documentation_basket
       else
-        @current_basket = Basket.where(:urlified_name => params[:urlified_name]).first
+        @current_basket = Basket.where(urlified_name: params[:urlified_name]).first
       end
     end
 
@@ -283,19 +283,19 @@ class ApplicationController < ActionController::Base
       case where_to_redirect
       when 'show_related'
         # TODO: replace with translation stuff when we get globalize going
-        flash[:notice] = t('application_controller.setup_related_topic_and_zoom_and_redirect.related_item', :zoom_class => zoom_class_humanize(item.class.name))
-        redirect_to_related_item(@relate_to_item, { :private => (params[:related_item_private] && params[:related_item_private] == 'true' && permitted_to_view_private_items?) })
+        flash[:notice] = t('application_controller.setup_related_topic_and_zoom_and_redirect.related_item', zoom_class: zoom_class_humanize(item.class.name))
+        redirect_to_related_item(@relate_to_item, { private: (params[:related_item_private] && params[:related_item_private] == 'true' && permitted_to_view_private_items?) })
       when 'commentable'
         redirect_to_show_for(commented_item, options)
       when 'appearance'
-        redirect_to :action => :appearance, :controller => 'baskets'
+        redirect_to action: :appearance, controller: 'baskets'
       when 'user_account'
         if params[:portrait] && params[:selected_portrait]
-          flash[:notice] = t('application_controller.setup_related_topic_and_zoom_and_redirect.selected_portrait', :zoom_class => zoom_class_humanize(item.class.name))
+          flash[:notice] = t('application_controller.setup_related_topic_and_zoom_and_redirect.selected_portrait', zoom_class: zoom_class_humanize(item.class.name))
         elsif params[:portrait]
-          flash[:notice] = t('application_controller.setup_related_topic_and_zoom_and_redirect.portrait', :zoom_class => zoom_class_humanize(item.class.name))
+          flash[:notice] = t('application_controller.setup_related_topic_and_zoom_and_redirect.portrait', zoom_class: zoom_class_humanize(item.class.name))
         end
-        redirect_to :action => :show, :controller => 'account', :id => @current_user
+        redirect_to action: :show, controller: 'account', id: @current_user
       when 'service_target'
         service_target = params[:service_target]
 
@@ -306,12 +306,12 @@ class ApplicationController < ActionController::Base
         end
         redirect_to service_target
       else
-        flash[:notice] = t('application_controller.setup_related_topic_and_zoom_and_redirect.created', :zoom_class => zoom_class_humanize(item.class.name))
+        flash[:notice] = t('application_controller.setup_related_topic_and_zoom_and_redirect.created', zoom_class: zoom_class_humanize(item.class.name))
         redirect_to_show_for(item, options)
       end
 
     else
-      render :action => 'new'
+      render action: 'new'
     end
   end
 
@@ -341,9 +341,9 @@ class ApplicationController < ActionController::Base
       end
     end
 
-    redirect_to :controller => 'search', :action => 'find_related',
-                :relate_to_item => params[:relate_to_item], :relate_to_type => params[:relate_to_type],
-                :related_class => params[:related_class], :function => 'remove'
+    redirect_to controller: 'search', action: 'find_related',
+                relate_to_item: params[:relate_to_item], relate_to_type: params[:relate_to_type],
+                related_class: params[:related_class], function: 'remove'
   end
 
   def unlink_related
@@ -360,9 +360,9 @@ class ApplicationController < ActionController::Base
       end
     end
 
-    redirect_to :controller => 'search', :action => 'find_related',
-                :relate_to_item => params[:relate_to_item], :relate_to_type => params[:relate_to_type],
-                :related_class => params[:related_class], :function => 'remove'
+    redirect_to controller: 'search', action: 'find_related',
+                relate_to_item: params[:relate_to_item], relate_to_type: params[:relate_to_type],
+                related_class: params[:related_class], function: 'remove'
   end
 
   # overriding here, to grab title of page, too
@@ -380,10 +380,10 @@ class ApplicationController < ActionController::Base
   end
 
   def redirect_to_search_for(zoom_class)
-    redirect_to(:controller => 'search',
-                :trailing_slash => true,
-                :action => :all,
-                :controller_name_for_zoom_class => zoom_class)
+    redirect_to(controller: 'search',
+                trailing_slash: true,
+                action: :all,
+                controller_name_for_zoom_class: zoom_class)
   end
 
   def redirect_to_default_all
@@ -403,27 +403,27 @@ class ApplicationController < ActionController::Base
   def path_to_show_for(item, options = {})
     # By default, assume redirect to public version.
     options = {
-      :private => false
+      private: false
     }.merge(options)
 
     item = item.commentable if item.is_a?(Comment)
 
     path_hash = {
-      :urlified_name  => item.basket.urlified_name,
-      :controller     => zoom_class_controller(item.class.name),
-      :action         => 'show',
-      :id             => item,
-      :locale         => false
+      urlified_name: item.basket.urlified_name,
+      controller: zoom_class_controller(item.class.name),
+      action: 'show',
+      id: item,
+      locale: false
     }
 
     # Redirect to private version if item is private.
     if options[:private]
-      path_hash.merge!({ :private => "true" })
+      path_hash.merge!({ private: "true" })
     end
 
     # Add the anchor if one is passed in
     if options[:anchor]
-      path_hash.merge!({ :anchor => options[:anchor] })
+      path_hash.merge!({ anchor: options[:anchor] })
     end
 
     url_for(path_hash)
@@ -436,7 +436,7 @@ class ApplicationController < ActionController::Base
       item.oai_record
     else
       # :layout => false,
-      render :text=> item.oai_record, :content_type => 'text/xml'
+      render text: item.oai_record, content_type: 'text/xml'
     end
   end
 
@@ -460,18 +460,18 @@ class ApplicationController < ActionController::Base
   def correct_url_for(item, version = nil)
     correct_action = version.nil? ? 'show' : 'preview'
 
-    options = { :action => correct_action, :id => item }
+    options = { action: correct_action, id: item }
     options[:version] = version if correct_action == 'preview'
     options[:private] = params[:private]
 
     item_url = nil
     if item.class.name == 'Comment' and correct_action != 'preview'
       commented_item = item.commentable
-      item_url = url_for(:controller => zoom_class_controller(commented_item.class.name),
-                         :action => correct_action,
-                         :id => commented_item,
-                         :anchor => item.id,
-                         :urlified_name => commented_item.basket.urlified_name)
+      item_url = url_for(controller: zoom_class_controller(commented_item.class.name),
+                         action: correct_action,
+                         id: commented_item,
+                         anchor: item.id,
+                         urlified_name: commented_item.basket.urlified_name)
     else
       item_url = url_for(options)
     end
@@ -500,9 +500,9 @@ class ApplicationController < ActionController::Base
       end
 
       if basket == @site_basket
-        @basket_stats_hash["#{zoom_class}_public"] = Module.class_eval(zoom_class).count(:conditions => local_public_conditions)
+        @basket_stats_hash["#{zoom_class}_public"] = Module.class_eval(zoom_class).count(conditions: local_public_conditions)
       else
-        @basket_stats_hash["#{zoom_class}_public"] = basket.send(zoom_class.tableize).count(:conditions => local_public_conditions)
+        @basket_stats_hash["#{zoom_class}_public"] = basket.send(zoom_class.tableize).count(conditions: local_public_conditions)
       end
 
       # Walter McGinnis, 2008-11-18
@@ -514,7 +514,7 @@ class ApplicationController < ActionController::Base
       # which happens to use the same code as other basket would, so we don't need to duplicate this at the moment
       # TODO: we will want to change this to match browsing of private items in site basket later
       if basket.show_privacy_controls_with_inheritance? && permitted_to_view_private_items?
-        @basket_stats_hash["#{zoom_class}_private"] = basket.send(zoom_class.tableize).count(:conditions => private_conditions)
+        @basket_stats_hash["#{zoom_class}_private"] = basket.send(zoom_class.tableize).count(conditions: private_conditions)
       end
     end
   end
@@ -552,7 +552,7 @@ class ApplicationController < ActionController::Base
   end
 
   def after_successful_zoom_item_update(item, version_after_update)
-    version_created = version_after_update ? item.versions.exists?(:version => version_after_update) : false
+    version_created = version_after_update ? item.versions.exists?(version: version_after_update) : false
 
     # if we need to add a contributor (sometimes, a version isn't
     # created if only timestamps were updated. In that case. we
@@ -598,7 +598,7 @@ class ApplicationController < ActionController::Base
     # if we got sent a version object, we need to link to the latest version
     item = item.latest_version if item.class.name =~ /Version/
 
-    url_for :controller => zoom_class_controller(item.class.name), :action => :history, :id => item
+    url_for controller: zoom_class_controller(item.class.name), action: :history, id: item
   end
 
   # this is useful for creating a rss version of the request
@@ -812,9 +812,9 @@ class ApplicationController < ActionController::Base
     unless redirect_registration
       @displaying_error = true
       @title = t('application_controller.rescue_404.title')
-      render :template => "errors/error404", :layout => "application", :status => "404"
+      render template: "errors/error404", layout: "application", status: "404"
     else
-      redirect_to redirect_registration.new_url, :status => redirect_registration.status_code
+      redirect_to redirect_registration.new_url, status: redirect_registration.status_code
     end
   end
 
@@ -822,7 +822,7 @@ class ApplicationController < ActionController::Base
   def rescue_500(template)
     @displaying_error = true
     @title = t('application_controller.rescue_500.title')
-    render :template => "errors/#{template}", :layout => "application", :status => "500"
+    render template: "errors/#{template}", layout: "application", status: "500"
   end
 
   # ROB:  current_item() should probably be gotten-rid-of/clarrified along with
@@ -895,7 +895,7 @@ class ApplicationController < ActionController::Base
     when ActionController::InvalidAuthenticityToken then
       respond_to do |format|
         format.html { rescue_500('invalid_authenticity_token') }
-        format.js { render :file => File.join(Rails.root, 'app/views/errors/invalid_authenticity_token.js.rjs') }
+        format.js { render file: File.join(Rails.root, 'app/views/errors/invalid_authenticity_token.js.rjs') }
       end
     else
       if exception.to_s.match(/Connect\ failed/)
@@ -903,7 +903,7 @@ class ApplicationController < ActionController::Base
       else
         respond_to do |format|
           format.html { rescue_500('error500') }
-          format.js { render :file => File.join(Rails.root, 'app/views/errors/error500.js.rjs') }
+          format.js { render file: File.join(Rails.root, 'app/views/errors/error500.js.rjs') }
         end
       end
     end
@@ -914,7 +914,7 @@ class ApplicationController < ActionController::Base
   def redirect_if_current_basket_isnt_approved_for_public_viewing
     if @current_basket.status != 'approved' && !@site_admin && !@basket_admin
       flash[:error] = t('application_controller.redirect_if_current_basket_isnt_approved_for_public_viewing.not_available',
-                        :basket_name => @current_basket.name)
+                        basket_name: @current_basket.name)
       redirect_to "/#{@site_basket.urlified_name}"
     end
   end
