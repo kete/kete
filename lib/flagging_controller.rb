@@ -263,7 +263,7 @@ module FlaggingController
       redirect_to controller: 'account', action: 'login'
     end
 
-    def can_preview?(options = { })
+    def can_preview?(options = {})
       submitter = options[:submitter] || options[:item].submitter_of(options[:version_number])
       @at_least_a_moderator or @current_user == submitter or !@current_basket.fully_moderated?
     end

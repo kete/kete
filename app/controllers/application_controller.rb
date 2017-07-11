@@ -603,7 +603,7 @@ class ApplicationController < ActionController::Base
 
   # this is useful for creating a rss version of the request
   # or for replacing the page number in an existing rss url
-  def derive_url_for_rss(options = { })
+  def derive_url_for_rss(options = {})
     replace_page_with_rss = !options[:replace_page_with_rss].nil? ? options[:replace_page_with_rss] : false
 
     page = !options.blank? && !options[:page].blank? ? options[:page] : nil
@@ -665,7 +665,7 @@ class ApplicationController < ActionController::Base
     url
   end
 
-  def rss_tag(options = { })
+  def rss_tag(options = {})
     auto_detect = !options[:auto_detect].nil? ? options[:auto_detect] : true
 
     tag = String.new

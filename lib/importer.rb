@@ -625,7 +625,7 @@ module Importer
       new_record = nil
       if existing_item.blank?
         description_end_template = @description_end_templates['default']
-        new_record = create_new_item_from_record(record, @zoom_class, {params: params, record_hash: record_hash, description_end_template: description_end_template })
+        new_record = create_new_item_from_record(record, @zoom_class, { params: params, record_hash: record_hash, description_end_template: description_end_template })
       else
         logger.info('what is existing item: ' + existing_item.id.to_s)
         # record exists in kete already

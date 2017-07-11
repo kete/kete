@@ -323,7 +323,7 @@ module Flagging
       title == SystemSetting.no_public_version_title
     end
 
-    def notify_moderators_immediatelly_if_necessary(options = { })
+    def notify_moderators_immediatelly_if_necessary(options = {})
       if SystemSetting.frequency_of_moderation_email.is_a?(String) and SystemSetting.frequency_of_moderation_email == 'instant'
         # if histor_url is blank it will be figured out in view
         history_url = if !options[:history_url].blank?

@@ -9,7 +9,7 @@ module BasketsHelper
   end
 
   def link_to_add_index_topic(options={})
-    link_to options[:phrase], {controller: 'topics', action: :new, index_for_basket: options[:index_for_basket]}, tabindex: '1'
+    link_to options[:phrase], { controller: 'topics', action: :new, index_for_basket: options[:index_for_basket] }, tabindex: '1'
   end
 
   def basket_preferences_inheritance_message

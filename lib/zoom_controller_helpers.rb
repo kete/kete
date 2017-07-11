@@ -134,7 +134,7 @@ module ZoomControllerHelpers
     # meant to be used in place of direct item.prepare_and_save_to_zoom
     # as that is synchronous and can hold up request responses significantly for items that have large zoom records
     # this moves the prepare_and_save_to_zoom process to asynchronous backgroundrb process
-    def update_search_record_for(item, options = { })
+    def update_search_record_for(item, options = {})
       # ROB: we don't use zoom and this was causing errors so removed.
     end
 

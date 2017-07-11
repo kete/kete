@@ -176,7 +176,7 @@ namespace :kete do
     task check_required_software: :environment do
       include RequiredSoftware
       required_software = load_required_software
-      missing_software = { 'Gems' => missing_libs(required_software), 'Commands' => missing_commands(required_software)}
+      missing_software = { 'Gems' => missing_libs(required_software), 'Commands' => missing_commands(required_software) }
       p "you have the following missing gems (you might want to do rake prep_app first): #{missing_software['Gems'].inspect}" if !missing_software['Gems'].blank?
       p "you have the following missing external software (take steps to install them before starting your kete server): #{missing_software['Commands'].inspect}" if !missing_software['Commands'].blank?
     end
@@ -221,7 +221,7 @@ namespace :kete do
     task make_baskets_approved_if_status_null: :environment do
       Basket.all.each do |basket|
         basket.update_attributes!({ status: 'approved',
-                                    creator_id: 1}) if basket.status.blank?
+                                    creator_id: 1 }) if basket.status.blank?
       end
     end
 

@@ -19,6 +19,6 @@ class ProfileSettings
   private
 
   def self.settings
-    { }
+    {}
   end
 end

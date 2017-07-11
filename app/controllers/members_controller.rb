@@ -42,7 +42,7 @@ class MembersController < ApplicationController
       instance_variable_set("@#{role_plural}_count", @current_basket.send("has_#{role_plural}_count"))
     end
 
-    @default_sorting = {order: 'roles_users.created_at', direction: 'desc'}
+    @default_sorting = { order: 'roles_users.created_at', direction: 'desc' }
     acceptable_sort_types = ['users.resolved_name', 'roles_users.created_at', 'users.email']
     acceptable_sort_types << 'users.login' if @site_admin
     paginate_order = current_sorting_options(@default_sorting[:order], @default_sorting[:direction], acceptable_sort_types)
@@ -58,7 +58,7 @@ class MembersController < ApplicationController
 
   def list_members_in(role_name, order='users.login asc')
     @non_member_roles_plural = Hash.new
-    @possible_roles = {'admin' => t('members_controller.list_members_in.admin'),
+    @possible_roles = { 'admin' => t('members_controller.list_members_in.admin'),
       'moderator' => t('members_controller.list_members_in.moderator'),
       'member' => t('members_controller.list_members_in.member')
     }
