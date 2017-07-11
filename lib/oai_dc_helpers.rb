@@ -18,11 +18,11 @@ module OaiDcHelpers
         request_uri = simulated_request[:original_url]
       end
 
-      xml.request(request_uri, verb: 'GetRecord', identifier: "#{ZoomDb.zoom_id_stub}#{basket_urlified_name}:#{self.class.name}:#{self.id}", metadataPrefix: 'oai_dc')
+      xml.request(request_uri, verb: 'GetRecord', identifier: "#{ZoomDb.zoom_id_stub}#{basket_urlified_name}:#{self.class.name}:#{id}", metadataPrefix: 'oai_dc')
     end
 
     def oai_dc_xml_oai_identifier(xml)
-      xml.identifier("#{ZoomDb.zoom_id_stub}#{basket_urlified_name}:#{self.class.name}:#{self.id}")
+      xml.identifier("#{ZoomDb.zoom_id_stub}#{basket_urlified_name}:#{self.class.name}:#{id}")
     end
 
     # Walter McGinnis, 2008-10-05
@@ -35,7 +35,7 @@ module OaiDcHelpers
     def oai_dc_xml_oai_datestamp(xml)
       most_recent_updated_at = updated_at
 
-      if self.is_a?(Topic)
+      if is_a?(Topic)
         # topics can be on either side of the content_item_relation join model
         # so to get all possible relations, you have to combine them
         all_relations = Array.new
@@ -58,7 +58,7 @@ module OaiDcHelpers
             most_recent_updated_at = last_relation.updated_at
           end
         end
-      elsif !self.is_a?(Comment) && content_item_relations.count > 0 &&
+      elsif !is_a?(Comment) && content_item_relations.count > 0 &&
           content_item_relations.last.updated_at > most_recent_updated_at
         most_recent_updated_at = content_item_relations.last.updated_at
       end
@@ -98,20 +98,20 @@ module OaiDcHelpers
 
       if self.class.name == 'Comment'
         # comments always point back to the thing they are commenting on
-        commented_on_item = self.commentable
+        commented_on_item = commentable
         uri_attrs = {
           controller: zoom_class_controller(commented_on_item.class.name),
           action: 'show',
           id: commented_on_item,
           urlified_name: commented_on_item.basket.urlified_name,
-          anchor: "comment-#{self.id}",
-          private: self.commentable_private?.to_s
+          anchor: "comment-#{id}",
+          private: commentable_private?.to_s
         }
       else
         # Link to private version if generating OAI record for it..
         if respond_to?(:private) && private?
           # don't put title in url for private items
-          uri_attrs.merge!({ private: 'true', id: self.id.to_s })
+          uri_attrs.merge!({ private: 'true', id: id.to_s })
         end
       end
 
@@ -201,7 +201,7 @@ module OaiDcHelpers
       case self.class.name
       when 'Comment'
         # comments always point back to the thing they are commenting on
-        commented_on_item = self.commentable
+        commented_on_item = commentable
         xml.send('dc:subject') {
           xml.cdata commented_on_item.title
         } unless [SystemSetting.blank_title, SystemSetting.no_public_version_title].include?(commented_on_item.title)
@@ -264,7 +264,7 @@ module OaiDcHelpers
 
     # currently only relevant to topics
     def oai_dc_xml_dc_coverage(xml)
-      return unless self.is_a?(Topic)
+      return unless is_a?(Topic)
       topic_type.ancestors.each do |ancestor|
         xml.send('dc:coverage', ancestor.name)
       end

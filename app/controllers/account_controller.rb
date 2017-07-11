@@ -64,8 +64,8 @@ class AccountController < ApplicationController
       if logged_in?
         # anonymous users can't use remember me, check for login password
         if @anonymous_user.blank? && params[:remember_me] == '1'
-          self.current_user.remember_me
-          cookies[:auth_token] = { value: self.current_user.remember_token , expires: self.current_user.remember_token_expires_at }
+          current_user.remember_me
+          cookies[:auth_token] = { value: current_user.remember_token , expires: current_user.remember_token_expires_at }
         end
         unless @anonymous_user
           move_session_searches_to_current_user
@@ -208,7 +208,7 @@ class AccountController < ApplicationController
       if params[:id]
         @user = User.find(params[:id])
       else
-        @user = self.current_user
+        @user = current_user
       end
       @viewer_is_user = (@user == @current_user) ? true : false
       @viewer_portraits = !@user.portraits.empty? ? @user.portraits.all(conditions: ['position != 1']) : nil
@@ -219,11 +219,11 @@ class AccountController < ApplicationController
   end
 
   def edit
-    @user = User.find(self.current_user.id)
+    @user = User.find(current_user.id)
   end
 
   def update
-    @user = User.find(self.current_user.id)
+    @user = User.find(current_user.id)
 
     original_user_name = @user.user_name
     if @user.update_attributes(params[:user])

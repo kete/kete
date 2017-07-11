@@ -7,7 +7,7 @@ class ExtendedField < ActiveRecord::Base
 
   # find an extended field based on params[:extended_field]
   def self.from_id_or_label(id_or_label)
-    where('UPPER(label) = ?', id_or_label.upcase.gsub('_', ' ')).first || self.find_by_id(id_or_label)
+    where('UPPER(label) = ?', id_or_label.upcase.gsub('_', ' ')).first || find_by_id(id_or_label)
   end
 
   # James - 2008-12-05
@@ -28,7 +28,7 @@ class ExtendedField < ActiveRecord::Base
   after_save :store_topic_type
 
   def topic_type
-    @topic_type ||= self.setting(:topic_type)
+    @topic_type ||= setting(:topic_type)
   end
 
   def topic_type=(value)
@@ -36,13 +36,13 @@ class ExtendedField < ActiveRecord::Base
   end
 
   def store_topic_type
-    self.set_setting(:topic_type, @topic_type) unless @topic_type.blank?
+    set_setting(:topic_type, @topic_type) unless @topic_type.blank?
   end
 
   after_save :store_circa
 
   def circa
-    @circa ||= self.setting(:circa)
+    @circa ||= setting(:circa)
   end
 
   def circa?
@@ -54,7 +54,7 @@ class ExtendedField < ActiveRecord::Base
   end
 
   def store_circa
-    self.set_setting(:circa, @circa) unless @circa.blank?
+    set_setting(:circa, @circa) unless @circa.blank?
   end
 
   after_save :set_base_url
@@ -71,7 +71,7 @@ class ExtendedField < ActiveRecord::Base
   end
 
   def set_base_url
-    self.set_setting(:base_url, @base_url) unless @base_url.blank?
+    set_setting(:base_url, @base_url) unless @base_url.blank?
   end
 
   def pseudo_choices
@@ -128,7 +128,7 @@ class ExtendedField < ActiveRecord::Base
   alias required_checkbox add_checkbox
 
   def label_for_params
-    self.label.downcase.gsub(/ /, '_')
+    label.downcase.gsub(/ /, '_')
   end
 
   def self.clauses_for_has_label_that_matches(params_key)
@@ -158,7 +158,7 @@ class ExtendedField < ActiveRecord::Base
   end
 
   def self.params_to_label(params_key)
-    where(self.clauses_for_has_label_that_matches(params_key) ).first.label
+    where(clauses_for_has_label_that_matches(params_key) ).first.label
   end
 
   def is_a_choice?
@@ -194,7 +194,7 @@ class ExtendedField < ActiveRecord::Base
 
   protected
     def strip_extra_spaces_from_label
-      self.label = self.label.strip
+      self.label = label.strip
     end
 
     def validate

@@ -16,7 +16,7 @@ module KeteFlaggingMethods
 	end
 
 	def public?
-		if self.is_a?(Comment)
+		if is_a?(Comment)
 			title != SystemSetting.blank_title && title != SystemSetting.no_public_version_title && commentable_private == false
     else
 			title != SystemSetting.blank_title && title != SystemSetting.no_public_version_title
@@ -24,7 +24,7 @@ module KeteFlaggingMethods
 	end
 
 	def private?
-		if self.is_a?(Comment)
+		if is_a?(Comment)
       title != SystemSetting.blank_title && commentable_private == true
     else
       title != SystemSetting.blank_title && private_version_serialized != nil 	# NOT NULL

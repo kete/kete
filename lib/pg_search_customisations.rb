@@ -11,7 +11,7 @@ module PgSearchCustomisations
     # * override it because PgSearch default does not work with dynamic
     #   attributes (which we use for extended content)
     def rebuild_pg_search_documents
-      self.all.each do |record|
+      all.each do |record|
         record.update_pg_search_document
       end
     end

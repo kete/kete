@@ -5,12 +5,12 @@ module RelatedItems
     def related_items_hash
       @related_items_hash ||= begin
         related_items_hash = Hash.new
-        related_items_hash['Topic'] = self.is_a?(Topic) ? related_topics : topics
+        related_items_hash['Topic'] = is_a?(Topic) ? related_topics : topics
 
-        if self.is_a?(Topic)
+        if is_a?(Topic)
           ZOOM_CLASSES.each do |zoom_class|
             next if zoom_class == 'Topic'
-            related_items_hash[zoom_class] = self.send(zoom_class.tableize)
+            related_items_hash[zoom_class] = send(zoom_class.tableize)
           end
         end
         related_items_hash

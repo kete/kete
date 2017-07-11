@@ -96,7 +96,7 @@ module Embedded
                 self.description += embedded_description.to_html
               end
             when 'tags'
-              all_tags = self.tag_list.split(',')
+              all_tags = tag_list.split(',')
               all_tags = all_tags + value.to_a
 
               all_tags = all_tags.reject { |i| i.blank? }
@@ -112,16 +112,16 @@ module Embedded
               # and we should overwrite it
               # else we will append any previous value for the field
               # to preserve the value that may have been added in the form
-              current_value = self.send(a_name)
+              current_value = send(a_name)
 
               if current_value.blank? || current_value =~ /^-replace-/
-                self.send("#{a_name}=", value)
+                send("#{a_name}=", value)
               else
                 if current_value.is_a?(String)
                   current_value += ' '
                   value = value.to_s
                 end
-                self.send("#{a_name}=", current_value + value)
+                send("#{a_name}=", current_value + value)
               end
             end
           end
@@ -139,9 +139,9 @@ module Embedded
             value = { 'zoom_lvl' => SystemSetting.default_zoom_level.to_s,
                       'no_map' => '0',
                       'coords' => "#{coords[:latitude]},#{coords[:longitude]}" }
-            self.send("#{field.label_for_params}=", value)
+            send("#{field.label_for_params}=", value)
           else
-            self.send("#{field.label_for_params}+=", value)
+            send("#{field.label_for_params}+=", value)
           end
         end
       end
@@ -155,7 +155,7 @@ module Embedded
     # we only want to do this once, otherwise each edit
     # the metadata will be harvested and appended to existing records
     def harvest_embedded_metadata_to_attributes
-      populate_attributes_from_embedded_in(self.temp_path) if new_record?
+      populate_attributes_from_embedded_in(temp_path) if new_record?
     end
 
     private :harvest_embedded_metadata_to_attributes

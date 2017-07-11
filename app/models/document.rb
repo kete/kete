@@ -31,8 +31,8 @@ class Document < ActiveRecord::Base
   include ItemPrivacy::All
 
   # Do not version self.file_private
-  self.non_versioned_columns << 'file_private'
-  self.non_versioned_columns << 'private_version_serialized'
+  non_versioned_columns << 'file_private'
+  non_versioned_columns << 'private_version_serialized'
 
   def self.updated_since(date)
     # Document.where( <Document or its join tables is newer than date>  )
@@ -104,9 +104,9 @@ class Document < ActiveRecord::Base
 
   def could_be_new_theme?
     # must be supporting in our decompression utilities
-    return false unless ACCEPTABLE_THEME_CONTENT_TYPES.include?(self.content_type)
+    return false unless ACCEPTABLE_THEME_CONTENT_TYPES.include?(content_type)
     # skip, if a directory already exists in public/themes
-    return false if Dir.entries(THEMES_ROOT).include?(File.basename(self.filename, File.extname(self.filename)))
+    return false if Dir.entries(THEMES_ROOT).include?(File.basename(filename, File.extname(filename)))
     true
   end
 

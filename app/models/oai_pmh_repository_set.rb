@@ -93,7 +93,7 @@ class OaiPmhRepositorySet < ActiveRecord::Base
 
     specs = Array.new
     values.each do |for_value|
-      specs << self.full_spec(for_value) if test_match_with(item, for_value)
+      specs << full_spec(for_value) if test_match_with(item, for_value)
     end
     specs
   end

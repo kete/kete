@@ -33,7 +33,7 @@ class Search < ActiveRecord::Base
 
   def self.all_sort_types(sort_type, action, with_relevance = false)
     # not ideal, but the only way to get access that I know of
-    self.new.sort_type_options_for(sort_type, action, with_relevance)
+    new.sort_type_options_for(sort_type, action, with_relevance)
   end
 
   # Each saved search belongs to a user. People who are logged

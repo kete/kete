@@ -63,7 +63,7 @@ module FieldMappings
     def used_by_items?
       # Check whether we are dealing with a topic type mapping
       # or a content type mapping and get items accordingly
-      @all_versions ||= if self.is_a?(TopicTypeToFieldMapping)
+      @all_versions ||= if is_a?(TopicTypeToFieldMapping)
         Topic::Version.all(conditions: { topic_type_id: topic_type.full_set.collect { |tt| tt.id } })
       else
         if content_type.class_name == 'User'
@@ -85,7 +85,7 @@ module FieldMappings
     private
 
     def validate
-      if self.is_a?(ContentTypeToFieldMapping) && private_only? && self.content_type.class_name == 'User'
+      if is_a?(ContentTypeToFieldMapping) && private_only? && content_type.class_name == 'User'
         errors.add_to_base('Users cannot have private only mappings.')
       elsif required? && private_only?
         errors.add_to_base('Mapping cannot be required and private only.')

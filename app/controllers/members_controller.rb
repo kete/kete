@@ -196,7 +196,7 @@ class MembersController < ApplicationController
 
     # logout the old user first
     # stolen from account_controller.logout, should make DRY
-    self.current_user.forget_me if logged_in?
+    current_user.forget_me if logged_in?
     cookies.delete :auth_token
     reset_session
 

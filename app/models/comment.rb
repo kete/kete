@@ -39,16 +39,16 @@ class Comment < ActiveRecord::Base
   # but we provide it for consistency sake with the rest of kete
   # however, we definitely don't need to keep track of what the comment is on
   # in the versioning table
-  self.non_versioned_columns << 'commentable_id'
-  self.non_versioned_columns << 'commentable_type'
+  non_versioned_columns << 'commentable_id'
+  non_versioned_columns << 'commentable_type'
 
   # Do not version commentable privacy.
-  self.non_versioned_columns << 'commentable_private'
+  non_versioned_columns << 'commentable_private'
 
   # Do not version nested set fields since they can't change
-  self.non_versioned_columns << 'parent_id'
-  self.non_versioned_columns << 'lft'
-  self.non_versioned_columns << 'rgt'
+  non_versioned_columns << 'parent_id'
+  non_versioned_columns << 'lft'
+  non_versioned_columns << 'rgt'
 
   acts_as_nested_set
 

@@ -48,12 +48,12 @@ module FriendlyUrls
       # because depending on how we selected this item, self.title
       # may or may not be available, but self.attributes['title']
       # always is (same goes with name)
-      string = if self.attributes.include?('title')
-        self.attributes['title']
-      elsif self.attributes.include?('name')
-        self.attributes['name']
-      elsif self.attributes.include?('label')
-        self.attributes['label']
+      string = if attributes.include?('title')
+        attributes['title']
+      elsif attributes.include?('name')
+        attributes['name']
+      elsif attributes.include?('label')
+        attributes['label']
       else
         String.new
       end

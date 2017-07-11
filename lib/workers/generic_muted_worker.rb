@@ -26,9 +26,9 @@ class GenericMutedWorker < BackgrounDRb::MetaWorker
     raise unless method_name
 
     if args[:options]
-      self.send(method_name, args[:options])
+      send(method_name, args[:options])
     else
-      self.send(method_name)
+      send(method_name)
     end
 
     cache[:results] = cache[:results].merge(done_with_do_work: true,

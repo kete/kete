@@ -90,8 +90,8 @@ module ConfigureAsKeteContentItem
     end
 
     def update_taggings_basket_id
-      self.taggings.each do |tagging|
-        tagging.update_attribute(:basket_id, self.basket_id)
+      taggings.each do |tagging|
+        tagging.update_attribute(:basket_id, basket_id)
       end
     end
 

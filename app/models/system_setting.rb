@@ -447,10 +447,10 @@ class SystemSetting
   end
 
   def self.uses_basket_list_navigation_menu_on_every_page?
-    self.uses_basket_list_navigation_menu_on_every_page
+    uses_basket_list_navigation_menu_on_every_page
   end
 
   def self.full_site_url
-    "http://#{self.site_url}"
+    "http://#{site_url}"
   end
 end

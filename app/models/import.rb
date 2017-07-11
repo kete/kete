@@ -22,6 +22,6 @@ class Import < ActiveRecord::Base
   # HACK -- directory appears to have become a reserved word in some context
   # and as a result is a private method
   def directory_name
-    self.attributes['directory']
+    attributes['directory']
   end
 end

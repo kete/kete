@@ -7,7 +7,7 @@ class ImportArchiveFile < ActiveRecord::Base
                  content_type: ACCEPTABLE_THEME_CONTENT_TYPES, 
                  processor: :none,
                  max_size: SystemSetting.maximum_uploaded_file_size,
-                 file_system_path: "#{BASE_PRIVATE_PATH}/#{self.table_name}"
+                 file_system_path: "#{BASE_PRIVATE_PATH}/#{table_name}"
 
   validates_as_attachment
 

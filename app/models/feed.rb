@@ -28,8 +28,8 @@ class Feed < ActiveRecord::Base
   end
 
   def entries
-    feed_limit = self.limit
-    self.serialized_feed[0..(feed_limit - 1)]
+    feed_limit = limit
+    serialized_feed[0..(feed_limit - 1)]
   end
 
   def clear_caches
@@ -45,9 +45,9 @@ class Feed < ActiveRecord::Base
 
   def update_feed
     begin
-      entries = Feed.fetch(self.url)
-      if self.serialized_feed != entries # is there something different
-        self.update_attributes({ serialized_feed: entries,
+      entries = Feed.fetch(url)
+      if serialized_feed != entries # is there something different
+        update_attributes({ serialized_feed: entries,
                                  last_downloaded: Time.now.utc.to_s(:db) })
         clear_caches
       end
@@ -64,17 +64,17 @@ class Feed < ActiveRecord::Base
   private
 
   def add_missing_values
-    self.update_frequency = self.update_frequency.present? ? self.update_frequency.to_i : 1
-    self.limit = self.limit.present? ? self.limit.to_i : 5
+    self.update_frequency = update_frequency.present? ? update_frequency.to_i : 1
+    self.limit = limit.present? ? limit.to_i : 5
   end
 
   def convert_feed_to_http
-    self.url = self.url.strip.gsub('feed:', 'http:') if self.url.present?
+    self.url = url.strip.gsub('feed:', 'http:') if url.present?
   end
 
   include WorkerControllerHelpers # for deleting bgrb workers
   def destroy_feed_workers
-    delete_existing_workers_for(:feeds_worker, self.to_worker_key, false)
+    delete_existing_workers_for(:feeds_worker, to_worker_key, false)
   end
 
 end
