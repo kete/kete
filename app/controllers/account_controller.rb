@@ -10,7 +10,7 @@ class AccountController < ApplicationController
   # If you want "remember me" functionality, add this before_filter to Application Controller
 
   before_filter :login_from_cookie
-  before_filter :redirect_if_user_portraits_arnt_enabled, :only => [:add_portrait, :remove_portrait, :make_selected_portrait]
+  before_filter :redirect_if_user_portraits_arnt_enabled, only: [:add_portrait, :remove_portrait, :make_selected_portrait]
   layout :simple_or_application
 
   #####################################################################
@@ -23,7 +23,7 @@ class AccountController < ApplicationController
     if logged_in? || User.count > 0
       redirect_to_default_all
     else
-      redirect_to(:action => 'signup')
+      redirect_to(action: 'signup')
     end
   end
 
@@ -45,15 +45,15 @@ class AccountController < ApplicationController
 
           anonymous_name = params[:name].blank? ? @anonymous_user.user_name : params[:name]
 
-          session[:anonymous_user] = { :name => anonymous_name,
-            :email => params[:email]}
+          session[:anonymous_user] = { name: anonymous_name,
+            email: params[:email]}
 
           # see if the submitted website is valid
           # append protocol if they have left it off
           website = params[:website]
           website = "http://" + website unless website.include?('http')
 
-          temp_weblink = WebLink.new(:title => 'placeholder', :url => website)
+          temp_weblink = WebLink.new(title: 'placeholder', url: website)
 
           session[:anonymous_user][:website] = website if temp_weblink.valid?
 
@@ -65,16 +65,16 @@ class AccountController < ApplicationController
         # anonymous users can't use remember me, check for login password
         if @anonymous_user.blank? && params[:remember_me] == "1"
           self.current_user.remember_me
-          cookies[:auth_token] = { :value => self.current_user.remember_token , :expires => self.current_user.remember_token_expires_at }
+          cookies[:auth_token] = { value: self.current_user.remember_token , expires: self.current_user.remember_token_expires_at }
         end
         unless @anonymous_user
           move_session_searches_to_current_user
           flash[:notice] = t('account_controller.login.logged_in')
         end
-        redirect_back_or_default({ :locale => current_user.locale,
-                                   :urlified_name => @site_basket.urlified_name,
-                                   :controller => 'account',
-                                   :action => 'index' }, current_user.locale)
+        redirect_back_or_default({ locale: current_user.locale,
+                                   urlified_name: @site_basket.urlified_name,
+                                   controller: 'account',
+                                   action: 'index' }, current_user.locale)
       else
         if params[:login].present? && params[:password].present?
           flash[:notice] = t('account_controller.login.failed_login')
@@ -131,18 +131,18 @@ class AccountController < ApplicationController
       end
     end
 
-    redirect_back_or_default({ :locale => params[:user][:locale],
-                               :urlified_name => @site_basket.urlified_name,
-                               :controller => 'account',
-                               :action => 'index' })
+    redirect_back_or_default({ locale: params[:user][:locale],
+                               urlified_name: @site_basket.urlified_name,
+                               controller: 'account',
+                               action: 'index' })
   rescue ActiveRecord::RecordInvalid
-    render :action => 'signup'
+    render action: 'signup'
   end
 
   def disclaimer
     @topic = Topic.find(params[:id])
     respond_to do |format|
-      format.html { render :partial => 'account/disclaimer', :layout => 'simple' }
+      format.html { render partial: 'account/disclaimer', layout: 'simple' }
       format.js
     end
   end
@@ -155,7 +155,7 @@ class AccountController < ApplicationController
       user = @users.first
       user.forgot_password
       user.save
-      redirect_back_or_default(:controller => '/account', :action => 'index')
+      redirect_back_or_default(controller: '/account', action: 'index')
       flash[:notice] = t('account_controller.forgot_password.email_sent')
     elsif @users.size > 1
       flash[:notice] = t('account_controller.forgot_password.more_than_one_account')
@@ -185,9 +185,9 @@ class AccountController < ApplicationController
       format.js do
         render :update do |page|
           page.replace_html params[:avatar_id],
-                            avatar_tag(User.new({ :email => params[:email] || String.new }),
-                                                { :size => 30, :rating => 'G', :gravatar_default_url => "/images/no-avatar.png" },
-                                                { :width => 30, :height => 30, :alt => t('account_controller.fetch_gravatar.your_gravatar') })
+                            avatar_tag(User.new({ email: params[:email] || String.new }),
+                                                { size: 30, rating: 'G', gravatar_default_url: "/images/no-avatar.png" },
+                                                { width: 30, height: 30, alt: t('account_controller.fetch_gravatar.your_gravatar') })
         end
       end
     end
@@ -202,9 +202,9 @@ class AccountController < ApplicationController
   def logout
     deauthenticate
     flash[:notice] = t('account_controller.logout.logged_out')
-    redirect_back_or_default(:controller => 'index_page',
-                             :urlified_name => @current_basket.urlified_name,
-                             :action => 'index')
+    redirect_back_or_default(controller: 'index_page',
+                             urlified_name: @current_basket.urlified_name,
+                             action: 'index')
   end
 
   def show
@@ -215,10 +215,10 @@ class AccountController < ApplicationController
         @user = self.current_user
       end
       @viewer_is_user = (@user == @current_user) ? true : false
-      @viewer_portraits = !@user.portraits.empty? ? @user.portraits.all(:conditions => ['position != 1']) : nil
+      @viewer_portraits = !@user.portraits.empty? ? @user.portraits.all(conditions: ['position != 1']) : nil
     else
       flash[:notice] = t('account_controller.show.please_login')
-      redirect_to :action => 'login'
+      redirect_to action: 'login'
     end
   end
 
@@ -233,14 +233,14 @@ class AccountController < ApplicationController
     if @user.update_attributes(params[:user])
 
       flash[:notice] = t('account_controller.update.user_updated')
-      redirect_to({ :locale => params[:user][:locale],
-                    :urlified_name => @site_basket.urlified_name,
-                    :controller => 'account',
-                    :action => 'show',
-                    :id => @user })
+      redirect_to({ locale: params[:user][:locale],
+                    urlified_name: @site_basket.urlified_name,
+                    controller: 'account',
+                    action: 'show',
+                    id: @user })
     else
       logger.debug("what is problem")
-      render :action => 'edit'
+      render action: 'edit'
     end
   end
 
@@ -254,7 +254,7 @@ class AccountController < ApplicationController
         t('account_controller.change_password.password_changed') :
           t('account_controller.change_password.password_not_changed')
         if SystemSetting.is_configured?
-          redirect_to :action => 'show'
+          redirect_to action: 'show'
         else
           redirect_to '/'
         end
@@ -278,13 +278,13 @@ class AccountController < ApplicationController
     @user = User.find_by_activation_code(activator)
     if @user and @user.activate
       if SystemSetting.administrator_activates?
-        flash[:notice] = t('account_controller.activate.admin_activated', :new_user => @user.resolved_name)
-        redirect_back_or_default(:controller => '/account',
-                                 :action => 'show',
-                                 :id => @user.id)
+        flash[:notice] = t('account_controller.activate.admin_activated', new_user: @user.resolved_name)
+        redirect_back_or_default(controller: '/account',
+                                 action: 'show',
+                                 id: @user.id)
       else
         flash[:notice] = t('account_controller.activate.activated')
-        redirect_back_or_default(:controller => '/account', :action => 'login')
+        redirect_back_or_default(controller: '/account', action: 'login')
       end
     else
       flash[:error] = t('account_controller.activate.not_activated')
@@ -307,19 +307,19 @@ class AccountController < ApplicationController
     else
       flash[:notice] = t('account_controller.reset_password.password_mismatch')
     end
-    redirect_back_or_default(:controller => '/account', :action => 'index')
+    redirect_back_or_default(controller: '/account', action: 'index')
   rescue
     logger.error "Invalid Reset Code entered"
     flash[:notice] = t('account_controller.reset_password.invalid_reset')
-    redirect_back_or_default(:controller => '/account', :action => 'index')
+    redirect_back_or_default(controller: '/account', action: 'index')
   end
 
   def add_portrait
     @still_image = StillImage.find(params[:id])
     if UserPortraitRelation.new_portrait_for(current_user, @still_image)
-      flash[:notice] = t('account_controller.add_portrait.added_portrait', :portrait_title => @still_image.title)
+      flash[:notice] = t('account_controller.add_portrait.added_portrait', portrait_title: @still_image.title)
     else
-      flash[:error] = t('account_controller.add_portrait.failed_portrait', :portrait_title => @still_image.title)
+      flash[:error] = t('account_controller.add_portrait.failed_portrait', portrait_title: @still_image.title)
     end
     redirect_to_image_or_profile
   end
@@ -328,23 +328,23 @@ class AccountController < ApplicationController
     @still_image = StillImage.find(params[:id])
     if UserPortraitRelation.remove_portrait_for(current_user, @still_image)
       @successful = true
-      flash[:notice] = t('account_controller.remove_portrait.removed_portrait', :portrait_title => @still_image.title)
+      flash[:notice] = t('account_controller.remove_portrait.removed_portrait', portrait_title: @still_image.title)
     else
       @successful = false
-      flash[:error] = t('account_controller.remove_portrait.failed_portrait', :portrait_title => @still_image.title)
+      flash[:error] = t('account_controller.remove_portrait.failed_portrait', portrait_title: @still_image.title)
     end
     respond_to do |format|
       format.html { redirect_to_image_or_profile }
-      format.js { render :file => File.join(Rails.root, 'app/views/account/portrait_controls.js.rjs') }
+      format.js { render file: File.join(Rails.root, 'app/views/account/portrait_controls.js.rjs') }
     end
   end
 
   def make_selected_portrait
     @still_image = StillImage.find(params[:id])
     if UserPortraitRelation.make_portrait_selected_for(current_user, @still_image)
-      flash[:notice] = t('account_controller.make_selected_portrait.made_selected', :portrait_title => @still_image.title)
+      flash[:notice] = t('account_controller.make_selected_portrait.made_selected', portrait_title: @still_image.title)
     else
-      flash[:error] = t('account_controller.make_selected_portrait.failed_portrait', :portrait_title => @still_image.title)
+      flash[:error] = t('account_controller.make_selected_portrait.failed_portrait', portrait_title: @still_image.title)
     end
     redirect_to_image_or_profile
   end
@@ -353,14 +353,14 @@ class AccountController < ApplicationController
     @still_image = StillImage.find(params[:id])
     if UserPortraitRelation.move_portrait_higher_for(current_user, @still_image)
       @successful = true
-      flash[:notice] = t('account_controller.move_portrait_higher.moved_higher', :portrait_title => @still_image.title)
+      flash[:notice] = t('account_controller.move_portrait_higher.moved_higher', portrait_title: @still_image.title)
     else
       @successful = false
-      flash[:error] = t('account_controller.move_portrait_higher.failed_portrait', :portrait_title => @still_image.title)
+      flash[:error] = t('account_controller.move_portrait_higher.failed_portrait', portrait_title: @still_image.title)
     end
     respond_to do |format|
       format.html { redirect_to_image_or_profile }
-      format.js { render :file => File.join(Rails.root, 'app/views/account/portrait_controls.js.rjs') }
+      format.js { render file: File.join(Rails.root, 'app/views/account/portrait_controls.js.rjs') }
     end
   end
 
@@ -368,14 +368,14 @@ class AccountController < ApplicationController
     @still_image = StillImage.find(params[:id])
     if UserPortraitRelation.move_portrait_lower_for(current_user, @still_image)
       @successful = true
-      flash[:notice] = t('account_controller.move_portrait_lower.moved_lower', :portrait_title => @still_image.title)
+      flash[:notice] = t('account_controller.move_portrait_lower.moved_lower', portrait_title: @still_image.title)
     else
       @successful = false
-      flash[:error] = t('account_controller.move_portrait_lower.failed_portrait', :portrait_title => @still_image.title)
+      flash[:error] = t('account_controller.move_portrait_lower.failed_portrait', portrait_title: @still_image.title)
     end
     respond_to do |format|
       format.html { redirect_to_image_or_profile }
-      format.js { render :file => File.join(Rails.root, 'app/views/account/portrait_controls.js.rjs') }
+      format.js { render file: File.join(Rails.root, 'app/views/account/portrait_controls.js.rjs') }
     end
   end
 
@@ -387,7 +387,7 @@ class AccountController < ApplicationController
       # The other fills in for the selected portrait not in this list.
       logger.debug("Portrait Order: #{portrait_ids.inspect}")
       # Move everything to position one (so that the one that isn't updated remains the selected)
-      UserPortraitRelation.update_all({ :position => 1 }, { :user_id => current_user })
+      UserPortraitRelation.update_all({ position: 1 }, { user_id: current_user })
       # Get all of the portrait relations in one query
       portrait_list = current_user.user_portrait_relations
       # For each of the portrait ids, update their position based on the array index
@@ -418,7 +418,7 @@ class AccountController < ApplicationController
     notice = t('account_controller.change_locale.locale_changed')
     notice += t('account_controller.change_locale.change_permanently') if logged_in?
     flash[:notice] = notice
-    redirect_back_or_default({:controller => 'account', :action => 'index'}, params[:override_locale])
+    redirect_back_or_default({controller: 'account', action: 'index'}, params[:override_locale])
   end
 
   #####################################################################
