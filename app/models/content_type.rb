@@ -24,7 +24,7 @@ class ContentType < ActiveRecord::Base
     @available_fields = ExtendedField.find_available_fields(self, 'ContentType')
   end
 
-  def mapped_fields(options={})
+  def mapped_fields(options = {})
     # TODO: might want to reconsider using a subselect here
     ExtendedField.where('id in (select extended_field_id from content_type_to_field_mappings where content_type_id in (?))', self).all
   end

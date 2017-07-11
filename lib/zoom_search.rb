@@ -16,15 +16,15 @@ module ZoomSearch
       0
     end
 
-    def count_private_items_for(zoom_class, options={})
+    def count_private_items_for(zoom_class, options = {})
       0
     end
 
-    def find_private_related_items_for(item, zoom_class, options={})
+    def find_private_related_items_for(item, zoom_class, options = {})
       {}
     end
 
-    def find_public_related_items_for(item, zoom_class, options={})
+    def find_public_related_items_for(item, zoom_class, options = {})
       {}
     end
 

@@ -2,9 +2,7 @@
 
 # used by Kete for search
 namespace :deploy do
-
   namespace :zebra do
-
     desc 'Start Zebra processes'
     task :start, roles: :app do
       run "cd #{current_path} && rake zebra:start"
@@ -20,7 +18,5 @@ namespace :deploy do
       zebra.stop
       zebra.start
     end
-
   end
-
 end

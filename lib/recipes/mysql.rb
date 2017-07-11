@@ -3,7 +3,6 @@
 # MySQL recipe (unfinished)
 namespace :deploy do
   namespace :mysql do
-
     desc 'Sets up mysql databse'
     task :setup do
       read_config
@@ -49,6 +48,5 @@ namespace :deploy do
       set :db_password, db_config[rails_env]['password']
       set :db_name, db_config[rails_env]['database']
     end
-
   end
 end

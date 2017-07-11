@@ -1,5 +1,4 @@
-  KeteApp::Application.routes.draw do
-
+KeteApp::Application.routes.draw do
   ####################################################
   ####################################################
   # prepend locale to all routes
@@ -98,7 +97,6 @@
   # not work.
 
   scope '/:urlified_name', as: :basket do
-
     scope '/search', as: :search do
       post 'for'            => 'search#for'
       post 'all'            => 'search#all'
@@ -189,7 +187,6 @@
         get :list
       end
     end
-
   end
 
   ####################################################
@@ -209,7 +206,7 @@
 
   # Catch everything else
   # match ':urlified_name/:controller/:action/:id.:format' => ':controller#:action', :as => :basket_with_format
-  match ':urlified_name(/:controller(/:action(/:id)))'         => ':controller#:action', :as => :basket
+  match ':urlified_name(/:controller(/:action(/:id)))' => ':controller#:action', :as => :basket
 
   root to: 'index_page#index', urlified_name: 'site'
 

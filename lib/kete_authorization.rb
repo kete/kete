@@ -28,19 +28,19 @@ module KeteAuthorization
     # one role up the hierarchy tests for all the roles above it
     def basket_admin?(basket = nil)
       @basket = basket || @current_basket
-      @site_admin || ( logged_in? && permit?('admin on :basket') )
+      @site_admin || (logged_in? && permit?('admin on :basket'))
     end
 
     def basket_moderator?(basket = nil)
       @basket = basket || @current_basket
-      @basket_admin || ( logged_in? && permit?('moderator on :basket') )
+      @basket_admin || (logged_in? && permit?('moderator on :basket'))
     end
 
     alias_method :at_least_a_moderator?, :basket_moderator?
 
     def basket_member?(basket = nil)
       @basket = basket || @current_basket
-      @basket_moderator || ( logged_in? && permit?('member on :basket') )
+      @basket_moderator || (logged_in? && permit?('member on :basket'))
     end
 
     def load_site_admin

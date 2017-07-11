@@ -59,34 +59,34 @@ class ApplicationController < ActionController::Base
   private :password_protect
 
   # only permit site members to add/delete things
-  before_filter :login_required, only: [ :new, :create,
-                                            :edit, :update, :destroy,
-                                            :appearance, :homepage_options,
-                                            :convert,
-                                            :make_theme,
-                                            :find_related,
-                                            :link_related,
-                                            :find_index,
-                                            :flag_form,
-                                            :flag_version,
-                                            :restore,
-                                            :reject,
-                                            :choose_type, :render_item_form,
-                                            :setup_rebuild,
-                                            :rebuild_zoom_index,
-                                            :add_portrait, :remove_portrait,
-                                            :make_selected_portrait,
-                                            :contact, :send_email,
-                                            :join ]
+  before_filter :login_required, only: [:new, :create,
+                                        :edit, :update, :destroy,
+                                        :appearance, :homepage_options,
+                                        :convert,
+                                        :make_theme,
+                                        :find_related,
+                                        :link_related,
+                                        :find_index,
+                                        :flag_form,
+                                        :flag_version,
+                                        :restore,
+                                        :reject,
+                                        :choose_type, :render_item_form,
+                                        :setup_rebuild,
+                                        :rebuild_zoom_index,
+                                        :add_portrait, :remove_portrait,
+                                        :make_selected_portrait,
+                                        :contact, :send_email,
+                                        :join]
 
   # doesn't work for redirects, those are handled by
   # after filters on registered on specific controllers
   # based on SystemSetting.allowed_anonymous_actions specs
   # this should prevent url surgery to subvert logging out of anonymous user though
   before_filter :logout_anonymous_user_unless_allowed, except: [:logout,
-                                                                   :login,
-                                                                   :signup,
-                                                                   :show_captcha]
+                                                                :login,
+                                                                :signup,
+                                                                :show_captcha]
 
   # all topics and content items belong in a basket
   # and will always be specified in our routes
@@ -102,19 +102,19 @@ class ApplicationController < ActionController::Base
   before_filter :update_basket_permissions_hash
 
   # keep track of tag_list input by version
-  before_filter :update_params_with_raw_tag_list, only: [ :create, :update ]
+  before_filter :update_params_with_raw_tag_list, only: [:create, :update]
 
   # see method definition for details
 
   # we often need baskets for edits
-  before_filter :load_array_of_baskets, only: [ :edit, :update, :restore ]
+  before_filter :load_array_of_baskets, only: [:edit, :update, :restore]
 
   # don't allow forms to set do_not_moderate
-  before_filter :security_check_of_do_not_moderate, only: [ :create, :update, :restore ]
+  before_filter :security_check_of_do_not_moderate, only: [:create, :update, :restore]
 
   # set do_not_moderate if site_admin, otherwise things like moving from one basket to another
   # may get tripped up
-  before_filter :set_do_not_moderate_if_site_admin_or_exempted, only: [ :create, :update ]
+  before_filter :set_do_not_moderate_if_site_admin_or_exempted, only: [:create, :update]
 
   # ensure that users who are in a basket where the action menu has been hidden can edit
   # by posting a dummy form
@@ -122,12 +122,12 @@ class ApplicationController < ActionController::Base
 
   # TODO: NOT USED, delete code here and in lib/zoom_controller_helpers.rb
   # related items only track title and url, therefore only update will change those attributes
-  after_filter :update_zoom_record_for_related_items, only: [ :update ]
+  after_filter :update_zoom_record_for_related_items, only: [:update]
 
   # setup return_to for the session
   # TODO: this needs to be updated to store location for newer actions
   # might be better to do an except?
-  after_filter :store_location, only: [ :for, :all, :search, :index, :new, :show, :edit, :new_related_set_from_archive_file]
+  after_filter :store_location, only: [:for, :all, :search, :index, :new, :show, :edit, :new_related_set_from_archive_file]
 
   # RSS feed related operations
   # no layout on rss pages
@@ -136,7 +136,7 @@ class ApplicationController < ActionController::Base
     params[:action] == 'rss' ? nil : 'application'
   end
   # adjust request and response values
-  before_filter :adjust_http_headers_for_rss, only: [ :rss ]
+  before_filter :adjust_http_headers_for_rss, only: [:rss]
   def adjust_http_headers_for_rss
     response.headers['Content-Type'] = 'application/xml; charset=utf-8'
     request.format = :xml
@@ -201,7 +201,7 @@ class ApplicationController < ActionController::Base
   def load_array_of_baskets
     zoom_class = zoom_class_from_controller(params[:controller])
     if ZOOM_CLASSES.include?(zoom_class) and zoom_class != 'Comment'
-      @baskets = Basket.all(order: 'name').map { |basket| [ basket.name, basket.id ] }
+      @baskets = Basket.all(order: 'name').map { |basket| [basket.name, basket.id] }
     end
   end
 
@@ -212,7 +212,7 @@ class ApplicationController < ActionController::Base
     SystemSetting.uses_basket_list_navigation_menu_on_every_page?
   end
 
-  def redirect_to_related_item(item, options={})
+  def redirect_to_related_item(item, options = {})
     redirect_to_show_for(item, options)
   end
 
@@ -268,8 +268,8 @@ class ApplicationController < ActionController::Base
     elsif params[:portrait] and item.class.name == 'StillImage' and @successful
       where_to_redirect = 'user_account'
     elsif params[:as_service].present? &&
-        params[:as_service] == 'true' &&
-        params[:service_target].present?
+          params[:as_service] == 'true' &&
+          params[:service_target].present?
       where_to_redirect = 'service_target'
     end
 
@@ -300,7 +300,7 @@ class ApplicationController < ActionController::Base
         service_target = params[:service_target]
 
         if params[:append_show_url].present? &&
-            params[:append_show_url] == 'true'
+           params[:append_show_url] == 'true'
 
           service_target += url_for_dc_identifier(item).sub('://', '%3A%2F%2F').gsub('/', '%2F')
         end
@@ -524,7 +524,7 @@ class ApplicationController < ActionController::Base
     source_string = source_string.to_s
     # length is how many words, rather than characters
     words = source_string.split()
-    short_summary = words[0..(length-1)].join(' ') + (words.length > length ? end_string : '')
+    short_summary = words[0..(length - 1)].join(' ') + (words.length > length ? end_string : '')
 
     # make sure that tags are closed
     Hpricot(short_summary).to_html
@@ -562,7 +562,7 @@ class ApplicationController < ActionController::Base
       # James - 2008-12-21
       # Ensure the contribution is added against the latest version, not the current verrsion as it could
       # have been reverted automatically if full moderation is on for the basket.
-        version = item.versions.order('version DESC').first.version
+      version = item.versions.order('version DESC').first.version
 
       # add this to the user's empire of contributions
       # TODO: allow current_user whom is at least moderator to pick another user
@@ -590,7 +590,7 @@ class ApplicationController < ActionController::Base
     # or converting a document into the description
     skipped_actions = ['flag_version', 'restore', 'find_index', 'convert']
     if !skipped_actions.include?(params[:action]) && params[item.class_as_key][:private] == 'true'
-        private_item_notification_for(item, :edited)
+      private_item_notification_for(item, :edited)
     end
   end
 
@@ -636,7 +636,7 @@ class ApplicationController < ActionController::Base
     query_parameters = request.query_parameters
 
     # delete the parameters that are artifacts from normal search
-    %w( number_of_results_per_page tabindex sort_type sort_direction).each do |not_relevant|
+    %w(number_of_results_per_page tabindex sort_type sort_direction).each do |not_relevant|
       query_parameters.delete(not_relevant)
     end
 
@@ -653,7 +653,7 @@ class ApplicationController < ActionController::Base
     path_elements << 'rss.xml' unless path_elements.include?('rss.xml')
 
     new_path = path_elements.join('/')
-    url +=  new_path
+    url += new_path
 
     query_parameters['page'] = page if page
 
@@ -671,7 +671,7 @@ class ApplicationController < ActionController::Base
     tag = String.new
     tag += auto_detect ? '<link rel="alternate" type="application/rss+xml" title="RSS" ' : '<a '
     tag += 'href="' + derive_url_for_rss(options)
-    tag +=  auto_detect ? '" />' : '" tabindex="1">' # A tag has a closing </a> in application layout
+    tag += auto_detect ? '" />' : '" tabindex="1">' # A tag has a closing </a> in application layout
     tag
   end
 
@@ -746,7 +746,7 @@ class ApplicationController < ActionController::Base
     item.respond_to?(:private) && item.private? ? 'true' : 'false'
   end
 
-  def slideshow(key='slideshow')
+  def slideshow(key = 'slideshow')
     # Instantiate a new slideshow object on the slideshow session key
     session[key.to_sym] ||= HashWithIndifferentAccess.new
     Slideshow.new(session[key.to_sym])
@@ -838,7 +838,7 @@ class ApplicationController < ActionController::Base
 
   def logout_anonymous
     if logged_in? &&
-        current_user.anonymous?
+       current_user.anonymous?
 
       session[:anonymous_user] = nil
 

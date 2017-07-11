@@ -5,4 +5,3 @@ describe OaiPmhRepositoryProvider do
     foo = OaiPmhRepositoryProvider.new
   end
 end
-

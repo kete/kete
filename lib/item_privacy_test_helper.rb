@@ -2,9 +2,7 @@
 # 2008-04-15
 
 module ItemPrivacyTestHelper
-
   module Model
-
     # Normally, testing attachment_fu methods will cause real files to be written into your
     # development and production environment file folders, as defined in the models.
     # To work around this, this override forces the files to be saved into the
@@ -15,11 +13,9 @@ module ItemPrivacyTestHelper
       file_system_path = (thumbnail ? thumbnail_class : self).attachment_options[:path_prefix].to_s.gsub('public', '')
       File.join(RAILS_ROOT, 'tmp', 'attachment_fu_test', attachment_path_prefix, file_system_path, *partitioned_path(thumbnail_name_for(thumbnail)))
     end
-
   end
 
   module TestHelper
-
     # Generate a regex for us to test against to ensure the files are saved in the correct place.
     # Use this in your tests.
     def attachment_fu_test_path(base_folder, sub_folder)
@@ -28,31 +24,27 @@ module ItemPrivacyTestHelper
 
     private
 
-      # Generate a new record for a test
-      # Returns the ID of the new record.
-      def create_record(attributes = {}, user = :admin)
+    # Generate a new record for a test
+    # Returns the ID of the new record.
+    def create_record(attributes = {}, user = :admin)
+      login_as(user)
+      eval("post :create, :#{@base_class.singularize.downcase} => @new_model.merge(attributes), :urlified_name => 'site'")
 
-        login_as(user)
-        eval("post :create, :#{@base_class.singularize.downcase} => @new_model.merge(attributes), :urlified_name => 'site'")
+      # Reload the test environment.
+      load_test_environment
 
-        # Reload the test environment.
-        load_test_environment
+      eval("#{@base_class.classify}.find(:first, :order => 'id DESC').id")
+    end
 
-        eval("#{@base_class.classify}.find(:first, :order => 'id DESC').id")
-      end
-
-      def load_test_environment
-        @controller = eval("#{@base_class.classify.pluralize}Controller.new")
-        @request    = ActionController::TestRequest.new
-        @response   = ActionController::TestResponse.new
-      end
-
+    def load_test_environment
+      @controller = eval("#{@base_class.classify.pluralize}Controller.new")
+      @request    = ActionController::TestRequest.new
+      @response   = ActionController::TestResponse.new
+    end
   end
 
   module Tests
-
     module FilePrivate
-
       def test_attachment_fu_uses_correct_path_prefix
         item = eval(@base_class).create(@new_model.merge({ file_private: false }))
         assert_match(attachment_fu_test_path('public', @uploads_folder), item.full_filename)
@@ -145,11 +137,9 @@ module ItemPrivacyTestHelper
       def test_create_user_with_permission
         create_user_with_permission('member', Basket.find(:first))
       end
-
     end
 
     module VersioningAndModeration
-
       def test_responds_to_private_and_is_set_properly_with_private_false
         doc = eval(@base_class).create(@new_model.merge({ private: false }))
         assert_equal false, doc.private?
@@ -164,7 +154,6 @@ module ItemPrivacyTestHelper
       end
 
       def test_latest_version
-
         # Set up some versions
         d = eval(@base_class).create(@new_model.merge({ private: false }))
         d.update_attributes(description: 'Version 2')
@@ -182,7 +171,6 @@ module ItemPrivacyTestHelper
       end
 
       def test_revert_to
-
         # Set up some versions
         d = eval(@base_class).create(@new_model.merge({ private: false }))
         d.update_attributes(description: 'Version 2')
@@ -200,7 +188,6 @@ module ItemPrivacyTestHelper
       end
 
       def test_private_version_newest_public
-
         # Set up some versions
         d = eval(@base_class).create(@new_model.merge({ private: false }))
         d.update_attributes!(description: 'Version 2')
@@ -218,11 +205,9 @@ module ItemPrivacyTestHelper
         d.private_version!
         assert_equal 'Version 4', d.description
         assert_equal true, d.private?
-
       end
 
       def test_private_version_newest_private
-
         # Set up some versions
         d = eval(@base_class).create(@new_model.merge({ private: false }))
         d.update_attributes(description: 'Version 2')
@@ -238,11 +223,9 @@ module ItemPrivacyTestHelper
         assert_equal 'Version 5', d.description
         assert_equal true, d.private?
         assert_equal 5, d.version
-
       end
 
       def test_private_version_returns_nil_when_no_private_version!
-
         d = eval(@base_class).create(@new_model.merge({ private: false }))
         d.update_attributes(description: 'Version 2')
         d.reload
@@ -252,18 +235,15 @@ module ItemPrivacyTestHelper
       end
 
       def test_store_correct_version_after_save
-
         d = eval(@base_class).create(@new_model.merge({ description: 'Version 1', private: false }))
         d.update_attributes(description: 'Version 2', private: true)
         d.reload
 
         assert_equal 'Version 1', d.description
         assert_not_nil d.private_version_serialized
-
       end
 
       def test_has_private_version!
-
         d = eval(@base_class).create(@new_model.merge({ description: 'Version 1', private: false }))
         d.update_attributes(description: 'Version 2')
 
@@ -272,7 +252,6 @@ module ItemPrivacyTestHelper
       end
 
       def test_has_private_version2
-
         d = eval(@base_class).create(@new_model.merge({ description: 'Version 1', private: false }))
         d.update_attributes(description: 'Version 2', private: true)
         d.update_attributes(description: 'Version 3')
@@ -387,7 +366,6 @@ module ItemPrivacyTestHelper
       end
 
       def test_new_private_item_with_moderated_basket
-
         # Set up
         d = eval(@base_class).new(@new_model.merge({ description: 'Version 1', private: true }))
         d.instance_eval do
@@ -430,7 +408,6 @@ module ItemPrivacyTestHelper
       end
 
       def test_new_public_item_with_moderated_basket
-
         # Set up
         d = eval(@base_class).new(@new_model.merge({ description: 'Version 1', private: false }))
         d.instance_eval do
@@ -465,11 +442,9 @@ module ItemPrivacyTestHelper
         assert_equal 2, d.version
         assert_equal SystemSetting.blank_title, d.title
         assert_equal nil, d.description
-
       end
 
       def test_moderated_public_item
-
         # Set up
         d = new_moderated_public_item
 
@@ -496,11 +471,9 @@ module ItemPrivacyTestHelper
         assert_equal false, d.private?
 
         assert_nil d.private_version!
-
       end
 
       def test_new_version_of_moderated_public_item
-
         d = new_moderated_public_item
         # this will save as version 4
         # (but because basket is moderated, result will revert to public version 3)
@@ -515,7 +488,6 @@ module ItemPrivacyTestHelper
       end
 
       def test_new_private_version_of_moderated_public_item
-
         d = new_moderated_public_item
         # this will save as version 4
         # (but because basket is moderated, result will revert to public version 3)
@@ -547,13 +519,10 @@ module ItemPrivacyTestHelper
 
         assert_equal false, d.private?
         assert_equal 2, d.version
-
       end
-
     end
 
     module TaggingWithPrivacyContext
-
       def test_class_responds_to_class_methods_as_expected
         klass = eval(@base_class)
 
@@ -684,7 +653,6 @@ module ItemPrivacyTestHelper
       end
 
       def test_tags_are_preserved_separately_by_privacy_setting
-
         # Create a private version
         d = eval(@base_class).create(@new_model.merge({ description: 'Version 1', private: true, tag_list: 'one, two, three', raw_tag_list: 'one, two, three' }))
         d.reload
@@ -743,32 +711,31 @@ module ItemPrivacyTestHelper
 
       protected
 
-        def new_moderated_public_item
-          d = eval(@base_class).new(@new_model.merge({ title: 'Version 1', description: 'Version 1', private: false }))
-          d.instance_eval do
-            def fully_moderated?
-              true
-            end
+      def new_moderated_public_item
+        d = eval(@base_class).new(@new_model.merge({ title: 'Version 1', description: 'Version 1', private: false }))
+        d.instance_eval do
+          def fully_moderated?
+            true
           end
-          # this will save the above as version 1
-          # then make a 'Pending Moderation' as version 2
-          d.save!
-          d.reload
-
-          d.strip_flags_and_mark_reviewed(1)
-          d.revert_to(1)
-          d.title = 'Version 3'
-          d.description = 'Version 3'
-          d.version_comment = 'Content from revision # 1.'
-          d.do_not_moderate = true
-          # this will save the above as version 3
-          # (and will be the current public version)
-          d.save!
-          d.reload
-          d.do_not_moderate = false
-          d
         end
+        # this will save the above as version 1
+        # then make a 'Pending Moderation' as version 2
+        d.save!
+        d.reload
 
+        d.strip_flags_and_mark_reviewed(1)
+        d.revert_to(1)
+        d.title = 'Version 3'
+        d.description = 'Version 3'
+        d.version_comment = 'Content from revision # 1.'
+        d.do_not_moderate = true
+        # this will save the above as version 3
+        # (and will be the current public version)
+        d.save!
+        d.reload
+        d.do_not_moderate = false
+        d
+      end
     end
 
     module MovingItemsBetweenBasketsWithDifferentPrivacies
@@ -870,8 +837,5 @@ module ItemPrivacyTestHelper
         @new_private_basket = Basket.create({ name: 'Private Basket', show_privacy_controls: true, private_default: true })
       end
     end
-
   end
-
 end
-

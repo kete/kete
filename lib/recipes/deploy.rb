@@ -1,7 +1,6 @@
 # general capistrano recipes to restart application server
 
 namespace :deploy do
-
   desc 'Start Application Server'
   task :start do
     set_app_server
@@ -39,5 +38,4 @@ namespace :deploy do
     begin; app_server; rescue; set(:app_server, :apache); end
     raise "Unknown Application Server #{app_server}" unless [:apache, :mongrel].include?(app_server)
   end
-
 end

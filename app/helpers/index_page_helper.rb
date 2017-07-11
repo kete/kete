@@ -11,7 +11,7 @@ module IndexPageHelper
 
     @all_actions = %w(rss rss.xml contributed_by tagged related_to)
 
-    @skip_controllers = %w(account baskets members extended_fields  topic_types content_types zoom_dbs importers search)
+    @skip_controllers = %w(account baskets members extended_fields topic_types content_types zoom_dbs importers search)
 
     rule_bases = I18n.available_locales_with_labels.keys.collect { |key| '/' + key + '/' }
     rule_bases << '/'

@@ -46,5 +46,4 @@ module FriendlyUrlsTestUnitHelper
       assert_equal selected_model.id.to_s + '-something-else', selected_model.format_for_friendly_urls, "#{@base_class}.format_for_friendly_urls didn't format the #{title_or_name_attr} correctly"
     end
   end
-
 end

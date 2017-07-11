@@ -1,5 +1,4 @@
 class SearchController < ApplicationController
-
   # Walter McGinnis, 2008-02-07
   # search forms never add anything to db
   # so don't need csrf protection, which is problematic with search forms
@@ -320,7 +319,6 @@ class SearchController < ApplicationController
     begin
       dc_element = @extended_field ? @extended_field.xml_element_name.gsub(/^(dc:)/, '') : nil
     rescue
-
       # We need to handle the case where no xml_element_name has been given.
       dc_element = 'description'
     end
@@ -537,54 +535,54 @@ class SearchController < ApplicationController
   # SLOW. Not sure why at this point, but it's 99% rendering, not DB.
   def find_index
     @current_basket = Basket.find(params[:current_basket_id])
-    @topics_outside_of_this_basket = false  # turn this to true if you want to allow the Site basket
-                                            # homepage to be an About basket topic for example
+    @topics_outside_of_this_basket = false # turn this to true if you want to allow the Site basket
+    # homepage to be an About basket topic for example
     @current_homepage = @current_basket.index_topic
 
     case params[:function]
-      when 'find'
-        @results = Array.new
-        @search_terms = params[:search_terms]
-        search unless @search_terms.blank?
-        unless @results.empty?
-          if !@current_homepage.nil?
-            @results.reject! { |result| (result[:id].to_i == @current_homepage.id) }
-          end
-          @results.collect! { |result| Module.class_eval(result[:class]).find(result[:id]) }
+    when 'find'
+      @results = Array.new
+      @search_terms = params[:search_terms]
+      search unless @search_terms.blank?
+      unless @results.empty?
+        if !@current_homepage.nil?
+          @results.reject! { |result| (result[:id].to_i == @current_homepage.id) }
         end
-      when 'change'
-        @new_homepage_topic = Topic.find(params[:homepage_topic_id])
-        version_after_update = @new_homepage_topic.max_version + 1
-        @homepage_different = (@current_homepage != @new_homepage_topic)
-        # if the homepage isn't different, don't do anything or it mucks up versions, just return true so it passes
-        if @homepage_different
-          # update the homepage topic. Unfortunatly, the method created new topic versions for both the old and new homepage topics
-          # and because the basket doesn't have flagging controls, we can't save it without the version
-          # so instead, we have to make sure we assign contributors below, one for the old homepage topic, and one for the new
-          # homepage topic, which is taken care of in the method after_successful_zoom_item_update
-          @current_basket.update_index_topic(@new_homepage_topic)
-          unless @current_homepage.nil?
-            # if there was a previous homepage topic, it'll be given a new version by update_index_topic
-            # so we need to add a contributor to prevent 500 errors on the history page of the topic
-            # we also have to pass in the version + 1, because we are working from an old copy of the previous homepage topic
-            # and the version is out of date by this stage, and calling reload on it will load the new homepage topic, not the old
-            @current_homepage.add_as_contributor(current_user, (@current_homepage.version + 1))
-          end
-          # this adds a contributor to the new homepage topic version, and clears the relevant show caches.
-          # clearing of the basket homepage index page caches are taken care of in a before filter in application.rb
-          after_successful_zoom_item_update(@new_homepage_topic, version_after_update)
-          @successful = true
-        else
-          @successful = true
+        @results.collect! { |result| Module.class_eval(result[:class]).find(result[:id]) }
+      end
+    when 'change'
+      @new_homepage_topic = Topic.find(params[:homepage_topic_id])
+      version_after_update = @new_homepage_topic.max_version + 1
+      @homepage_different = (@current_homepage != @new_homepage_topic)
+      # if the homepage isn't different, don't do anything or it mucks up versions, just return true so it passes
+      if @homepage_different
+        # update the homepage topic. Unfortunatly, the method created new topic versions for both the old and new homepage topics
+        # and because the basket doesn't have flagging controls, we can't save it without the version
+        # so instead, we have to make sure we assign contributors below, one for the old homepage topic, and one for the new
+        # homepage topic, which is taken care of in the method after_successful_zoom_item_update
+        @current_basket.update_index_topic(@new_homepage_topic)
+        unless @current_homepage.nil?
+          # if there was a previous homepage topic, it'll be given a new version by update_index_topic
+          # so we need to add a contributor to prevent 500 errors on the history page of the topic
+          # we also have to pass in the version + 1, because we are working from an old copy of the previous homepage topic
+          # and the version is out of date by this stage, and calling reload on it will load the new homepage topic, not the old
+          @current_homepage.add_as_contributor(current_user, (@current_homepage.version + 1))
         end
-        if @successful
-          flash[:notice] = t('search_controller.find_index.changed')
-          # we assign the current_homepage instance var to the new homepage,
-          # because its used in the template we populate the search fields and links
-          @current_homepage = @new_homepage_topic
-        else
-          flash[:error] = t('search_controller.find_index.failed')
-        end
+        # this adds a contributor to the new homepage topic version, and clears the relevant show caches.
+        # clearing of the basket homepage index page caches are taken care of in a before filter in application.rb
+        after_successful_zoom_item_update(@new_homepage_topic, version_after_update)
+        @successful = true
+      else
+        @successful = true
+      end
+      if @successful
+        flash[:notice] = t('search_controller.find_index.changed')
+        # we assign the current_homepage instance var to the new homepage,
+        # because its used in the template we populate the search fields and links
+        @current_homepage = @new_homepage_topic
+      else
+        flash[:error] = t('search_controller.find_index.failed')
+      end
     end
     render action: 'homepage_topic_form', layout: 'popup_dialog'
   end
@@ -699,14 +697,12 @@ class SearchController < ApplicationController
 
         # Define pagination methods in the array again.
         pagination_methods.each_key do |method_name|
-
           eval \
-          "class << @results
-            define_method('#{method_name}') do
-              #{pagination_methods[method_name]}
-            end
-          end"
-
+            "class << @results
+              define_method('#{method_name}') do
+                #{pagination_methods[method_name]}
+              end
+            end"
         end
       end
     end
@@ -718,7 +714,7 @@ class SearchController < ApplicationController
   # stored in a session cookie
   # so they don't have to reset it everytime they go to new search results
   def store_number_of_results_per_page
-      session[:number_of_results_per_page] = @number_per_page
+    session[:number_of_results_per_page] = @number_per_page
   end
 
   # James - 2008-07-04
@@ -786,12 +782,11 @@ class SearchController < ApplicationController
   # James - 2008-07-04
   # Store the elements need to reproduce the search in a session
   def store_results_for_slideshow
-
     # if @results_sets is emtpy, then @result_sets[@current_class] is nil so we have
     # to stop here if thats the case, or we get a 500 error calling .size below
     return if @result_sets.nil? || @result_sets[@current_class].nil? || @displaying_error
 
-    results = @results.map{ |r| r[:url] }
+    results = @results.map { |r| r[:url] }
 
     total_results = @result_sets[@current_class].size
 
@@ -833,7 +828,6 @@ class SearchController < ApplicationController
   # James - 2008-09-03
   # Check for authorisation when performing private searches
   def private_search_authorisation
-
     # Allow all public searches
     return true unless is_a_private_search?
 

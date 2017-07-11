@@ -61,7 +61,6 @@ class TopicsController < ApplicationController
 
   def create
     begin
-
       # ultimately I would like url's for peole to do look like the following:
       # topics/people/mcginnis/john
       # topics/people/mcginnis/john_marshall
@@ -82,7 +81,7 @@ class TopicsController < ApplicationController
       # as creator
       @topic.creator = current_user if @successful
     rescue
-      flash[:error], @successful  = $!.to_s, false
+      flash[:error], @successful = $!.to_s, false
     end
 
     where_to_redirect = 'show_self'
@@ -113,10 +112,10 @@ class TopicsController < ApplicationController
         redirect_to_related_item(@relate_to_item, { private: (params[:related_item_private] && params[:related_item_private] == 'true' && permitted_to_view_private_items?) })
       when 'basket'
         redirect_to action: 'add_index_topic',
-        controller: 'baskets',
-        index_for_basket: params[:index_for_basket],
-        return_to_homepage: params[:return_to_homepage],
-        topic: @topic
+                    controller: 'baskets',
+                    index_for_basket: params[:index_for_basket],
+                    return_to_homepage: params[:return_to_homepage],
+                    topic: @topic
       else
         flash[:notice] = t('topics_controller.create.created')
         redirect_to action: 'show', id: @topic, private: (params[:topic][:private] == 'true')
@@ -203,7 +202,6 @@ class TopicsController < ApplicationController
     # )
 
     @contributor_index = 0
-
   end
 
   def destroy

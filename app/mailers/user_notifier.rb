@@ -8,48 +8,48 @@ class UserNotifier < ActionMailer::Base
 
   def forgot_password(user)
     setup_email(user)
-    @subject    += I18n.t('user_notifier_model.password_change')
-    @url  = "#{SystemSetting.site_url}site/account/reset_password/#{ user.password_reset_code}"
+    @subject += I18n.t('user_notifier_model.password_change')
+    @url = "#{SystemSetting.site_url}site/account/reset_password/#{user.password_reset_code}"
 
     mail(to: @recipients, subject: @subject)
   end
 
   def reset_password(user)
     setup_email(user)
-    @subject    += I18n.t('user_notifier_model.password_reset')
+    @subject += I18n.t('user_notifier_model.password_reset')
 
     mail(to: @recipients, subject: @subject)
   end
 
   def signup_notification(user)
     setup_email(user)
-    @subject    += I18n.t('user_notifier_model.activate_account')
-    @url  = "#{SystemSetting.site_url}site/account/activate/#{user.activation_code}"
+    @subject += I18n.t('user_notifier_model.activate_account')
+    @url = "#{SystemSetting.site_url}site/account/activate/#{user.activation_code}"
 
     mail(to: @recipients, subject: @subject)
   end
 
   def notification_to_administrators_of_new(user, admin)
     setup_email(admin)
-    @subject    += I18n.t('user_notifier_model.review_new_account', new_user: user.resolved_name)
+    @subject += I18n.t('user_notifier_model.review_new_account', new_user: user.resolved_name)
     @new_user = user
-    @url  = "#{SystemSetting.site_url}site/account/show/#{user.id}"
+    @url = "#{SystemSetting.site_url}site/account/show/#{user.id}"
 
     mail(to: @recipients, subject: @subject)
   end
 
   def activation(user)
     setup_email(user)
-    @subject    += I18n.t('user_notifier_model.account_activated')
-    @url  = "#{SystemSetting.site_url}"
+    @subject += I18n.t('user_notifier_model.account_activated')
+    @url = "#{SystemSetting.site_url}"
 
     mail(to: @recipients, subject: @subject)
   end
 
   def banned(user)
     setup_email(user)
-    @subject    += I18n.t('user_notifier_model.account_banned')
-    @url  = "#{SystemSetting.site_url}"
+    @subject += I18n.t('user_notifier_model.account_banned')
+    @url = "#{SystemSetting.site_url}"
 
     mail(to: @recipients, subject: @subject)
   end
@@ -100,7 +100,7 @@ class UserNotifier < ActionMailer::Base
     setup_email(moderator)
     @subject += I18n.t('user_notifier_model.item_flagged_with', flag: flag)
     setup_body_with(revision, url, message, submitter)
-    @flagging_user  = flagging_user
+    @flagging_user = flagging_user
     @flag = flag
 
     mail(to: @recipients, subject: @subject)
@@ -133,7 +133,7 @@ class UserNotifier < ActionMailer::Base
 
   def approval_of(revision, url, submitter, approval_message)
     setup_email(submitter)
-    @subject    += I18n.t('user_notifier_model.revision_live')
+    @subject += I18n.t('user_notifier_model.revision_live')
     setup_body_with(revision, url, approval_message)
 
     mail(to: @recipients, subject: @subject)
@@ -179,7 +179,7 @@ class UserNotifier < ActionMailer::Base
 
   def login_changed(user)
     setup_email(user)
-    @subject    +=  I18n.t('user_notifier_model.login_changed')
+    @subject += I18n.t('user_notifier_model.login_changed')
   end
 
   # define methods
@@ -218,7 +218,7 @@ class UserNotifier < ActionMailer::Base
 
   protected
 
-  def setup_email(user)     
+  def setup_email(user)
     @recipients  = "#{user.email}"
     @subject     = "#{SystemSetting.site_name} "
 

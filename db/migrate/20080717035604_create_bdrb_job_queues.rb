@@ -19,7 +19,7 @@ class CreateBdrbJobQueues < ActiveRecord::Migration
       t.column :worker_key, :string
     end
   end
-  
+
   def self.down
     drop_table :bdrb_job_queues
   end

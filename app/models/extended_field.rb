@@ -61,7 +61,7 @@ class ExtendedField < ActiveRecord::Base
 
   def base_url
     # @base_url ||= self.setting(:base_url)
-    # ROB:  Turning this off as it doesn't make sense to use absolute links (kete.co.nz/...) 
+    # ROB:  Turning this off as it doesn't make sense to use absolute links (kete.co.nz/...)
     #       instead of relative onves (/...)
     ''
   end
@@ -158,7 +158,7 @@ class ExtendedField < ActiveRecord::Base
   end
 
   def self.params_to_label(params_key)
-    where(clauses_for_has_label_that_matches(params_key) ).first.label
+    where(clauses_for_has_label_that_matches(params_key)).first.label
   end
 
   def is_a_choice?
@@ -174,7 +174,7 @@ class ExtendedField < ActiveRecord::Base
     self.dont_link_choice_values = !value.param_to_obj_equiv
   end
 
-  def is_required?(controller, topic_type_id=nil)
+  def is_required?(controller, topic_type_id = nil)
     raise 'ERROR: You must specify a topic type id since controller is topics' if controller == 'topics' && topic_type_id.nil?
     if controller == 'topics'
       # we have to check the submitted topic_type or its ancestors
@@ -193,12 +193,12 @@ class ExtendedField < ActiveRecord::Base
   alias :to_param :format_for_friendly_unicode_urls
 
   protected
-    def strip_extra_spaces_from_label
-      self.label = label.strip
-    end
 
-    def validate
-      errors.add('label', I18n.t('extended_field_model.label_cant_have')) if label && label.strip =~ /^(form|input|script)$/i
-    end
+  def strip_extra_spaces_from_label
+    self.label = label.strip
+  end
 
+  def validate
+    errors.add('label', I18n.t('extended_field_model.label_cant_have')) if label && label.strip =~ /^(form|input|script)$/i
+  end
 end

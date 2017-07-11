@@ -1,5 +1,4 @@
 module OverrideAttachmentFuMethods
-
   # https://github.com/kete/attachment_fu/blob/master/lib/technoweenie/attachment_fu/backends/file_system_backend.rb#L47
   def partitioned_path(*args)
     # Overrides partitioned_path defined in attachment_fu
@@ -20,7 +19,7 @@ module OverrideAttachmentFuMethods
     # Setting attachments_overide_url in the environment/* files applies this.
 
     if Rails.configuration.respond_to? :attachments_overide_url
-      relative_link = fix_attachment_fu_links( super() )
+      relative_link = fix_attachment_fu_links(super())
       "#{Rails.configuration.attachments_overide_url}#{relative_link}"
     else
       super
@@ -70,5 +69,4 @@ module OverrideAttachmentFuMethods
 
     "/#{ci_type_name}/#{numbers_without_zeros}/#{filename}"
   end
-
 end

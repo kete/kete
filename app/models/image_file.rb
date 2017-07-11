@@ -13,9 +13,9 @@ class ImageFile < ActiveRecord::Base
   # we also make non-web friendly image files end up with jpegs for resized versions
   # see lib/resize_as_jpeg_when_necessary
   attachment_options = { storage: :file_system,
-    content_type: SystemSetting.image_content_types,
-    thumbnails: SystemSetting.image_sizes,
-    max_size: SystemSetting.maximum_uploaded_file_size }
+                         content_type: SystemSetting.image_content_types,
+                         thumbnails: SystemSetting.image_sizes,
+                         max_size: SystemSetting.maximum_uploaded_file_size }
 
   # allow sites to opt-in for keeping embedded metadata from original with resized versions
   if SystemSetting.keep_embedded_metadata_for_all_sizes
@@ -36,12 +36,12 @@ class ImageFile < ActiveRecord::Base
   # overriding full_filename to handle our customizations
   # TODO: is this thumbnail arg necessary for classes without thumbnails?
   # def full_filename(thumbnail = nil)
-    # file_system_path = (thumbnail ? thumbnail_class : self).attachment_options[:file_system_path].to_s
-    # this is how this currently reads
-    # rails_root/private/images/recording_id/filename
-    # TODO: we'll want to make it like this when we add kete (basket) scoping
-    # rails_root/private/kete_path_name/images/recording_id/filename
-    # File.join(RAILS_ROOT, file_system_path, attachment_path_id, thumbnail_name_for(thumbnail))
+  # file_system_path = (thumbnail ? thumbnail_class : self).attachment_options[:file_system_path].to_s
+  # this is how this currently reads
+  # rails_root/private/images/recording_id/filename
+  # TODO: we'll want to make it like this when we add kete (basket) scoping
+  # rails_root/private/kete_path_name/images/recording_id/filename
+  # File.join(RAILS_ROOT, file_system_path, attachment_path_id, thumbnail_name_for(thumbnail))
   # end
 
   include ResizeAsJpegWhenNecessary
@@ -121,7 +121,7 @@ class ImageFile < ActiveRecord::Base
     maxwidth = max_dimensions[:width].present? ? max_dimensions[:width].to_i : nil
 
     equal_to_or_smaller_than = (maxheight.nil? || maxheight >= height) &&
-      (maxwidth.nil? || maxwidth >= width)
+                               (maxwidth.nil? || maxwidth >= width)
 
     !equal_to_or_smaller_than
   end

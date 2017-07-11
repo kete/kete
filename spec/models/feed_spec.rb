@@ -5,4 +5,3 @@ describe Feed do
     foo = Feed.new
   end
 end
-

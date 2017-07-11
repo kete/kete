@@ -1,7 +1,6 @@
 # This file is unused/unmaintained
 
 namespace :tools do
-
   rake_whitelist = [
     'acts_as_licensed:import_au_cc_licenses', 'acts_as_licensed:import_nz_cc_licenses',
     'kete:export:users', 'kete:import:users',
@@ -38,16 +37,15 @@ namespace :tools do
   end
 
   namespace :ssh do
-
     # TODO Create SSH key generation task
 
     desc 'Copies contents of ssh public keys into authorized_keys file'
     task :setup do
       sudo 'test -d ~/.ssh || mkdir ~/.ssh'
       sudo 'chmod 0700 ~/.ssh'
-      put(ssh_options[:keys].collect{|key| File.read(key+'.pub')}.join("\n"),
+      put(ssh_options[:keys].collect { |key| File.read(key + '.pub') }.join("\n"),
           File.join('/home', user, '.ssh/authorized_keys'),
-          mode: 0600 )
+          mode: 0600)
     end
   end
 
@@ -64,7 +62,6 @@ namespace :tools do
   end
 
   namespace :aptitude do
-
     desc 'Runs aptitude update on remote server'
     task :update do
       logger.info 'Running aptitude update'
@@ -98,7 +95,6 @@ namespace :tools do
   end
 
   namespace :svn do
-
     desc 'remove and ignore log files and tmp from subversion'
     task :clean do
       logger.info 'removing log directory contents from svn'
@@ -133,11 +129,9 @@ namespace :tools do
       stream 'tar -zxvf /usr/local/src/subversion-1.4.4.tar.gz'
       run '/usr/local/src/subversion-1.4.4/configure && make && sudo make install'
     end
-
   end
 
   namespace :gems do
-
     task :default do
       desc <<-DESC
 
@@ -178,24 +172,22 @@ namespace :tools do
       logger.info "trying to remove #{gem_name}"
       sudo "gem install #{gem_name}"
     end
-
   end
 
-#  Tab completion task (unfinished)
-#  namespace :tabs do
-#
-#    desc "Install tab completion enabler script"
-#    task :setup do
-#      system "sudo cp vendor/plugins/bells/recipes/templates/complete /usr/local/bin/"
-#      system "sudo chmod 755 /usr/local/bin/complete"
-#      File.open("~/.bashrc", File::WRONLY|File::APPEND|File::CREAT) { |f| f.puts 'complete -C /usr/local/bin/complete -o default cap' }
-#    end
-#
-#    desc "Update capistrano tab completion."
-#    task :update do
-#      system "rm ~/.captabs"
-#    end
-#
-#  end
-
+  #  Tab completion task (unfinished)
+  #  namespace :tabs do
+  #
+  #    desc "Install tab completion enabler script"
+  #    task :setup do
+  #      system "sudo cp vendor/plugins/bells/recipes/templates/complete /usr/local/bin/"
+  #      system "sudo chmod 755 /usr/local/bin/complete"
+  #      File.open("~/.bashrc", File::WRONLY|File::APPEND|File::CREAT) { |f| f.puts 'complete -C /usr/local/bin/complete -o default cap' }
+  #    end
+  #
+  #    desc "Update capistrano tab completion."
+  #    task :update do
+  #      system "rm ~/.captabs"
+  #    end
+  #
+  #  end
 end

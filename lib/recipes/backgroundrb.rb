@@ -1,9 +1,7 @@
 # capistrano recipes specific to backgroundrb server
 
 namespace :deploy do
-
   namespace :backgroundrb do
-
     desc 'Start backgroundrb server'
     task :start, roles: :app do
       run "cd #{current_path} && script/backgroundrb start"
@@ -23,7 +21,5 @@ namespace :deploy do
       deploy.backgroundrb.stop
       deploy.backgroundrb.start
     end
-
   end
-
 end

@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 class ChoicesController < ApplicationController
   before_action :login_required, only: [:list, :index]
 

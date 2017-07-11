@@ -2,7 +2,6 @@ module FieldMappings
   unless included_modules.include? FieldMappings
 
     def self.included(klass)
-
       # RABID: it seems this module can only be included in 2 classes
       case klass.name
       when 'ContentTypeToFieldMapping'
@@ -52,39 +51,39 @@ module FieldMappings
     # We just do the simpler (probably slower) thing until we are sure it is
     # a performance problem.
 
-    def extended_field_label ;                extended_field.label ; end
+    def extended_field_label;                extended_field.label; end
 
-    def extended_field_xml_element_name ;     extended_field.xml_element_name ; end
+    def extended_field_xml_element_name;     extended_field.xml_element_name; end
 
-    def extended_field_xsi_type ;             extended_field.xsi_type ; end
+    def extended_field_xsi_type;             extended_field.xsi_type; end
 
-    def extended_field_multiple ;             extended_field.multiple ; end
+    def extended_field_multiple;             extended_field.multiple; end
 
-    def extended_field_description ;          extended_field.description ; end
+    def extended_field_description;          extended_field.description; end
 
-    def extended_field_user_choice_addition ; extended_field.user_choice_addition ; end
+    def extended_field_user_choice_addition; extended_field.user_choice_addition; end
 
-    def extended_field_ftype ;                extended_field.ftype ; end
+    def extended_field_ftype;                extended_field.ftype; end
 
     def used_by_items?
       # Check whether we are dealing with a topic type mapping
       # or a content type mapping and get items accordingly
       @all_versions ||= if is_a?(TopicTypeToFieldMapping)
-        Topic::Version.all(conditions: { topic_type_id: topic_type.full_set.collect { |tt| tt.id } })
-      else
-        if content_type.class_name == 'User'
-          User.all
-        else
-          content_type.class_name.constantize::Version.all
-        end
+                          Topic::Version.all(conditions: { topic_type_id: topic_type.full_set.collect { |tt| tt.id } })
+                        else
+                          if content_type.class_name == 'User'
+                            User.all
+                          else
+                            content_type.class_name.constantize::Version.all
+                          end
       end
 
       ef_label = Regexp.escape(extended_field_label.downcase.gsub(/ /, '_'))
       element_label = extended_field_multiple ? "#{ef_label}_multiple" : ef_label
       @all_versions.any? do |version|
         version.extended_content =~ /<#{element_label}/ &&
-        version.extended_content !~ /<#{element_label}[^>]*\/>/ &&
-        version.extended_content !~ /<#{element_label}[^>]*>(<[0-9]+><#{ef_label}[^>]*><\/#{ef_label}><\/[0-9]+>)*<\/#{element_label}>/
+          version.extended_content !~ /<#{element_label}[^>]*\/>/ &&
+          version.extended_content !~ /<#{element_label}[^>]*>(<[0-9]+><#{ef_label}[^>]*><\/#{ef_label}><\/[0-9]+>)*<\/#{element_label}>/
       end
     end
 

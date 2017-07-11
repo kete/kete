@@ -33,7 +33,7 @@ CACHES_CONTROLLERS = ['audio', 'baskets', 'comments', 'documents', 'images', 'to
 # if Gem::VERSION >= "1.3.6"
 #   module Rails
 #     class GemDependency
-# 
+#
 #       def requirement
 #         r = super
 #         (r == Gem::Requirement.default) ? nil : r
@@ -61,7 +61,7 @@ CACHES_CONTROLLERS = ['audio', 'baskets', 'comments', 'documents', 'images', 'to
 #  # and place it under vendor/gems
 #  # specifying it here allows this to work
 #  config.gem "oai"
-#  
+#
 #  # Walter McGinnis, 2011-02-15
 #  # because this is a Rails engine gem
 #  # it needs to be declared here as well as config/required_software.rb

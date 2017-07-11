@@ -5,4 +5,3 @@ describe ImportArchiveFile do
     foo = ImportArchiveFile.new
   end
 end
-

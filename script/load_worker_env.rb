@@ -16,7 +16,7 @@ require 'backgroundrb'
 
 BDRB_HOME = ::BackgrounDRb::BACKGROUNDRB_ROOT
 
-['server', 'server/lib', 'lib', 'lib/backgroundrb'].each { |x| $LOAD_PATH.unshift(BDRB_HOME + "/#{x}")}
+['server', 'server/lib', 'lib', 'lib/backgroundrb'].each { |x| $LOAD_PATH.unshift(BDRB_HOME + "/#{x}") }
 
 $LOAD_PATH.unshift(File.join(RAILS_HOME, 'lib', 'workers'))
 
@@ -28,4 +28,3 @@ if !(::Packet::WorkerRunner::WORKER_OPTIONS[:worker_env] == false)
   require RAILS_HOME + '/config/environment'
 end
 require 'backgroundrb_server'
-

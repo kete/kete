@@ -11,4 +11,3 @@ if Object.const_defined?(:Kete) && Kete.respond_to?(:blank_title) && Kete.respon
 end
 
 PUBLIC_CONDITIONS = value
-

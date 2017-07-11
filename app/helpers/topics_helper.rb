@@ -16,7 +16,7 @@ module TopicsHelper
         classes << 'ancestor-topic-type'
       end
 
-      html += classes.join(' ') +'">'
+      html += classes.join(' ') + '">'
 
       unless count == 1
         html += '<span class="breadcrumb-delimiter">'

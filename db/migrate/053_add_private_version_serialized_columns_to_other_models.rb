@@ -1,6 +1,5 @@
 class AddPrivateVersionSerializedColumnsToOtherModels < ActiveRecord::Migration
   def self.up
-    
     # Add columns for storing private version across models included
     # in privacy controls work
     add_column 'audio_recordings',  'private_version_serialized', :text

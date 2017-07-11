@@ -2,9 +2,7 @@
 # Adapted from Capistrano Bells plugin (http://github.com/nakajima/capistrano-bells)
 
 namespace :deploy do
-
   namespace :apache do
-
     desc 'Start Apache webserver'
     task :start, roles: :app do
       set_apache_clt
@@ -31,7 +29,5 @@ namespace :deploy do
     def set_apache_clt
       begin; apache_ctl; rescue; set(:apache_ctl, '/etc/init.d/apache2'); end
     end
-
   end
-
 end

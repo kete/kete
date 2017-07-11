@@ -2,8 +2,7 @@
 # using term basket here to spell out concept for developers
 # and to avoid confusion with the kete app
 class Basket < ActiveRecord::Base
-
-  scope :except_certain_baskets, lambda {|baskets| where("id not in (?) AND status = 'approved'", baskets)}
+  scope :except_certain_baskets, lambda { |baskets| where("id not in (?) AND status = 'approved'", baskets) }
 
   def self.settings
     # * EOIN: we are pretty sure this is not called - raise an exception to be sure
@@ -24,20 +23,20 @@ class Basket < ActiveRecord::Base
   # we use these for who can see what
   def self.member_level_options
     [[I18n.t('basket_model.basket_member'), 'at least member'],
-    [I18n.t('basket_model.basket_moderator'), 'at least moderator'],
-    [I18n.t('basket_model.basket_admin'), 'at least admin'],
-    [I18n.t('basket_model.site_admin'), 'at least site admin']]
+     [I18n.t('basket_model.basket_moderator'), 'at least moderator'],
+     [I18n.t('basket_model.basket_admin'), 'at least admin'],
+     [I18n.t('basket_model.site_admin'), 'at least site admin']]
   end
 
   def self.user_level_options
     [[I18n.t('basket_model.all_users'), 'all users']] +
-    Basket.member_level_options
+      Basket.member_level_options
   end
 
   def self.all_level_options
     [[I18n.t('basket_model.all_users'), 'all users']] +
-    [[I18n.t('basket_model.logged_in'), 'logged in']] +
-    Basket.member_level_options
+      [[I18n.t('basket_model.logged_in'), 'logged in']] +
+      Basket.member_level_options
   end
 
   def self.level_value_from(key)
@@ -48,35 +47,35 @@ class Basket < ActiveRecord::Base
   # really this would be nicer if it came from reflecting on the baskets_controller class
   def self.forms_options
     [[I18n.t('basket_model.basket_new_or_edit'), 'edit'],
-    [I18n.t('basket_model.basket_appearance'), 'appearance'],
-    [I18n.t('basket_model.basket_homepage_options'), 'homepage_options']]
+     [I18n.t('basket_model.basket_appearance'), 'appearance'],
+     [I18n.t('basket_model.basket_homepage_options'), 'homepage_options']]
   end
 
   # Editable Basket Attributes (copy from the basket database fields)
   EDITABLE_ATTRIBUTES = %w{ index_page_redirect_to_all index_page_topic_is_entire_page
-    index_page_link_to_index_topic_as index_page_basket_search index_page_image_as
-    index_page_tags_as index_page_number_of_tags index_page_order_tags_by
-    index_page_recent_topics_as index_page_number_of_recent_topics index_page_archives_as
-    index_page_extra_side_bar_html private_default file_private_default allow_non_member_comments
-    show_privacy_controls do_not_sanitize feeds_attributes }
+                            index_page_link_to_index_topic_as index_page_basket_search index_page_image_as
+                            index_page_tags_as index_page_number_of_tags index_page_order_tags_by
+                            index_page_recent_topics_as index_page_number_of_recent_topics index_page_archives_as
+                            index_page_extra_side_bar_html private_default file_private_default allow_non_member_comments
+                            show_privacy_controls do_not_sanitize feeds_attributes }
 
   # Editable Basket Settings
   EDITABLE_SETTINGS = %w{ fully_moderated moderated_except private_file_visibility browse_view_as
-    sort_order_default sort_direction_reversed_default disable_site_recent_topics_display
-    basket_join_policy memberlist_policy import_archive_set_policy allow_basket_admin_contact private_item_notification
-    private_item_notification_show_title private_item_notification_show_short_summary
-    theme_font_family header_image theme show_action_menu show_discussion show_flagging
-    show_add_links side_menu_number_of_topics side_menu_ordering_of_topics side_menu_direction_of_topics
-    additional_footer_content do_not_sanitize_footer_content replace_existing_footer }
+                          sort_order_default sort_direction_reversed_default disable_site_recent_topics_display
+                          basket_join_policy memberlist_policy import_archive_set_policy allow_basket_admin_contact private_item_notification
+                          private_item_notification_show_title private_item_notification_show_short_summary
+                          theme_font_family header_image theme show_action_menu show_discussion show_flagging
+                          show_add_links side_menu_number_of_topics side_menu_ordering_of_topics side_menu_direction_of_topics
+                          additional_footer_content do_not_sanitize_footer_content replace_existing_footer }
 
   # Basket settings that are always editable or come under a parent option
   NESTED_FIELDS = %w{ name status creator_id do_not_sanitize moderated_except
-    sort_direction_reversed_default private_item_notification_show_title
-    private_item_notification_show_short_summary index_page_link_to_index_topic_as
-    index_page_recent_topics_as index_page_tags_as index_page_order_tags_by
-    show_action_menu show_discussion show_flagging show_add_links
-    side_menu_number_of_topics side_menu_ordering_of_topics side_menu_direction_of_topics
-    do_not_sanitize_footer_content replace_existing_footer }
+                      sort_direction_reversed_default private_item_notification_show_title
+                      private_item_notification_show_short_summary index_page_link_to_index_topic_as
+                      index_page_recent_topics_as index_page_tags_as index_page_order_tags_by
+                      show_action_menu show_discussion show_flagging show_add_links
+                      side_menu_number_of_topics side_menu_ordering_of_topics side_menu_direction_of_topics
+                      do_not_sanitize_footer_content replace_existing_footer }
 
   # Kieran Pilkington, 2008-07-09
   # remove the roles from a basket before destroying it to prevent problems later on
@@ -244,12 +243,12 @@ class Basket < ActiveRecord::Base
     conditions += " AND taggings.basket_id = #{id}" unless self == site_basket
 
     tags = ActsAsTaggableOn::Tag.select('tags.id, tags.name, count(taggings.id) AS taggings_count')
-      .where(conditions)
-      .group('taggings.tag_id, tags.id, tags.name, taggings.created_at')
-      .joins(:taggings)
-      .order(find_tag_order)
-      .offset(tag_offset)
-      .limit(tag_limit)
+                                .where(conditions)
+                                .group('taggings.tag_id, tags.id, tags.name, taggings.created_at')
+                                .joins(:taggings)
+                                .order(find_tag_order)
+                                .offset(tag_offset)
+                                .limit(tag_limit)
 
     tags.map do |tag|
       {
@@ -284,33 +283,33 @@ class Basket < ActiveRecord::Base
 
   # attribute options methods
   # TODO clean this up using define_method (meta programming magic)
-  def show_flagging_as_options(site_basket, default=nil)
+  def show_flagging_as_options(site_basket, default = nil)
     current_show_flagging_value = default || setting(:show_flagging) || site_basket.setting(:show_flagging) || 'all users'
     select_options = array_to_options_list_with_defaults(Basket.user_level_options, current_show_flagging_value)
   end
 
-  def show_add_links_as_options(site_basket, default=nil)
+  def show_add_links_as_options(site_basket, default = nil)
     current_show_add_links_value = default || setting(:show_add_links) || site_basket.setting(:show_add_links) || 'all users'
     select_options = array_to_options_list_with_defaults(Basket.user_level_options, current_show_add_links_value)
   end
 
-  def show_action_menu_as_options(site_basket, default=nil)
+  def show_action_menu_as_options(site_basket, default = nil)
     current_show_actions_value = default || setting(:show_action_menu) || site_basket.setting(:show_action_menu) || 'all users'
     select_options = array_to_options_list_with_defaults(Basket.user_level_options, current_show_actions_value)
   end
 
-  def show_discussion_as_options(site_basket, default=nil)
+  def show_discussion_as_options(site_basket, default = nil)
     current_show_discussion_value = default || setting(:show_discussion) || site_basket.setting(:show_discussion) || 'all users'
     select_options = array_to_options_list_with_defaults(Basket.user_level_options, current_show_discussion_value)
   end
 
-  def side_menu_ordering_of_topics_as_options(site_basket, default=nil)
+  def side_menu_ordering_of_topics_as_options(site_basket, default = nil)
     current_value = default || setting(:side_menu_ordering_of_topics) || site_basket.setting(:side_menu_ordering_of_topics) || 'updated_at'
     options_array = [['Latest', 'latest'], ['Alphabetical', 'alphabetical']]
     select_options = array_to_options_list_with_defaults(options_array, current_value)
   end
 
-  def private_file_visibility_as_options(site_basket, default=nil)
+  def private_file_visibility_as_options(site_basket, default = nil)
     current_value = default || setting(:private_file_visibility) || site_basket.setting(:private_file_visibility) || 'at least member'
     select_options = array_to_options_list_with_defaults(Basket.member_level_options, current_value)
   end
@@ -355,7 +354,7 @@ class Basket < ActiveRecord::Base
     (setting(:replace_existing_footer) == true || (setting(:replace_existing_footer).nil? && site_basket.setting(:replace_existing_footer) == true))
   end
 
-  def memberlist_policy_or_default(default=nil)
+  def memberlist_policy_or_default(default = nil)
     current_value = default || memberlist_policy_with_inheritance
     array_to_options_list_with_defaults(Basket.all_level_options, current_value, false)
   end
@@ -370,7 +369,7 @@ class Basket < ActiveRecord::Base
     end
   end
 
-  def import_archive_set_policy_or_default(default=nil)
+  def import_archive_set_policy_or_default(default = nil)
     current_value = default || import_archive_set_policy_with_inheritance
     array_to_options_list_with_defaults(Basket.member_level_options, current_value, false)
   end
@@ -396,9 +395,9 @@ class Basket < ActiveRecord::Base
     end
   end
 
-  def private_item_notification_or_default(default=nil)
+  def private_item_notification_or_default(default = nil)
     current_value = default || setting(:private_item_notification) || site_basket.setting(:private_item_notification) || 'at least member'
-    options =  [[I18n.t('basket_model.private_item_notification_or_default.dont_send_notification'), 'do_not_email']] + Basket.member_level_options
+    options = [[I18n.t('basket_model.private_item_notification_or_default.dont_send_notification'), 'do_not_email']] + Basket.member_level_options
     select_options = array_to_options_list_with_defaults(options, current_value, false, true)
   end
 
@@ -415,7 +414,7 @@ class Basket < ActiveRecord::Base
     end
   end
 
-  def array_to_options_list_with_defaults(options_array, default_value, site_admin=true, pluralize=false)
+  def array_to_options_list_with_defaults(options_array, default_value, site_admin = true, pluralize = false)
     select_options = String.new
     options_array.each do |option|
       label = option[0]
@@ -467,7 +466,7 @@ class Basket < ActiveRecord::Base
      [I18n.t('basket_model.tags_as_tag_cloud'), 'tag cloud']]
   end
 
-  def moderation_select_options(default=nil)
+  def moderation_select_options(default = nil)
     select_options = String.new
     [[I18n.t('basket_model.moderate_before_approved'), true],
      [I18n.t('basket_model.moderate_on_flagged'), false]].each do |option|
@@ -503,7 +502,7 @@ class Basket < ActiveRecord::Base
   # all_disputed_revisions
   # all_reviewed_revisions
   # all_rejected_revisions
-  %w{ disputed reviewed rejected }.each do |type|
+  %w{disputed reviewed rejected}.each do |type|
     define_method("all_#{type}_revisions") do
       revisions = ZOOM_CLASSES.collect do |zoom_class|
         send(zoom_class.tableize.to_sym).send("find_#{type}", id)
@@ -526,7 +525,7 @@ class Basket < ActiveRecord::Base
     @possible_themes
   end
 
-  def font_family_select_options(default=nil)
+  def font_family_select_options(default = nil)
     select_options = String.new
     [[I18n.t('basket_model.font_use_theme_default'), ''],
      [I18n.t('basket_model.font_sans_serif'), 'sans-serif'],
@@ -626,7 +625,7 @@ class Basket < ActiveRecord::Base
         new_version_comment = version.version_comment.nil? ? String.new : version.version_comment + '. '
         new_version_comment += I18n.t('basket_model.now_in_site_basket', basket_name: name)
 
-        version.update_attributes(basket_id: 1, version_comment: new_version_comment )
+        version.update_attributes(basket_id: 1, version_comment: new_version_comment)
       end
     end
   end

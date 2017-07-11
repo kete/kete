@@ -8,65 +8,65 @@ class SearchSourcesController < ApplicationController
   before_filter ExternalSearchSources[:login_method]
   before_filter :redirect_if_not_authorized
   before_filter :set_page_title
-  before_filter :get_search_source, only: [ :move_higher, :move_lower ]
+  before_filter :get_search_source, only: [:move_higher, :move_lower]
   before_filter :prepare_available_search_sources
 
-#   active_scaffold :search_sources do |config|
-#     config.label = I18n.t('search_sources_controller.title')
-#
-#     list.sorting = { :position => 'ASC' }
-#
-#     config.columns = [:title, :source_type, :source_target, :base_url, :more_link_base_url, :limit, :limit_param]
-#     config.columns << [:cache_interval] if ExternalSearchSources[:cache_results]
-#     config.columns << [:or_syntax, :and_syntax, :not_syntax, :source_credit]
-#     config.list.columns.exclude [:source_type, :more_link_base_url, :cache_interval, :limit_param, :or_syntax, :and_syntax, :not_syntax, :source_credit]
-#
-#     options = { :type => :record, :inline => false }
-#     # images_tag and @template.image_tag arn't available in this scope
-#     sort_arrow_up = "<img src='/images/arrow_up.gif' title='#{I18n.t('search_sources_controller.move_higher_title')}' alt='#{I18n.t('search_sources_controller.move_higher_title')}' style='border:none;' />"
-#     sort_arrow_down = "<img src='/images/arrow_down.gif' title='#{I18n.t('search_sources_controller.move_lower_title')}' alt='#{I18n.t('search_sources_controller.move_lower_title')}' style='border:none;' />"
-#     config.action_links.add sort_arrow_up, options.merge(:action => 'move_higher', :crud_type => :move_higher)
-#     config.action_links.add sort_arrow_down, options.merge(:action => 'move_lower', :crud_type => :move_lower)
-#
-#     config.columns[:title].required = true
-#     config.columns[:title].description = I18n.t('search_sources_controller.source_title_description')
-#
-#     config.columns[:source_type].required = true
-#     config.columns[:source_type].description = I18n.t('search_sources_controller.source_type_description')
-#     config.columns[:source_type].form_ui = :select
-#     config.columns[:source_type].options = SearchSource.acceptable_source_types.collect { |st| [st.humanize, st] }
-#
-#     config.columns[:source_target].required = true
-#     config.columns[:source_target].description = I18n.t('search_sources_controller.source_target_description')
-#     config.columns[:source_target].form_ui = :select
-#     config.columns[:source_target].options = [['', '']] + SearchSource.acceptable_source_targets.collect { |st| [I18n.t("search_sources_controller.source_targets.#{st}"), st] }
-#
-#     config.columns[:base_url].required = true
-#     config.columns[:base_url].description = '<br />' + I18n.t('search_sources_controller.source_base_url_description')
-#     config.columns[:base_url].options = { :size => 82 }
-#
-#     config.columns[:more_link_base_url].label = I18n.t('search_sources_controller.source_more_link_base_url_label')
-#     config.columns[:more_link_base_url].description = '<br />' + I18n.t('search_sources_controller.source_more_link_base_url_description')
-#     config.columns[:more_link_base_url].options = { :size => 82 }
-#
-#     config.columns[:limit].description = '<br />' + I18n.t('search_sources_controller.source_limit_description')
-#     config.columns[:limit].options = { :size => 10 }
-#
-#     config.columns[:limit_param].description = '<br />' + I18n.t('search_sources_controller.source_limit_param_description')
-#     config.columns[:limit_param].form_ui = :select
-#     config.columns[:limit_param].options = [['', '']] + SearchSource.acceptable_limit_params.collect { |st| [st, st] }
-#
-#     config.columns[:cache_interval].description = I18n.t('search_sources_controller.source_cache_interval_description')
-#     config.columns[:cache_interval].options = { :size => 10 }
-#
-#     [:or_syntax, :and_syntax, :not_syntax].each do |syntax|
-#       config.columns[syntax].label = I18n.t("search_sources_controller.#{syntax.to_s}_label")
-#       config.columns[syntax].description = I18n.t("search_sources_controller.#{syntax.to_s}_description")
-#     end
-#
-#     config.columns[:source_credit].description = '<br />' + I18n.t('search_sources_controller.source_credit_description')
-#     config.columns[:source_credit].options = { :rows => 2 }
-#   end
+  #   active_scaffold :search_sources do |config|
+  #     config.label = I18n.t('search_sources_controller.title')
+  #
+  #     list.sorting = { :position => 'ASC' }
+  #
+  #     config.columns = [:title, :source_type, :source_target, :base_url, :more_link_base_url, :limit, :limit_param]
+  #     config.columns << [:cache_interval] if ExternalSearchSources[:cache_results]
+  #     config.columns << [:or_syntax, :and_syntax, :not_syntax, :source_credit]
+  #     config.list.columns.exclude [:source_type, :more_link_base_url, :cache_interval, :limit_param, :or_syntax, :and_syntax, :not_syntax, :source_credit]
+  #
+  #     options = { :type => :record, :inline => false }
+  #     # images_tag and @template.image_tag arn't available in this scope
+  #     sort_arrow_up = "<img src='/images/arrow_up.gif' title='#{I18n.t('search_sources_controller.move_higher_title')}' alt='#{I18n.t('search_sources_controller.move_higher_title')}' style='border:none;' />"
+  #     sort_arrow_down = "<img src='/images/arrow_down.gif' title='#{I18n.t('search_sources_controller.move_lower_title')}' alt='#{I18n.t('search_sources_controller.move_lower_title')}' style='border:none;' />"
+  #     config.action_links.add sort_arrow_up, options.merge(:action => 'move_higher', :crud_type => :move_higher)
+  #     config.action_links.add sort_arrow_down, options.merge(:action => 'move_lower', :crud_type => :move_lower)
+  #
+  #     config.columns[:title].required = true
+  #     config.columns[:title].description = I18n.t('search_sources_controller.source_title_description')
+  #
+  #     config.columns[:source_type].required = true
+  #     config.columns[:source_type].description = I18n.t('search_sources_controller.source_type_description')
+  #     config.columns[:source_type].form_ui = :select
+  #     config.columns[:source_type].options = SearchSource.acceptable_source_types.collect { |st| [st.humanize, st] }
+  #
+  #     config.columns[:source_target].required = true
+  #     config.columns[:source_target].description = I18n.t('search_sources_controller.source_target_description')
+  #     config.columns[:source_target].form_ui = :select
+  #     config.columns[:source_target].options = [['', '']] + SearchSource.acceptable_source_targets.collect { |st| [I18n.t("search_sources_controller.source_targets.#{st}"), st] }
+  #
+  #     config.columns[:base_url].required = true
+  #     config.columns[:base_url].description = '<br />' + I18n.t('search_sources_controller.source_base_url_description')
+  #     config.columns[:base_url].options = { :size => 82 }
+  #
+  #     config.columns[:more_link_base_url].label = I18n.t('search_sources_controller.source_more_link_base_url_label')
+  #     config.columns[:more_link_base_url].description = '<br />' + I18n.t('search_sources_controller.source_more_link_base_url_description')
+  #     config.columns[:more_link_base_url].options = { :size => 82 }
+  #
+  #     config.columns[:limit].description = '<br />' + I18n.t('search_sources_controller.source_limit_description')
+  #     config.columns[:limit].options = { :size => 10 }
+  #
+  #     config.columns[:limit_param].description = '<br />' + I18n.t('search_sources_controller.source_limit_param_description')
+  #     config.columns[:limit_param].form_ui = :select
+  #     config.columns[:limit_param].options = [['', '']] + SearchSource.acceptable_limit_params.collect { |st| [st, st] }
+  #
+  #     config.columns[:cache_interval].description = I18n.t('search_sources_controller.source_cache_interval_description')
+  #     config.columns[:cache_interval].options = { :size => 10 }
+  #
+  #     [:or_syntax, :and_syntax, :not_syntax].each do |syntax|
+  #       config.columns[syntax].label = I18n.t("search_sources_controller.#{syntax.to_s}_label")
+  #       config.columns[syntax].description = I18n.t("search_sources_controller.#{syntax.to_s}_description")
+  #     end
+  #
+  #     config.columns[:source_credit].description = '<br />' + I18n.t('search_sources_controller.source_credit_description')
+  #     config.columns[:source_credit].options = { :rows => 2 }
+  #   end
 
   def move_higher
     @search_source.move_higher
@@ -123,8 +123,8 @@ class SearchSourcesController < ApplicationController
   end
 
   def prepare_available_search_sources
-    @available_search_sources = Rake.application.tasks.
-                                 collect { |task| task.name =~ /external_search_sources:import:(\w+)$/ ? $1 : nil }.compact
+    @available_search_sources = Rake.application.tasks
+                                    .collect { |task| task.name =~ /external_search_sources:import:(\w+)$/ ? $1 : nil }.compact
   end
 
   # A method used by active scaffold before creating/updating a record

@@ -55,9 +55,9 @@ class Profile < ActiveRecord::Base
   # otherwise they choose which fields specifically to show
   # each form within a profile may have a type
   def self.type_options
-    [ [I18n.t('profile_model.type_options.none'), 'none'],
-      [I18n.t('profile_model.type_options.all'), 'all'],
-      [I18n.t('profile_model.type_options.select_below'), 'some'] ]
+    [[I18n.t('profile_model.type_options.none'), 'none'],
+     [I18n.t('profile_model.type_options.all'), 'all'],
+     [I18n.t('profile_model.type_options.select_below'), 'some']]
   end
 
   # send @rules to profile.setting(:rules) for storage
@@ -68,7 +68,7 @@ class Profile < ActiveRecord::Base
   # (displayed on the active scaffold pages)
   # if raw is true, it'll return the hash we stored which can be
   # used on the forms for hiding/showing fields and setting values
-  def rules(raw=false)
+  def rules(raw = false)
     return unless setting(:rules)
 
     return setting(:rules) if raw
@@ -77,13 +77,13 @@ class Profile < ActiveRecord::Base
     setting(:rules).each do |k, v|
       value = "#{k.humanize}: "
       value += if v['rule_type'] == 'all'
-        I18n.t('profile_model.rules.all')
-      elsif v['rule_type'] == 'none'
-        I18n.t('profile_model.rules.none')
-      elsif v['rule_type'] == 'some' && v['allowed']
-        v['allowed'].collect { |a| a.humanize }.join(', ') + '.'
-      else
-        I18n.t('profile_model.rules.none')
+                 I18n.t('profile_model.rules.all')
+               elsif v['rule_type'] == 'none'
+                 I18n.t('profile_model.rules.none')
+               elsif v['rule_type'] == 'some' && v['allowed']
+                 v['allowed'].collect { |a| a.humanize }.join(', ') + '.'
+               else
+                 I18n.t('profile_model.rules.none')
       end
       data << value
     end
@@ -103,7 +103,7 @@ class Profile < ActiveRecord::Base
 
   # active scaffold uses this method to determine
   # what the user can do with the record
-  def authorized_for?(args={})
+  def authorized_for?(args = {})
     case args[:action].to_s
     when 'update'
       false

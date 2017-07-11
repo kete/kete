@@ -4,8 +4,8 @@ module XmlHelpers
     def appropriate_protocol_for(item)
       protocol = 'http'
       if SystemSetting.force_https_on_restricted_pages &&
-          ( ( item.respond_to?(:private) && item.private? ) ||
-            ( item.respond_to?(:commentable_private?) && item.commentable_private? ) )
+         ((item.respond_to?(:private) && item.private?) ||
+           (item.respond_to?(:commentable_private?) && item.commentable_private?))
 
         protocol = 'https'
       end
@@ -25,11 +25,11 @@ module XmlHelpers
 
     def xml_enclosure_for_item_with_file(xml, item, host, protocol = nil)
       if (item.respond_to?(:public_filename) && !item.public_filename.blank?) ||
-          (item.respond_to?(:original_file) && !item.original_file.blank?)
+         (item.respond_to?(:original_file) && !item.original_file.blank?)
         protocol = protocol || 'http'
         args = { type: item.content_type,
-          length: item.size.to_s,
-          url: file_url_from_bits_for(item, host, protocol) }
+                 length: item.size.to_s,
+                 url: file_url_from_bits_for(item, host, protocol) }
 
         if item.class.name == 'ImageFile'
           args[:width] = item.width
@@ -151,12 +151,12 @@ module XmlHelpers
             # limiting here, since we are likely to only want this many
             # if the item is not private, don't allow private related still images
             options = { limit: SystemSetting.number_of_related_things_to_display_per_type,
-              conditions: PUBLIC_CONDITIONS }
+                        conditions: PUBLIC_CONDITIONS }
 
             options.delete(:conditions) if item.private
 
             item.still_images.find(:all, options).each do |image|
-              xml.still_image(title: image.title, id: image.id, relation_order: count ) do
+              xml.still_image(title: image.title, id: image.id, relation_order: count) do
                 xml_for_thumbnail_image_file(xml, image, request)
               end
               count += 1

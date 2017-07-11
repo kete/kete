@@ -5,4 +5,3 @@ describe Search do
     foo = Search.new
   end
 end
-

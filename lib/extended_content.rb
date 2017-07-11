@@ -102,7 +102,7 @@ require 'xmlsimple'
 #   in a dc:description tag as mentioned in the point above in some cases. Where hierarchical selections are present, the
 #   values are presented as follows <dc:description>:first choice:child of first choice:</dc:description>.
 
-  module ExtendedContent
+module ExtendedContent
   CLASSES_WITH_SUMMARIES = ['Topic', 'Document']
 
   unless included_modules.include? ExtendedContent
@@ -225,7 +225,6 @@ require 'xmlsimple'
     # #=> { "field_name" => [['first value', 'child of first value'], ['second choice selection']] }
     def structured_extended_content
       convert_xml_to_key_value_hash.inject(Hash.new) do |hash, field|
-
         field_name = field.delete(field.first)
         field_name_root = field_name.gsub('_multiple', '')
 
@@ -296,7 +295,6 @@ require 'xmlsimple'
     # for POSTed params.
     def structured_extended_content=(hash)
       hash_for_conversion = hash.inject(Hash.new) do |result, field|
-
         # Extract the name of the field
         field_param_name = field.delete(field.first)
 
@@ -358,7 +356,6 @@ require 'xmlsimple'
     # convert_value_from_structured_hash(['value', 'child of value']) # => { "1" => "value", "2" => "child of value" }
     # convert_value_from_structured_hash({ :coords => '123,123' }) # => { :coords => '123,123' }
     def convert_value_from_structured_hash(value_array, extended_field)
-
       # If the extended field is a choice, make sure it's values properly indexed in XML.
       if ['autocomplete', 'choice'].member?(extended_field.ftype)
         # gives some flexibility when value is being swapped in from add-ons (read translations)
@@ -421,7 +418,6 @@ require 'xmlsimple'
     # This works by retrieving the data from XML, replacing the value, then writing the entire XML content back
     # to the XML string kept in #extended_content.
     def replace_value_for(extended_field_element_name, value, field = nil)
-
       # Fetch the existing data from XML
       sandpit_data = structured_extended_content
 
@@ -439,7 +435,6 @@ require 'xmlsimple'
         # peel off the array nesting
         # to get to nested values
         value.flatten.each do |v|
-
           # TODO: this has been copied and modified from extended_content_helpers, DRY up
           # one difference is that this assumes no parent
           # since we flatten
@@ -562,7 +557,6 @@ require 'xmlsimple'
     # Since we are not handling extended content using attribute accessors extremely frequently,
     # method_missing should be able to handle all requests to these methods.
     def method_missing(symbol, *args, &block)
-
       # Construct some information we need
       method_name = symbol.to_s
       method_root = method_name.gsub(/[^\w]/, '')
@@ -591,7 +585,6 @@ require 'xmlsimple'
         # Otherwise, forward the message request to the usual suspects
         super
       end
-
     end
 
     # usually when a new extended field is mapped to a content type or a topic type
@@ -629,9 +622,7 @@ require 'xmlsimple'
 
       builder = Nokogiri::XML::Builder.new
       builder.root do |xml|
-
         all_field_mappings.collect do |field_to_xml|
-
           # we should not generate extended field content for mappings that
           # are private_only but are submitted for a public version
           next if field_to_xml.private_only? && respond_to?(:private) && !private?
@@ -656,7 +647,6 @@ require 'xmlsimple'
 
               if !hash_of_values.blank?
                 hash_of_values.keys.sort.each do |key|
-
                   value = params_hash[field_name][key]
 
                   # for the year extended field types, skip unless the value is present
@@ -675,7 +665,6 @@ require 'xmlsimple'
                       )
                     end
                   end
-
                 end
               else
                 # this handles the case where edit has changed the item from one topic type to a sub topic type
@@ -683,14 +672,14 @@ require 'xmlsimple'
                 # generates empty xml elements for the field
                 key = 1.to_s
                 xml.safe_send(key) do
-                    extended_content_field_xml_tag(
-                      xml: xml,
-                      field: field_name,
-                      value: '',
-                      xml_element_name: field_to_xml.extended_field_xml_element_name,
-                      xsi_type: field_to_xml.extended_field_xsi_type,
-                      extended_field: field_to_xml.extended_field
-                    )
+                  extended_content_field_xml_tag(
+                    xml: xml,
+                    field: field_name,
+                    value: '',
+                    xml_element_name: field_to_xml.extended_field_xml_element_name,
+                    xsi_type: field_to_xml.extended_field_xsi_type,
+                    extended_field: field_to_xml.extended_field
+                  )
                 end
               end
             end
@@ -712,11 +701,9 @@ require 'xmlsimple'
               extended_field: field_to_xml.extended_field
             )
           end
-
         end
 
         # OLD_KETE_TODO: For some reason a bunch of duplicate extended fields are created. Work out why.
-
       end
 
       builder.to_stripped_xml
@@ -788,7 +775,6 @@ require 'xmlsimple'
     # Validation methods..
     def validate
       all_field_mappings.each do |mapping|
-
         field = mapping.extended_field
 
         if field.multiple?
@@ -811,7 +797,7 @@ require 'xmlsimple'
       no_map_enabled = (%w(map map_address).member?(extended_field_mapping.extended_field.ftype) && (!value || value['no_map'] == '1'))
       no_year_provided = (extended_field_mapping.extended_field.ftype == 'year' && (!value || value['value'].blank?))
       if extended_field_mapping.required &&
-        (value.blank? || no_map_enabled || no_year_provided) &&
+         (value.blank? || no_map_enabled || no_year_provided) &&
          extended_field_mapping.extended_field.ftype != 'checkbox'
 
         errors.add_to_base(I18n.t('extended_content_lib.validate_extended_content_single_value.cannot_be_blank',
@@ -839,7 +825,7 @@ require 'xmlsimple'
       end
 
       if extended_field_mapping.required && all_values_blank && \
-        extended_field_mapping.extended_field.ftype != 'checkbox'
+         extended_field_mapping.extended_field.ftype != 'checkbox'
 
         errors.add_to_base(I18n.t('extended_content_lib.validate_extended_content_multiple_values.need_at_least_one',
                                   label: extended_field_mapping.extended_field.label)) unless \
@@ -877,14 +863,12 @@ require 'xmlsimple'
     end
 
     def validate_extended_radio_field_content(extended_field_mapping, value)
-
       # Unsure right now how to handle radio fields. A single radio field is not of any use in the context
       # of extended fields/content.
       nil
     end
 
     def validate_extended_date_field_content(extended_field_mapping, value)
-
       # Allow nil values. If this is required, the nil value will be caught earlier.
       return nil if value.blank?
 
@@ -912,13 +896,11 @@ require 'xmlsimple'
     end
 
     def validate_extended_text_field_content(extended_field_mapping, value)
-
       # We accept pretty much any value for text fields
       nil
     end
 
     def validate_extended_textarea_field_content(extended_field_mapping, value)
-
       # We accept pretty much any value for text fields
       nil
     end
@@ -1009,7 +991,7 @@ require 'xmlsimple'
 
     def tweaked_key(k)
       if k =~ /\Aposition_(\d)+\z/
-        $1   # special case: "position_1" -> "1"
+        $1 # special case: "position_1" -> "1"
       else
         k
       end

@@ -17,8 +17,8 @@ class GenericMutedWorker < BackgrounDRb::MetaWorker
   # provide simple debugging results hash
   def create(args = nil)
     cache[:results] = { do_work_time: Time.now.utc.to_s,
-      done_with_do_work: false,
-      done_with_do_work_time: nil }
+                        done_with_do_work: false,
+                        done_with_do_work_time: nil }
   end
 
   def do_work(args = nil)
@@ -40,4 +40,3 @@ class GenericMutedWorker < BackgrounDRb::MetaWorker
     exit
   end
 end
-

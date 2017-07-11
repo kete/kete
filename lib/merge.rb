@@ -13,7 +13,7 @@ module Merge
       starting_version = version
 
       if source_versions.size == 1 && source_versions[0] != starting_version
-          source_versions << starting_version
+        source_versions << starting_version
       end
 
       if source_versions.size < 2
@@ -50,7 +50,7 @@ module Merge
         unless extended_values.blank?
           extended_values.each do |k, v|
             if (v.present? && !v.is_a?(Array)) ||
-                (v.is_a?(Array) && v.present? && v.size > 0 && v.first.present?)
+               (v.is_a?(Array) && v.present? && v.size > 0 && v.first.present?)
 
               structured_extended_content_thus_far[k] = v
             end

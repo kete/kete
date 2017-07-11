@@ -17,8 +17,8 @@ module OaiZoom
 
     def simulated_request
       @simulated_request ||= { host: SITE_NAME,
-        protocol: appropriate_protocol_for(self),
-        request_uri: url_for_dc_identifier(self) }
+                               protocol: appropriate_protocol_for(self),
+                               request_uri: url_for_dc_identifier(self) }
     end
 
     def oai_record_xml(options = {})
@@ -128,8 +128,8 @@ module OaiZoom
 
       # Redo the save for the private version
       if !skip_private &&
-          (respond_to?(:private) && has_private_version? && !private?) ||
-          (is_a?(Comment) && commentable_private)
+         (respond_to?(:private) && has_private_version? && !private?) ||
+         (is_a?(Comment) && commentable_private)
 
         # have to reset self.oai_record, so that private version gets loaded in
         @oai_record = nil

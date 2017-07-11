@@ -1,5 +1,4 @@
 class TagsController < ApplicationController
-
   def index
     redirect_to action: 'list'
   end
@@ -54,5 +53,4 @@ class TagsController < ApplicationController
   def privacy_type
     @privacy_type ||= (@current_basket != @site_basket && permitted_to_view_private_items?)
   end
-
 end

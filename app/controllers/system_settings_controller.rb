@@ -12,5 +12,6 @@ class SystemSettingsController < ApplicationController
   # end
 
   private
+
   include SslControllerHelpers
 end

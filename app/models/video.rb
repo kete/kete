@@ -1,5 +1,4 @@
 class Video < ActiveRecord::Base
-
   include PgSearch
   include PgSearchCustomisations
   multisearchable against: [
@@ -22,10 +21,10 @@ class Video < ActiveRecord::Base
   # dependencies that we don't need
   # :file_system_path => "#{BASE_PRIVATE_PATH}/#{self.table_name}",
   # will rework with when we get to public/private split
-  has_attachment storage: :file_system, 
-                 file_system_path: 'video', 
-                 content_type: SystemSetting.video_content_types, 
-                 processor: :none, 
+  has_attachment storage: :file_system,
+                 file_system_path: 'video',
+                 content_type: SystemSetting.video_content_types,
+                 processor: :none,
                  max_size: SystemSetting.maximum_uploaded_file_size
 
   validates_as_attachment
@@ -46,22 +45,22 @@ class Video < ActiveRecord::Base
     content_item_relations =          ContentItemRelation.arel_table
     deleted_content_item_relations =  Arel::Table.new(:deleted_content_item_relations)
 
-    join_table = Video.outer_joins(:taggings).
-                       outer_joins(:contributions).
-                       outer_joins(:content_item_relations).
-                       joins('LEFT OUTER JOIN  deleted_content_item_relations ' +
+    join_table = Video.outer_joins(:taggings)
+                      .outer_joins(:contributions)
+                      .outer_joins(:content_item_relations)
+                      .joins('LEFT OUTER JOIN  deleted_content_item_relations ' +
                              'ON deleted_content_item_relations.related_item_id = videos.id ' +
                              "AND deleted_content_item_relations.related_item_type = 'Video'")
 
     result = join_table.where(
-      videos[:updated_at].gt(date).
-      or( taggings[:created_at].gt(date) ). # Tagging doesn't have a updated_at column.
-      or( contributions[:updated_at].gt(date) ).
-      or( content_item_relations[:updated_at].gt(date) ).
-      or( deleted_content_item_relations[:updated_at].gt(date) )
+      videos[:updated_at].gt(date)
+      .or(taggings[:created_at].gt(date)) # Tagging doesn't have a updated_at column.
+      .or(contributions[:updated_at].gt(date))
+      .or(content_item_relations[:updated_at].gt(date))
+      .or(deleted_content_item_relations[:updated_at].gt(date))
     )
 
-    result.uniq   # Joins give us repeated results
+    result.uniq # Joins give us repeated results
   end
 
   # acts as licensed but this is not versionable (cant change a license once it is applied)
@@ -73,12 +72,12 @@ class Video < ActiveRecord::Base
   # overriding full_filename to handle our customizations
   # TODO: is this thumbnail arg necessary for classes without thumbnails?
   # def full_filename(thumbnail = nil)
-    # file_system_path = (thumbnail ? thumbnail_class : self).attachment_options[:file_system_path].to_s
-    # this is how this currently reads
-    # rails_root/private/videos/recording_id/filename
-    # TODO: we'll want to make it like this when we add kete (basket) scoping
-    # rails_root/private/kete_path_name/videos/recording_id/filename
-    # File.join(RAILS_ROOT, file_system_path, attachment_path_id, thumbnail_name_for(thumbnail))
+  # file_system_path = (thumbnail ? thumbnail_class : self).attachment_options[:file_system_path].to_s
+  # this is how this currently reads
+  # rails_root/private/videos/recording_id/filename
+  # TODO: we'll want to make it like this when we add kete (basket) scoping
+  # rails_root/private/kete_path_name/videos/recording_id/filename
+  # File.join(RAILS_ROOT, file_system_path, attachment_path_id, thumbnail_name_for(thumbnail))
   # end
 
   include OverrideAttachmentFuMethods

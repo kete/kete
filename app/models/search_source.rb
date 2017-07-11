@@ -8,11 +8,11 @@ class SearchSource < ActiveRecord::Base
   validates_numericality_of :limit, only_integer: true, allow_blank: true
   validates_numericality_of :cache_interval, only_integer: true, allow_blank: true
 
-  %w{ source_types source_targets limit_params }.each do |config|
+  %w{source_types source_targets limit_params}.each do |config|
     cattr_accessor "acceptable_#{config}".to_sym
     class_eval("@@acceptable_#{config} = ExternalSearchSources[config.to_sym]")
     validates_inclusion_of config.singularize.to_sym, in: class_eval("@@acceptable_#{config}"), allow_blank: (config == 'limit_params'),
-                           message: I18n.t('search_source_model.must_be_one_of', types: class_eval("@@acceptable_#{config}.join(', ')"))
+                                                      message: I18n.t('search_source_model.must_be_one_of', types: class_eval("@@acceptable_#{config}.join(', ')"))
   end
 
   default_scope order: 'position ASC'
@@ -44,16 +44,16 @@ class SearchSource < ActiveRecord::Base
   end
 
   def self.or_positions
-    [ [I18n.t('search_source_model.or_positions.no_or_syntax'), 'none'],
-      [I18n.t('search_source_model.or_positions.before_terms'), 'before'],
-      [I18n.t('search_source_model.or_positions.between_terms'), 'between'],
-      [I18n.t('search_source_model.or_positions.after_terms'), 'after'] ]
+    [[I18n.t('search_source_model.or_positions.no_or_syntax'), 'none'],
+     [I18n.t('search_source_model.or_positions.before_terms'), 'before'],
+     [I18n.t('search_source_model.or_positions.between_terms'), 'between'],
+     [I18n.t('search_source_model.or_positions.after_terms'), 'after']]
   end
 
   def self.case_values
-    [ [I18n.t('search_source_model.case_values.doesnt_matter'), ''],
-      [I18n.t('search_source_model.case_values.uppercase'), 'upper'],
-      [I18n.t('search_source_model.case_values.lowercase'), 'lower'] ]
+    [[I18n.t('search_source_model.case_values.doesnt_matter'), ''],
+     [I18n.t('search_source_model.case_values.uppercase'), 'upper'],
+     [I18n.t('search_source_model.case_values.lowercase'), 'lower']]
   end
 
   def source_url
@@ -132,14 +132,14 @@ class SearchSource < ActiveRecord::Base
     if or_syntax && !or_syntax[:position].blank? && or_syntax[:position] != 'none'
       or_string = or_syntax[:case] == 'upper' ? 'OR' : 'or'
       search_text = case or_syntax[:position]
-      when 'before'
-        "#{or_string} #{search_text}"
-      when 'after'
-        "#{search_text} #{or_string}"
-      when 'between'
-        search_text.strip.gsub(/\s/, " #{or_string} ")
-      else
-        search_text
+                    when 'before'
+                      "#{or_string} #{search_text}"
+                    when 'after'
+                      "#{search_text} #{or_string}"
+                    when 'between'
+                      search_text.strip.gsub(/\s/, " #{or_string} ")
+                    else
+                      search_text
       end
     else
       if or_syntax && or_syntax[:case]
@@ -177,11 +177,10 @@ class SearchSource < ActiveRecord::Base
 
   def looks_like_image_url?(link)
     return false unless link.present?
-    %w{ jpg png gif tif bmp }.include?(link.split('.').last.downcase)
+    %w{jpg png gif tif bmp}.include?(link.split('.').last.downcase)
   end
 
   def parse_limit_param(options = {})
     @limit_string = !limit_param.blank? ? "&#{limit_param}=#{(options[:limit] || limit).to_s}" : ''
   end
-
 end

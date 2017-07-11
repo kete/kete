@@ -67,7 +67,7 @@ class AudioRecording < ActiveRecord::Base
       .or(deleted_content_item_relations[:updated_at].gt(date))
     )
 
-    result.uniq   # Joins give us repeated results
+    result.uniq # Joins give us repeated results
   end
 
   # custom error message, probably overkill

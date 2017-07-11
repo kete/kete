@@ -1,5 +1,4 @@
 class Topic < ActiveRecord::Base
-
   include PgSearch
   include PgSearchCustomisations
   multisearchable against: [
@@ -56,17 +55,17 @@ class Topic < ActiveRecord::Base
     deleted_content_item_relations_sql_1 = "SELECT DISTINCT related_item_id FROM deleted_content_item_relations WHERE related_item_type = 'Topic' AND updated_at > ?"
     deleted_content_item_relations_sql_2 = 'SELECT DISTINCT topic_id FROM deleted_content_item_relations WHERE updated_at > ?'
 
-    and_query = Topic.where('topics.  updated_at > ?', date).
-                      where("topics.id IN ( #{taggings_sql} )"). # Tagging doesn't have an updated_at column.
-                      where("topics.id IN ( #{contributions_sql} )").
-                      where("topics.id IN ( #{content_item_relations_sql_1} )").
-                      where("topics.id IN ( #{content_item_relations_sql_2} )").
-                      where("topics.id IN ( #{deleted_content_item_relations_sql_1} )", date).
-                      where("topics.id IN ( #{deleted_content_item_relations_sql_2} )", date)
+    and_query = Topic.where('topics.  updated_at > ?', date)
+                     .where("topics.id IN ( #{taggings_sql} )") # Tagging doesn't have an updated_at column.
+                     .where("topics.id IN ( #{contributions_sql} )")
+                     .where("topics.id IN ( #{content_item_relations_sql_1} )")
+                     .where("topics.id IN ( #{content_item_relations_sql_2} )")
+                     .where("topics.id IN ( #{deleted_content_item_relations_sql_1} )", date)
+                     .where("topics.id IN ( #{deleted_content_item_relations_sql_2} )", date)
 
     or_query = and_query.where_values.join(' OR ')
 
-    Topic.where(or_query).uniq    # avoid repeated results from repeating ids.
+    Topic.where(or_query).uniq # avoid repeated results from repeating ids.
   end
 
   def self.pre_load_associations
@@ -197,7 +196,7 @@ class Topic < ActiveRecord::Base
   # Named scopes used in the index page controller for recent topics
   scope :recent, lambda { where('1 = 1').order('created_at DESC').limit(5) }
   scope :public, lambda { where('title != ?', SystemSetting.no_public_version_title) }
-  scope :exclude_baskets_and_id, lambda {|basket_ids, id| where('basket_id NOT IN (?) AND id != ?', basket_ids, id) }
+  scope :exclude_baskets_and_id, lambda { |basket_ids, id| where('basket_id NOT IN (?) AND id != ?', basket_ids, id) }
 
   after_save :update_taggings_basket_id
 

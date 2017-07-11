@@ -11,7 +11,7 @@ module LatitudeLongitudeConvertors
       dms_parts = dms_raw_array.collect do |dms|
         sign = dms.scan(/[NE]/).size > 0 ? '+' : '-'
         parts = dms.gsub(/[^\d.]/, ' ').split(' ').collect { |part| part.to_f }
-        sign + ( parts[0].to_f + ( ( parts[1].to_f * 60 + parts[2].to_f ) / 3600.0 ) ).to_s
+        sign + (parts[0].to_f + ((parts[1].to_f * 60 + parts[2].to_f) / 3600.0)).to_s
       end
       { latitude: dms_parts[0].to_f, longitude: dms_parts[1].to_f }
     end

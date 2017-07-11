@@ -117,13 +117,13 @@ class ExcelPreProcessor < Nokogiri::XML::SAX::Document
 
     if self.current_row == 1
       column_headers << (value.strip.empty? ? '__No_Name__' : value.strip)
-    # else
-#       return if value.strip.empty?
-#       element_name = self.column_headers[self.current_cell - 1]
-#       return unless element_name
-#       element_name = element_name.gsub(' ', '_').strip
+      # else
+      #       return if value.strip.empty?
+      #       element_name = self.column_headers[self.current_cell - 1]
+      #       return unless element_name
+      #       element_name = element_name.gsub(' ', '_').strip
 
-#       # self.records.last[element_name] = value.strip
+      #       # self.records.last[element_name] = value.strip
     end
   end
 end

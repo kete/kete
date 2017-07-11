@@ -5,4 +5,3 @@ describe PqfQuery do
     foo = PqfQuery.new
   end
 end
-
