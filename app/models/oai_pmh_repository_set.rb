@@ -19,8 +19,8 @@ class OaiPmhRepositorySet < ActiveRecord::Base
 
   # don't allow special characters in name or set_spec that will break our xml
   validates_format_of :name, :set_spec,
-  with: /^[^\'\":<>\&,\/\\\?]*$/,
-  message: lambda { I18n.t('oai_pmh_repository_set_model.invalid_chars', invalid_chars: "\', \\, /, &, \", ?, <, and >") }
+                      with: /^[^\'\":<>\&,\/\\\?]*$/,
+                      message: lambda { I18n.t('oai_pmh_repository_set_model.invalid_chars', invalid_chars: "\', \\, /, &, \", ?, <, and >") }
 
   class GeneratedSet
     attr_accessor :name, :description, :spec

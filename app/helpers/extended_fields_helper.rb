@@ -6,7 +6,7 @@ module ExtendedFieldsHelper
   def topic_type_form_column(record, input_name)
     topic_types = TopicType.find(1).full_set
     select = topic_type_select_with_indent('record', 'topic_type', topic_types, :id, :name, nil,
-                                          { class: 'select', tabindex: '1' })
+                                           { class: 'select', tabindex: '1' })
     content_tag('div', select, { id: "hidden_choices_topic_type_select_#{record.id.to_s}", style: 'display:none;' })
   end
 
@@ -128,8 +128,8 @@ module ExtendedFieldsHelper
     else
 
       select(:record, :parent_id,
-        Choice.all.reject { |c| c.id == record.id }.map { |c| [c.label, c.id] },
-        { select: record.parent_id }, name: input_name)
+             Choice.all.reject { |c| c.id == record.id }.map { |c| [c.label, c.id] },
+             { select: record.parent_id }, name: input_name)
     end
   end
 
@@ -335,9 +335,9 @@ module ExtendedFieldsHelper
     "<img src='#{image_path('indicator.gif')}' width='16' height='16' alt='#{t('extended_fields_helper.extended_field_choice_autocomplete_editor.getting_choices')}' id='#{id_for_extended_field(extended_field)}_#{level}_spinner' style='display:none;' />" +
     tag('br') +
     content_tag('div', nil,
-      class: 'extended_field_autocomplete',
-      id: id_for_extended_field(extended_field) + "_autocomplete_#{level}",
-      style: 'display: none'
+                class: 'extended_field_autocomplete',
+                id: id_for_extended_field(extended_field) + "_autocomplete_#{level}",
+                style: 'display: none'
     ) +
 
     # We need to let our controller know that we're using autocomplete for this field.
@@ -469,9 +469,9 @@ module ExtendedFieldsHelper
     if top_level = Choice.find_top_level
       content_tag('ul',
 
-        top_level.inject('') { |memo, choice|
-          memo + list_item_for_choice(choice)
-        }
+                  top_level.inject('') { |memo, choice|
+                    memo + list_item_for_choice(choice)
+                  }
 
       )
     else
@@ -498,8 +498,8 @@ module ExtendedFieldsHelper
     end
 
     base = content_tag('li', link_to(choice.label, send(method, url_hash.merge(limit_to_choice: choice)),
-                                                                { title: choice.value }),
-                             { class: (options[:current] ? 'current' : '') })
+                                     { title: choice.value }),
+                       { class: (options[:current] ? 'current' : '') })
 
     children = ''
     if options[:include_children]

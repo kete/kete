@@ -72,8 +72,8 @@ class PqfQuery
   DO_NOT_AUTO_DEF_INCLUDE_METHODS_FOR = ATTRIBUTE_SPECS.keys.select { |key| key.include?('sort') } unless defined?(DO_NOT_AUTO_DEF_INCLUDE_METHODS_FOR)
 
   attr_accessor :query_parts, :operators,
-  :title_or_any_text_query_string, :title_or_any_text_operators_string,
-  :direction_value, :sort_spec, :should_search_web_links_to
+                :title_or_any_text_query_string, :title_or_any_text_operators_string,
+                :direction_value, :sort_spec, :should_search_web_links_to
 
   # dynamically define query methods for our attribute specs
   def self.define_query_method_for(method_name, attribute_spec)
@@ -250,11 +250,11 @@ class PqfQuery
 
   def creators_or_contributors_equals_completely(term_or_terms, options = { })
     query_part = '@or ' + creators_equals_completely(term_or_terms,
-                                           options.merge({ only_return_as_string: true,
-                                                           operator: 'none'}))
+                                                     options.merge({ only_return_as_string: true,
+                                                                     operator: 'none'}))
     query_part += ' ' + contributors_equals_completely(term_or_terms,
-                                             options.merge({ only_return_as_string: true,
-                                                             operator: 'none'}))
+                                                       options.merge({ only_return_as_string: true,
+                                                                       operator: 'none'}))
 
     push_to_appropriate_variables(options.merge(query_part: query_part, operator: '@and')) unless options[:only_return_as_string]
     query_part

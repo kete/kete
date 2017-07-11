@@ -23,7 +23,7 @@ module FieldMappingsController
       if item.save
         set_ancestory(item) if item.class == TopicType
         flash[:notice] = t('field_mappings_controller.create.created',
-          item_class: item.class.name.underscore.humanize)
+                           item_class: item.class.name.underscore.humanize)
         set_instance_var_for(item)
         redirect_to urlified_name: @site_basket.urlified_name, action: 'edit', id: item
       else
@@ -46,7 +46,7 @@ module FieldMappingsController
         end
 
         flash[:notice] = t('field_mappings_controller.update.updated',
-          item_class: item.class.name.underscore.humanize)
+                           item_class: item.class.name.underscore.humanize)
         set_instance_var_for(item)
         redirect_to urlified_name: @site_basket.urlified_name, action: 'edit', id: item
       else
@@ -61,7 +61,7 @@ module FieldMappingsController
 
       if successful
         flash[:notice] = t('field_mappings_controller.destroy.destroyed',
-          item_class: item.class.name.underscore.humanize)
+                           item_class: item.class.name.underscore.humanize)
         redirect_to urlified_name: @site_basket.urlified_name, action: 'list'
       end
     end
@@ -110,12 +110,12 @@ module FieldMappingsController
 
       if mapping.used_by_items?
         flash[:error] = t('field_mappings_controller.remove_mapping.being_used',
-          field_label: mapping.extended_field.label,
-          item_class: item_type_class.name.underscore.humanize)
+                          field_label: mapping.extended_field.label,
+                          item_class: item_type_class.name.underscore.humanize)
       else
         mapping.destroy
         flash[:notice] = t('field_mappings_controller.remove_mapping.removed',
-          field_label: mapping.extended_field.label)
+                           field_label: mapping.extended_field.label)
       end
 
       redirect_to urlified_name: @site_basket.urlified_name, action: 'edit', id: params[:id]

@@ -19,9 +19,9 @@ module SearchSourcesHelper
       #       @template was probably supplied by one of the plugin that
       #       was removed
       html += render('search_sources/search_source',
-                               search_text: search_text,
-                               source: source,
-                               options: options)
+                     search_text: search_text,
+                     source: source,
+                     options: options)
     end
     return html if html.blank?
     "<div id='search_sources'>" +

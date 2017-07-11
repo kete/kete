@@ -8,7 +8,7 @@ class ExtendedFieldsController < ApplicationController
   before_filter :set_page_title
 
   permit 'site_admin or admin of :site or tech_admin of :site',
-          except: [ :add_field_to_multiples, :fetch_subchoices, :fetch_topics_from_topic_type, :validate_topic_type_entry ]
+         except: [ :add_field_to_multiples, :fetch_subchoices, :fetch_topics_from_topic_type, :validate_topic_type_entry ]
 
   active_scaffold :extended_field do |config|
     # Default columns and column exclusions
@@ -85,8 +85,8 @@ class ExtendedFieldsController < ApplicationController
         page.replace_html dom_id, ''
       else
         page.replace_html dom_id,
-          partial: "extended_fields/choice_#{params[:editor]}_editor",
-          locals: params[:options].merge(options)
+                          partial: "extended_fields/choice_#{params[:editor]}_editor",
+                          locals: params[:options].merge(options)
       end
     end
   end
