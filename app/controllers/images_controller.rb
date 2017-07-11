@@ -32,14 +32,14 @@ class ImagesController < ApplicationController
     @view_size = params[:view_size] || "medium"
     @image_file = ImageFile.find_by_thumbnail_and_still_image_id(@view_size, params[:id])
 
-    exclude = { :conditions => "user_portrait_relations.position != 1 AND user_portrait_relations.still_image_id != #{@still_image.id}" }
+    exclude = { conditions: "user_portrait_relations.position != 1 AND user_portrait_relations.still_image_id != #{@still_image.id}" }
     @portraits_total_count = @still_image.creator.portraits.count(exclude)
-    @viewer_portraits = @portraits_total_count > 0 ? @still_image.creator.portraits.all(exclude.merge(:limit => 12)) : nil
+    @viewer_portraits = @portraits_total_count > 0 ? @still_image.creator.portraits.all(exclude.merge(limit: 12)) : nil
     @still_image_is_portrait = @still_image.portrayed_user.present?
 
     respond_to do |format|
       format.html
-      format.xml { render_oai_record_xml(:item => @still_image) }
+      format.xml { render_oai_record_xml(item: @still_image) }
     end
   end
 
@@ -55,8 +55,8 @@ class ImagesController < ApplicationController
     params[:image_file] = Hash.new unless params[:image_file]
 
     # handle problems with image file first
-    @image_file = ImageFile.new(params[:image_file].merge({ :file_private => params[:still_image][:file_private],
-                                                            :item_private => params[:still_image][:private] }))
+    @image_file = ImageFile.new(params[:image_file].merge({ file_private: params[:still_image][:file_private],
+                                                            item_private: params[:still_image][:private] }))
 
     @successful = @image_file.save
 
@@ -96,9 +96,9 @@ class ImagesController < ApplicationController
         end
       end
 
-      setup_related_topic_and_zoom_and_redirect(@still_image, nil, :private => (params[:still_image][:private] == "true"))
+      setup_related_topic_and_zoom_and_redirect(@still_image, nil, private: (params[:still_image][:private] == "true"))
     else
-      render :action => 'new'
+      render action: 'new'
     end
   end
 
@@ -122,9 +122,9 @@ class ImagesController < ApplicationController
       after_successful_zoom_item_update(@still_image, version_after_update)
       flash[:notice] = t('images_controller.update.updated')
 
-      redirect_to_show_for(@still_image, :private => (params[:still_image][:private] == "true"))
+      redirect_to_show_for(@still_image, private: (params[:still_image][:private] == "true"))
     else
-      render :action => 'edit'
+      render action: 'edit'
     end
   end
 
