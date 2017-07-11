@@ -10,7 +10,7 @@ class IndexPageController < ApplicationController
       @allow_private = (@privacy_type == 'private')
 
       @topic = @current_basket.index_topic(true) # must load this each time or the topic gets cached a private permanently next
-      if @topic && (params[:private] == "true" || (params[:private].blank? && @current_basket.private_default_with_inheritance?)) &&
+      if @topic && (params[:private] == 'true' || (params[:private].blank? && @current_basket.private_default_with_inheritance?)) &&
           @topic.has_private_version? && permitted_to_view_private_items?
           @topic.private_version!
       end
@@ -65,7 +65,7 @@ class IndexPageController < ApplicationController
 
               # EOIN: not sure how to handle this yet ConfigurableSetting.where(:name => 'disable_site_recent_topics_display', :value => true.to_yaml).select(:configurable_id).where("configurable_id != ?", @site_basket)
               # disabled_recent_topics_baskets = ConfigurableSetting.where(:name => 'disable_site_recent_topics_display', :value => true.to_yaml).select(:configurable_id).where("configurable_id != ?", @site_basket)
-              disabled_recent_topics_baskets =  Basket.where("1 = 0") # EOIN: this is a terrible hack to get an empty instance of ActiveRecord::Relation
+              disabled_recent_topics_baskets =  Basket.where('1 = 0') # EOIN: this is a terrible hack to get an empty instance of ActiveRecord::Relation
 
 
               disabled_recent_topics_baskets.collect! { |setting| setting.configurable_id }
@@ -108,12 +108,12 @@ class IndexPageController < ApplicationController
                 end
               end
 
-              logger.debug("recent_topics_items after reverse recursive selection: " + recent_topics_items.inspect)
+              logger.debug('recent_topics_items after reverse recursive selection: ' + recent_topics_items.inspect)
 
               # If the version we have isn't available, remove it
               recent_topics_items.reject! { |topic| topic.disputed_or_not_available? }
 
-              logger.debug("recent_topics_items after rejection: " + recent_topics_items.inspect)
+              logger.debug('recent_topics_items after rejection: ' + recent_topics_items.inspect)
 
               # Add to the recent_topics_items array the amount we need to complete it
               unless recent_topics_items.blank?
@@ -160,24 +160,24 @@ class IndexPageController < ApplicationController
     # this needs to take a parameter for which help page
     # in the future
     # fairly brittle now
-    @topic = @help_basket.topics.find_by_title("Adding things")
+    @topic = @help_basket.topics.find_by_title('Adding things')
     @title = @topic.title
     @creator = @topic.creator
     @last_contributor = @topic.contributors.last || @creator
     @comments = @topic.comments
 
-    render action: :topic_as_full_page, layout: "simple"
+    render action: :topic_as_full_page, layout: 'simple'
   end
 
   def uptime
-    render(text: "success")
+    render(text: 'success')
   end
 
   # run a query to make sure the db is available
   # comments are usually the smallest set of items
   def db_uptime
     comment_count = Comment.count
-    render(text: "success")
+    render(text: 'success')
   end
 
   # let's check to make sure zebra is responding
@@ -188,19 +188,19 @@ class IndexPageController < ApplicationController
     zoom_dbs = [ZoomDb.find_by_database_name('public')]
     # zoom_dbs <<  ZoomDb.find_by_database_name('private')
     zoom_dbs.each { |db| Module.class_eval('Topic').process_query(zoom_db: db, query: "@attr 1=_ALLRECORDS @attr 2=103 ''")}
-    render(text: "success")
+    render(text: 'success')
   end
 
   # let's check to make sure backgroundrb is responding
   # this will only return success if backgroundrb is responsive
   include BackgroundrbHelpers
   def bdrb_uptime
-    raise "Backgroundrb not running!" unless backgroundrb_started?
-    render(text: "success")
+    raise 'Backgroundrb not running!' unless backgroundrb_started?
+    render(text: 'success')
   end
 
   def validate_kete_net_link
-    render(xml: { url: "/", datetime: "#{Time.new.utc.xmlschema}" })
+    render(xml: { url: '/', datetime: "#{Time.new.utc.xmlschema}" })
   end
 
   # page that tells search engines where not to go

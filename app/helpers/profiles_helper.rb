@@ -8,7 +8,7 @@ module ProfilesHelper
   def rules_form_column(record, input_name)
     html = String.new
     if record.new_record?
-      html = "<div id=\"rules_forms\" style=\"display: inline-block; margin-left: 2em;\">"
+      html = '<div id="rules_forms" style="display: inline-block; margin-left: 2em;">'
       type_options = [[t('profiles_helper.rules_form_column.choose_included_fields'), '']] + Profile.type_options
       # we start with a select for type options for each form
       Basket.forms_options.each do |form_option|
@@ -20,10 +20,10 @@ module ProfilesHelper
                            id: "record_rules_#{form_type}_rule_type")
         html += "<div id=\"record_rules_#{form_type}_form\"#{" style=\"display:none;\"" if current_rule_for(form_type) != 'some'}>"
         html += fetch_form_for(form_type, input_name)
-        html += "</div>"
-        html += "</div>"
+        html += '</div>'
+        html += '</div>'
       end
-      html += "</div>"
+      html += '</div>'
 
     else
       html = record.rules

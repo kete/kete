@@ -8,7 +8,7 @@ class LicensesController < ApplicationController
   before_filter :login_required
   before_filter :set_page_title
   before_filter :prepare_available_licenses
-  permit "site_admin or admin of :site or tech_admin of :site"
+  permit 'site_admin or admin of :site or tech_admin of :site'
 
   active_scaffold :license do |config|
     config.columns = [:name, :description, :url, :image_url, :metadata, :is_available, :is_creative_commons]

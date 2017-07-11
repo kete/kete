@@ -13,7 +13,7 @@ class DocumentsController < ApplicationController
         date = DateTime.parse(params[:updated_since]) if params[:updated_since]
         date = DateTime.now.beginning_of_month        if date.nil?
 
-        @list_type = "Document"
+        @list_type = 'Document'
         @items = Document.updated_since(date)
         render 'shared/list'
       end
@@ -52,7 +52,7 @@ class DocumentsController < ApplicationController
       @document.do_notifications_if_pending(1, current_user)
     end
 
-    setup_related_topic_and_zoom_and_redirect(@document, nil, private: (params[:document][:private] == "true"))
+    setup_related_topic_and_zoom_and_redirect(@document, nil, private: (params[:document][:private] == 'true'))
   end
 
   def edit
@@ -73,7 +73,7 @@ class DocumentsController < ApplicationController
       after_successful_zoom_item_update(@document, version_after_update)
       flash[:notice] = t('documents_controller.update.updated')
 
-      redirect_to_show_for(@document, private: (params[:document][:private] == "true"))
+      redirect_to_show_for(@document, private: (params[:document][:private] == 'true'))
     else
       render action: 'edit'
     end
@@ -91,7 +91,7 @@ class DocumentsController < ApplicationController
     else
       flash[:error] = error_msg
     end
-    redirect_to_show_for(@document, private: (params[:private] == "true"))
+    redirect_to_show_for(@document, private: (params[:private] == 'true'))
   end
 
   def make_theme

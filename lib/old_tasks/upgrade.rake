@@ -6,7 +6,7 @@
 # Walter McGinnis, 2008-01-15
 #
 namespace :kete do
-  desc "Do everything that we need done, like adding data to the db, for an upgrade."
+  desc 'Do everything that we need done, like adding data to the db, for an upgrade.'
   task upgrade: ['kete:upgrade:add_new_baskets',
                     'kete:upgrade:add_tech_admin',
                     'kete:upgrade:add_new_system_settings',
@@ -36,12 +36,12 @@ namespace :kete do
     desc 'Privacy Controls require that Comment#commentable_private be set.  Update existing comments to have this data.'
     task update_existing_comments_commentable_private: :environment do
       comment_count = 0
-      Comment.find(:all, conditions: "commentable_private is null").each do |comment|
+      Comment.find(:all, conditions: 'commentable_private is null').each do |comment|
         comment.commentable_private = false if comment.commentable_private.blank?
         comment.save!
         comment_count += 1
       end
-      p "updated " + comment_count.to_s + " existing comments that didn't have privacy set."
+      p 'updated ' + comment_count.to_s + " existing comments that didn't have privacy set."
     end
 
     desc 'Add the new system settings that are missing from our system.'
@@ -76,17 +76,17 @@ namespace :kete do
             end
 
             unless printed_related_items_notice
-              puts ""
-              puts "- Related Items Position setting -"
+              puts ''
+              puts '- Related Items Position setting -'
               puts "If your existing site content tends to have images or tables in your descriptions of items you'll probably want to keep these settings as they are."
               puts "However, if your content descriptions don't have much of these you will like want to change them to the opposite to take advantage of the improved Related Items interface placement."
-              puts ""
+              puts ''
               printed_related_items_notice = true
             end
           end
 
           SystemSetting.create!(setting_hash)
-          p "added " + setting_hash['name']
+          p 'added ' + setting_hash['name']
         end
       end
     end
@@ -98,10 +98,10 @@ namespace :kete do
       # support for legacy kete installations where basket ids
       # are different from those in topics.yml
       # NOTE: if this gets uses again in another task, move this to a reusable method of its own
-      basket_ids = { "1" => 1,
-                     "2" => Basket::HELP_BASKET_ID,
-                     "3" => Basket::ABOUT_BASKET_ID,
-                     "4" => Basket::DOCUMENTATION_BASKET_ID, }
+      basket_ids = { '1' => 1,
+                     '2' => Basket::HELP_BASKET_ID,
+                     '3' => Basket::ABOUT_BASKET_ID,
+                     '4' => Basket::DOCUMENTATION_BASKET_ID, }
 
       # for each topic from yml
       topics_from_yml.each do |topic_array|
@@ -121,7 +121,7 @@ namespace :kete do
           topic = Topic.create!(topic_hash)
           topic.creator = User.first
           topic.save!
-          p "added topic: " + topic_hash['title']
+          p 'added topic: ' + topic_hash['title']
         end
       end
     end
@@ -145,7 +145,7 @@ namespace :kete do
         if !Basket.find_by_id(basket_id)
           basket = Basket.create!(basket_hash)
           basket.accepts_role('admin', admin_user)
-          p "added " + basket_hash['name']
+          p 'added ' + basket_hash['name']
         end
       end
     end
@@ -159,7 +159,7 @@ namespace :kete do
       if !Role.find_by_name('tech_admin')
         Role.create!(tech_admin_hash)
         admin_user.has_role('tech_admin', Basket.find(1))
-        p "added " + tech_admin_hash['name']
+        p 'added ' + tech_admin_hash['name']
       end
     end
 
@@ -169,7 +169,7 @@ namespace :kete do
       Rake::Task['zebra:stop'].invoke
       Rake::Task['zebra:set_keteaccess'].invoke
       Rake::Task['zebra:start'].invoke
-      p "changed zebra password file"
+      p 'changed zebra password file'
     end
 
     desc 'This checks for missing required software and installs it if possible.'
@@ -198,7 +198,7 @@ namespace :kete do
         next if current_basket_defaults == standard_basket_defaults
 
         correctable_fields.each_with_index do |field, index|
-          basket.send(field+"=", standard_basket_defaults[index])
+          basket.send(field+'=', standard_basket_defaults[index])
         end
         basket.save!
         p "Corrected settings of #{basket.name} basket"
@@ -335,7 +335,7 @@ namespace :kete do
 
     desc 'Add basket id to taggings that dont have a basket id yet'
     task add_basket_id_to_taggings: :environment do
-      puts "Adding Basket ID to Tagging records"
+      puts 'Adding Basket ID to Tagging records'
       records = Tagging.all(conditions: { basket_id: nil })
       records.each do |tagging|
         item = tagging.taggable_type.constantize.find_by_id(tagging.taggable_id)
@@ -351,17 +351,17 @@ namespace :kete do
       end
     end
 
-    desc "Add the parent_id, lft, and rgt values to comments that were created before acts_as_nested_set was put in place"
+    desc 'Add the parent_id, lft, and rgt values to comments that were created before acts_as_nested_set was put in place'
     task add_nested_values_to_comments: :environment do
       Comment.renumber_all if (Comment.count(conditions: { lft: nil }) > 0)
     end
 
-    desc "Migrate from older style related items inset booleans to newer related items position flags"
+    desc 'Migrate from older style related items inset booleans to newer related items position flags'
     task change_inset_to_position: :environment do
       # Use Model.update_all({ changes }, { :id => id }) to get
       # around time consuming validations and possible failures
 
-      conditions = ["related_items_position IS NULL OR related_items_position IN (?)", ['', '0', '1']]
+      conditions = ['related_items_position IS NULL OR related_items_position IN (?)', ['', '0', '1']]
       topics = Topic::Version.all(conditions: conditions)
       topics.each do |topic|
         Topic::Version.update_all({
@@ -403,10 +403,10 @@ namespace :kete do
       end
     end
 
-    desc "Set all NULL value private_only values on topic type and content type field mappings to false."
+    desc 'Set all NULL value private_only values on topic type and content type field mappings to false.'
     task set_null_private_only_mappings_to_false: :environment do
-      ContentTypeToFieldMapping.update_all({ private_only: false }, "private_only IS NULL")
-      TopicTypeToFieldMapping.update_all({ private_only: false }, "private_only IS NULL")
+      ContentTypeToFieldMapping.update_all({ private_only: false }, 'private_only IS NULL')
+      TopicTypeToFieldMapping.update_all({ private_only: false }, 'private_only IS NULL')
     end
 
     desc 'Make all baskets import archive set functionality at least member.'
@@ -449,7 +449,7 @@ namespace :kete do
           user = User.create!(setting_hash)
           user.has_role('member', Basket.first)
 
-          p "added " + setting_hash['login']
+          p 'added ' + setting_hash['login']
         end
       end
     end
@@ -493,11 +493,11 @@ namespace :kete do
       ['Document Content Types', 'Video Content Types', 'Audio Content Types'].each do |setting_name|
         setting = SystemSetting.find_by_name(setting_name)
         if setting.push('application/octet-stream')
-          p "added octet stream mime type to " + setting_name
+          p 'added octet stream mime type to ' + setting_name
         end
         if setting_name == 'Document Content Types'
           if setting.push('application/word')
-            p "added application/word mime type to " + setting_name
+            p 'added application/word mime type to ' + setting_name
           end
         end
       end
@@ -507,7 +507,7 @@ namespace :kete do
     task add_tar_to_documents: :environment do
       setting = SystemSetting.find_by_name('Document Content Types')
       if setting.push('application/x-tar')
-        p "added application/x-tar mime type to " + setting.name
+        p 'added application/x-tar mime type to ' + setting.name
       end
     end
 
@@ -525,7 +525,7 @@ namespace :kete do
     task add_aiff_to_audio_recordings: :environment do
       setting = SystemSetting.find_by_name('Audio Content Types')
       if setting.push('audio/x-aiff')
-        p "added audio/x-aiff mime type to " + setting.name
+        p 'added audio/x-aiff mime type to ' + setting.name
       end
     end
 
@@ -533,7 +533,7 @@ namespace :kete do
     task add_bmp_to_images: :environment do
       setting = SystemSetting.find_by_name('Image Content Types')
       if setting.push('image/bmp')
-        p "added image/bmp mime type to " + setting.name
+        p 'added image/bmp mime type to ' + setting.name
       end
     end
 
@@ -541,7 +541,7 @@ namespace :kete do
     task add_eps_to_images: :environment do
       setting = SystemSetting.find_by_name('Image Content Types')
       if setting.push('application/postscript')
-        p "added eps (application/postscript) mime type to " + setting.name
+        p 'added eps (application/postscript) mime type to ' + setting.name
       end
     end
 

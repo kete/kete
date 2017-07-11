@@ -178,7 +178,7 @@ module ItemPrivacy
           end
 
           # Also save the current version into the private version column
-          prepared_array << ["version", version]
+          prepared_array << ['version', version]
 
           # Save the prepared array into the attribute column..
           without_revision do
@@ -202,7 +202,7 @@ module ItemPrivacy
           private_attrs = YAML.load(private_version_serialized)
 
           # EOIN: private_version_serialized contains an Array
-          raise "No private attributes" if private_attrs.nil? || !private_attrs.kind_of?(Array)
+          raise 'No private attributes' if private_attrs.nil? || !private_attrs.kind_of?(Array)
 
 
           # EOIN: private_version_serialized contains an Array of 2-tuples (Array with two values)
@@ -370,7 +370,7 @@ module ItemPrivacy
     # * Override the AttachmentFu default method to ensure we place the
     #   attachment in the correct folder.
     def full_filename(thumbnail = nil)
-      file_system_path = (thumbnail ? thumbnail_class : self).attachment_options[:path_prefix].to_s.gsub("public", "")
+      file_system_path = (thumbnail ? thumbnail_class : self).attachment_options[:path_prefix].to_s.gsub('public', '')
       File.join(Rails.root, attachment_path_prefix, file_system_path, *partitioned_path(thumbnail_name_for(thumbnail)))
     end
 

@@ -17,10 +17,10 @@ class AddChoices < ActiveRecord::Migration
     end
     
     # Add ROOT choice for better_nested_set
-    raise "Choices already exist. Please truncate choice table before continuing." \
-      if Choice.count_by_sql("SELECT COUNT(*) FROM choices") > 0
+    raise 'Choices already exist. Please truncate choice table before continuing.' \
+      if Choice.count_by_sql('SELECT COUNT(*) FROM choices') > 0
         
-    Choice.create!(label: "ROOT", value: "ROOT")
+    Choice.create!(label: 'ROOT', value: 'ROOT')
     
     change_column :extended_fields, :ftype, :string, limit: 15
     add_column :extended_fields, :user_choice_addition, :boolean

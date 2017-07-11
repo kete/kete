@@ -50,7 +50,7 @@ class ImageFile < ActiveRecord::Base
 
   def width_and_height_present?
     if width.nil? || width == 0 || height.nil? || height == 0
-      errors.add :content_type, I18n.t("image_file_model.unparsable_content_type")
+      errors.add :content_type, I18n.t('image_file_model.unparsable_content_type')
       return false
     end
     true

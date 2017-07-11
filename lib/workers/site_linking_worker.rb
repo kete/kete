@@ -35,7 +35,7 @@ class SiteLinkingWorker < BackgrounDRb::MetaWorker
     elsif !linking.nil? && !linking.errors.empty?
       results[:linking_validation_errors] = linking.errors
     else
-      logger.error("Error linking from Kete.net.nz: " + kete_net_error) if kete_net_error
+      logger.error('Error linking from Kete.net.nz: ' + kete_net_error) if kete_net_error
     end
 
     results[:linking_complete] = true

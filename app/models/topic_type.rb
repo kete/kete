@@ -7,14 +7,14 @@ class TopicType < ActiveRecord::Base
   # code based on work by hasmanythrough.com
   # you have to do the elimination of duplicates through the sql
   # otherwise, rails will reorder by topic_type_to_field_mapping.id after the sql has bee run
-  has_many :form_fields, through: :topic_type_to_field_mappings, source: :extended_field, select: "distinct topic_type_to_field_mappings.position, extended_fields.*", order: 'position' do
+  has_many :form_fields, through: :topic_type_to_field_mappings, source: :extended_field, select: 'distinct topic_type_to_field_mappings.position, extended_fields.*', order: 'position' do
     def <<(extended_field)
-      TopicTypeToFieldMapping.add_as_to("false", self, extended_field)
+      TopicTypeToFieldMapping.add_as_to('false', self, extended_field)
     end
   end
-  has_many :required_form_fields, through: :topic_type_to_field_mappings, source: :required_form_field, select: "distinct topic_type_to_field_mappings.position, extended_fields.*", conditions: "topic_type_to_field_mappings.required = 'true'", order: 'position' do
+  has_many :required_form_fields, through: :topic_type_to_field_mappings, source: :required_form_field, select: 'distinct topic_type_to_field_mappings.position, extended_fields.*', conditions: "topic_type_to_field_mappings.required = 'true'", order: 'position' do
     def <<(required_form_field)
-      TopicTypeToFieldMapping.add_as_to("true", self, required_form_field)
+      TopicTypeToFieldMapping.add_as_to('true', self, required_form_field)
     end
   end
 
@@ -50,7 +50,7 @@ class TopicType < ActiveRecord::Base
     options[:with_ancestors] ||= true
     relevant_topic_types = options[:with_ancestors] ? self_and_ancestors : [self]
     # TODO: might want to reconsider using a subselect here
-    ExtendedField.where("id in (select extended_field_id from topic_type_to_field_mappings where topic_type_id in (?))", relevant_topic_types).all
+    ExtendedField.where('id in (select extended_field_id from topic_type_to_field_mappings where topic_type_id in (?))', relevant_topic_types).all
   end
 
   def self_and_ancestors_ids

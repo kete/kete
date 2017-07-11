@@ -2,12 +2,12 @@
 require 'tempfile'
 require 'fileutils'
 require 'mime/types'
-require "oai_dc_helpers"
-require "xml_helpers"
-require "zoom_helpers"
-require "zoom_controller_helpers"
-require "extended_content_helpers"
-require "kete_url_for"
+require 'oai_dc_helpers'
+require 'xml_helpers'
+require 'zoom_helpers'
+require 'zoom_controller_helpers'
+require 'extended_content_helpers'
+require 'kete_url_for'
 # used by importer scripts  in lib/workers
 module Importer
   unless included_modules.include? Importer
@@ -41,7 +41,7 @@ module Importer
     def importer_add_image(params, zoom_class)
       # add the image file and then close it
       if zoom_class == 'StillImage'
-        logger.info("what is params[:image_file]: " + params[:image_file].to_s)
+        logger.info('what is params[:image_file]: ' + params[:image_file].to_s)
         new_image_file = ImageFile.new(params[:image_file])
         new_image_file.save
         return new_image_file
@@ -59,7 +59,7 @@ module Importer
           thumb.still_image_id = new_record.id
           thumb.save!
         end
-        logger.info("images done")
+        logger.info('images done')
       end
     end
 
@@ -84,7 +84,7 @@ module Importer
       @import_request = args[:import_request]
       @description_end_templates['default'] = @import.default_description_end_template
       @current_basket = @import.basket
-      logger.info("what is current basket: " + @current_basket.inspect)
+      logger.info('what is current basket: ' + @current_basket.inspect)
       @import_topic_type = @import.topic_type
       @zoom_class_for_params = @zoom_class.tableize.singularize
       @xml_path_to_record ||= @import.xml_path_to_record.blank? ? 'records/record' : @import.xml_path_to_record
@@ -173,7 +173,7 @@ module Importer
       not_wanted_patterns = ['Thumbs.db', 'ehthumbs.db', '__MACOSX']
       Dir.foreach(path) do |record|
         full_path_to_record = path + '/' + record
-        not_wanted = File.basename(full_path_to_record).first == "." || not_wanted_patterns.include?(record)
+        not_wanted = File.basename(full_path_to_record).first == '.' || not_wanted_patterns.include?(record)
 
         unless not_wanted
           # descend directories
@@ -204,10 +204,10 @@ module Importer
         matching_records.each do |record|
           # HACK, for horizons agency/series import, needs to be handled better
           # remove agency.Successor and agency.Predecessor (causes infinite loop) for nodes for now
-          record.search("//agency.Successor").each do |node|
+          record.search('//agency.Successor').each do |node|
             node.remove
           end
-          record.search("//agency.Predecessor").each do |node|
+          record.search('//agency.Predecessor').each do |node|
             node.remove
           end
 
@@ -240,7 +240,7 @@ module Importer
             extended_field = extended_fields.select { |ext_field| (ext_field.import_synonyms || '').split.include?(field) }.first
             @import_field_to_extended_field_map[field] = extended_field
           else
-            logger.info("field in prepare: " + field.inspect)
+            logger.info('field in prepare: ' + field.inspect)
             @import_field_to_extended_field_map[field] = I18n.t('importer_lib.importer_prepare_extended_field.not_available')
           end
         end
@@ -297,7 +297,7 @@ module Importer
 
           elsif extended_field.ftype == 'year'
             if extended_field.multiple
-              multiple_values = value.split(",")
+              multiple_values = value.split(',')
               m_field_count = 1
               params[zoom_class_for_params]['extended_content_values'][extended_field.label_for_params] = Hash.new
               multiple_values.each do |m_field_value|
@@ -314,7 +314,7 @@ module Importer
 
           else
             if extended_field.multiple
-              multiple_values = value.split(",")
+              multiple_values = value.split(',')
               m_field_count = 1
               params[zoom_class_for_params]['extended_content_values'][extended_field.label_for_params] = Hash.new
               multiple_values.each do |m_field_value|
@@ -348,7 +348,7 @@ module Importer
               xml.safe_send("#{field_name}_multiple") do
                 hash_of_values.keys.each do |key|
                   xml.safe_send(key.to_s) do
-                    logger.debug("inside hash: key: " + key.to_s)
+                    logger.debug('inside hash: key: ' + key.to_s)
                     m_value = hash_of_values[key]
                     extended_content_field_xml_tag(xml: xml,
                                                    field: field_name,
@@ -361,7 +361,7 @@ module Importer
               end
             end
           else
-            value = (params[item_key]['extended_content_values'][field_name] || "") rescue ""
+            value = (params[item_key]['extended_content_values'][field_name] || '') rescue ''
             extended_content_field_xml_tag(xml: xml,
                                            field: field_name,
                                            value: value,
@@ -411,10 +411,10 @@ module Importer
     end
 
     def importer_prepare_path_to_image_file(image_file)
-      image_path_array = image_file.split("\\")
+      image_path_array = image_file.split('\\')
 
       # prep alternative versions of the filename
-      directories_up_to = @import_parent_dir_for_image_dirs + "/" + image_path_array[0] + "/"
+      directories_up_to = @import_parent_dir_for_image_dirs + '/' + image_path_array[0] + '/'
       the_file_name = image_path_array[1]
 
       path_to_file_to_grab = directories_up_to + the_file_name
@@ -423,14 +423,14 @@ module Importer
       # also try escaping any spaces
 
       if !File.exist?(path_to_file_to_grab)
-        logger.debug("path_to_file_to_grab no match yet")
+        logger.debug('path_to_file_to_grab no match yet')
 
         # Try case insensitive check
         # this may not work on all systems, so falling back to only checking extensions after
         case_insensitive_matches = Dir.glob(path_to_file_to_grab, File::FNM_CASEFOLD)
         if case_insensitive_matches.any?
             path_to_file_to_grab = case_insensitive_matches.first
-            logger.debug("path_to_file_to_grab is different by case: " + path_to_file_to_grab)
+            logger.debug('path_to_file_to_grab is different by case: ' + path_to_file_to_grab)
         else
 
           file_name_array = the_file_name.scan(/(.+)(\.[^\d]+$)/)[0]
@@ -442,10 +442,10 @@ module Importer
 
           if File.exist?(downer)
             path_to_file_to_grab = downer
-            logger.debug("path_to_file_to_grab is downer: " + path_to_file_to_grab)
+            logger.debug('path_to_file_to_grab is downer: ' + path_to_file_to_grab)
           elsif File.exist?(upper)
             path_to_file_to_grab = upper
-            logger.debug("path_to_file_to_grab is upper: " + path_to_file_to_grab)
+            logger.debug('path_to_file_to_grab is upper: ' + path_to_file_to_grab)
           end
         end
       end
@@ -453,8 +453,8 @@ module Importer
       # make a copy of any files that have spaces in their name
       # a better formed name
       # to avoid problems later
-      if !the_file_name.scan(" ").blank? and  File.exists?(path_to_file_to_grab)
-        the_new_file_name = the_file_name.gsub(" ", "\.")
+      if !the_file_name.scan(' ').blank? and  File.exists?(path_to_file_to_grab)
+        the_new_file_name = the_file_name.gsub(' ', "\.")
         new_file_path = directories_up_to + the_new_file_name
 
         if !File.exists?(new_file_path)
@@ -519,12 +519,12 @@ module Importer
       params = Hash.new
 
       if options[:title].present?
-        conditions << "(LOWER(title) = :title)"
+        conditions << '(LOWER(title) = :title)'
         params[:title] = options[:title].downcase
       end
 
       if options[:item_type] == 'topics' && options[:topic_type].present?
-        conditions << "(topic_type_id = :topic_type_id)"
+        conditions << '(topic_type_id = :topic_type_id)'
         params[:topic_type_id] = options[:topic_type].id
       end
 
@@ -532,7 +532,7 @@ module Importer
         # if zoom_class is StillImage
         # we need to do a join on ImageFile
         # to check filename
-        filename_condition = "LOWER(filename) = :filename"
+        filename_condition = 'LOWER(filename) = :filename'
         if options[:item_type] == 'still_images'
           image_file_conditions = "id IN (SELECT still_image_id FROM image_files WHERE #{filename_condition})"
         else
@@ -542,7 +542,7 @@ module Importer
       end
 
       unless options[:extended_field_data].blank?
-        regexp = ActiveRecord::Base.connection.adapter_name.downcase =~ /postgres/ ? "~*" : "REGEXP"
+        regexp = ActiveRecord::Base.connection.adapter_name.downcase =~ /postgres/ ? '~*' : 'REGEXP'
         ext_field_label = options[:extended_field_data][:label]
         ext_field_value = options[:extended_field_data][:value]
         conditions << "(LOWER(extended_content) #{regexp} :ext_field_data)"
@@ -553,9 +553,9 @@ module Importer
       # Adds a little complexity, but gets around privacy related import issues, as well as
       # no longer adds the topic if the first version was the same title but was later changed
       conditions = formulate_conditions(conditions.join(' AND '), options[:item_type].singularize)
-      conditions = conditions + " AND " + image_file_conditions if options[:item_type] == 'still_images'
+      conditions = conditions + ' AND ' + image_file_conditions if options[:item_type] == 'still_images'
       conditions = [conditions, params] unless params.blank?
-      logger.debug("what are conditions: " + conditions.inspect)
+      logger.debug('what are conditions: ' + conditions.inspect)
       @current_basket.send(options[:item_type]).find(:all, conditions: conditions)
     end
 
@@ -594,7 +594,7 @@ module Importer
         title = record_hash[field_name].strip if field_name.downcase == 'title' || (SystemSetting.SystemSetting.title_synonyms && SystemSetting.SystemSetting.title_synonyms.include?(field_name))
       end
 
-      logger.info("after record field_name loop")
+      logger.info('after record field_name loop')
 
       # In some cases, records may share the same name, but have a different code
       # In order to accomodate for that, we check both title, extended field data
@@ -616,10 +616,10 @@ module Importer
       # if file exists, we know we are uploading files for an attachable class
       if record_hash['path_to_file'].present? &&
           File.exist?(record_hash['path_to_file'])
-        logger.info("setting filename check")
+        logger.info('setting filename check')
         options[:filename] = File.basename(record_hash['path_to_file'])
       end
-      logger.info("after path_to_file present")
+      logger.info('after path_to_file present')
 
       existing_item = importer_locate_existing_items(options).first
 
@@ -628,13 +628,13 @@ module Importer
         description_end_template = @description_end_templates['default']
         new_record = create_new_item_from_record(record, @zoom_class, {params: params, record_hash: record_hash, description_end_template: description_end_template })
       else
-        logger.info("what is existing item: " + existing_item.id.to_s)
+        logger.info('what is existing item: ' + existing_item.id.to_s)
         # record exists in kete already
         reason_skipped = I18n.t('importer_lib.importer_process.already_have_record')
       end
 
       if !new_record.nil? and !new_record.id.nil?
-        logger.info("new record succeeded for insert")
+        logger.info('new record succeeded for insert')
         new_record.prepare_and_save_to_zoom
         importer_update_records_processed_vars
       end
@@ -674,7 +674,7 @@ module Importer
         record_hash = new_record_hash
       end
 
-      logger.info("record_hash inspect: " + record_hash.inspect)
+      logger.info('record_hash inspect: ' + record_hash.inspect)
       record_hash
     end
 
@@ -728,26 +728,26 @@ module Importer
             # this relies on the accessno line coming before the descrip line
             # it tosses the original <Record> or <export> line, so that it can be replaced
             # putting in both styles of records
-            if line.include?("<ACCESSNO") || line.include?("<accessno") ||
-                line.include?("<DESCRIP") || line.include?("<descrip") ||
+            if line.include?('<ACCESSNO') || line.include?('<accessno') ||
+                line.include?('<DESCRIP') || line.include?('<descrip') ||
                 line.include?("<\/DESCRIP") || line.include?("<\/descrip") ||
                 line.include?("<\/Record") || line.include?("<\/export") ||
-                line.include?("<Information") || line.include?("<\/Information") ||
-                line.include?("<Root") || line.include?("<VFPData") ||
+                line.include?('<Information') || line.include?("<\/Information") ||
+                line.include?('<Root') || line.include?('<VFPData') ||
                 line.include?("<\/Root") || line.include?("<\/VFPData")
 
               # we expect accessno to be on one line, this will break if not
-              if line.include?("<accessno") || line.include?("<ACCESSNO")
+              if line.include?('<accessno') || line.include?('<ACCESSNO')
                 accessno_match_result = line.match(accessno_re)
                 accessno = !accessno_match_result.nil? && !accessno_match_result[1].nil? ? accessno_match_result[1] : nil
 
-                new_start_record_line = "<"
+                new_start_record_line = '<'
                 # if accessno is empty, we just open the export or Record so we have valid xml
                 # otherwise set as appropriate to the source xml file's format
                 if !@root_element_name.nil? && @root_element_name == 'Root'
-                  new_start_record_line += "Record"
+                  new_start_record_line += 'Record'
                 else
-                  new_start_record_line += "export"
+                  new_start_record_line += 'export'
                 end
 
                 unless accessno.blank?
@@ -764,7 +764,7 @@ module Importer
       end
 
       # add a blank line a the end
-      fat_free_file << ""
+      fat_free_file << ''
       fat_free_file.close
 
       return path_to_output
@@ -772,7 +772,7 @@ module Importer
 
     def assign_value_to_appropriate_fields(record_field, record_value, params, zoom_class)
       return if SystemSetting.import_fields_to_ignore.include?(record_field)
-      logger.debug("record_field " + record_field.inspect)
+      logger.debug('record_field ' + record_field.inspect)
 
       zoom_class_for_params = zoom_class.tableize.singularize
 
@@ -818,16 +818,16 @@ module Importer
 
         # path_to_file is special case, we know we have an associated file that goes in uploaded_data
         if record_field == 'path_to_file'
-          logger.debug("in path_to_file")
+          logger.debug('in path_to_file')
           if ::Import::VALID_ARCHIVE_CLASSES.include?(zoom_class) && File.exist?(record_value)
             # we do a check earlier in the script for imagefile
             # so we should have something to work with here
             upload_hash = { uploaded_data: copy_and_load_to_temp_file(record_value) }
             if zoom_class == 'StillImage'
-              logger.debug("in image")
+              logger.debug('in image')
               params[:image_file] = upload_hash
             else
-              logger.debug("in not image")
+              logger.debug('in not image')
               params[zoom_class_for_params] = params[zoom_class_for_params].merge(upload_hash)
             end
           end
@@ -871,7 +871,7 @@ module Importer
       @tag_list_array = Array.new
       # add support for all items during this import getting a set of tags
       # added to every item in addition to the specific ones for the item
-      @tag_list_array = @import.base_tags.split(",").collect { |tag| tag.strip } if !@import.base_tags.blank?
+      @tag_list_array = @import.base_tags.split(',').collect { |tag| tag.strip } if !@import.base_tags.blank?
 
       # Run each value through any importer field methods that exist
       # and get back the value plus any other fields needing setting
@@ -909,7 +909,7 @@ module Importer
         field_count += 1
       end
 
-      logger.info("after fields")
+      logger.info('after fields')
 
       if !@import.description_beginning_template.blank?
         # append the citation to the description field
@@ -942,12 +942,12 @@ module Importer
         params[zoom_class_for_params][:description] = description.to_html
       end
 
-      params[zoom_class_for_params][:tag_list] = @tag_list_array.join(",")
+      params[zoom_class_for_params][:tag_list] = @tag_list_array.join(',')
       params[zoom_class_for_params][:raw_tag_list] = params[zoom_class_for_params][:tag_list]
 
       # set the chosen privacy
       private_setting = @import.private
-      logger.debug("private = " + private_setting.to_s)
+      logger.debug('private = ' + private_setting.to_s)
       params[zoom_class_for_params][:private] = private_setting
 
       # set the chosen file privacy
@@ -979,7 +979,7 @@ module Importer
       end
 
       if @fields.size > 0
-        logger.info("fields larger than 0")
+        logger.info('fields larger than 0')
 
         # we use our version of this method
         # that calls xml builder directly, rather than using partial template
@@ -987,7 +987,7 @@ module Importer
         params = importer_extended_fields_update_hash_for_item(item_key: zoom_class_for_params, params: params)
       end
 
-      logger.info("after field set up")
+      logger.info('after field set up')
 
       # replace with something that isn't reliant on params
       replacement_zoom_item_hash = importer_extended_fields_replacement_params_hash(item_key: zoom_class_for_params, item_class: zoom_class, params: params)
@@ -1037,22 +1037,22 @@ module Importer
 
         importer_build_relations_to(new_record, record_hash, options[:params])
 
-        logger.info("in topic creation made it past creator")
+        logger.info('in topic creation made it past creator')
       else
         # destroy images if the record wasn't added successfully
         new_image_file.destroy unless new_image_file.nil?
 
-        logger.info("what are errors on save of new record: " + new_record.errors.inspect)
+        logger.info('what are errors on save of new record: ' + new_record.errors.inspect)
       end
 
       return new_record
     end
 
     def importer_build_relations_to(new_record, record_hash, params)
-      logger.info("building relations for new record")
+      logger.info('building relations for new record')
 
       if @related_topics_reference_in_record_xml_field.blank? && @related_topic.blank?
-        logger.info("no relations to be made for new record")
+        logger.info('no relations to be made for new record')
         return
       end
 
@@ -1113,7 +1113,7 @@ module Importer
           end
         end
       end
-      logger.info("finished building relations for new record")
+      logger.info('finished building relations for new record')
     end
 
     # override in your importer worker to customize
@@ -1141,7 +1141,7 @@ module Importer
       # HACK, conflict with symbol vs string for hash key
       # duplicate
       temp_params = Hash.new
-      temp_params[:topic] = topic_params["topic"]
+      temp_params[:topic] = topic_params['topic']
       topic_params = importer_extended_fields_update_hash_for_item(item_key: 'topic', params: temp_params)
 
       topic_params[:topic][:basket_id] = @current_basket.id

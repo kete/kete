@@ -18,17 +18,17 @@ class BasketSettings
 
   def self.settings
     {
-      show_discussion: "all users",
-      show_flagging: "all users",
-      theme: "",
+      show_discussion: 'all users',
+      show_flagging: 'all users',
+      theme: '',
       fully_moderated: false, # ROB: the default site-basket in non-moderated, but most of the others are.
-      moderated_except: "",
-      theme_font_family: "",
-      header_image: "",
-      browse_view_as: "",
+      moderated_except: '',
+      theme_font_family: '',
+      header_image: '',
+      browse_view_as: '',
       show_add_links: false,
       replace_existing_footer: false,
-      additional_footer_content: "",
+      additional_footer_content: '',
 
       # Possible values of memberlist_policy:
       #     'all users'
@@ -37,9 +37,9 @@ class BasketSettings
       #     'logged in'
       #     'at least member'
       #     'all users'
-      memberlist_policy: "at least member",
+      memberlist_policy: 'at least member',
 
-      show_action_menu: "all users"  # ROB: all users can see "Item Details"/"Edit"/... menu for items in a basket.
+      show_action_menu: 'all users'  # ROB: all users can see "Item Details"/"Edit"/... menu for items in a basket.
     }
   end
 end

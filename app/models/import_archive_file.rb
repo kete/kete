@@ -14,7 +14,7 @@ class ImportArchiveFile < ActiveRecord::Base
   # making directory structure for attachments handle larger number of attachments
   def partitioned_path(*args)
     # changed from %08d to %012d to be extra safe
-    ("%012d" % attachment_path_id).scan(/..../) + args
+    ('%012d' % attachment_path_id).scan(/..../) + args
   end
 
   include ArchiveUtilities

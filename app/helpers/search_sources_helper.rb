@@ -10,7 +10,7 @@ module SearchSourcesHelper
     if options[:target]
       # support for :target and [:target1, :target2]
       targets = options[:target].is_a?(Array) ? options[:target] : [options[:target]]
-      conditions[:conditions] = ["source_target IN (?)", targets.collect { |t| t.to_s }]
+      conditions[:conditions] = ['source_target IN (?)', targets.collect { |t| t.to_s }]
     end
 
     search_sources = SearchSource.all(conditions)
@@ -27,9 +27,9 @@ module SearchSourcesHelper
     "<div id='search_sources'>" +
       "<h3 id='search_sources_heading'>" +
         (options[:title] || t('search_sources_helper.display_search_sources.other_resources')) +
-      "</h3>" +
+      '</h3>' +
       html +
-    "</div>"
+    '</div>'
   end
 
   # You shouldn't need to use the following methods. Though they are public (and need to be public)
@@ -49,7 +49,7 @@ module SearchSourcesHelper
 
   def search_source_summary_for(entry, length=300)
     summary = entry.title
-    summary += " - " + truncate(strip_tags(entry.summary).squish, length: length, omission: '...') if entry.summary
+    summary += ' - ' + truncate(strip_tags(entry.summary).squish, length: length, omission: '...') if entry.summary
     summary
   end
 

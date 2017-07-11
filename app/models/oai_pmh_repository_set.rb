@@ -99,7 +99,7 @@ class OaiPmhRepositorySet < ActiveRecord::Base
   end
 
   def test_match_with(item, for_value)
-    code = "item." + match_code
+    code = 'item.' + match_code
     if ['true', 'false'].include?(for_value)
       for_value = eval(for_value)
     end
@@ -108,7 +108,7 @@ class OaiPmhRepositorySet < ActiveRecord::Base
 
   def full_spec(for_value)
     return set_spec unless dynamic?
-    set_spec + "--" + for_value.gsub(':', '_colon_').gsub('_', '-underscore-').gsub(' ', '_')
+    set_spec + '--' + for_value.gsub(':', '_colon_').gsub('_', '-underscore-').gsub(' ', '_')
   end
 
   private

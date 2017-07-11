@@ -120,10 +120,10 @@ module ConfigureAsKeteContentItem
     # Walter McGinnis, 2012-06-21
     # create redirect_registration if basket_id has changed
     def register_redirect_if_necessary
-      old_basket_id = self.class.find(:first, select: "basket_id", conditions: { id: id }).basket_id
+      old_basket_id = self.class.find(:first, select: 'basket_id', conditions: { id: id }).basket_id
       if old_basket_id != basket_id
-        old_urlified_name = Basket.find(:first, select: "urlified_name", conditions: { id: old_basket_id }).urlified_name
-        new_urlified_name = Basket.find(:first, select: "urlified_name", conditions: { id: basket_id }).urlified_name
+        old_urlified_name = Basket.find(:first, select: 'urlified_name', conditions: { id: old_basket_id }).urlified_name
+        new_urlified_name = Basket.find(:first, select: 'urlified_name', conditions: { id: basket_id }).urlified_name
 
         old_url = url_for_dc_identifier(self)
         new_url = old_url.sub(old_urlified_name, new_urlified_name)

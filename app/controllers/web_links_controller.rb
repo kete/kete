@@ -15,7 +15,7 @@ class WebLinksController < ApplicationController
         date = DateTime.parse(params[:updated_since]) if params[:updated_since]
         date = DateTime.now.beginning_of_month        if date.nil?
 
-        @list_type = "WebLink"
+        @list_type = 'WebLink'
         @items = WebLink.updated_since(date)
         render 'shared/list'
       end
@@ -50,7 +50,7 @@ class WebLinksController < ApplicationController
       @web_link.do_notifications_if_pending(1, current_user)
     end
 
-    setup_related_topic_and_zoom_and_redirect(@web_link, nil, private: (params[:web_link][:private] == "true"))
+    setup_related_topic_and_zoom_and_redirect(@web_link, nil, private: (params[:web_link][:private] == 'true'))
   end
 
   def edit
@@ -71,7 +71,7 @@ class WebLinksController < ApplicationController
       after_successful_zoom_item_update(@web_link, version_after_update)
       flash[:notice] = t('web_links_controller.update.updated')
 
-      redirect_to_show_for(@web_link, private: (params[:web_link][:private] == "true"))
+      redirect_to_show_for(@web_link, private: (params[:web_link][:private] == 'true'))
     else
       render action: 'edit'
     end

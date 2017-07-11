@@ -82,7 +82,7 @@ module RssHelper
     elsif item.is_a? Video
       'MovingImage'
     else # topic's type is the default
-      "InteractiveResource"
+      'InteractiveResource'
     end
   end
 
@@ -146,7 +146,7 @@ module RssHelper
     elsif item.is_a? WebLink
       basket_web_link_url(item.basket, item)
     else
-      "something has gone wrong in rss_link_for"
+      'something has gone wrong in rss_link_for'
     end
   end
 end

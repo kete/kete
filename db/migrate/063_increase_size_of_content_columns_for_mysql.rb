@@ -12,22 +12,22 @@ class IncreaseSizeOfContentColumnsForMysql < ActiveRecord::Migration
 
       # List of tables and columns to be changed to MEDIUMTEXT
       tables_and_columns = {
-        "audio_recordings"          => ["description", "extended_content", "private_version_serialized"],
-        "audio_recording_versions"  => ["description", "extended_content"],
-        "baskets"                   => ["extended_content", "index_page_extra_side_bar_html"],
-        "comments"                  => ["description", "extended_content"],
-        "comment_versions"          => ["description", "extended_content"],
-        "documents"                 => ["description", "extended_content", "private_version_serialized"],
-        "document_versions"         => ["description", "extended_content"],
-        "still_images"              => ["description", "extended_content", "private_version_serialized"],
-        "still_image_versions"      => ["description", "extended_content"],
-        "topics"                    => ["description", "extended_content", "private_version_serialized"],
-        "topic_versions"            => ["description", "extended_content"],
-        "users"                     => ["extended_content"],
-        "videos"                    => ["description", "extended_content", "private_version_serialized"],
-        "video_versions"            => ["description", "extended_content"],
-        "web_links"                 => ["description", "extended_content", "private_version_serialized"],
-        "web_link_versions"         => ["description", "extended_content"]
+        'audio_recordings'          => ['description', 'extended_content', 'private_version_serialized'],
+        'audio_recording_versions'  => ['description', 'extended_content'],
+        'baskets'                   => ['extended_content', 'index_page_extra_side_bar_html'],
+        'comments'                  => ['description', 'extended_content'],
+        'comment_versions'          => ['description', 'extended_content'],
+        'documents'                 => ['description', 'extended_content', 'private_version_serialized'],
+        'document_versions'         => ['description', 'extended_content'],
+        'still_images'              => ['description', 'extended_content', 'private_version_serialized'],
+        'still_image_versions'      => ['description', 'extended_content'],
+        'topics'                    => ['description', 'extended_content', 'private_version_serialized'],
+        'topic_versions'            => ['description', 'extended_content'],
+        'users'                     => ['extended_content'],
+        'videos'                    => ['description', 'extended_content', 'private_version_serialized'],
+        'video_versions'            => ['description', 'extended_content'],
+        'web_links'                 => ['description', 'extended_content', 'private_version_serialized'],
+        'web_link_versions'         => ['description', 'extended_content']
       }
       
       tables_and_columns.each do |table, columns|
@@ -37,7 +37,7 @@ class IncreaseSizeOfContentColumnsForMysql < ActiveRecord::Migration
       end
       
     else
-      print "Skipping migration. MySQL specific."
+      print 'Skipping migration. MySQL specific.'
     end
   end
 

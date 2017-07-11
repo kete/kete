@@ -7,11 +7,11 @@ def sudo(*parameters, &block)
   user = options[:as] && "-u #{options.delete(:as)}"
 
   sudo_prompt_option = "-p '#{sudo_prompt}'" unless sudo_prompt.empty?
-  sudo_env_option = "env PATH=$PATH" # added
-  sudo_command = [fetch(:sudo, "sudo"), sudo_prompt_option, user, sudo_env_option].compact.join(" ") # changed
+  sudo_env_option = 'env PATH=$PATH' # added
+  sudo_command = [fetch(:sudo, 'sudo'), sudo_prompt_option, user, sudo_env_option].compact.join(' ') # changed
 
   if command
-    command = sudo_command + " " + command
+    command = sudo_command + ' ' + command
     run(command, options, &block)
   else
     return sudo_command

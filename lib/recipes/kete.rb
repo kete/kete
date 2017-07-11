@@ -6,7 +6,7 @@ namespace :deploy do
     puts "This task shouldn't be run. Use deploy:first_time or deploy:update"
   end
 
-  desc "Run the steps necessary to get Kete going for the first time.  May take awhile."
+  desc 'Run the steps necessary to get Kete going for the first time.  May take awhile.'
   task :first_time do
     deploy.setup
     deploy.update_code
@@ -22,7 +22,7 @@ namespace :deploy do
     deploy.restart
   end
 
-  desc "Run the steps necessary to update Kete. Overrides the default Capistrano task."
+  desc 'Run the steps necessary to update Kete. Overrides the default Capistrano task.'
   task :update do
     deploy.backgroundrb.stop
     run "cd #{current_path} && rake tmp:cache:clear"
@@ -45,37 +45,37 @@ namespace :deploy do
       run "cd #{current_path} && RAILS_ENV=#{app_environment} rake kete:upgrade"
     end
 
-    desc "What to we need to happen after code checkout, but before the app is ready to be started."
+    desc 'What to we need to happen after code checkout, but before the app is ready to be started.'
     namespace :prepare do
 
-      desc "The directory that holds everything related to zebra needs to live under share/system/zebradb"
+      desc 'The directory that holds everything related to zebra needs to live under share/system/zebradb'
       task :setup_zebra, roles: :app do
         run "cp -r #{latest_release}/zebradb #{shared_path}/system/"
       end
 
-      desc "The directory that holds everything related to imports needs to live under share/system/imports"
+      desc 'The directory that holds everything related to imports needs to live under share/system/imports'
       task :setup_imports, roles: :app do
         run "cp -r #{latest_release}/imports #{shared_path}/system/"
       end
 
-      desc "The directory that holds everything related to private items needs to live under share/system/private"
+      desc 'The directory that holds everything related to private items needs to live under share/system/private'
       task :setup_private, roles: :app do
         run "cp -r #{latest_release}/private #{shared_path}/system/"
       end
 
-      desc "The directory that holds everything related to themes needs to live under share/system/themes"
+      desc 'The directory that holds everything related to themes needs to live under share/system/themes'
       task :setup_themes, roles: :app do
         run "cp -r #{latest_release}/public/themes #{shared_path}/system/"
       end
 
-      desc "The directory that holds locales (translations) needs to live under share/system/locales"
+      desc 'The directory that holds locales (translations) needs to live under share/system/locales'
       task :setup_locales, roles: :app do
         run "cp -r #{latest_release}/config/locales #{shared_path}/system/"
       end
 
     end
 
-    desc "Symlink folders for existing Kete installations"
+    desc 'Symlink folders for existing Kete installations'
     namespace :symlink do
 
       public_dirs = %w{ audio documents image_files video themes }
@@ -83,7 +83,7 @@ namespace :deploy do
       config_dirs = %w{ locales }
       all_dirs = public_dirs + root_dirs + config_dirs
 
-      desc "Symlink all files"
+      desc 'Symlink all files'
       task :all do
         all_dirs.each do |dir|
           eval("deploy.kete.symlink.#{dir}")

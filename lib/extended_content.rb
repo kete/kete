@@ -1,5 +1,5 @@
 # Requirements for XML conversion of extended fields
-require "rexml/document"
+require 'rexml/document'
 require 'builder'
 require 'xmlsimple'
 
@@ -114,7 +114,7 @@ require 'xmlsimple'
     # Provide an instance of Nokogiri::XML::Builder.new for creating the XML representation
     # stored in each item's extended content attribute.
     def xml(force_new = false)
-      raise "ERROR: xml method not needed. The call to this method should be replaced!"
+      raise 'ERROR: xml method not needed. The call to this method should be replaced!'
       if force_new
         @builder_xml = Nokogiri::XML::Builder.new
       else
@@ -209,7 +209,7 @@ require 'xmlsimple'
     #   }
     # }
     def xml_attributes_without_position
-      hash = XmlSimple.xml_in("<dummy>#{add_xml_fix(extended_content)}</dummy>", "contentkey" => "value", "forcearray" => false)
+      hash = XmlSimple.xml_in("<dummy>#{add_xml_fix(extended_content)}</dummy>", 'contentkey' => 'value', 'forcearray' => false)
       remove_xml_fix(hash)
     end
 
@@ -229,7 +229,7 @@ require 'xmlsimple'
       convert_xml_to_key_value_hash.inject(Hash.new) do |hash, field|
 
         field_name = field.delete(field.first)
-        field_name_root = field_name.gsub("_multiple", "")
+        field_name_root = field_name.gsub('_multiple', '')
 
         # Grab the extended field for this field name
         extended_field = all_fields.find { |ef| field_name_root == ef.label_for_params }
@@ -239,7 +239,7 @@ require 'xmlsimple'
         unless extended_field.blank?
 
           # We need to handle singular and multiple field values separate as they come out in different formats.
-          if field_name.include?("_multiple")
+          if field_name.include?('_multiple')
 
             # At this stage we expect to have something like:
             # ['field_name_multiple', [['value 1'], ['value 2']]
@@ -272,7 +272,7 @@ require 'xmlsimple'
       values.collect do |value|
         if value.is_a?(Hash) && value.keys.include?('value') && value.keys.include?('label')
           if value['label'] == value['value']
-            value["label"]
+            value['label']
           else
             value
           end
@@ -567,7 +567,7 @@ require 'xmlsimple'
 
       # Construct some information we need
       method_name = symbol.to_s
-      method_root = method_name.gsub(/[^\w]/, "")
+      method_root = method_name.gsub(/[^\w]/, '')
 
       # all_fields : Get all extended fields from mappings. Since we're going to be accessing this construct when
       # setting values anyhow, we hitting it here shouldn't be too much of a performance penalty, at least
@@ -627,7 +627,7 @@ require 'xmlsimple'
     end
 
     def convert_extended_content_to_xml(params_hash)
-      return "" if params_hash.blank?
+      return '' if params_hash.blank?
 
       builder = Nokogiri::XML::Builder.new
       builder.root do |xml|
@@ -730,9 +730,9 @@ require 'xmlsimple'
 
     def convert_xml_to_key_value_hash
       options = {
-        "contentkey"  => "value",
-        "forcearray"  => false,
-        "noattr"      => false
+        'contentkey'  => 'value',
+        'forcearray'  => false,
+        'noattr'      => false
       }
 
       XmlSimple.xml_in("<dummy>#{add_xml_fix(extended_content)}</dummy>", options).map do |key, value|
@@ -795,7 +795,7 @@ require 'xmlsimple'
         field = mapping.extended_field
 
         if field.multiple?
-          value_pairs = extended_content_pairs.select { |k, v| k == field.label_for_params + "_multiple" }
+          value_pairs = extended_content_pairs.select { |k, v| k == field.label_for_params + '_multiple' }
 
           # Remember to reject anything we use for signalling.
           values = value_pairs.map { |k, v| v }.flatten
@@ -811,11 +811,11 @@ require 'xmlsimple'
     # Generic validation methods
     def validate_extended_content_single_value(extended_field_mapping, value)
       # Handle required fields here..
-      no_map_enabled = (%w(map map_address).member?(extended_field_mapping.extended_field.ftype) && (!value || value['no_map'] == "1"))
+      no_map_enabled = (%w(map map_address).member?(extended_field_mapping.extended_field.ftype) && (!value || value['no_map'] == '1'))
       no_year_provided = (extended_field_mapping.extended_field.ftype == 'year' && (!value || value['value'].blank?))
       if extended_field_mapping.required &&
         (value.blank? || no_map_enabled || no_year_provided) &&
-         extended_field_mapping.extended_field.ftype != "checkbox"
+         extended_field_mapping.extended_field.ftype != 'checkbox'
 
         errors.add_to_base(I18n.t('extended_content_lib.validate_extended_content_single_value.cannot_be_blank',
                                   label: extended_field_mapping.extended_field.label)) unless \
@@ -842,11 +842,11 @@ require 'xmlsimple'
       end
 
       if extended_field_mapping.required && all_values_blank && \
-        extended_field_mapping.extended_field.ftype != "checkbox"
+        extended_field_mapping.extended_field.ftype != 'checkbox'
 
         errors.add_to_base(I18n.t('extended_content_lib.validate_extended_content_multiple_values.need_at_least_one',
                                   label: extended_field_mapping.extended_field.label)) unless \
-          xml_attributes_without_position[extended_field_mapping.extended_field.label_for_params + "_multiple"].nil? && \
+          xml_attributes_without_position[extended_field_mapping.extended_field.label_for_params + '_multiple'].nil? && \
           allow_nil_values_for_extended_content
 
       else

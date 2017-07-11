@@ -53,7 +53,7 @@ module KeteAuthorisationSettings
     key = session[:moderation_exempt_item]
     return false if key.blank?
 
-    result = ( item_class_name == key[:item_class_name] && item_id.to_s.split("-").first == key[:item_id] )
+    result = ( item_class_name == key[:item_class_name] && item_id.to_s.split('-').first == key[:item_id] )
 
     session[:moderation_exempt_item] = nil
 
@@ -129,7 +129,7 @@ module KeteAuthorisationSettings
 
     # get controller and action from url
     # strip off query string before submitting to routing
-    url = url.split("?")[0]
+    url = url.split('?')[0]
     from_url = String.new
     begin
       from_url = ActionController::Routing::Routes.recognize_path(url, method: :get)
@@ -155,26 +155,26 @@ module KeteAuthorisationSettings
   # same request
   def permitted_to_view_private_items?
     @permitted_to_view_private_items ||= logged_in? &&
-                                         permit?("site_admin or moderator of :current_basket or member of :current_basket or admin of :current_basket")
+                                         permit?('site_admin or moderator of :current_basket or member of :current_basket or admin of :current_basket')
   end
   alias permitted_to_edit_current_item? permitted_to_view_private_items?
 
   def permitted_to_edit_basket_homepage_topic?
     @permitted_to_edit_basket_homepage_topic ||= logged_in? &&
-        permit?("site_admin of :site_basket or admin of :site_basket")
+        permit?('site_admin of :site_basket or admin of :site_basket')
   end
 
   # checks if the user is requesting a private version of an item, and see
   # if they are allowed to do so
   def allowed_to_access_private_version_of?(item)
     return false unless item.nil? || item.has_private_version?
-    (!params[:private].nil? && params[:private] == "true" && permitted_to_view_private_items?)
+    (!params[:private].nil? && params[:private] == 'true' && permitted_to_view_private_items?)
   end
 
   # checks if the user is requesting a private search of a basket, and see
   # if they are allowed to do so
   def accessing_private_search_and_allowed?
-    (!params[:privacy_type].nil? and params[:privacy_type] == "private" and permitted_to_view_private_items?)
+    (!params[:privacy_type].nil? and params[:privacy_type] == 'private' and permitted_to_view_private_items?)
   end
 
   # used to get the acceptable privacy type (that is the current requested

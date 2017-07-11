@@ -12,8 +12,8 @@ module ItemPrivacyTestHelper
 
     # Based on work-around described here http://www.fngtps.com/2007/04/testing-with-attachment_fu
     def full_filename(thumbnail = nil)
-      file_system_path = (thumbnail ? thumbnail_class : self).attachment_options[:path_prefix].to_s.gsub("public", "")
-      File.join(RAILS_ROOT, "tmp", "attachment_fu_test", attachment_path_prefix, file_system_path, *partitioned_path(thumbnail_name_for(thumbnail)))
+      file_system_path = (thumbnail ? thumbnail_class : self).attachment_options[:path_prefix].to_s.gsub('public', '')
+      File.join(RAILS_ROOT, 'tmp', 'attachment_fu_test', attachment_path_prefix, file_system_path, *partitioned_path(thumbnail_name_for(thumbnail)))
     end
 
   end
@@ -55,21 +55,21 @@ module ItemPrivacyTestHelper
 
       def test_attachment_fu_uses_correct_path_prefix
         item = eval(@base_class).create(@new_model.merge({ file_private: false }))
-        assert_match(attachment_fu_test_path("public", @uploads_folder), item.full_filename)
+        assert_match(attachment_fu_test_path('public', @uploads_folder), item.full_filename)
         assert File.exists?(item.full_filename)
         assert item.valid?
       end
 
       def test_attachment_fu_uses_correct_path_prefix2
         item2 = eval(@base_class).create(@new_model.merge({ file_private: true }))
-        assert_match(attachment_fu_test_path("private", @uploads_folder), item2.full_filename)
+        assert_match(attachment_fu_test_path('private', @uploads_folder), item2.full_filename)
         assert File.exists?(item2.full_filename)
         assert item2.valid?
       end
 
       def test_attachment_fu_does_not_move_files_when_going_from_public_to_private
         item = eval(@base_class).create(@new_model.merge({ file_private: false }))
-        assert_match(attachment_fu_test_path("public", @uploads_folder), item.full_filename)
+        assert_match(attachment_fu_test_path('public', @uploads_folder), item.full_filename)
         assert File.exists?(item.full_filename)
         assert item.valid?
         old_filename = item.full_filename
@@ -77,7 +77,7 @@ module ItemPrivacyTestHelper
 
         item = eval(@base_class).find(id)
         item.update_attributes({ file_private: true })
-        assert_match(attachment_fu_test_path("public", @uploads_folder), item.full_filename)
+        assert_match(attachment_fu_test_path('public', @uploads_folder), item.full_filename)
         assert File.exists?(item.full_filename), "File is not where we expected. Should be at #{item.full_filename} but is not present."
         assert_equal old_filename, item.full_filename
         assert item.valid?
@@ -85,7 +85,7 @@ module ItemPrivacyTestHelper
 
       def test_attachment_fu_moves_files_to_correct_path_when_going_from_private_to_public
         item = eval(@base_class).create(@new_model.merge({ file_private: true }))
-        assert_match(attachment_fu_test_path("private", @uploads_folder), item.full_filename)
+        assert_match(attachment_fu_test_path('private', @uploads_folder), item.full_filename)
         assert File.exists?(item.full_filename)
         assert item.valid?
         old_filename = item.full_filename
@@ -93,7 +93,7 @@ module ItemPrivacyTestHelper
 
         item = eval(@base_class).find(id)
         item.update_attributes({ file_private: false })
-        assert_match(attachment_fu_test_path("public", @uploads_folder), item.full_filename)
+        assert_match(attachment_fu_test_path('public', @uploads_folder), item.full_filename)
         assert File.exists?(item.full_filename), "File is not where we expected. Should be at #{item.full_filename} but is not present."
         assert !File.exists?(old_filename), "File is not where we expected. Should NOT be at #{old_filename} but IS present."
         assert item.valid?
@@ -101,18 +101,18 @@ module ItemPrivacyTestHelper
 
       def test_attachment_path_prefix
         d = eval(@base_class).create(@new_model.merge({ file_private: true }))
-        assert_equal d.send(:attachment_path_prefix), "private"
+        assert_equal d.send(:attachment_path_prefix), 'private'
 
         d = eval(@base_class).create(@new_model.merge({ file_private: false }))
-        assert_equal d.send(:attachment_path_prefix), "public"
+        assert_equal d.send(:attachment_path_prefix), 'public'
       end
 
       def test_attachment_full_filename
         d = eval(@base_class).create(@new_model.merge({ file_private: true }))
-        assert_equal File.join(RAILS_ROOT, "tmp", "attachment_fu_test", "private", @uploads_folder, *d.send(:partitioned_path, d.send(:thumbnail_name_for, nil))), d.full_filename
+        assert_equal File.join(RAILS_ROOT, 'tmp', 'attachment_fu_test', 'private', @uploads_folder, *d.send(:partitioned_path, d.send(:thumbnail_name_for, nil))), d.full_filename
 
         d = eval(@base_class).create(@new_model.merge({ file_private: false }))
-        assert_equal File.join(RAILS_ROOT, "tmp", "attachment_fu_test", "public", @uploads_folder, *d.send(:partitioned_path, d.send(:thumbnail_name_for, nil))), d.full_filename
+        assert_equal File.join(RAILS_ROOT, 'tmp', 'attachment_fu_test', 'public', @uploads_folder, *d.send(:partitioned_path, d.send(:thumbnail_name_for, nil))), d.full_filename
       end
 
       def test_file_private_setter_false_to_true_does_not_work
@@ -124,7 +124,7 @@ module ItemPrivacyTestHelper
       end
 
       def create_user_with_permission(role, basket_instance)
-        raise "Unknown role" unless
+        raise 'Unknown role' unless
           ['member', 'moderator', 'administrator', 'site_admin', 'tech_admin'].member?(role)
 
         user = User.create(
@@ -167,16 +167,16 @@ module ItemPrivacyTestHelper
 
         # Set up some versions
         d = eval(@base_class).create(@new_model.merge({ private: false }))
-        d.update_attributes(description: "Version 2")
-        d.update_attributes(description: "Version 3")
-        d.update_attributes(description: "Version 4", private: true)
-        d.update_attributes(description: "Version 5", private: true)
+        d.update_attributes(description: 'Version 2')
+        d.update_attributes(description: 'Version 3')
+        d.update_attributes(description: 'Version 4', private: true)
+        d.update_attributes(description: 'Version 5', private: true)
 
         d.reload
 
         assert_equal 3, d.send(:latest_public_version).version
         assert_equal d.version, d.send(:latest_public_version).version
-        assert_equal "Version 3", d.send(:latest_public_version).description
+        assert_equal 'Version 3', d.send(:latest_public_version).description
         assert !d.send(:latest_public_version).private?
         assert !d.private?
       end
@@ -185,17 +185,17 @@ module ItemPrivacyTestHelper
 
         # Set up some versions
         d = eval(@base_class).create(@new_model.merge({ private: false }))
-        d.update_attributes(description: "Version 2")
-        d.update_attributes(description: "Version 3")
-        d.update_attributes(description: "Version 4", private: true)
-        d.update_attributes(description: "Version 5")
+        d.update_attributes(description: 'Version 2')
+        d.update_attributes(description: 'Version 3')
+        d.update_attributes(description: 'Version 4', private: true)
+        d.update_attributes(description: 'Version 5')
 
         d.reload
 
         d.revert_to(d.versions.find_by_version(3))
 
         assert_equal d.version, 3
-        assert_equal d.description, "Version 3"
+        assert_equal d.description, 'Version 3'
         assert !d.private?
       end
 
@@ -203,20 +203,20 @@ module ItemPrivacyTestHelper
 
         # Set up some versions
         d = eval(@base_class).create(@new_model.merge({ private: false }))
-        d.update_attributes!(description: "Version 2")
-        d.update_attributes!(description: "Version 3")
-        d.update_attributes!(description: "Version 4", private: true)
-        d.update_attributes!(description: "Version 5", private: false)
+        d.update_attributes!(description: 'Version 2')
+        d.update_attributes!(description: 'Version 3')
+        d.update_attributes!(description: 'Version 4', private: true)
+        d.update_attributes!(description: 'Version 5', private: false)
         d.reload
 
         assert_not_nil d.private_version_serialized
         assert_kind_of Array, YAML.load(d.private_version_serialized)
         assert_equal 5, d.versions.size
-        assert_equal "Version 5", d.description
+        assert_equal 'Version 5', d.description
         assert_equal false, d.private?
 
         d.private_version!
-        assert_equal "Version 4", d.description
+        assert_equal 'Version 4', d.description
         assert_equal true, d.private?
 
       end
@@ -225,17 +225,17 @@ module ItemPrivacyTestHelper
 
         # Set up some versions
         d = eval(@base_class).create(@new_model.merge({ private: false }))
-        d.update_attributes(description: "Version 2")
-        d.update_attributes(description: "Version 3")
-        d.update_attributes(description: "Version 4")
-        d.update_attributes(description: "Version 5", private: true)
+        d.update_attributes(description: 'Version 2')
+        d.update_attributes(description: 'Version 3')
+        d.update_attributes(description: 'Version 4')
+        d.update_attributes(description: 'Version 5', private: true)
         d.reload
 
-        assert_equal "Version 4", d.description
+        assert_equal 'Version 4', d.description
         assert_equal false, d.private?
         assert_equal 4, d.version
         d.send(:private_version!)
-        assert_equal "Version 5", d.description
+        assert_equal 'Version 5', d.description
         assert_equal true, d.private?
         assert_equal 5, d.version
 
@@ -244,28 +244,28 @@ module ItemPrivacyTestHelper
       def test_private_version_returns_nil_when_no_private_version!
 
         d = eval(@base_class).create(@new_model.merge({ private: false }))
-        d.update_attributes(description: "Version 2")
+        d.update_attributes(description: 'Version 2')
         d.reload
 
-        assert_equal "Version 2", d.description
+        assert_equal 'Version 2', d.description
         assert_equal nil, d.private_version!
       end
 
       def test_store_correct_version_after_save
 
-        d = eval(@base_class).create(@new_model.merge({ description: "Version 1", private: false }))
-        d.update_attributes(description: "Version 2", private: true)
+        d = eval(@base_class).create(@new_model.merge({ description: 'Version 1', private: false }))
+        d.update_attributes(description: 'Version 2', private: true)
         d.reload
 
-        assert_equal "Version 1", d.description
+        assert_equal 'Version 1', d.description
         assert_not_nil d.private_version_serialized
 
       end
 
       def test_has_private_version!
 
-        d = eval(@base_class).create(@new_model.merge({ description: "Version 1", private: false }))
-        d.update_attributes(description: "Version 2")
+        d = eval(@base_class).create(@new_model.merge({ description: 'Version 1', private: false }))
+        d.update_attributes(description: 'Version 2')
 
         assert_equal false, d.has_private_version?
         assert_nil d.private_version!
@@ -273,9 +273,9 @@ module ItemPrivacyTestHelper
 
       def test_has_private_version2
 
-        d = eval(@base_class).create(@new_model.merge({ description: "Version 1", private: false }))
-        d.update_attributes(description: "Version 2", private: true)
-        d.update_attributes(description: "Version 3")
+        d = eval(@base_class).create(@new_model.merge({ description: 'Version 1', private: false }))
+        d.update_attributes(description: 'Version 2', private: true)
+        d.update_attributes(description: 'Version 3')
 
         assert_not_nil d.private_version_serialized
         assert_kind_of Array, YAML.load(d.private_version_serialized)
@@ -287,27 +287,27 @@ module ItemPrivacyTestHelper
       end
 
       def test_latest_public_version_and_has_public_version
-        d = eval(@base_class).create(@new_model.merge({ description: "Version 1", private: false }))
-        d.update_attributes(description: "Version 2", private: true)
-        d.update_attributes(description: "Version 3")
+        d = eval(@base_class).create(@new_model.merge({ description: 'Version 1', private: false }))
+        d.update_attributes(description: 'Version 2', private: true)
+        d.update_attributes(description: 'Version 3')
 
         assert_equal 3, d.send(:latest_public_version).version
         assert_equal true, d.has_private_version?
       end
 
       def test_latest_public_version_and_has_public_version_again
-        d = eval(@base_class).create(@new_model.merge({ description: "Version 1", private: false }))
-        d.update_attributes(description: "Version 2")
-        d.update_attributes(description: "Version 3", private: true)
+        d = eval(@base_class).create(@new_model.merge({ description: 'Version 1', private: false }))
+        d.update_attributes(description: 'Version 2')
+        d.update_attributes(description: 'Version 3', private: true)
 
         assert_equal 2, d.send(:latest_public_version).version
         assert_equal true, d.has_private_version?
       end
 
       def test_latest_public_version_and_has_public_version_with_none
-        d = eval(@base_class).create(@new_model.merge({ description: "Version 1", private: true }))
-        d.update_attributes(description: "Version 2", private: true)
-        d.update_attributes(description: "Version 3", private: true)
+        d = eval(@base_class).create(@new_model.merge({ description: 'Version 1', private: true }))
+        d.update_attributes(description: 'Version 2', private: true)
+        d.update_attributes(description: 'Version 3', private: true)
         d.reload
 
         assert_equal 4, d.versions.size
@@ -319,14 +319,14 @@ module ItemPrivacyTestHelper
       end
 
       def test_revert_to_latest_unflagged_version_or_create_new_version_public
-        d = eval(@base_class).create(@new_model.merge({ description: "Version 1", private: false }))
-        d.update_attributes(description: "Version 2")
-        d.update_attributes(description: "Version 3", private: true)
+        d = eval(@base_class).create(@new_model.merge({ description: 'Version 1', private: false }))
+        d.update_attributes(description: 'Version 2')
+        d.update_attributes(description: 'Version 3', private: true)
 
         # Check flagging a public version works as expected
         assert_equal 2, d.version
         assert_equal 0, d.tags.size
-        d.flag_live_version_with("PENDING", "Pending")
+        d.flag_live_version_with('PENDING', 'Pending')
         assert_equal 1, d.versions.find_by_version(2).tags.size
         assert_equal 1, d.version
         assert_equal false, d.private?
@@ -334,9 +334,9 @@ module ItemPrivacyTestHelper
       end
 
       def test_revert_to_latest_unflagged_version_or_create_new_version_private
-        d = eval(@base_class).create(@new_model.merge({ description: "Version 1", private: false }))
-        d.update_attributes(description: "Version 2")
-        d.update_attributes(description: "Version 3", private: true)
+        d = eval(@base_class).create(@new_model.merge({ description: 'Version 1', private: false }))
+        d.update_attributes(description: 'Version 2')
+        d.update_attributes(description: 'Version 3', private: true)
         d.reload
         assert_equal 2, d.version
 
@@ -348,7 +348,7 @@ module ItemPrivacyTestHelper
         assert_equal 0, d.tags.size
 
         # Flat the version and run the callback that we expect to be run..
-        d.flag_live_version_with("PENDING", "Pending")
+        d.flag_live_version_with('PENDING', 'Pending')
         d.send :store_correct_versions_after_save
 
         assert_equal 1, d.versions.find_by_version(3).tags.size
@@ -365,31 +365,31 @@ module ItemPrivacyTestHelper
       end
 
       def test_reload_returns_model_to_public_version
-        d = eval(@base_class).create(@new_model.merge({ description: "Version 1", private: false }))
-        d.update_attributes(description: "Version 2", private: true)
+        d = eval(@base_class).create(@new_model.merge({ description: 'Version 1', private: false }))
+        d.update_attributes(description: 'Version 2', private: true)
         d.reload
 
         assert_equal false, d.private?
         assert_equal 1, d.version
-        assert_equal "Version 1", d.description
+        assert_equal 'Version 1', d.description
 
         d.private_version!
 
         assert_equal true, d.private?
         assert_equal 2, d.version
-        assert_equal "Version 2", d.description
+        assert_equal 'Version 2', d.description
 
         d.reload
 
         assert_equal false, d.private?
         assert_equal 1, d.version
-        assert_equal "Version 1", d.description
+        assert_equal 'Version 1', d.description
       end
 
       def test_new_private_item_with_moderated_basket
 
         # Set up
-        d = eval(@base_class).new(@new_model.merge({ description: "Version 1", private: true }))
+        d = eval(@base_class).new(@new_model.merge({ description: 'Version 1', private: true }))
         d.instance_eval do
           def fully_moderated?
             true
@@ -404,8 +404,8 @@ module ItemPrivacyTestHelper
         assert_equal 3, d.versions.size
 
         assert_equal 1, d.versions.find_by_version(1).tags.size
-        assert_equal "test item", d.versions.find_by_version(1).title
-        assert_equal "Version 1", d.versions.find_by_version(1).description
+        assert_equal 'test item', d.versions.find_by_version(1).title
+        assert_equal 'Version 1', d.versions.find_by_version(1).description
         assert_equal true, d.versions.find_by_version(1).private?
 
         assert_equal 0, d.versions.find_by_version(2).tags.size
@@ -432,7 +432,7 @@ module ItemPrivacyTestHelper
       def test_new_public_item_with_moderated_basket
 
         # Set up
-        d = eval(@base_class).new(@new_model.merge({ description: "Version 1", private: false }))
+        d = eval(@base_class).new(@new_model.merge({ description: 'Version 1', private: false }))
         d.instance_eval do
           def fully_moderated?
             true
@@ -447,8 +447,8 @@ module ItemPrivacyTestHelper
         assert_equal 2, d.versions.size
 
         assert_equal 1, d.versions.find_by_version(1).tags.size
-        assert_equal "test item", d.versions.find_by_version(1).title
-        assert_equal "Version 1", d.versions.find_by_version(1).description
+        assert_equal 'test item', d.versions.find_by_version(1).title
+        assert_equal 'Version 1', d.versions.find_by_version(1).description
         assert_equal false, d.versions.find_by_version(1).private?
 
         assert_equal 0, d.versions.find_by_version(2).tags.size
@@ -480,8 +480,8 @@ module ItemPrivacyTestHelper
 
         version1 = d.versions.find_by_version(1)
         assert_equal 1, version1.tags.size
-        assert_equal "Version 1", version1.title
-        assert_equal "Version 1", version1.description
+        assert_equal 'Version 1', version1.title
+        assert_equal 'Version 1', version1.description
         assert_equal false, version1.private?
 
         version2 = d.versions.find_by_version(2)
@@ -491,8 +491,8 @@ module ItemPrivacyTestHelper
         assert_equal false, version2.private?
 
         assert_equal 3, d.version
-        assert_equal "Version 3", d.title
-        assert_equal "Version 3", d.description
+        assert_equal 'Version 3', d.title
+        assert_equal 'Version 3', d.description
         assert_equal false, d.private?
 
         assert_nil d.private_version!
@@ -504,14 +504,14 @@ module ItemPrivacyTestHelper
         d = new_moderated_public_item
         # this will save as version 4
         # (but because basket is moderated, result will revert to public version 3)
-        d.update_attributes!(title: "Version 4", description: "Version 4")
+        d.update_attributes!(title: 'Version 4', description: 'Version 4')
 
         assert_equal 4, d.versions.size
         assert_equal 3, d.version
-        assert_equal "Version 3", d.description
+        assert_equal 'Version 3', d.description
 
         assert_equal 1, d.versions.find_by_version(4).tags.size
-        assert_equal "Version 4", d.versions.find_by_version(4).description
+        assert_equal 'Version 4', d.versions.find_by_version(4).description
       end
 
       def test_new_private_version_of_moderated_public_item
@@ -519,24 +519,24 @@ module ItemPrivacyTestHelper
         d = new_moderated_public_item
         # this will save as version 4
         # (but because basket is moderated, result will revert to public version 3)
-        d.update_attributes!(title: "Version 4", description: "Version 4", private: true)
+        d.update_attributes!(title: 'Version 4', description: 'Version 4', private: true)
 
         assert_equal 5, d.versions.size
 
         assert_equal 3, d.version
-        assert_equal "Version 3", d.description
+        assert_equal 'Version 3', d.description
 
         assert_equal 1, d.versions.find_by_version(4).tags.size
-        assert_equal "Version 4", d.versions.find_by_version(4).description
+        assert_equal 'Version 4', d.versions.find_by_version(4).description
 
         assert_equal SystemSetting.blank_title, d.versions.find_by_version(5).title
         assert_equal nil, d.versions.find_by_version(5).description
       end
 
       def test_private_version_with_block
-        d = eval(@base_class).create(@new_model.merge({ description: "Version 1", private: false }))
-        d.update_attributes(description: "Version 2")
-        d.update_attributes(description: "Version 3", private: true)
+        d = eval(@base_class).create(@new_model.merge({ description: 'Version 1', private: false }))
+        d.update_attributes(description: 'Version 2')
+        d.update_attributes(description: 'Version 3', private: true)
         d.reload
         assert_equal 2, d.version
 
@@ -595,11 +595,11 @@ module ItemPrivacyTestHelper
       end
 
       def test_tags_are_preserved_on_public_items
-        d = eval(@base_class).create(@new_model.merge({ description: "Version 1", private: false, tag_list: "one, two, three", raw_tag_list: "one, two, three" }))
+        d = eval(@base_class).create(@new_model.merge({ description: 'Version 1', private: false, tag_list: 'one, two, three', raw_tag_list: 'one, two, three' }))
         d.reload
 
         assert_equal 1, d.versions.size
-        assert_equal "Version 1", d.description
+        assert_equal 'Version 1', d.description
         assert_equal 3, d.tags.size
         assert %w{one two three}.all? { |t| d.tags.map { |g| g.name }.member?(t) }
         assert_equal d.tags.sort_by(&:id), d.public_tags.sort_by(&:id)
@@ -607,14 +607,14 @@ module ItemPrivacyTestHelper
       end
 
       def test_tags_are_preserved_on_private_items
-        d = eval(@base_class).create(@new_model.merge({ description: "Version 1", private: true, tag_list: "one, two, three", raw_tag_list: "one, two, three" }))
+        d = eval(@base_class).create(@new_model.merge({ description: 'Version 1', private: true, tag_list: 'one, two, three', raw_tag_list: 'one, two, three' }))
 
         assert_equal 0, d.tags.size
 
         d.private_version do
           assert_equal true, d.private?
           assert_equal 3, d.tags.size
-          assert_equal "Version 1", d.description
+          assert_equal 'Version 1', d.description
           assert %w{one two three}.all? { |t| d.tags.map { |v| v.name }.member?(t) }
           assert_equal d.tags, d.private_tags
           assert d.public_tags.empty?
@@ -622,7 +622,7 @@ module ItemPrivacyTestHelper
       end
 
       def test_tags_on_private_items_are_kept_private
-        d = eval(@base_class).create(@new_model.merge({ description: "Version 1", private: true, tag_list: "one, two, three", raw_tag_list: "one, two, three" }))
+        d = eval(@base_class).create(@new_model.merge({ description: 'Version 1', private: true, tag_list: 'one, two, three', raw_tag_list: 'one, two, three' }))
         d.reload
 
         # Check there are no tags on public version
@@ -642,7 +642,7 @@ module ItemPrivacyTestHelper
           # assert_equal "one, two, three", d.raw_tag_list
 
           assert_equal 3, d.tags.size
-          assert_equal "Version 1", d.description
+          assert_equal 'Version 1', d.description
           assert %w{one two three}.all? { |t| d.tags.collect { |tag| tag.name }.member?(t) }
         end
 
@@ -656,7 +656,7 @@ module ItemPrivacyTestHelper
       end
 
       def test_tags_on_private_items_are_kept_private_on_re_find
-        d = eval(@base_class).create(@new_model.merge({ description: "Version 1", private: true, tag_list: "one, two, three", raw_tag_list: "one, two, three" }))
+        d = eval(@base_class).create(@new_model.merge({ description: 'Version 1', private: true, tag_list: 'one, two, three', raw_tag_list: 'one, two, three' }))
 
         d = eval(@base_class).find(d.id)
 
@@ -672,7 +672,7 @@ module ItemPrivacyTestHelper
           assert_equal true, d.private?
           # assert_equal "one, two, three", d.raw_tag_list
           assert_equal 3, d.tags.size
-          assert_equal "Version 1", d.description
+          assert_equal 'Version 1', d.description
           assert %w{one two three}.all? { |t| d.tags.collect { |tag| tag.name }.member?(t) }
         end
 
@@ -686,39 +686,39 @@ module ItemPrivacyTestHelper
       def test_tags_are_preserved_separately_by_privacy_setting
 
         # Create a private version
-        d = eval(@base_class).create(@new_model.merge({ description: "Version 1", private: true, tag_list: "one, two, three", raw_tag_list: "one, two, three" }))
+        d = eval(@base_class).create(@new_model.merge({ description: 'Version 1', private: true, tag_list: 'one, two, three', raw_tag_list: 'one, two, three' }))
         d.reload
 
         # Create a public version with different tags
-        d.update_attributes!(private: false, title: "A public version", description: "Version 3", tag_list: "four, five, six", raw_tag_list: "four, five, six")
+        d.update_attributes!(private: false, title: 'A public version', description: 'Version 3', tag_list: 'four, five, six', raw_tag_list: 'four, five, six')
 
         # Create a second private version without tags
         d.private_version!
-        d.update_attributes!(private: true, title: "Another private version", description: "Version 4")
+        d.update_attributes!(private: true, title: 'Another private version', description: 'Version 4')
 
         # Check the public version has tags from public version
         assert_equal false, d.private?
         assert_equal 3, d.tags.size
         # assert_equal "four, five, six", d.raw_tag_list
-        assert_equal "four, five, six", d.tags.collect { |t| t.name }.join(", ")
+        assert_equal 'four, five, six', d.tags.collect { |t| t.name }.join(', ')
 
         # Check the private version has tags from the private version
         d.private_version!
         assert_equal true, d.private?
         assert_equal 3, d.tags.size
         # assert_equal "one, two, three", d.raw_tag_list
-        assert_equal "one, two, three", d.tags.collect { |t| t.name }.join(", ")
+        assert_equal 'one, two, three', d.tags.collect { |t| t.name }.join(', ')
 
         # Check the public tags present on natural version
         e = eval(@base_class).find(d.id)
         assert_equal false, e.private?
         assert_equal 3, e.tags.size
         # assert_equal "four, five, six", e.raw_tag_list
-        assert_equal "four, five, six", e.tags.collect { |t| t.name }.join(", ")
+        assert_equal 'four, five, six', e.tags.collect { |t| t.name }.join(', ')
       end
 
       def test_tags_on_private_items_are_of_private_context
-        d = eval(@base_class).create(@new_model.merge({ description: "Version 1", private: true, tag_list: "one, two, three", raw_tag_list: "one, two, three" }))
+        d = eval(@base_class).create(@new_model.merge({ description: 'Version 1', private: true, tag_list: 'one, two, three', raw_tag_list: 'one, two, three' }))
         d.reload
 
         d.private_version!
@@ -726,25 +726,25 @@ module ItemPrivacyTestHelper
         assert_equal true, d.private?
         assert_equal d.tags, d.private_tags
         assert_equal 3, d.tags.size
-        assert_equal "one, two, three", d.tags.collect { |t| t.name }.join(", ")
+        assert_equal 'one, two, three', d.tags.collect { |t| t.name }.join(', ')
         assert d.public_tags.empty?
       end
 
       def test_tags_on_public_items_are_of_public_context
-        d = eval(@base_class).create(@new_model.merge({ description: "Version 1", private: false, tag_list: "one, two, three", raw_tag_list: "one, two, three" }))
+        d = eval(@base_class).create(@new_model.merge({ description: 'Version 1', private: false, tag_list: 'one, two, three', raw_tag_list: 'one, two, three' }))
         d.reload
 
         assert_equal false, d.private?
         assert_equal d.tags.sort_by(&:id), d.public_tags.sort_by(&:id)
         assert_equal 3, d.tags.size
-        assert_equal "one, two, three", d.tags.collect { |t| t.name }.join(", ")
+        assert_equal 'one, two, three', d.tags.collect { |t| t.name }.join(', ')
         assert d.private_tags.empty?
       end
 
       protected
 
         def new_moderated_public_item
-          d = eval(@base_class).new(@new_model.merge({ title: "Version 1", description: "Version 1", private: false }))
+          d = eval(@base_class).new(@new_model.merge({ title: 'Version 1', description: 'Version 1', private: false }))
           d.instance_eval do
             def fully_moderated?
               true
@@ -757,9 +757,9 @@ module ItemPrivacyTestHelper
 
           d.strip_flags_and_mark_reviewed(1)
           d.revert_to(1)
-          d.title = "Version 3"
-          d.description = "Version 3"
-          d.version_comment = "Content from revision # 1."
+          d.title = 'Version 3'
+          d.description = 'Version 3'
+          d.version_comment = 'Content from revision # 1.'
           d.do_not_moderate = true
           # this will save the above as version 3
           # (and will be the current public version)

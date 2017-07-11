@@ -56,7 +56,7 @@ set :bundle_jobs, 4
 
 # This task is a useful canary to figure out if you have configured capistrano
 # correctly
-desc "Check that we can access everything"
+desc 'Check that we can access everything'
 task :check_write_perms do
   on roles(:all) do |host|
     if test("[ -w #{fetch(:deploy_to)} ]")
@@ -72,19 +72,19 @@ namespace :deploy do
   desc 'Restart application'
   task :restart do
     on roles(:app), in: :sequence, wait: 5 do
-      execute "sv 2 /home/deploy/service/kete"
+      execute 'sv 2 /home/deploy/service/kete'
     end
   end
 
   task :start do
     on roles(:app), in: :sequence, wait: 5 do
-      execute "sv start /home/deploy/service/kete"
+      execute 'sv start /home/deploy/service/kete'
     end
   end
 
   task :stop do
     on roles(:app), in: :sequence, wait: 5 do
-      execute "sv stop /home/deploy/service/kete"
+      execute 'sv stop /home/deploy/service/kete'
     end
   end
 

@@ -1,6 +1,6 @@
 require 'rexml/document'
 require 'redcloth'
-require "importer"
+require 'importer'
 # past perfect 4 xml output importer
 # only handling photos for the moment
 # needs accompanying archives.xml file
@@ -25,7 +25,7 @@ class PastPerfect4ImporterWorker < BackgrounDRb::MetaWorker
   end
 
   def do_work(args = nil)
-    logger.info("in worker")
+    logger.info('in worker')
     begin
       @zoom_class = args[:zoom_class]
       @import = Import.find(args[:import])
@@ -39,24 +39,24 @@ class PastPerfect4ImporterWorker < BackgrounDRb::MetaWorker
       @description_end_templates['default'] = @import.default_description_end_template
       @record_interval = @import.interval_between_records
 
-      logger.info("after description_end_template and var assigns")
+      logger.info('after description_end_template and var assigns')
       # legacy support for kete horowhenua
-      if !@import_request[:host].scan("horowhenua").blank?
-        @description_end_templates['default'] = "Any use of this image must be accompanied by the credit \"Horowhenua Historical Society Inc.\""
-        @description_end_templates[/^f\d/] = "Any use of this image must be accompanied by the credit \"Foxton Historical Society\""
-        @description_end_templates["2000\.000\."] = "Any use of this image must be accompanied by the credit \"Horowhenua District Council\""
+      if !@import_request[:host].scan('horowhenua').blank?
+        @description_end_templates['default'] = 'Any use of this image must be accompanied by the credit "Horowhenua Historical Society Inc."'
+        @description_end_templates[/^f\d/] = 'Any use of this image must be accompanied by the credit "Foxton Historical Society"'
+        @description_end_templates["2000\.000\."] = 'Any use of this image must be accompanied by the credit "Horowhenua District Council"'
 
-        @collections_to_skip << "HHS Photograph Collection"
+        @collections_to_skip << 'HHS Photograph Collection'
       end
 
-      logger.info("after description_end_template reassign")
+      logger.info('after description_end_template reassign')
 
       @zoom_class_for_params = @zoom_class.tableize.singularize
 
       # this may not work because of scope
       params = args[:params]
 
-      logger.info("params: " + params.inspect)
+      logger.info('params: ' + params.inspect)
 
       @import_photos_file_path = "#{@import_dir_path}/records.xml"
 
@@ -68,7 +68,7 @@ class PastPerfect4ImporterWorker < BackgrounDRb::MetaWorker
       @path_to_trimmed_photos = importer_trim_fat_from_xml_import_file(@import_photos_file_path,"#{RAILS_ROOT}/tmp/trimmed_photos_pp4.xml")
       @import_photos_xml = REXML::Document.new File.open(@path_to_trimmed_photos)
 
-      logger.info("after first trim")
+      logger.info('after first trim')
 
       # TODO: test what happens when there isn't an accessions.xml file
       @import_accessions_file_path = "#{@import_dir_path}/accessions.xml"
@@ -77,7 +77,7 @@ class PastPerfect4ImporterWorker < BackgrounDRb::MetaWorker
       # open the accessions xml to search for a matching record later
       @import_accessions_xml = REXML::Document.new File.open(@path_to_trimmed_accessions)
       # this gets the first matching accession record
-      logger.info("opened accession")
+      logger.info('opened accession')
 
       @import_accessions_xml_root = @import_accessions_xml.root
 
@@ -114,11 +114,11 @@ class PastPerfect4ImporterWorker < BackgrounDRb::MetaWorker
 
     # make sure there is a imagefile value
     # if not, log record to skipped photos file with reason skipped
-    image_file = record_hash["IMAGEFILE"]
+    image_file = record_hash['IMAGEFILE']
 
-    logger.info("what is image_file: " + image_file)
+    logger.info('what is image_file: ' + image_file)
 
-    image_objectid = record_hash["OBJECTID"]
+    image_objectid = record_hash['OBJECTID']
 
     reason_skipped = nil
 
@@ -139,15 +139,15 @@ class PastPerfect4ImporterWorker < BackgrounDRb::MetaWorker
       # see if there is a matching topic already
       # if not, create one from match in @import_accessions_xml
       # no match, log record to skipped photos file with reason skipped
-      related_topic_pp4_objectid = record_hash["ACCESSNO"]
+      related_topic_pp4_objectid = record_hash['ACCESSNO']
 
       if related_topic_pp4_objectid.nil?
         # see if we can derive the accessno from the objectid
         # if we can't derive the accessno, just stick it in without
         # related topic
-        objectid_parts = image_objectid.split(".")
+        objectid_parts = image_objectid.split('.')
         if objectid_parts.size > 2
-          related_topic_pp4_objectid = objectid_parts[0] + "." + objectid_parts[1]
+          related_topic_pp4_objectid = objectid_parts[0] + '.' + objectid_parts[1]
         else
           related_topic_pp4_objectid = 0
           related_topic = 0
@@ -175,11 +175,11 @@ class PastPerfect4ImporterWorker < BackgrounDRb::MetaWorker
         if related_topic.nil?
           logger.info("record #{current_record} : no kete topic found")
 
-          logger.info("in creation of accession record")
+          logger.info('in creation of accession record')
 
-          logger.info("accession we are looking for: " + related_topic_pp4_objectid)
+          logger.info('accession we are looking for: ' + related_topic_pp4_objectid)
 
-          if !@collections_to_skip.include?(record_hash["COLLECTION"])
+          if !@collections_to_skip.include?(record_hash['COLLECTION'])
             # file may time out
             related_accession_record = nil
 
@@ -190,16 +190,16 @@ class PastPerfect4ImporterWorker < BackgrounDRb::MetaWorker
             # grab only the first two elements
             # and try again before giving up
             if related_accession_record.blank?
-              cleaned_accessno_array = related_topic_pp4_objectid.split(".")
-              cleaned_up_accessno = cleaned_accessno_array[0] + "." + cleaned_accessno_array[1]
+              cleaned_accessno_array = related_topic_pp4_objectid.split('.')
+              cleaned_up_accessno = cleaned_accessno_array[0] + '.' + cleaned_accessno_array[1]
 
-              logger.info("looking for cleaned up accession: " + cleaned_up_accessno)
+              logger.info('looking for cleaned up accession: ' + cleaned_up_accessno)
 
               if !@last_related_topic_pp4_objectid.nil? and  cleaned_up_accessno == @last_related_topic_pp4_objectid
-                logger.info("looking for cleaned up accession: last accessno match")
+                logger.info('looking for cleaned up accession: last accessno match')
                 related_topic = @last_related_topic
               else
-                logger.info("looking for cleaned up accession: looking for existing topic")
+                logger.info('looking for cleaned up accession: looking for existing topic')
                 related_topic = Topic.find(:first,
                                            conditions: "extended_content like \'%<user_reference xml_element_name=\"dc:identifier\">#{cleaned_up_accessno}</user_reference>%\' AND topic_type_id = #{@related_topic_type.id}")
 
@@ -216,17 +216,17 @@ class PastPerfect4ImporterWorker < BackgrounDRb::MetaWorker
 
               # create a new topic from related_accession_record
               # prepare user_reference for extended_content
-              accession_topic = { "topic" => { topic_type_id: @related_topic_type.id,
-                  title: record_hash["COLLECTION"]} }
+              accession_topic = { 'topic' => { topic_type_id: @related_topic_type.id,
+                  title: record_hash['COLLECTION']} }
 
               descrip = RedCloth.new accession_record_hash['DESCRIP']
-              accession_topic["topic"][:description] = descrip.to_html
-              accession_topic["topic"][:short_summary] = importer_prepare_short_summary(descrip)
+              accession_topic['topic'][:description] = descrip.to_html
+              accession_topic['topic'][:short_summary] = importer_prepare_short_summary(descrip)
 
               topic_params = importer_prepare_extended_field(value: related_topic_pp4_objectid, field: 'OBJECTID', zoom_class_for_params: 'topic', params: accession_topic)
 
               related_topic = importer_create_related_topic(topic_params)
-              logger.info("after related topic creation")
+              logger.info('after related topic creation')
             end
           end
         end
@@ -237,9 +237,9 @@ class PastPerfect4ImporterWorker < BackgrounDRb::MetaWorker
       # do an update instead
 
       # base our check on OBJECTID
-      objectid = record_hash["OBJECTID"]
+      objectid = record_hash['OBJECTID']
 
-      logger.info("what is objectid: " + objectid)
+      logger.info('what is objectid: ' + objectid)
 
       # this relies on user_reference extended_field
       # being mapped to the particular kete content type (not content type in mime sense)
@@ -262,7 +262,7 @@ class PastPerfect4ImporterWorker < BackgrounDRb::MetaWorker
 
         new_record = create_new_item_from_record(record, @zoom_class, {params: params, record_hash: record_hash, description_end_template: description_end_template })
       else
-        logger.info("what is existing item: " + existing_item.id.to_s)
+        logger.info('what is existing item: ' + existing_item.id.to_s)
         # record exists in kete already
         reason_skipped = 'kete already has a copy of this record'
       end
@@ -330,7 +330,7 @@ class PastPerfect4ImporterWorker < BackgrounDRb::MetaWorker
     tag_list_array = Array.new
     # add support for all items during this import getting a set of tags
     # added to every item in addition to the specific ones for the item
-    tag_list_array = @import.base_tags.split(",") if !@import.base_tags.blank?
+    tag_list_array = @import.base_tags.split(',') if !@import.base_tags.blank?
 
     record_hash.keys.each do |record_field|
       value = record_hash[record_field]
@@ -343,7 +343,7 @@ class PastPerfect4ImporterWorker < BackgrounDRb::MetaWorker
       if !value.blank?
 
         case record_field
-        when "TITLE"
+        when 'TITLE'
           params[zoom_class_for_params][:title] = value
         when *(SystemSetting.description_synonyms)
           if params[zoom_class_for_params][:description].nil?
@@ -352,25 +352,25 @@ class PastPerfect4ImporterWorker < BackgrounDRb::MetaWorker
             params[zoom_class_for_params][:description] += "\n\n" + value
           end
         when *(SystemSetting.tags_synonyms)
-          if record_field == "PEOPLE"
+          if record_field == 'PEOPLE'
             # each person is in the form: last name, first names
             # one name per line
             # it may have things in parentheses which we ignore
             people_in_lines = value.split("\n")
             people_in_lines.each do |person|
-              names_array = person.split(",")
+              names_array = person.split(',')
               first_names = String.new
               if !names_array[1].nil?
-                first_names = names_array[1].split("(")[0].strip
+                first_names = names_array[1].split('(')[0].strip
               end
               last_names = names_array[0].strip
-              name = first_names + " " + last_names
+              name = first_names + ' ' + last_names
               tag_list_array << name.strip
             end
           else
-            tag_list_array << value.gsub("\n", " ")
+            tag_list_array << value.gsub("\n", ' ')
           end
-        when "ADMIN"
+        when 'ADMIN'
           if zoom_class == 'Topic' or zoom_class == 'Document'
             params[zoom_class_for_params][:short_summary] = value
           else
@@ -380,15 +380,15 @@ class PastPerfect4ImporterWorker < BackgrounDRb::MetaWorker
               params[zoom_class_for_params][:description] += "\n" + value
             end
           end
-        when "IMAGEFILE"
+        when 'IMAGEFILE'
           if zoom_class == 'StillImage'
             # we do a check earlier in the script for imagefile
             # so we should have something to work with here
             params[:image_file] = { uploaded_data: copy_and_load_to_temp_file(importer_prepare_path_to_image_file(value)) }
           end
-        when "OBJECTID"
+        when 'OBJECTID'
           if zoom_class == 'Topic'
-            value = record_hash["ACCESSNO"]
+            value = record_hash['ACCESSNO']
           end
           params = importer_prepare_extended_field(value: value, field: record_field, zoom_class_for_params: zoom_class_for_params, params: params)
         else
@@ -398,7 +398,7 @@ class PastPerfect4ImporterWorker < BackgrounDRb::MetaWorker
       field_count += 1
     end
 
-    logger.info("after fields")
+    logger.info('after fields')
 
     if !@import.description_beginning_template.blank?
       # append the citation to the description field
@@ -424,7 +424,7 @@ class PastPerfect4ImporterWorker < BackgrounDRb::MetaWorker
       end
     end
 
-    logger.info("after description_end_template")
+    logger.info('after description_end_template')
 
     description = String.new
     # used to give use better html output for descriptions
@@ -433,7 +433,7 @@ class PastPerfect4ImporterWorker < BackgrounDRb::MetaWorker
       params[zoom_class_for_params][:description] = description.to_html
     end
 
-    logger.info("after redcloth")
+    logger.info('after redcloth')
 
     if zoom_class == 'Topic' or zoom_class == 'Document' && params[zoom_class_for_params][:short_summary].nil?
       if !description.blank?
@@ -441,16 +441,16 @@ class PastPerfect4ImporterWorker < BackgrounDRb::MetaWorker
       end
     end
 
-    logger.info("after short summary")
+    logger.info('after short summary')
 
-    params[zoom_class_for_params][:tag_list] = tag_list_array.join(",")
+    params[zoom_class_for_params][:tag_list] = tag_list_array.join(',')
 
-    logger.info("after tag list")
+    logger.info('after tag list')
 
     # add the uniform license chosen at import to this item
     params[zoom_class_for_params][:license_id] = @import.license.id if !@import.license.blank?
 
-    logger.info("after license")
+    logger.info('after license')
 
     # clear any lingering values for @fields
     # and instantiate it, in case we need it
@@ -480,7 +480,7 @@ class PastPerfect4ImporterWorker < BackgrounDRb::MetaWorker
       params = importer_extended_fields_update_hash_for_item(item_key: zoom_class_for_params, params: params)
     end
 
-    logger.info("after field set up")
+    logger.info('after field set up')
 
     # replace with something that isn't reliant on params
     replacement_zoom_item_hash = importer_extended_fields_replacement_params_hash(item_key: zoom_class_for_params, item_class: zoom_class, params: params)
@@ -512,14 +512,14 @@ class PastPerfect4ImporterWorker < BackgrounDRb::MetaWorker
 
       new_record.creator = @contributing_user
 
-      logger.info("new_record: " + new_record.inspect)
+      logger.info('new_record: ' + new_record.inspect)
       return new_record
     else
       # destroy images if the record wasn't added successfully
       new_image_file.destroy unless new_image_file.nil?
 
-      logger.info("new_record not added - save failed:")
-      logger.info("what are errors on save of new record: " + new_record.errors.inspect)
+      logger.info('new_record not added - save failed:')
+      logger.info('what are errors on save of new record: ' + new_record.errors.inspect)
       return nil
     end
   end
@@ -534,13 +534,13 @@ class PastPerfect4ImporterWorker < BackgrounDRb::MetaWorker
     IO.foreach(in_file) do |line|
       # if exported directly from Past Perfect, should match this
       # empty means no match
-      if line.include?("<VFPData>")
+      if line.include?('<VFPData>')
         @root_element_name = 'VFPData'
         @record_element_path = 'ppdata'
         return
       else
         # we have matched the previous style, return without resetting vars
-        return if line.include?("<Record>")
+        return if line.include?('<Record>')
       end
     end
   end

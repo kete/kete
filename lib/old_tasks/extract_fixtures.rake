@@ -15,11 +15,11 @@ namespace :db do
 
   # modified to dump to either db/bootstrap or test/fixtures
   task extract_fixtures: :environment do
-    sql  = "SELECT * FROM %s"
-    skip_tables = ["schema_info"]
+    sql  = 'SELECT * FROM %s'
+    skip_tables = ['schema_info']
     ActiveRecord::Base.establish_connection
     (ActiveRecord::Base.connection.tables - skip_tables).each do |table_name|
-      i = "000"
+      i = '000'
       base_path = ENV['OUTPUT_FIXTURES_TO_PATH']
 
       if base_path.blank?

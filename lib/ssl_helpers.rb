@@ -72,7 +72,7 @@ module SslHelpers
 
     def url_for(options = nil)
       if options.kind_of?(Hash)
-        options.merge!(protocol: "https://") if options[:private] == "true"
+        options.merge!(protocol: 'https://') if options[:private] == 'true'
 
         # If the protocol is HTTPS and we're not already there, and we haven't explicitly
         # asked for the path only, send the whole address so we're forced to HTTPS
@@ -88,7 +88,7 @@ module SslHelpers
     end
 
     def polymorphic_url(record_or_hash_or_array, options = {})
-      raise "called polymorphic_url"
+      raise 'called polymorphic_url'
       options.merge!(protocol: 'https://') if options.kind_of?(Hash)
       super(record_or_hash_or_array, options)
     end
@@ -100,8 +100,8 @@ module SslHelpers
 
     # Used in contexts other than ActionController and ActionView
     def url_for(options)
-      if options.kind_of?(Hash) && options[:private] == "true"
-        options.merge!(protocol: "https://")
+      if options.kind_of?(Hash) && options[:private] == 'true'
+        options.merge!(protocol: 'https://')
       end
 
       super(options)

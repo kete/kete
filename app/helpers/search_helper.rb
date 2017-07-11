@@ -94,10 +94,10 @@ module SearchHelper
     num_images_to_show = options[:num_images_to_show] ? options[:num_images_to_show] : SystemSetting.number_of_related_images_to_display
     num_images_to_show = [images.length, num_images_to_show].min
 
-    output = "<ul class=\"images-list\">"
+    output = '<ul class="images-list">'
 
     images[0, num_images_to_show].each do |image|
-      output += "<li>"
+      output += '<li>'
       img_html_tag = image_tag image.thumbnail_file.public_filename, alt: altify(image.title)
       tabindex_attr = options[:tabindex] ? options[:tabindex] : 1
 
@@ -107,19 +107,19 @@ module SearchHelper
         output += img_html_tag
       end
 
-      output += "</li>"
+      output += '</li>'
     end
 
-    output += "<li>...</li>" if num_images_to_show < images.length
-    output += "</ul>"
+    output += '<li>...</li>' if num_images_to_show < images.length
+    output += '</ul>'
     output.html_safe
   end
 
   def will_paginate_atom(collection, xml)
     total_pages = WillPaginate::ViewHelpers.total_pages_for_collection(collection)
-    xml.send("atom:link", rel: 'next', href: derive_url_for_rss(page: collection.current_page + 1)) unless collection.current_page.eql?(total_pages)
-    xml.send("atom:link", rel: 'prev', href: derive_url_for_rss(page: collection.current_page - 1)) unless collection.current_page.eql?(1)
-    xml.send("atom:link", rel: 'last', href: derive_url_for_rss(page: total_pages))
+    xml.send('atom:link', rel: 'next', href: derive_url_for_rss(page: collection.current_page + 1)) unless collection.current_page.eql?(total_pages)
+    xml.send('atom:link', rel: 'prev', href: derive_url_for_rss(page: collection.current_page - 1)) unless collection.current_page.eql?(1)
+    xml.send('atom:link', rel: 'last', href: derive_url_for_rss(page: total_pages))
   end
 
   def other_results

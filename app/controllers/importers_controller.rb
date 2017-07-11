@@ -8,7 +8,7 @@ class ImportersController < ApplicationController
   # everything else is handled by application.rb
   before_filter :login_required, only: [:list, :index, :new_related_set_from_archive_file]
 
-  permit "site_admin or admin of :current_basket or tech_admin of :site", except: [:new_related_set_from_archive_file, :create]
+  permit 'site_admin or admin of :current_basket or tech_admin of :site', except: [:new_related_set_from_archive_file, :create]
 
   before_filter :permitted_to_create_imports, only: [:new_related_set_from_archive_file, :create]
 
@@ -33,7 +33,7 @@ class ImportersController < ApplicationController
   end
 
   def choose_contributing_user
-    @potential_contributing_users = User.joins(:roles_user).where("roles_users.role_id in (?)", @current_basket.accepted_roles)
+    @potential_contributing_users = User.joins(:roles_user).where('roles_users.role_id in (?)', @current_basket.accepted_roles)
     @user_options = @potential_contributing_users.map { |u| [u.user_name, u.id] }
   end
 
@@ -145,7 +145,7 @@ class ImportersController < ApplicationController
               if !status[:error].blank?
                 done_message = t('importers_controller.get_progress.error_message', error: status[:error].gsub("\n", '<br />'))
               end
-              page.hide("spinner")
+              page.hide('spinner')
               page.replace_html 'done', done_message
               unless params[:related_topic].blank?
                 page.replace_html('exit', '<p>' + link_to(t('importers_controller.get_progress.back_to', item_title: related_topic.title),
@@ -161,7 +161,7 @@ class ImportersController < ApplicationController
           message = t('importers_controller.get_progress.import_failed')
           flash[:notice] = message
           render :update do |page|
-            page.hide("spinner")
+            page.hide('spinner')
             unless params[:related_topic].blank?
               page.replace_html 'done', '<p>' + message + ' ' + link_to(t('importers_controller.get_progress.to_related_topics'),
                                                                         action: 'show',
@@ -181,7 +181,7 @@ class ImportersController < ApplicationController
         message += " - #{$!}" unless $!.blank?
         flash[:notice] = message
         render :update do |page|
-          page.hide("spinner")
+          page.hide('spinner')
           unless params[:related_topic].blank?
             page.replace_html 'done', '<p>' + message + ' ' + link_to(t('importers_controller.get_progress.to_related_topics'),
                                                                       action: 'show',
@@ -206,7 +206,7 @@ class ImportersController < ApplicationController
   end
 
   def fetch_applicable_extended_fields
-    render partial: "extended_field_selection", locals: {
+    render partial: 'extended_field_selection', locals: {
       id: params[:id],
       zoom_class: params[:zoom_class],
       topic_type_id: params[:topic_type_id]
@@ -222,7 +222,7 @@ class ImportersController < ApplicationController
   def permitted_to_create_imports
     if params[:action] == 'create' && !importing_archive_file?
       # if we aren't creating an import for archive sets, the rules of who can access the 'new' action apply
-      user_is_authorized = permit?("site_admin or admin of :current_basket or tech_admin of :site")
+      user_is_authorized = permit?('site_admin or admin of :current_basket or tech_admin of :site')
     else
       user_is_authorized = current_user_can_import_archive_sets?
     end

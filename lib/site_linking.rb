@@ -1,13 +1,13 @@
 module SiteLinking
   unless included_modules.include? SiteLinking
     def set_kete_net_urls
-      @kete_net = "http://kete.net.nz/site"
+      @kete_net = 'http://kete.net.nz/site'
       @kete_sites = "#{@kete_net}/kete_sites"
       @new_kete_site = "#{@kete_sites}/new"
     end
 
     def check_nessesary_constants_set
-      raise "Pretty Site Name and Site URL constants are not set, are you sure you restarted your server after you configured your Kete site?" if SystemSetting.full_site_url.blank? || SystemSetting.pretty_site_name.blank?
+      raise 'Pretty Site Name and Site URL constants are not set, are you sure you restarted your server after you configured your Kete site?' if SystemSetting.full_site_url.blank? || SystemSetting.pretty_site_name.blank?
     end
 
     def site_listing
@@ -41,14 +41,14 @@ module SiteLinking
       end
       render :update do |page|
         page.hide('spinner')
-        page.replace_html("top_message", top_message)
+        page.replace_html('top_message', top_message)
       end
     end
   end
 end
 
 class SiteLinkingResource < ActiveResource::Base
-  self.site = "http://kete.net.nz/site/"
-  self.element_name = "kete_site"
+  self.site = 'http://kete.net.nz/site/'
+  self.element_name = 'kete_site'
   self.timeout = 60
 end

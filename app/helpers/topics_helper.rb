@@ -1,31 +1,31 @@
 module TopicsHelper
   def topic_type_breadcrumb_for(topic)
-    html = "<ul class=\"breadcrumb\">"
+    html = '<ul class="breadcrumb">'
     count = 0
     topic_types = topic.topic_type.self_and_ancestors
     topic_types.each do |tt|
       count += 1
-      html += "<li class=\""
+      html += '<li class="'
 
       classes = Array.new
-      classes << "first" if count == 1
+      classes << 'first' if count == 1
 
       if topic_types.size == count
-        classes << "selected-topic-type"
+        classes << 'selected-topic-type'
       else
-        classes << "ancestor-topic-type"
+        classes << 'ancestor-topic-type'
       end
 
-      html += classes.join(" ") +"\">"
+      html += classes.join(' ') +'">'
 
       unless count == 1
-        html += "<span class=\"breadcrumb-delimiter\">"
+        html += '<span class="breadcrumb-delimiter">'
         html += t('base.breadcrumb_delimiter')
-        html += "</span>"
+        html += '</span>'
       end
       html += link_to(h(tt.name), url_for_topics_of_type(tt))
     end
-    html += "</ul>"
+    html += '</ul>'
   end
 end
 

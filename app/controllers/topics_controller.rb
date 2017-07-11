@@ -14,7 +14,7 @@ class TopicsController < ApplicationController
         date = DateTime.parse(params[:updated_since]) if params[:updated_since]
         date = DateTime.now.beginning_of_month        if date.nil?
 
-        @list_type = "Topic"
+        @list_type = 'Topic'
         @items = Topic.updated_since(date)
         render 'shared/list'
       end
@@ -50,7 +50,7 @@ class TopicsController < ApplicationController
 
     # logic to prevent plain old members from editing
     # site basket homepage
-    if @topic != @site_basket.index_topic or permit? "site_admin of :site_basket or admin of :site_basket"
+    if @topic != @site_basket.index_topic or permit? 'site_admin of :site_basket or admin of :site_basket'
       @topic_types = @topic.topic_type.full_set
     else
       # this is the site's index page, but they don't have permission to edit
@@ -105,7 +105,7 @@ class TopicsController < ApplicationController
       @topic.do_notifications_if_pending(1, current_user)
 
       # send notifications of private item create
-      private_item_notification_for(@topic, :created) if params[:topic][:private] == "true"
+      private_item_notification_for(@topic, :created) if params[:topic][:private] == 'true'
 
       case where_to_redirect
       when 'show_related'
@@ -119,7 +119,7 @@ class TopicsController < ApplicationController
         topic: @topic
       else
         flash[:notice] = t('topics_controller.create.created')
-        redirect_to action: 'show', id: @topic, private: (params[:topic][:private] == "true")
+        redirect_to action: 'show', id: @topic, private: (params[:topic][:private] == 'true')
       end
     else
       render action: 'new'
@@ -156,13 +156,13 @@ class TopicsController < ApplicationController
       @successful = false
 
     # logic to prevent plain old members from editing site basket homepage
-    elsif @topic != @site_basket.index_topic || permit?("site_admin of :site_basket or admin of :site_basket")
+    elsif @topic != @site_basket.index_topic || permit?('site_admin of :site_basket or admin of :site_basket')
       version_after_update = @topic.max_version + 1
 
       @topic.attributes = params[:topic]
-      logger.debug("before topic save")
+      logger.debug('before topic save')
       @successful = @topic.save
-      logger.debug("after topic save")
+      logger.debug('after topic save')
     else
       # they don't have permission
       # this will redirect them to edit
@@ -174,12 +174,12 @@ class TopicsController < ApplicationController
     if @successful
 
       after_successful_zoom_item_update(@topic, version_after_update)
-      logger.debug("after zoom item update")
+      logger.debug('after zoom item update')
       flash[:notice] = t('topics_controller.update.updated')
 
-      redirect_to_show_for @topic, private: (params[:topic][:private] == "true")
+      redirect_to_show_for @topic, private: (params[:topic][:private] == 'true')
     else
-      if @topic != @site_basket.index_topic or permit?("site_admin of :site_basket or admin of :site_basket")
+      if @topic != @site_basket.index_topic or permit?('site_admin of :site_basket or admin of :site_basket')
         @topic_types = @topic.topic_type.full_set
       end
       render action: 'edit'

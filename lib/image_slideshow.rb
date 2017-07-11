@@ -13,7 +13,7 @@ module ImageSlideshow
     # We have to use @template.content_tag in this case because we don't have direct access to
     # view helpers in this scope
     def slideshow_div
-      html = @template.content_tag('div', render_selected_image, { id: "selected-image-display" })
+      html = @template.content_tag('div', render_selected_image, { id: 'selected-image-display' })
       html += slideshow_updater unless topic_slideshow?
       html
     end
@@ -69,11 +69,11 @@ module ImageSlideshow
     # hash keys have to be strings so as not to trip up later comparisons
     def slideshow_key
       key = {
-        "basket" => @current_basket.id,
-        "order" => @current_basket.index_page_image_as,
-        "zoom_class" => 'StillImage'
+        'basket' => @current_basket.id,
+        'order' => @current_basket.index_page_image_as,
+        'zoom_class' => 'StillImage'
       }
-      key.merge!("slideshow_topic_id" => params[:topic_id].to_i) if topic_slideshow?
+      key.merge!('slideshow_topic_id' => params[:topic_id].to_i) if topic_slideshow?
       key
     end
 
@@ -108,7 +108,7 @@ module ImageSlideshow
         # previous links etc), check to see if that url is in the results
         if image_slideshow.in_set?(@current_url)
           # Extract the id of that image from the @current_url
-          @current_id = $1 if @current_url.split("/").last =~ /([0-9]+)(.*)/
+          @current_id = $1 if @current_url.split('/').last =~ /([0-9]+)(.*)/
         else
           # The current_url is not in the results (possible corrupt data)
           # so lets populate new data
@@ -187,7 +187,7 @@ module ImageSlideshow
 
     # Finds all basket images scoped to the current topic
     def find_related_images(limit=20)
-      raise "ERROR: Tried to populate topic slideshow without passing in params[:topic_id]" unless params[:topic_id]
+      raise 'ERROR: Tried to populate topic slideshow without passing in params[:topic_id]' unless params[:topic_id]
       find_args_hash = { select: 'still_images.id, still_images.title, still_images.created_at, still_images.basket_id, still_images.file_private', limit: limit }
       find_args_hash.merge!(public_conditions) unless display_private_items?
       find_args_hash[:order] = 'still_images.created_at desc'

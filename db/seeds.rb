@@ -2,7 +2,7 @@
 # many times we run it after first run)
 
 def load_yaml(file: nil, model: nil, unique_attrs: nil)
-  fail "unique_attrs must be an array" unless unique_attrs.is_a?(Array)
+  fail 'unique_attrs must be an array' unless unique_attrs.is_a?(Array)
 
   yaml_file = File.join(Rails.root, 'db', 'yaml', file)
   yaml_data = YAML.load_file(yaml_file)
@@ -32,7 +32,7 @@ def log(message)
   puts message unless Rails.env.test?
 end
 
-log "Loading seeds ..."
+log 'Loading seeds ...'
 
 load_yaml(file: 'roles.yml',
           model: Role,
@@ -67,4 +67,4 @@ load_yaml(file: 'licenses.yml',
           model: License,
           unique_attrs: [:name])
 
-log "done."
+log 'done.'

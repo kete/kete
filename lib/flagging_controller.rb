@@ -35,7 +35,7 @@ module FlaggingController
       # Reload to public version so zoom code works as expected
       @item.reload
 
-      raise "We are not on public version" if @item.respond_to?(:private) && @item.private?
+      raise 'We are not on public version' if @item.respond_to?(:private) && @item.private?
 
       flagging_clear_caches_and_update_zoom(@item)
 

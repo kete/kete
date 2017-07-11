@@ -5,7 +5,7 @@ def lint(name)
   FactoryGirl.lint(fs)
 end
 
-shared_examples "a working factory" do |name|
+shared_examples 'a working factory' do |name|
   describe "The #{name} factory" do
     it ":#{name} lints" do
       expect { lint(name) }.to_not raise_error
@@ -20,18 +20,18 @@ shared_examples "a working factory" do |name|
 end
 
 describe 'Factories' do
-  it_behaves_like "a working factory", :comment
-  it_behaves_like "a working factory", :basket
-  it_behaves_like "a working factory", :audio_recording
-  it_behaves_like "a working factory", :document
-  it_behaves_like "a working factory", :image_file
-  it_behaves_like "a working factory", :still_image
-  it_behaves_like "a working factory", :topic
-  it_behaves_like "a working factory", :topic_type
-  it_behaves_like "a working factory", :content_type
-  it_behaves_like "a working factory", :user
-  it_behaves_like "a working factory", :video
-  it_behaves_like "a working factory", :web_link
+  it_behaves_like 'a working factory', :comment
+  it_behaves_like 'a working factory', :basket
+  it_behaves_like 'a working factory', :audio_recording
+  it_behaves_like 'a working factory', :document
+  it_behaves_like 'a working factory', :image_file
+  it_behaves_like 'a working factory', :still_image
+  it_behaves_like 'a working factory', :topic
+  it_behaves_like 'a working factory', :topic_type
+  it_behaves_like 'a working factory', :content_type
+  it_behaves_like 'a working factory', :user
+  it_behaves_like 'a working factory', :video
+  it_behaves_like 'a working factory', :web_link
 
   describe ':web_link' do
     it 'building: has the expected default title' do

@@ -7,7 +7,7 @@ module WorkerControllerHelpers
     # in order to prevent conflicts from other Kete installations on the same host
     # we need to add a site name prefix to our worker key
     def worker_key_for(worker_type)
-      SystemSetting.site_name.gsub(/\W/, '_') + "_" + worker_type.to_s
+      SystemSetting.site_name.gsub(/\W/, '_') + '_' + worker_type.to_s
     end
 
     def key_parts_from(options)

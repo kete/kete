@@ -1,4 +1,4 @@
-require "importer"
+require 'importer'
 # Imports Filemaker Pro's FMPDSORESULT format
 # for importing topics without related images or anything
 class FmpdsoresultNoImagesImporterWorker < BackgrounDRb::MetaWorker
@@ -12,6 +12,6 @@ class FmpdsoresultNoImagesImporterWorker < BackgrounDRb::MetaWorker
   # do_work method is defined in Importer module
   def create(args = nil)
     importer_simple_setup
-    @xml_path_to_record = "FMPDSORESULT/ROW"
+    @xml_path_to_record = 'FMPDSORESULT/ROW'
   end
 end

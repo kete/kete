@@ -58,7 +58,7 @@ class Feed < ActiveRecord::Base
 
   # for backgroundrb feeds_worker support
   def to_worker_key
-    @feed_worker_key ||= id.to_s + "_feed_worker"
+    @feed_worker_key ||= id.to_s + '_feed_worker'
   end
 
   private
@@ -69,7 +69,7 @@ class Feed < ActiveRecord::Base
   end
 
   def convert_feed_to_http
-    self.url = self.url.strip.gsub("feed:", "http:") if self.url.present?
+    self.url = self.url.strip.gsub('feed:', 'http:') if self.url.present?
   end
 
   include WorkerControllerHelpers # for deleting bgrb workers

@@ -8,7 +8,7 @@ require 'user'
 class OaiPmhRepositoryProvider < OAI::Provider::Base
   if SystemSetting.provide_oai_pmh_repository
     repository_name SystemSetting.pretty_site_name
-    repository_url "/oai_pmh_repository"
+    repository_url '/oai_pmh_repository'
     record_prefix ''
     admin_email SystemSetting.admin_email
 

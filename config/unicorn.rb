@@ -13,13 +13,13 @@ working_directory '/home/deploy/kete/current'
 
 # Listen on a Unix data socket
 pid '/home/deploy/kete/shared/pids/unicorn.pid'
-listen "/home/deploy/kete/tmp/sockets/kete.sock", backlog: 2048
+listen '/home/deploy/kete/tmp/sockets/kete.sock', backlog: 2048
 
 stderr_path '/home/deploy/kete/shared/log/unicorn.log'
 stdout_path '/home/deploy/kete/shared/log/unicorn.log'
 
 before_exec do |server|
-  ENV["BUNDLE_GEMFILE"] = "/home/deploy/kete/current/Gemfile"
+  ENV['BUNDLE_GEMFILE'] = '/home/deploy/kete/current/Gemfile'
 end
 
 before_fork do |server, worker|
@@ -38,7 +38,7 @@ before_fork do |server, worker|
 
   if File.exists?(old_pid) && server.pid != old_pid
     begin
-      Process.kill("QUIT", File.read(old_pid).to_i)
+      Process.kill('QUIT', File.read(old_pid).to_i)
     rescue Errno::ENOENT, Errno::ESRCH
       # someone else did our job for us
     end

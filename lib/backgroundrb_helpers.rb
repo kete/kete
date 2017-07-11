@@ -8,7 +8,7 @@ module BackgroundrbHelpers
       rescue
         started = false
         # we log that backgroundrb is not running
-        Rails.logger.info("Backgroundrb is not running when it should be. Make sure to get it going again!")
+        Rails.logger.info('Backgroundrb is not running when it should be. Make sure to get it going again!')
       end
       started
     end

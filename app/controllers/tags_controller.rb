@@ -13,7 +13,7 @@ class TagsController < ApplicationController
     @current_page = (params[:page] && params[:page].to_i > 0) ? params[:page].to_i : 1
     # clouds can accommodate more tags per page than category view
     @number_per_page = 75
-    @number_per_page = 25 if @type == "categories"
+    @number_per_page = 25 if @type == 'categories'
 
     @tags = @current_basket.tag_counts_array(order: @order,
                                              direction: @direction,

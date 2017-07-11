@@ -10,9 +10,9 @@ namespace :kete do
     task :restart do
       restart_result = system("touch #{RAILS_ROOT}/tmp/restart.txt")
       if restart_result
-        puts "Restarted Application"
+        puts 'Restarted Application'
       else
-        puts "Problem restarting Application."
+        puts 'Problem restarting Application.'
       end
     end
 
@@ -31,7 +31,7 @@ namespace :kete do
       end
       require 'ftools'
       File.cp("#{RAILS_ROOT}/config/locales.yml.example", path)
-      puts "config/locales.yml.example copied to config/locales.yml"
+      puts 'config/locales.yml.example copied to config/locales.yml'
     end
 
     desc 'Overwrite existing locales by copying config/locales.yml.example to config/locales.yml'
@@ -42,7 +42,7 @@ namespace :kete do
       STDIN.gets
       path = "#{RAILS_ROOT}/config/locales.yml"
       File.delete(path) if File.exist?(path)
-      Rake::Task["kete:tools:set_locales"].invoke
+      Rake::Task['kete:tools:set_locales'].invoke
     end
 
     namespace :locales do
@@ -90,10 +90,10 @@ namespace :kete do
 
       desc 'Stops and clears zebra'
       task zebra: :environment do
-        Rake::Task["zebra:stop"].invoke
-        Rake::Task["zebra:init"].invoke
+        Rake::Task['zebra:stop'].invoke
+        Rake::Task['zebra:init'].invoke
         ENV['ZEBRA_DB'] = 'private'
-        Rake::Task["zebra:init"].execute(ENV)
+        Rake::Task['zebra:init'].execute(ENV)
       end
     end
 
@@ -101,13 +101,13 @@ namespace :kete do
     task resize_images: :environment do
       @logger = Logger.new(RAILS_ROOT + "/log/resize_images_#{Time.now.strftime('%Y-%m-%d_%H:%M:%S')}.log")
 
-      puts "Resizing/created images based on SystemSetting.image_sizes..."
-      @logger.info "Starting image file resizing."
+      puts 'Resizing/created images based on SystemSetting.image_sizes...'
+      @logger.info 'Starting image file resizing.'
 
-      force_resize = (ENV['FORCE_RESIZE'] && ENV['FORCE_RESIZE'] == "true") ? true : false
+      force_resize = (ENV['FORCE_RESIZE'] && ENV['FORCE_RESIZE'] == 'true') ? true : false
       if force_resize
-        puts "All image sizes will be recreated from originals, even if the same size image file already exists."
-        @logger.info "FORCE_RESIZE=true"
+        puts 'All image sizes will be recreated from originals, even if the same size image file already exists.'
+        @logger.info 'FORCE_RESIZE=true'
       end
 
       # get a list of thumbnail keys
@@ -117,10 +117,10 @@ namespace :kete do
       resized_images_count = 0
       created_images_count = 0
 
-      @logger.info "Looping through parent items"
+      @logger.info 'Looping through parent items'
 
       # loop over every parent image file
-      ImageFile.all(conditions: ["parent_id IS NULL"]).each do |parent_image_file|
+      ImageFile.all(conditions: ['parent_id IS NULL']).each do |parent_image_file|
 
         @logger.info "  Fetched parent image #{parent_image_file.id}"
 
@@ -128,7 +128,7 @@ namespace :kete do
         missing_image_size_keys = image_size_keys.dup
 
         # loop over the parent images files children thumbnails
-        ImageFile.all(conditions: ["parent_id = ?", parent_image_file]).each do |child_image_file|
+        ImageFile.all(conditions: ['parent_id = ?', parent_image_file]).each do |child_image_file|
 
           @logger.info "    Fetched child image #{child_image_file.id}"
 
@@ -146,7 +146,7 @@ namespace :kete do
           resize_image_from_original(child_image_file, parent_image_file.full_filename)
 
           # increase the amount of resized images
-          @logger.info "      Incrementing resizes images count"
+          @logger.info '      Incrementing resizes images count'
           resized_images_count += 1
 
         end
@@ -175,7 +175,7 @@ namespace :kete do
           resize_image_from_original(image_file, parent_image_file.full_filename)
 
           # increase the amount of created images
-          @logger.info "      Incrementing created images count"
+          @logger.info '      Incrementing created images count'
           created_images_count += 1
 
         end
@@ -249,7 +249,7 @@ namespace :kete do
 
     namespace :tiny_mce do
 
-      desc "Do everything that we need done, like adding data to the db, for an upgrade."
+      desc 'Do everything that we need done, like adding data to the db, for an upgrade.'
       task configure_imageselector: ['kete:tools:tiny_mce:write_default_imageselector_providers_json',
                           'kete:tools:tiny_mce:write_default_imageselector_sizes_json']
 
@@ -339,20 +339,20 @@ namespace :kete do
         # gather topics
         topics = Topic.find(:all, conditions: ENV['CONDITIONS'])
 
-        raise "No matching topics." unless topics.size > 0
+        raise 'No matching topics.' unless topics.size > 0
 
         user = User.find(ENV['USER'])
 
         should_rebuild = ENV['ZOOM'].present? && ENV['ZOOM'] == 'true' ? true : false
 
-        raise "ZOOM option current broken. Feel free to fix and submit a patch!" if should_rebuild
+        raise 'ZOOM option current broken. Feel free to fix and submit a patch!' if should_rebuild
 
         log_file = "#{Rails.root}/log/move_to_basket_#{Time.now.strftime('%Y-%m-%d_%H:%M:%S')}.log"
         @logger = Logger.new(log_file)
 
         puts "Opened logging in #{log_file}"
 
-        @logger.info("Target basket is:" + to_basket.id.to_s)
+        @logger.info('Target basket is:' + to_basket.id.to_s)
         @logger.info("User is: #{user.id} " + user.login)
 
         relationships_no_change_count = 0
@@ -360,9 +360,9 @@ namespace :kete do
         topics_moved_count = 0
 
         topics.each do |topic|
-          @logger.info("Topic: " + topic.id.to_s)
+          @logger.info('Topic: ' + topic.id.to_s)
 
-          show_path_stub = "/topics/show/" + topic.id.to_s + "-"
+          show_path_stub = '/topics/show/' + topic.id.to_s + '-'
           old_basket = topic.basket
           old_basket_path = old_basket.urlified_name
           old_topic_url_stub = old_basket_path + show_path_stub
@@ -382,7 +382,7 @@ namespace :kete do
           successful = topic.save
 
           if successful
-            @logger.info("moved topic")
+            @logger.info('moved topic')
 
             topic.reload
 
@@ -398,7 +398,7 @@ namespace :kete do
               next if kind_count == 0
 
               table_name = kind
-              table_name = "topics" if kind.include?("child") || kind.include?("parent")
+              table_name = 'topics' if kind.include?('child') || kind.include?('parent')
 
               clause = "#{table_name}.id >= :start_id"
               clause_values = Hash.new
@@ -424,7 +424,7 @@ namespace :kete do
                                                              limit: batch_size,
                                                              order: "#{table_name}.id")
 
-                @logger.info("number to do in batch: " + related_items.size.to_s)
+                @logger.info('number to do in batch: ' + related_items.size.to_s)
 
                 related_items.each do |item|
                   kind_count_so_far += 1
@@ -457,13 +457,13 @@ namespace :kete do
                   elsif batch_count == batch_size
                     # reset the next record to first in batch
                     batch_count = 1
-                    @logger.info("last_id of batch: " + item.id.to_s)
+                    @logger.info('last_id of batch: ' + item.id.to_s)
                   end
                   last_id = item.id
                 end
                 if batch_count < batch_size && batch_count != 1
                   batch_count = 1
-                  @logger.info("last_id of batch: " + last_id.to_s)
+                  @logger.info('last_id of batch: ' + last_id.to_s)
                 end
               end
             end
@@ -572,7 +572,7 @@ namespace :kete do
           width: img.columns,
           height: img.rows
         )
-        @logger.info "      Child image record updated"
+        @logger.info '      Child image record updated'
       end
     end
   end

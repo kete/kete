@@ -1,10 +1,11 @@
 # Built-in config: https://github.com/bbatsov/rubocop/blob/master/config/default.yml
 # We do not typically use/need class documentation
 Documentation:
-    Enabled: false
+  Enabled: false
 
 Metrics/LineLength:
-  Max: 120
+  Enabled: false
+  # Max: 120
 
 AllCops:
   Include:

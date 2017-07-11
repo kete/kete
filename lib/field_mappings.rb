@@ -17,8 +17,8 @@ module FieldMappings
       end
 
       klass.send :belongs_to, :extended_field
-      klass.send :belongs_to, :form_field, class_name: "ExtendedField", foreign_key: "extended_field_id"
-      klass.send :belongs_to, :required_form_field, class_name: "ExtendedField", foreign_key: "extended_field_id"
+      klass.send :belongs_to, :form_field, class_name: 'ExtendedField', foreign_key: 'extended_field_id'
+      klass.send :belongs_to, :required_form_field, class_name: 'ExtendedField', foreign_key: 'extended_field_id'
 
       klass.extend(ClassMethods)
     end
@@ -86,9 +86,9 @@ module FieldMappings
 
     def validate
       if self.is_a?(ContentTypeToFieldMapping) && private_only? && self.content_type.class_name == 'User'
-        errors.add_to_base("Users cannot have private only mappings.")
+        errors.add_to_base('Users cannot have private only mappings.')
       elsif required? && private_only?
-        errors.add_to_base("Mapping cannot be required and private only.")
+        errors.add_to_base('Mapping cannot be required and private only.')
         false
       else
         true

@@ -7,7 +7,7 @@ class ExtendedFieldsController < ApplicationController
 
   before_filter :set_page_title
 
-  permit "site_admin or admin of :site or tech_admin of :site",
+  permit 'site_admin or admin of :site or tech_admin of :site',
           except: [ :add_field_to_multiples, :fetch_subchoices, :fetch_topics_from_topic_type, :validate_topic_type_entry ]
 
   active_scaffold :extended_field do |config|
@@ -82,7 +82,7 @@ class ExtendedFieldsController < ApplicationController
       dom_id = "#{id_for_extended_field(options[:extended_field])}__level_#{params[:for_level]}"
 
       if blank_value || (options[:choices].blank? && !extended_field.user_choice_addition?)
-        page.replace_html dom_id, ""
+        page.replace_html dom_id, ''
       else
         page.replace_html dom_id,
           partial: "extended_fields/choice_#{params[:editor]}_editor",
@@ -111,17 +111,17 @@ class ExtendedFieldsController < ApplicationController
 
     topic_type_ids = TopicType.where(id: parent_topic_type).full_set.collect { |a| a.id } rescue []
 
-    topics = Topic.where("title LIKE ? AND topic_type_id IN (?)", "%#{search_term}%", topic_type_ids).order("title ASC").limit(10)
+    topics = Topic.where('title LIKE ? AND topic_type_id IN (?)', "%#{search_term}%", topic_type_ids).order('title ASC').limit(10)
     logger.debug("Topics are: #{topics.inspect}")
 
     topics = topics.map { |entry|
-      @template.content_tag("li", "#{entry.title.sanitize} (#{@template.url_for(urlified_name: entry.basket.urlified_name,
+      @template.content_tag('li', "#{entry.title.sanitize} (#{@template.url_for(urlified_name: entry.basket.urlified_name,
                                                                           controller: 'topics',
                                                                           action: 'show',
                                                                           id: entry,
                                                                           only_path: false).sub("/#{I18n.locale}/", '/')})")
     }
-    render inline: @template.content_tag("ul", topics.uniq)
+    render inline: @template.content_tag('ul', topics.uniq)
   end
 
   def validate_topic_type_entry

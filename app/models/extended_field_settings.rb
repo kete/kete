@@ -18,7 +18,7 @@ class ExtendedFieldSettings
 
   def self.settings
     {
-      base_url: "/",
+      base_url: '/',
       # ROB:  presumably it's possible for baskets to have different
       #       base-URLs on the same server. Lets not use the system 
       #       one for the time being.

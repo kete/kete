@@ -143,10 +143,10 @@ class ExtendedContentParser
     # Note: We use DateTime instead of just Date/Time so that we can get dates before 1900
     date_conversion_for_extended_content_hash!(data)     
 
-    if data.has_key?("value") && data.has_key?("circa") && data['circa'] == '1'
+    if data.has_key?('value') && data.has_key?('circa') && data['circa'] == '1'
       five_years_before, five_years_after = (data['value'].to_i - 5), (data['value'].to_i + 5)
-      key_value_pairs << [ "dc:date", Time.zone.parse("#{five_years_before}-01-01").xmlschema ]
-      key_value_pairs << [ "dc:date", Time.zone.parse("#{five_years_after}-12-31").xmlschema ]
+      key_value_pairs << [ 'dc:date', Time.zone.parse("#{five_years_before}-01-01").xmlschema ]
+      key_value_pairs << [ 'dc:date', Time.zone.parse("#{five_years_after}-12-31").xmlschema ]
     end
 
     xml_value = flatten_any_extended_content_trees(data)
@@ -154,10 +154,10 @@ class ExtendedContentParser
 
     # safe_send will drop the namespace from the element and therefore our dc elements
     # will not be parsed by zebra, only use safe_send on non-dc elements
-    if data["xml_element_name"].present?
-      xml_name = data["xml_element_name"]
+    if data['xml_element_name'].present?
+      xml_name = data['xml_element_name']
 
-      unless data["xml_element_name"].include?("dc:")
+      unless data['xml_element_name'].include?('dc:')
         xml_name = escape_xml_name(xml_name)  
       end
 
@@ -184,7 +184,7 @@ class ExtendedContentParser
       # return nil if xml_value.nil?
 
       # If data["xml_element_name"] exists this is handled by get_non_anonymous_key_value_pairs()
-      if data["xml_element_name"].blank?
+      if data['xml_element_name'].blank?
         anonymous_fields = [original_field_key, xml_value]
       end
     end
@@ -193,7 +193,7 @@ class ExtendedContentParser
   end
 
   def self.date_conversion_for_extended_content_hash!(data) 
-    if data.has_key?("value") && data.has_key?("circa")
+    if data.has_key?('value') && data.has_key?('circa')
       data['value'] = Time.zone.parse("#{data['value']}-01-01").xmlschema
     end
   end
@@ -205,8 +205,8 @@ class ExtendedContentParser
     #  "2"=>"Festivals",
     #  "3"=>"New Year"}
 
-    if data.has_key?("value")
-      data["value"]
+    if data.has_key?('value')
+      data['value']
     else    
       # This means we're dealing with a second set of nested values, to build these now.
       data_for_values = data.reject { |k, v| k == 'xml_element_name' || k == 'label' }.values

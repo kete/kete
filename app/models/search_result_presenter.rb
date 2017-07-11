@@ -20,24 +20,24 @@ class SearchResultPresenter
   end
 
   def id
-    (model.respond_to? :id) ? model.id : ""
+    (model.respond_to? :id) ? model.id : ''
   end
 
   def class
-    (model.respond_to? :class) ? model.class : ""
+    (model.respond_to? :class) ? model.class : ''
   end
 
   def title
-    (model.respond_to? :title) ? model.title : ""
+    (model.respond_to? :title) ? model.title : ''
   end
 
   def short_summary
-    summary = ""
+    summary = ''
 
     if model.respond_to? :description
-      summary = model.description || ""
+      summary = model.description || ''
     elsif model.respond_to? :short_summary
-      summary =  model.short_summary || ""
+      summary =  model.short_summary || ''
     end
 
     summary.sanitize.truncate(180, omission: '...')
@@ -67,7 +67,7 @@ class SearchResultPresenter
   end
 
   def locally_hosted
-    (model.respond_to? :locally_hosted) ? model.locally_hosted : ""
+    (model.respond_to? :locally_hosted) ? model.locally_hosted : ''
   end
 
   def topic_types
@@ -75,15 +75,15 @@ class SearchResultPresenter
   end
 
   def dc_dates
-    (model.respond_to? :dc_dates) ? model.dc_dates : ""
+    (model.respond_to? :dc_dates) ? model.dc_dates : ''
   end
 
   def thumbnail
-    (model.respond_to? :thumbnail) ? model.thumbnail : ""
+    (model.respond_to? :thumbnail) ? model.thumbnail : ''
   end
 
   def thumbnail_file
-    (model.respond_to? :thumbnail_file) ? model.thumbnail_file : ""
+    (model.respond_to? :thumbnail_file) ? model.thumbnail_file : ''
   end  
 
   private

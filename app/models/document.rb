@@ -31,8 +31,8 @@ class Document < ActiveRecord::Base
   include ItemPrivacy::All
 
   # Do not version self.file_private
-  self.non_versioned_columns << "file_private"
-  self.non_versioned_columns << "private_version_serialized"
+  self.non_versioned_columns << 'file_private'
+  self.non_versioned_columns << 'private_version_serialized'
 
   def self.updated_since(date)
     # Document.where( <Document or its join tables is newer than date>  )
@@ -47,8 +47,8 @@ class Document < ActiveRecord::Base
     join_table = ::Document.outer_joins(:taggings).
                             outer_joins(:contributions).
                             outer_joins(:content_item_relations).
-                            joins("LEFT OUTER JOIN  deleted_content_item_relations " +
-                                  "ON deleted_content_item_relations.related_item_id = documents.id " +
+                            joins('LEFT OUTER JOIN  deleted_content_item_relations ' +
+                                  'ON deleted_content_item_relations.related_item_id = documents.id ' +
                                   "AND deleted_content_item_relations.related_item_type = 'Document'")
 
     result = join_table.where(

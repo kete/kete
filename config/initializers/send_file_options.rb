@@ -74,12 +74,12 @@ Notes:
 # Select which send_file method to use to send private files to a browser from a Kete instance.
 # Valid values are "", "nginx", or "apache".
 
-SENDFILE_METHOD = ""
+SENDFILE_METHOD = ''
 
 
 
 # (Do not edit below here.)
 
-unless ["", "apache", "nginx"].member?(SENDFILE_METHOD)
+unless ['', 'apache', 'nginx'].member?(SENDFILE_METHOD)
   print "/!\\ WARNING: Incorrect value for SENDFILE_METHOD in config/initializers/send_file_options.rb on line 77. Should be one of \"\", \"apache\", or \"nginx\"; but was \"#{SENDFILE_METHOD}\". /!\\\n"
 end

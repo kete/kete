@@ -14,6 +14,6 @@ module IndexPageHelper
 
     rule_bases = I18n.available_locales_with_labels.keys.collect { |key| '/' + key + '/' }
     rule_bases << '/'
-    @rule_specs = rule_bases.collect { |base| "Disallow: " + base }
+    @rule_specs = rule_bases.collect { |base| 'Disallow: ' + base }
   end
 end

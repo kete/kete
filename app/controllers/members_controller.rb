@@ -1,6 +1,6 @@
 class MembersController < ApplicationController
 
-  permit "site_admin or admin of :current_basket", except: [:index, :list, :join, :remove, :rss]
+  permit 'site_admin or admin of :current_basket', except: [:index, :list, :join, :remove, :rss]
 
   before_filter :permitted_to_view_memberlist, only: [:index, :list, :rss]
 
@@ -98,7 +98,7 @@ class MembersController < ApplicationController
         @members = @role.users.paginate(options)
       end
 
-      @all_roles = RolesUser.all(conditions: ["role_id = ? AND user_id IN (?)", @role, @members])
+      @all_roles = RolesUser.all(conditions: ['role_id = ? AND user_id IN (?)', @role, @members])
       @role_creations = Hash.new
       @members.each do |member|
         @role_creations[member.id] = @all_roles.reject { |r| r.user_id != member.id }.first.created_at
@@ -108,7 +108,7 @@ class MembersController < ApplicationController
   private :list_members_in
 
   def potential_new_members
-    @existing_users = User.joins(:roles_users).where("roles_users.role_id in (?)", @current_basket.accepted_roles)
+    @existing_users = User.joins(:roles_users).where('roles_users.role_id in (?)', @current_basket.accepted_roles)
 
     # don't allow, at least for now, anonymous users to be added to other baskets
     # besides site
@@ -119,7 +119,7 @@ class MembersController < ApplicationController
     @potential_new_members = Array.new
     unless params[:search_name].blank?
       @potential_new_members = User.where(
-          "id not in (?) and login like ? or display_name like ?",
+          'id not in (?) and login like ? or display_name like ?',
           @existing_users, '%'+params[:search_name]+'%', '%'+params[:search_name]+'%' )
     end
   end
@@ -329,7 +329,7 @@ class MembersController < ApplicationController
 
   def permitted_to_remove_basket_members
     @user = User.find(params[:id])
-    unless logged_in? && (permit?("site_admin or admin of :current_basket") || @current_user == @user)
+    unless logged_in? && (permit?('site_admin or admin of :current_basket') || @current_user == @user)
       flash[:error] = t('members_controller.permitted_to_view_memberlist.cant_remove')
       redirect_to DEFAULT_REDIRECTION_HASH
     end

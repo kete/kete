@@ -42,7 +42,7 @@ class LocaleFileNormaliser
   end
 
   def process_gsub_function(pair)
-    ["pluralize", "capitalize", "downcase", "upcase"].each do |function|
+    ['pluralize', 'capitalize', 'downcase', 'upcase'].each do |function|
       search_key = "{{t.#{pair[0]}.#{function}}}"
       replace_value = "#{pair[1].send(function)}"
       #puts search_key +"  --  "+ replace_value
@@ -108,7 +108,7 @@ class LocaleFileNormaliser
 
 
   def save_string_to_gsub_pair(value, keys_array)
-    search_key = keys_array.join(".")
+    search_key = keys_array.join('.')
     replacement_value = value
 
     @gsub_pairs << [search_key, replacement_value]

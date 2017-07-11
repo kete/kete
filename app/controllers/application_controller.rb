@@ -133,12 +133,12 @@ class ApplicationController < ActionController::Base
   # no layout on rss pages
   layout :determine_layout
   def determine_layout
-    params[:action] == 'rss' ? nil : "application"
+    params[:action] == 'rss' ? nil : 'application'
   end
   # adjust request and response values
   before_filter :adjust_http_headers_for_rss, only: [ :rss ]
   def adjust_http_headers_for_rss
-    response.headers["Content-Type"] = "application/xml; charset=utf-8"
+    response.headers['Content-Type'] = 'application/xml; charset=utf-8'
     request.format = :xml
   end
 
@@ -226,7 +226,7 @@ class ApplicationController < ActionController::Base
   end
 
   def add_relation_and_update_zoom_and_related_caches_for(item1, item2)
-    raise "ERROR: Neither item 1 or 2 was a Topic" unless item1.is_a?(Topic) || item2.is_a?(Topic)
+    raise 'ERROR: Neither item 1 or 2 was a Topic' unless item1.is_a?(Topic) || item2.is_a?(Topic)
     topic, related = (item1.is_a?(Topic) ? [item1, item2] : [item2, item1])
 
     # clear out old zoom records before we change the items
@@ -244,7 +244,7 @@ class ApplicationController < ActionController::Base
   end
 
   def remove_relation_between(related_item: item1, topic: item2)
-    raise "ERROR: Neither topic is not a Topic" unless topic.is_a?(Topic)
+    raise 'ERROR: Neither topic is not a Topic' unless topic.is_a?(Topic)
 
     ContentItemRelation.destroy_relation_to_topic(topic, related_item)
   end
@@ -319,7 +319,7 @@ class ApplicationController < ActionController::Base
     @related_to_item = params[:relate_to_type].constantize.find(params[:relate_to_item])
 
     unless params[:item].blank?
-      for id in params[:item].reject { |k, v| v != "true" }.collect { |k, v| k }
+      for id in params[:item].reject { |k, v| v != 'true' }.collect { |k, v| k }
         item = only_valid_zoom_class(params[:related_class]).find(id)
 
         if params[:relate_to_type] == 'Topic' && params[:related_class] == 'Topic'
@@ -350,7 +350,7 @@ class ApplicationController < ActionController::Base
     @related_to_item = params[:relate_to_type].constantize.find(params[:relate_to_item])
 
     unless params[:item].blank?
-      for id in params[:item].reject { |k, v| v != "true" }.collect { |k, v| k }
+      for id in params[:item].reject { |k, v| v != 'true' }.collect { |k, v| k }
         item = only_valid_zoom_class(params[:related_class]).find(id)
 
         remove_relation_between(related_item: item, topic: @related_to_item)
@@ -387,12 +387,12 @@ class ApplicationController < ActionController::Base
   end
 
   def redirect_to_default_all
-    redirect_to list_basket_baskets_url("site")
+    redirect_to list_basket_baskets_url('site')
     # redirect_to(basket_all_url(:controller_name_for_zoom_class => zoom_class_controller(SystemSetting.default_search_class)))
   end
 
   def redirect_to_all_for(controller)
-    redirect_to list_basket_baskets_url("site")
+    redirect_to list_basket_baskets_url('site')
     # redirect_to(basket_all_url(:controller_name_for_zoom_class => controller))
   end
 
@@ -418,7 +418,7 @@ class ApplicationController < ActionController::Base
 
     # Redirect to private version if item is private.
     if options[:private]
-      path_hash.merge!({ private: "true" })
+      path_hash.merge!({ private: 'true' })
     end
 
     # Add the anchor if one is passed in
@@ -492,11 +492,11 @@ class ApplicationController < ActionController::Base
       # comments are a special case
       # they have a subtly different data model that means they need an different condition
       if zoom_class == 'Comment'
-        commentable_private_condition = " AND commentable_private = ?"
+        commentable_private_condition = ' AND commentable_private = ?'
         local_public_conditions = [local_public_conditions + commentable_private_condition, false]
         private_conditions = [private_conditions + commentable_private_condition, true]
       else
-        private_conditions += "AND private_version_serialized IS NOT NULL"
+        private_conditions += 'AND private_version_serialized IS NOT NULL'
       end
 
       if basket == @site_basket
@@ -669,9 +669,9 @@ class ApplicationController < ActionController::Base
     auto_detect = !options[:auto_detect].nil? ? options[:auto_detect] : true
 
     tag = String.new
-    tag += auto_detect ? "<link rel=\"alternate\" type=\"application/rss+xml\" title=\"RSS\" " : "<a "
-    tag += "href=\"" + derive_url_for_rss(options)
-    tag +=  auto_detect ? "\" />" : "\" tabindex=\"1\">" # A tag has a closing </a> in application layout
+    tag += auto_detect ? '<link rel="alternate" type="application/rss+xml" title="RSS" ' : '<a '
+    tag += 'href="' + derive_url_for_rss(options)
+    tag +=  auto_detect ? '" />' : '" tabindex="1">' # A tag has a closing </a> in application layout
     tag
   end
 
@@ -744,7 +744,7 @@ class ApplicationController < ActionController::Base
   end
 
   def private_redirect_attribute_for(item)
-    item.respond_to?(:private) && item.private? ? "true" : "false"
+    item.respond_to?(:private) && item.private? ? 'true' : 'false'
   end
 
   def slideshow(key='slideshow')
@@ -759,9 +759,9 @@ class ApplicationController < ActionController::Base
 
   # Append a query string to a URL.
   def append_options_to_url(url, options)
-    options = options.join("&") if options.is_a?(Array)
+    options = options.join('&') if options.is_a?(Array)
 
-    append_operator = url.include?("?") ? "&" : "?"
+    append_operator = url.include?('?') ? '&' : '?'
     url + append_operator + options
   end
 
@@ -812,7 +812,7 @@ class ApplicationController < ActionController::Base
     unless redirect_registration
       @displaying_error = true
       @title = t('application_controller.rescue_404.title')
-      render template: "errors/error404", layout: "application", status: "404"
+      render template: 'errors/error404', layout: 'application', status: '404'
     else
       redirect_to redirect_registration.new_url, status: redirect_registration.status_code
     end
@@ -822,7 +822,7 @@ class ApplicationController < ActionController::Base
   def rescue_500(template)
     @displaying_error = true
     @title = t('application_controller.rescue_500.title')
-    render template: "errors/#{template}", layout: "application", status: "500"
+    render template: "errors/#{template}", layout: 'application', status: '500'
   end
 
   # ROB:  current_item() should probably be gotten-rid-of/clarrified along with

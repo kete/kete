@@ -8,7 +8,7 @@ namespace :kete do
   namespace :export do
     desc 'Export the Users table to a Yaml formatted file'
     task users: :environment do
-      yaml = ""
+      yaml = ''
       User.all.each do |user|
         next if user.login == 'admin'
         yaml += "#{user.login}:\n"
@@ -23,7 +23,7 @@ namespace :kete do
         end
         yaml += "  roles:\n"
         user.roles.each do |role|
-          next unless role.authorizable_type == "Basket"
+          next unless role.authorizable_type == 'Basket'
           yaml += "    #{role.id}:\n"
           basket = Basket.find_by_id(role.authorizable_id)
           yaml += "      basket: #{basket.urlified_name}\n"
@@ -31,7 +31,7 @@ namespace :kete do
         end
       end
       write_to_file('users.yml', yaml)
-      p "All users exported to RAILS_ROOT/tmp/users.yml"
+      p 'All users exported to RAILS_ROOT/tmp/users.yml'
     end
   end
 
@@ -40,8 +40,8 @@ namespace :kete do
     task users: :environment do
       users = read_from_file('users.yml')
       users.each do |user|
-        user_data = user.last['fields'].merge({"agree_to_terms" => '1', "security_code" => "bleh"})
-        if User.count(conditions: ["login = ?", user_data['login']]) > 0
+        user_data = user.last['fields'].merge({'agree_to_terms' => '1', 'security_code' => 'bleh'})
+        if User.count(conditions: ['login = ?', user_data['login']]) > 0
           p "#{user_data['login']} already exists"
           next
         else
@@ -54,7 +54,7 @@ namespace :kete do
           p "Added User #{user_data['login']}"
         end
       end
-      p "All users imported from RAILS_ROOT/tmp/users.yml"
+      p 'All users imported from RAILS_ROOT/tmp/users.yml'
     end
   end
 
@@ -68,7 +68,7 @@ namespace :kete do
   end
 
   def write_to_file(filename, contents)
-    fout = File.open("#{RAILS_ROOT}/tmp/#{filename}", "w")
+    fout = File.open("#{RAILS_ROOT}/tmp/#{filename}", 'w')
     fout.puts contents
     fout.close
   end

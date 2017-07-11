@@ -11,10 +11,10 @@ ExternalSearchSources[:login_method] = :login_required
 
 # the role needed to access search sources controller as set by rails-authorization-plugin
 # http://github.com/DocSavage/rails-authorization-plugin
-ExternalSearchSources[:authorized_role] = "admin"
+ExternalSearchSources[:authorized_role] = 'admin'
 
 # the path to redirect to if the current user does not match the above authorized role
-ExternalSearchSources[:unauthorized_path] = "/"
+ExternalSearchSources[:unauthorized_path] = '/'
 
 # default url options to use when making redirects
 ExternalSearchSources[:default_url_options] = {}

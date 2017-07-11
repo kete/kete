@@ -23,7 +23,7 @@ class Comment < ActiveRecord::Base
 
   ZOOM_CLASSES.each do |zoom_class|
     unless zoom_class == 'Comment'
-      belongs_to "direct_#{zoom_class.tableize.singularize}".to_sym, class_name: zoom_class, foreign_key: "commentable_id"
+      belongs_to "direct_#{zoom_class.tableize.singularize}".to_sym, class_name: zoom_class, foreign_key: 'commentable_id'
     end
   end
 

@@ -23,7 +23,7 @@ class Video < ActiveRecord::Base
   # :file_system_path => "#{BASE_PRIVATE_PATH}/#{self.table_name}",
   # will rework with when we get to public/private split
   has_attachment storage: :file_system, 
-                 file_system_path: "video", 
+                 file_system_path: 'video', 
                  content_type: SystemSetting.video_content_types, 
                  processor: :none, 
                  max_size: SystemSetting.maximum_uploaded_file_size
@@ -34,8 +34,8 @@ class Video < ActiveRecord::Base
   include ItemPrivacy::All
 
   # Do not version self.file_private
-  self.non_versioned_columns << "file_private"
-  self.non_versioned_columns << "private_version_serialized"
+  self.non_versioned_columns << 'file_private'
+  self.non_versioned_columns << 'private_version_serialized'
 
   def self.updated_since(date)
     # Video.where( <Video or its join tables is newer than date>  )
@@ -50,8 +50,8 @@ class Video < ActiveRecord::Base
     join_table = Video.outer_joins(:taggings).
                        outer_joins(:contributions).
                        outer_joins(:content_item_relations).
-                       joins("LEFT OUTER JOIN  deleted_content_item_relations " +
-                             "ON deleted_content_item_relations.related_item_id = videos.id " +
+                       joins('LEFT OUTER JOIN  deleted_content_item_relations ' +
+                             'ON deleted_content_item_relations.related_item_id = videos.id ' +
                              "AND deleted_content_item_relations.related_item_type = 'Video'")
 
     result = join_table.where(

@@ -5,6 +5,6 @@ FactoryGirl.define do
     basket
 
     commentable_id { create(:video).id }
-    commentable_type "still_image"
+    commentable_type 'still_image'
   end
 end

@@ -13,7 +13,7 @@ class VideoController < ApplicationController
         date = DateTime.parse(params[:updated_since]) if params[:updated_since]
         date = DateTime.now.beginning_of_month        if date.nil?
 
-        @list_type = "Video"
+        @list_type = 'Video'
         @items = Video.updated_since(date)
         render 'shared/list'
       end
@@ -52,7 +52,7 @@ class VideoController < ApplicationController
 
       @video.do_notifications_if_pending(1, current_user)
     end
-    setup_related_topic_and_zoom_and_redirect(@video, nil, private: (params[:video][:private] == "true"))
+    setup_related_topic_and_zoom_and_redirect(@video, nil, private: (params[:video][:private] == 'true'))
   end
 
   def edit
@@ -73,7 +73,7 @@ class VideoController < ApplicationController
       after_successful_zoom_item_update(@video, version_after_update)
       flash[:notice] = t('video_controller.update.updated')
 
-      redirect_to_show_for(@video, private: (params[:video][:private] == "true"))
+      redirect_to_show_for(@video, private: (params[:video][:private] == 'true'))
     else
       render action: 'edit'
     end

@@ -1,23 +1,23 @@
 class RemoveForeignKeyConstraintsFromContentItemRelations < ActiveRecord::Migration
   def self.up
     if mysql?
-      remove_foreign_key_constraint "content_item_relations", "content_item_relations_ibfk_1"
-      remove_foreign_key_constraint "deleted_content_item_relations", "deleted_content_item_relations_ibfk_1"
+      remove_foreign_key_constraint 'content_item_relations', 'content_item_relations_ibfk_1'
+      remove_foreign_key_constraint 'deleted_content_item_relations', 'deleted_content_item_relations_ibfk_1'
     elsif postgres?
-      remove_foreign_key_constraint "content_item_relations", "content_item_relations_pkey"
-      remove_foreign_key_constraint "deleted_content_item_relations", "deleted_content_item_relations_pkey"
+      remove_foreign_key_constraint 'content_item_relations', 'content_item_relations_pkey'
+      remove_foreign_key_constraint 'deleted_content_item_relations', 'deleted_content_item_relations_pkey'
     end
   end
 
   def self.down
-    raise "This migration is has been commented out by rabid. Edit it to re-enable if you reed it"
+    raise 'This migration is has been commented out by rabid. Edit it to re-enable if you reed it'
     # add_foreign_key_constraint "content_item_relations", "content_item_relations_ibfk_1", "topics"
     # add_foreign_key_constraint "deleted_content_item_relations", "deleted_content_item_relations_ibfk_1", "topics"
   end
 
   class << self
 
-    def add_foreign_key_constraint(table_name, symbol, foreign_table, foreign_primary_key = "id")
+    def add_foreign_key_constraint(table_name, symbol, foreign_table, foreign_primary_key = 'id')
 
       if postgres?
         execute(postgres_add_fk_statement(table_name, symbol, foreign_table, foreign_primary_key))

@@ -15,7 +15,7 @@ module SlideshowsHelper
     else
 
       # We need to load the next page of results into the session to continue
-      link_to text, slideshow.search_params.merge("action" => "slideshow_page_load", "page" => slideshow.current_page + 1, "direction" => "up")
+      link_to text, slideshow.search_params.merge('action' => 'slideshow_page_load', 'page' => slideshow.current_page + 1, 'direction' => 'up')
     end
   end
 
@@ -30,7 +30,7 @@ module SlideshowsHelper
     else
 
       # We need to load the previous page of results into the session to continue
-      link_to text, slideshow.search_params.merge("action" => "slideshow_page_load", "page" => slideshow.current_page - 1, "direction" => "down")
+      link_to text, slideshow.search_params.merge('action' => 'slideshow_page_load', 'page' => slideshow.current_page - 1, 'direction' => 'down')
     end
   end
 
@@ -39,7 +39,7 @@ module SlideshowsHelper
   end
 
   def link_to_stop_slideshow(text = t('slideshows_helper.stop'))
-    link_to text, controller: "search", action: 'clear_slideshow', return_to: request.url
+    link_to text, controller: 'search', action: 'clear_slideshow', return_to: request.url
   end
 
   def show_slideshow_controls?(current_url = request.url)
@@ -57,7 +57,7 @@ module SlideshowsHelper
       # Factored out slideshow controls partial rendering statement to application.rhtml, so we need to check that the controller
       # and action are right now as the partial is no longer called from the 'show' view for each item type.
       %w(audio documents images topics video web_links).member?(params[:controller]) &&
-      params[:action] == "show"
+      params[:action] == 'show'
   end
 
   private
@@ -78,7 +78,7 @@ module SlideshowsHelper
 
       # If private=true is tacked on to the end of a long query string, switch the
       # ampersand for a question mark like in dc:identifier so we get a match.
-      url.gsub!(/&private=true/, "?private=true")
+      url.gsub!(/&private=true/, '?private=true')
 
       url
     end
