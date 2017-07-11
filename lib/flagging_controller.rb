@@ -141,7 +141,6 @@ module FlaggingController
                                          @submitter,
                                          approval_message)
 
-
         flash[:notice] = I18n.t('flagging_controller_lib.restore.approved',
                                 zoom_class: zoom_class_humanize(@item.class.name))
 

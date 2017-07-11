@@ -48,7 +48,6 @@ module ApplicationHelper
 
     return nil if options[:return_portrait] && (!SystemSetting.enable_user_portraits? || user.avatar.nil?)
 
-
     if SystemSetting.enable_user_portraits?
       if user.avatar
         return user.avatar if options[:return_portrait]

@@ -16,7 +16,6 @@ class ProfileSettings
     :profile_settings_did_not_know_about_setting
   end
 
-
   private
 
   def self.settings

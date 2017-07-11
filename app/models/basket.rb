@@ -325,7 +325,6 @@ class Basket < ActiveRecord::Base
     allow_non_member_comments === true
   end
 
-
   # Privacy related methods, taking into account inheritance from Site Basket
 
   def show_privacy_controls_with_inheritance?

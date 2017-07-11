@@ -263,8 +263,6 @@ class AccountController < ApplicationController
     end
   end
 
-
-
   # activation code, note, not always used
   # if REQUIRE_ACTIVATION is false, this isn't used
   def activate
@@ -286,8 +284,6 @@ class AccountController < ApplicationController
       flash[:error] = t('account_controller.activate.not_activated')
     end
   end
-
-
 
   def reset_password
     @user = User.find_by_password_reset_code(params[:id]) if params[:id]

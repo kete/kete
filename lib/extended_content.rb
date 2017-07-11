@@ -109,7 +109,6 @@ require 'xmlsimple'
 
     include ExtendedContentHelpers
 
-
     # DEPRECATED
     # Provide an instance of Nokogiri::XML::Builder.new for creating the XML representation
     # stored in each item's extended content attribute.
@@ -155,7 +154,6 @@ require 'xmlsimple'
       # Do the behind the scenes stuff..
       self.extended_content = convert_extended_content_to_xml(content_as_array)
     end
-
 
     # Pulls xml attributes in extended_content column out into a hash wrapped in a key that corresponds to the fields position
     # Example output:
@@ -787,7 +785,6 @@ require 'xmlsimple'
       ContentType.find_by_class_name(self.class.name).content_type_to_field_mappings
     end
 
-
     # Validation methods..
     def validate
       all_field_mappings.each do |mapping|
@@ -1017,8 +1014,6 @@ require 'xmlsimple'
         k
       end
     end
-
-
 
   end
 end

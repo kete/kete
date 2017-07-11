@@ -9,7 +9,6 @@ module ZoomControllerHelpers
       end
     end
 
-
     # * makes sure comments are deleted before an item is
     def zoom_item_destroy(item)
       successful = true
@@ -24,7 +23,6 @@ module ZoomControllerHelpers
         successful = item.destroy
       end
     end
-
 
     # this has very little to do with explicit zoom_destroy anymore
     # but we're not bothering to rename it at the moment

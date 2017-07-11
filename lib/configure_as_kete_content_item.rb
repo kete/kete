@@ -108,7 +108,6 @@ module ConfigureAsKeteContentItem
       "/#{Basket.find(1).urlified_name}/account/show/#{creator.to_param}"
     end
 
-
     # turn pretty urls on or off here
     include FriendlyUrls
     alias :to_param :format_for_friendly_urls

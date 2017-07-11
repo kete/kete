@@ -111,7 +111,6 @@ feature 'Topic comments', js: true do
       end
     end
 
-
     describe 'An admin' do
       let(:privileged_user) do
         FactoryGirl.create(:user, :activated, :with_site_admin_role, :with_default_baskets)

@@ -528,7 +528,6 @@ class SearchController < ApplicationController
     Unicode::normalize_KD(slug.escape).downcase
   end
 
-
   # actions for rebuilding search records
   # see filters and permissions for security towards top of code
   include ZoomControllerActions

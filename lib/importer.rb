@@ -267,7 +267,6 @@ module Importer
               end
             end
 
-
           # Kieran Pilkington, 2009-10-28
           # The following code does not work yet
           # TODO: it looks like this still needs multiple support?

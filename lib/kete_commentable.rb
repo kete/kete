@@ -20,6 +20,5 @@ module KeteCommentable
       end
     end
 
-
   end
 end

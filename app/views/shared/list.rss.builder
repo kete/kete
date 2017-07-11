@@ -29,7 +29,6 @@ xml.rss('version' => '2.0', 'xmlns:dc' => 'http://purl.org/dc/elements/1.1/') do
         xml.pubDate item.updated_at.utc.xmlschema
         xml.link rss_link_for(item)
 
-
         xml.dc :identifier, rss_dc_identifier(item)
         xml.dc :title,      rss_dc_title(item)
         xml.dc :publisher,  rss_dc_publisher(item)
@@ -62,7 +61,6 @@ xml.rss('version' => '2.0', 'xmlns:dc' => 'http://purl.org/dc/elements/1.1/') do
           xml.dc :contributor, contributor_string
         end
 
-
         # all types at this point have an extended_content attribute
         anonymous_fields, non_anonymous_fields = rss_dc_extended_content(item)
 
@@ -80,14 +78,12 @@ xml.rss('version' => '2.0', 'xmlns:dc' => 'http://purl.org/dc/elements/1.1/') do
           xml.tag! dc_label, value if value.present?
         end
 
-
         # related topics and items should have dc:subject elem here with their title
         rss_dc_relations_array(item).each do |relation_string|
           xml.dc :relation, relation_string
         end
 
         xml.dc :type, rss_dc_type(item)
-
 
         rss_tags_to_dc_subjects_array(item).each do |subject_string|
           xml.dc(:subject) do 

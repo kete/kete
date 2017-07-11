@@ -76,8 +76,6 @@ Notes:
 
 SENDFILE_METHOD = ''
 
-
-
 # (Do not edit below here.)
 
 unless ['', 'apache', 'nginx'].member?(SENDFILE_METHOD)

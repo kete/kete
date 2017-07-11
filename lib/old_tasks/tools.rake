@@ -286,7 +286,6 @@ namespace :kete do
                       ]
         }
 
-
         # write out new file content
         conf_file_path = "#{Rails.root}/public/javascripts/image_selector_config/providers.json"
         dest = File.new(conf_file_path,'w+')

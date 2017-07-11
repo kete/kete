@@ -10,7 +10,6 @@ class Topic < ActiveRecord::Base
     :extended_content_values
   ]
 
-
   # this is where the actual content lives
   # using the extended_fields associated with this topic's topic_type
   # generate a form
@@ -191,7 +190,6 @@ class Topic < ActiveRecord::Base
   include ItemPrivacy::ActsAsVersionedOverload
   include ItemPrivacy::TaggingOverload
   non_versioned_columns << 'private_version_serialized'
-
 
   after_save :store_correct_versions_after_save
 

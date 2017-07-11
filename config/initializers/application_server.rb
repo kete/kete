@@ -12,7 +12,6 @@
 
 APPLICATION_SERVER = 'passenger'
 
-
 # (Do not edit below here.)
 
 unless ['passenger', 'mongrel'].member?(APPLICATION_SERVER)
