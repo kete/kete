@@ -65,14 +65,14 @@ class PastPerfect4ImporterWorker < BackgrounDRb::MetaWorker
       determine_elements_used(@import_photos_file_path)
 
       # this gets rid of xml elements that have empty values
-      @path_to_trimmed_photos = importer_trim_fat_from_xml_import_file(@import_photos_file_path,"#{RAILS_ROOT}/tmp/trimmed_photos_pp4.xml")
+      @path_to_trimmed_photos = importer_trim_fat_from_xml_import_file(@import_photos_file_path, "#{RAILS_ROOT}/tmp/trimmed_photos_pp4.xml")
       @import_photos_xml = REXML::Document.new File.open(@path_to_trimmed_photos)
 
       logger.info('after first trim')
 
       # TODO: test what happens when there isn't an accessions.xml file
       @import_accessions_file_path = "#{@import_dir_path}/accessions.xml"
-      @path_to_trimmed_accessions = importer_trim_fat_from_xml_import_file(@import_accessions_file_path,"#{RAILS_ROOT}/tmp/trimmed_accessions_pp4.xml",true)
+      @path_to_trimmed_accessions = importer_trim_fat_from_xml_import_file(@import_accessions_file_path, "#{RAILS_ROOT}/tmp/trimmed_accessions_pp4.xml", true)
 
       # open the accessions xml to search for a matching record later
       @import_accessions_xml = REXML::Document.new File.open(@path_to_trimmed_accessions)
@@ -290,7 +290,7 @@ class PastPerfect4ImporterWorker < BackgrounDRb::MetaWorker
     end
     # if this record was skipped, add to skipped_records
     if !reason_skipped.blank?
-      importer_log_to_skipped_records(image_file,reason_skipped)
+      importer_log_to_skipped_records(image_file, reason_skipped)
     end
     # will this help memory leaks
     record = nil

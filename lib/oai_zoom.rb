@@ -152,7 +152,7 @@ module OaiZoom
     end
 
     # TODO: this may not be needed anymore
-    def importer_oai_dc_xml_dc_identifier(xml,item, passed_request = nil)
+    def importer_oai_dc_xml_dc_identifier(xml, item, passed_request = nil)
       if !passed_request.nil?
         host = passed_request[:host]
       else
@@ -163,7 +163,7 @@ module OaiZoom
     end
 
     # TODO: this may not be needed anymore
-    def importer_oai_dc_xml_dc_relations_and_subjects(xml,item,passed_request = nil)
+    def importer_oai_dc_xml_dc_relations_and_subjects(xml, item, passed_request = nil)
       if !passed_request.nil?
         host = passed_request[:host]
       else
@@ -204,7 +204,7 @@ module OaiZoom
     end
 
     # TODO: probably no longer needed
-    def importer_oai_dc_xml_dc_rights(xml,item,passed_request = nil)
+    def importer_oai_dc_xml_dc_rights(xml, item, passed_request = nil)
       if !passed_request.nil?
         host = passed_request[:host]
       else

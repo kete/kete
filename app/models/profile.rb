@@ -74,7 +74,7 @@ class Profile < ActiveRecord::Base
     return setting(:rules) if raw
 
     data = Array.new
-    setting(:rules).each do |k,v|
+    setting(:rules).each do |k, v|
       value = "#{k.humanize}: "
       value += if v['rule_type'] == 'all'
         I18n.t('profile_model.rules.all')
@@ -133,7 +133,7 @@ class Profile < ActiveRecord::Base
   def all_form_types_have_rule_type
     if @rules
       missing_rule_types = Array.new
-      @rules.each do |k,v|
+      @rules.each do |k, v|
         missing_rule_types << k.humanize if v['rule_type'].blank?
       end
       unless missing_rule_types.blank?

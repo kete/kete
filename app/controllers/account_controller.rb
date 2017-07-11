@@ -383,7 +383,7 @@ class AccountController < ApplicationController
       # Get all of the portrait relations in one query
       portrait_list = current_user.user_portrait_relations
       # For each of the portrait ids, update their position based on the array index
-      portrait_ids.each_with_index do |portrait_id,index|
+      portrait_ids.each_with_index do |portrait_id, index|
         # The first element we leave in (to represent the selected portrait)
         next if portrait_id.blank?
         # Get this portrait from the portrait_list array

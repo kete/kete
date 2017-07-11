@@ -21,7 +21,7 @@ class ContentType < ActiveRecord::Base
   # translates :humanized, :humanized_plura, :description
 
   def available_fields
-    @available_fields = ExtendedField.find_available_fields(self,'ContentType')
+    @available_fields = ExtendedField.find_available_fields(self, 'ContentType')
   end
 
   def mapped_fields(options={})

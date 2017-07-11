@@ -108,7 +108,7 @@ class ExtendedField < ActiveRecord::Base
   validates_exclusion_of :label, in: invalid_label_names, message: lambda { I18n.t('extended_field_model.already_used', invalid_label_names: invalid_label_names.join(', ')) }
 
   # TODO: might want to reconsider using subselects here
-  def self.find_available_fields(type,type_of)
+  def self.find_available_fields(type, type_of)
     if type_of == 'TopicType'
       # exclude ancestor's fields as well
       topic_types_to_exclude = type.ancestors + [type]

@@ -221,7 +221,7 @@ namespace :kete do
       task :replace_pattern_in_file do
         source_file = pwd + '/' + ENV['SOURCE_FILE']
 
-        output_file = File.new(pwd + '/' + ENV['TO_FILE'],'w+')
+        output_file = File.new(pwd + '/' + ENV['TO_FILE'], 'w+')
 
         pattern = Regexp.new(ENV['PATTERN'])
 
@@ -288,7 +288,7 @@ namespace :kete do
 
         # write out new file content
         conf_file_path = "#{Rails.root}/public/javascripts/image_selector_config/providers.json"
-        dest = File.new(conf_file_path,'w+')
+        dest = File.new(conf_file_path, 'w+')
         dest << [this_site_config].to_json
         dest.close
       end
@@ -322,7 +322,7 @@ namespace :kete do
 
         # write out new file content
         conf_file_path = "#{Rails.root}/public/javascripts/image_selector_config/sizes.json"
-        dest = File.new(conf_file_path,'w+')
+        dest = File.new(conf_file_path, 'w+')
         dest << this_site_sizes_config.to_json
         dest.close
       end

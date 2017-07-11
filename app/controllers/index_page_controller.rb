@@ -130,7 +130,7 @@ class IndexPageController < ApplicationController
 
             # with the final topic, sort by the versions created_at,
             # rather than the public topics created_at
-            @recent_topics_items.sort! { |t1,t2| t2.created_at<=>t1.created_at }
+            @recent_topics_items.sort! { |t1, t2| t2.created_at<=>t1.created_at }
           end
         end
 

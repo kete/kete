@@ -640,7 +640,7 @@ module Importer
 
       # if this record was skipped, add to skipped_records
       if !reason_skipped.blank?
-        importer_log_to_skipped_records(title,reason_skipped)
+        importer_log_to_skipped_records(title, reason_skipped)
       end
       # will this help memory leaks
       record = nil
@@ -691,8 +691,8 @@ module Importer
     # output is to a tmp file
     # has commented out code for replacing macronized vowels
     # uncomment if you need them
-    def importer_trim_fat_from_xml_import_file(path_to_original_file,path_to_output,accession = nil)
-      fat_free_file = File.new(path_to_output,'w+')
+    def importer_trim_fat_from_xml_import_file(path_to_original_file, path_to_output, accession = nil)
+      fat_free_file = File.new(path_to_output, 'w+')
 
       fatty_re = Regexp.new("\/\>.*")
 
@@ -1116,7 +1116,7 @@ module Importer
     end
 
     # override in your importer worker to customize
-    def importer_log_to_skipped_records(identifier,reason_skipped)
+    def importer_log_to_skipped_records(identifier, reason_skipped)
       logger.info("#{identifier}: #{reason_skipped}")
     end
 
