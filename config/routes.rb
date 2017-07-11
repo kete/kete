@@ -59,8 +59,8 @@ KeteApp::Application.routes.draw do
   ####################################################
 
   get   ':urlified_name/account/index' => 'account#index'
-  match ':urlified_name/account/signup' => 'account#signup', via: [:get, :post]
-  match ':urlified_name/account/login' => 'account#login', via: [:get, :post]
+  match ':urlified_name/account/signup' => 'account#signup', via: %i[get post]
+  match ':urlified_name/account/login' => 'account#login', via: %i[get post]
   get   ':urlified_name/account/disclaimer/:id' => 'account#disclaimer'
   match ':urlified_name/account/show_captcha' => 'account#show_captcha'
   match ':urlified_name/account/forgot_password' => 'account#forgot_password'
@@ -182,7 +182,7 @@ KeteApp::Application.routes.draw do
 
     resources :comments
 
-    resources :tags, only: [:index, :show] do
+    resources :tags, only: %i[index show] do
       collection do
         get :list
       end

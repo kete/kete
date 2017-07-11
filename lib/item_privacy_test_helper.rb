@@ -526,10 +526,10 @@ module ItemPrivacyTestHelper
       def test_class_responds_to_class_methods_as_expected
         klass = eval(@base_class)
 
-        should_respond_to = [
-          :tag_counts,
-          :private_tag_counts,
-          :public_tag_counts
+        should_respond_to = %i[
+          tag_counts
+          private_tag_counts
+          public_tag_counts
         ]
 
         should_respond_to.each do |method|
@@ -544,18 +544,18 @@ module ItemPrivacyTestHelper
       def test_instances_respond_to_instance_methods_as_expected
         instance = eval(@base_class).create(@new_model)
 
-        should_respond_to = [
-          :tags,
-          :tag_list,
-          :tag_list=,
-          :public_tags,
-          :public_tags=,
-          :public_tag_list,
-          :public_tag_list=,
-          :private_tags,
-          :private_tags=,
-          :private_tag_list,
-          :private_tag_list=
+        should_respond_to = %i[
+          tags
+          tag_list
+          tag_list=
+          public_tags
+          public_tags=
+          public_tag_list
+          public_tag_list=
+          private_tags
+          private_tags=
+          private_tag_list
+          private_tag_list=
         ]
 
         should_respond_to.each do |method|

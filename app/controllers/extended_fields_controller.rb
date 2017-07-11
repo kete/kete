@@ -2,17 +2,17 @@ class ExtendedFieldsController < ApplicationController
   helper ExtendedFieldsHelper
 
   # everything else is handled by application.rb
-  before_filter :login_required, only: [:list, :index, :add_field_to_multiples, :fetch_subchoices, :fetch_topics_from_topic_type, :validate_topic_type_entry]
+  before_filter :login_required, only: %i[list index add_field_to_multiples fetch_subchoices fetch_topics_from_topic_type validate_topic_type_entry]
 
   before_filter :set_page_title
 
   permit 'site_admin or admin of :site or tech_admin of :site',
-         except: [:add_field_to_multiples, :fetch_subchoices, :fetch_topics_from_topic_type, :validate_topic_type_entry]
+         except: %i[add_field_to_multiples fetch_subchoices fetch_topics_from_topic_type validate_topic_type_entry]
 
   active_scaffold :extended_field do |config|
     # Default columns and column exclusions
-    config.columns = [:label, :description, :xml_element_name, :ftype, :import_synonyms, :example, :multiple, :user_choice_addition, :link_choice_values]
-    config.list.columns.exclude [:updated_at, :created_at, :topic_type_id, :xsi_type, :user_choice_addition, :link_choice_values]
+    config.columns = %i[label description xml_element_name ftype import_synonyms example multiple user_choice_addition link_choice_values]
+    config.list.columns.exclude %i[updated_at created_at topic_type_id xsi_type user_choice_addition link_choice_values]
 
     config.columns[:description].options = { rows: 4, cols: 50 }
 

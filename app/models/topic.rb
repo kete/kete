@@ -1,12 +1,12 @@
 class Topic < ActiveRecord::Base
   include PgSearch
   include PgSearchCustomisations
-  multisearchable against: [
-    :title,
-    :short_summary,
-    :description,
-    :raw_tag_list,
-    :extended_content_values
+  multisearchable against: %i[
+    title
+    short_summary
+    description
+    raw_tag_list
+    extended_content_values
   ]
 
   # this is where the actual content lives

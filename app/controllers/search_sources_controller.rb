@@ -8,7 +8,7 @@ class SearchSourcesController < ApplicationController
   before_filter ExternalSearchSources[:login_method]
   before_filter :redirect_if_not_authorized
   before_filter :set_page_title
-  before_filter :get_search_source, only: [:move_higher, :move_lower]
+  before_filter :get_search_source, only: %i[move_higher move_lower]
   before_filter :prepare_available_search_sources
 
   #   active_scaffold :search_sources do |config|

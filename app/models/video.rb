@@ -1,11 +1,11 @@
 class Video < ActiveRecord::Base
   include PgSearch
   include PgSearchCustomisations
-  multisearchable against: [
-    :title,
-    :description,
-    :raw_tag_list,
-    :searchable_extended_content_values
+  multisearchable against: %i[
+    title
+    description
+    raw_tag_list
+    searchable_extended_content_values
   ]
 
   # all the common configuration is handled by this module
@@ -83,7 +83,7 @@ class Video < ActiveRecord::Base
   include OverrideAttachmentFuMethods
 
   def attachment_attributes_valid?
-    [:size, :content_type].each do |attr_name|
+    %i[size content_type].each do |attr_name|
       enum = attachment_options[attr_name]
       unless enum.nil? || enum.include?(send(attr_name))
         errors.add attr_name, I18n.t("video_model.not_acceptable_#{attr_name}",

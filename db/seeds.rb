@@ -45,7 +45,7 @@ end
 
 load_yaml(file: 'roles_users.yml',
           model: RolesUser,
-          unique_attrs: [:user_id, :role_id])
+          unique_attrs: %i[user_id role_id])
 
 load_yaml(file: 'baskets.yml',
           model: Basket,

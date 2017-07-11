@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 class ChoicesController < ApplicationController
-  before_action :login_required, only: [:list, :index]
+  before_action :login_required, only: %i[list index]
 
   before_action :set_page_title
 
@@ -10,7 +10,7 @@ class ChoicesController < ApplicationController
 
   active_scaffold :choice do |config|
     # Which columns to show
-    config.columns = [:label, :value, :parent, :children]
+    config.columns = %i[label value parent children]
     config.list.columns.exclude :updated_at, :created_at
 
     # Column overrides

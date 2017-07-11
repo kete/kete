@@ -7,11 +7,11 @@ class AudioRecording < ActiveRecord::Base
   include OverrideAttachmentFuMethods
   include Embedded if SystemSetting.enable_embedded_support
 
-  multisearchable against: [
-    :title,
-    :description,
-    :raw_tag_list,
-    :searchable_extended_content_values
+  multisearchable against: %i[
+    title
+    description
+    raw_tag_list
+    searchable_extended_content_values
   ]
 
   # handles file uploads
@@ -73,7 +73,7 @@ class AudioRecording < ActiveRecord::Base
   # custom error message, probably overkill
   # validates the size and content_type attributes according to the current model's options
   def attachment_attributes_valid?
-    [:size, :content_type].each do |attr_name|
+    %i[size content_type].each do |attr_name|
       enum = attachment_options[attr_name]
       unless enum.nil? || enum.include?(send(attr_name))
         errors.add attr_name, I18n.t("audio_recording_model.not_acceptable_#{attr_name}",

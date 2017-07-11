@@ -59,34 +59,34 @@ class ApplicationController < ActionController::Base
   private :password_protect
 
   # only permit site members to add/delete things
-  before_filter :login_required, only: [:new, :create,
-                                        :edit, :update, :destroy,
-                                        :appearance, :homepage_options,
-                                        :convert,
-                                        :make_theme,
-                                        :find_related,
-                                        :link_related,
-                                        :find_index,
-                                        :flag_form,
-                                        :flag_version,
-                                        :restore,
-                                        :reject,
-                                        :choose_type, :render_item_form,
-                                        :setup_rebuild,
-                                        :rebuild_zoom_index,
-                                        :add_portrait, :remove_portrait,
-                                        :make_selected_portrait,
-                                        :contact, :send_email,
-                                        :join]
+  before_filter :login_required, only: %i[new create
+                                          edit update destroy
+                                          appearance homepage_options
+                                          convert
+                                          make_theme
+                                          find_related
+                                          link_related
+                                          find_index
+                                          flag_form
+                                          flag_version
+                                          restore
+                                          reject
+                                          choose_type render_item_form
+                                          setup_rebuild
+                                          rebuild_zoom_index
+                                          add_portrait remove_portrait
+                                          make_selected_portrait
+                                          contact send_email
+                                          join]
 
   # doesn't work for redirects, those are handled by
   # after filters on registered on specific controllers
   # based on SystemSetting.allowed_anonymous_actions specs
   # this should prevent url surgery to subvert logging out of anonymous user though
-  before_filter :logout_anonymous_user_unless_allowed, except: [:logout,
-                                                                :login,
-                                                                :signup,
-                                                                :show_captcha]
+  before_filter :logout_anonymous_user_unless_allowed, except: %i[logout
+                                                                  login
+                                                                  signup
+                                                                  show_captcha]
 
   # all topics and content items belong in a basket
   # and will always be specified in our routes
@@ -102,23 +102,23 @@ class ApplicationController < ActionController::Base
   before_filter :update_basket_permissions_hash
 
   # keep track of tag_list input by version
-  before_filter :update_params_with_raw_tag_list, only: [:create, :update]
+  before_filter :update_params_with_raw_tag_list, only: %i[create update]
 
   # see method definition for details
 
   # we often need baskets for edits
-  before_filter :load_array_of_baskets, only: [:edit, :update, :restore]
+  before_filter :load_array_of_baskets, only: %i[edit update restore]
 
   # don't allow forms to set do_not_moderate
-  before_filter :security_check_of_do_not_moderate, only: [:create, :update, :restore]
+  before_filter :security_check_of_do_not_moderate, only: %i[create update restore]
 
   # set do_not_moderate if site_admin, otherwise things like moving from one basket to another
   # may get tripped up
-  before_filter :set_do_not_moderate_if_site_admin_or_exempted, only: [:create, :update]
+  before_filter :set_do_not_moderate_if_site_admin_or_exempted, only: %i[create update]
 
   # ensure that users who are in a basket where the action menu has been hidden can edit
   # by posting a dummy form
-  before_filter :current_user_can_see_action_menu?, only: [:new, :create, :edit, :update]
+  before_filter :current_user_can_see_action_menu?, only: %i[new create edit update]
 
   # TODO: NOT USED, delete code here and in lib/zoom_controller_helpers.rb
   # related items only track title and url, therefore only update will change those attributes
@@ -127,7 +127,7 @@ class ApplicationController < ActionController::Base
   # setup return_to for the session
   # TODO: this needs to be updated to store location for newer actions
   # might be better to do an except?
-  after_filter :store_location, only: [:for, :all, :search, :index, :new, :show, :edit, :new_related_set_from_archive_file]
+  after_filter :store_location, only: %i[for all search index new show edit new_related_set_from_archive_file]
 
   # RSS feed related operations
   # no layout on rss pages

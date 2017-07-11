@@ -9,7 +9,7 @@ class AccountController < ApplicationController
   # If you want "remember me" functionality, add this before_filter to Application Controller
 
   before_filter :login_from_cookie
-  before_filter :redirect_if_user_portraits_arnt_enabled, only: [:add_portrait, :remove_portrait, :make_selected_portrait]
+  before_filter :redirect_if_user_portraits_arnt_enabled, only: %i[add_portrait remove_portrait make_selected_portrait]
   layout :simple_or_application
 
   #####################################################################
