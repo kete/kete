@@ -407,8 +407,7 @@ class AccountController < ApplicationController
     end
   end
 
-  def baskets
-  end
+  def baskets; end
 
   def change_locale
     notice = t('account_controller.change_locale.locale_changed')
@@ -431,14 +430,12 @@ class AccountController < ApplicationController
     simple_return_tos_regexp = Regexp.new(simple_return_tos.join('|'))
 
     if session[:return_to] =~ simple_return_tos_regexp ||
-        (params[:as_service].present? && params[:as_service] == 'true')
+       (params[:as_service].present? && params[:as_service] == 'true')
       'simple'
     else
       'application'
     end
   end
-
-
   def redirect_if_user_portraits_arnt_enabled
     unless SystemSetting.enable_user_portraits?
       flash[:notice] = t('account_controller.redirect_if_user_portraits_arnt_enabled.not_enabled')
