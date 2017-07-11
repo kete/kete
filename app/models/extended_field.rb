@@ -60,7 +60,7 @@ class ExtendedField < ActiveRecord::Base
   after_save :set_base_url
 
   def base_url
-    #@base_url ||= self.setting(:base_url)
+    # @base_url ||= self.setting(:base_url)
     # ROB:  Turning this off as it doesn't make sense to use absolute links (kete.co.nz/...) 
     #       instead of relative onves (/...)
     ''

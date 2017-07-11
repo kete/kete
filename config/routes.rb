@@ -35,19 +35,19 @@
   #### monitoring tools ###############################
   #
   ## to make sure the rails process is answering
-  #match 'uptime.txt' => 'index_page#uptime'
+  # match 'uptime.txt' => 'index_page#uptime'
   ## to make sure that the db is answering
-  #match 'db_uptime.txt' => 'index_page#db_uptime'
+  # match 'db_uptime.txt' => 'index_page#db_uptime'
   ## to make sure that the zebra is answering
-  #match 'zebra_uptime.txt' => 'index_page#zebra_uptime'
+  # match 'zebra_uptime.txt' => 'index_page#zebra_uptime'
   ## to make sure that the backgroundrb is answering
-  #match 'bdrb_uptime.txt' => 'index_page#bdrb_uptime'
+  # match 'bdrb_uptime.txt' => 'index_page#bdrb_uptime'
   ## to make sure that registration is valid
-  #match 'validate_kete_net_link.xml' => 'index_page#validate_kete_net_link'
+  # match 'validate_kete_net_link.xml' => 'index_page#validate_kete_net_link'
   ## for search engines, ask them not to go to certain places
-  #match 'robots.txt' => 'index_page#robots'
+  # match 'robots.txt' => 'index_page#robots'
   ## for opensearch compatible clients
-  #match 'opensearchdescription.xml' => 'index_page#opensearchdescription'
+  # match 'opensearchdescription.xml' => 'index_page#opensearchdescription'
 
   ####################################################
   ####################################################

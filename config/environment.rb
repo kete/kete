@@ -19,8 +19,8 @@ CACHES_CONTROLLERS = ['audio', 'baskets', 'comments', 'documents', 'images', 'to
 # Walter McGinnis, 2007-01-07
 # You can override default authorization system constants here.
 # AUTHORIZATION_MIXIN = "object roles"
-#DEFAULT_REDIRECTION_HASH = { :controller => 'account', :action => 'login' }
-#STORE_LOCATION_METHOD = :store_return_location
+# DEFAULT_REDIRECTION_HASH = { :controller => 'account', :action => 'login' }
+# STORE_LOCATION_METHOD = :store_return_location
 
 # Walter McGinnis, 2008-07-01
 # we go through the unusual step of defining a class in this initializer
@@ -28,7 +28,7 @@ CACHES_CONTROLLERS = ['audio', 'baskets', 'comments', 'documents', 'images', 'to
 # require File.join(File.dirname(__FILE__) + '/initializers/', 'oai_pmh')
 
 # Bootstrap the Rails environment, frameworks, and default configuration
-#require File.join(File.dirname(__FILE__), 'boot')
+# require File.join(File.dirname(__FILE__), 'boot')
 
 # !! Fixing rubygems vs rake error: undefined local variable or method `version_requirements'
 # if Gem::VERSION >= "1.3.6"
@@ -45,7 +45,7 @@ CACHES_CONTROLLERS = ['audio', 'baskets', 'comments', 'documents', 'images', 'to
 
 
 
-#Rails::Initializer.run do |config|
+# Rails::Initializer.run do |config|
 #  # Settings in config/environments/* take precedence over those specified here.
 #  # Application configuration should go into files in config/initializers
 #  # -- all .rb files in that directory are automatically loaded.
@@ -106,7 +106,7 @@ CACHES_CONTROLLERS = ['audio', 'baskets', 'comments', 'documents', 'images', 'to
 #  # white list html elements here, besides defaults
 #  config.action_view.sanitized_allowed_tags = 'table', 'tr', 'td', 'tbody', 'th', 'thead', 'tfoot', 'font', 'object', 'param', 'embed'
 #  config.action_view.sanitized_allowed_attributes = 'id', 'style', 'hspace', 'vspace', 'align', 'dir', 'border', 'cellspacing',  'cellpadding', 'summary', 'bgcolor', 'background', 'bordercolor', 'rowspan', 'valign', 'colspan', 'scope', 'lang', 'face', 'color', 'size', 'target', 'classid', 'codebase', 'quality', 'type', 'pluginspage', 'wmode', 'data', 'flashvars', 'allowfullscreen'
-#end
+# end
 #
 ## Walter McGinnis, 2009-09-08
 ## rolling this back, as Nokogiri may not work with Extended Fields populating
@@ -121,12 +121,12 @@ CACHES_CONTROLLERS = ['audio', 'baskets', 'comments', 'documents', 'images', 'to
 #
 ## Walter McGinnis, 2011-07-28
 ## put our locales last, so our application's declarations take precedence
-#I18n.load_path += Dir[ Rails.root.join('config', 'locales', '*.{rb,yml}') ]
+# I18n.load_path += Dir[ Rails.root.join('config', 'locales', '*.{rb,yml}') ]
 ## TODO: we could do some deleting of existing load_path entries to speed up reload in future
-#I18n.reload! # by this point previous load_path's values were already loaded
+# I18n.reload! # by this point previous load_path's values were already loaded
 #
 ## Load application extensions that have been registered by add-ons
-#Kete.setup_extensions!
+# Kete.setup_extensions!
 
 # Initialize the rails application
 KeteApp::Application.initialize!

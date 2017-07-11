@@ -5,9 +5,9 @@ module AccountHelper
   end
 
   def generate_captcha
-    #Define an array of words for generation
-    #words = ['captcha', 'is', 'the', 'way']
-    #Pick one from random to use in captcha image
+    # Define an array of words for generation
+    # words = ['captcha', 'is', 'the', 'way']
+    # Pick one from random to use in captcha image
     # captchatext = String.random_alphanumeric(6).upcase # words[rand(words.size)]
 
     # #Generate text layer

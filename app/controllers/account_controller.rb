@@ -295,7 +295,7 @@ class AccountController < ApplicationController
     # form should have user hash after it's been submitted
     return if @user unless params[:user]
     if (params[:user][:password] == params[:user][:password_confirmation])
-      self.current_user = @user #for the next two lines to work
+      self.current_user = @user # for the next two lines to work
       current_user.password_confirmation = params[:user][:password_confirmation]
       current_user.password = params[:user][:password]
       @user.reset_password
