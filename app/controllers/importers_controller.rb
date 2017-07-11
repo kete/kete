@@ -6,11 +6,11 @@ class ImportersController < ApplicationController
   include WorkerControllerHelpers
 
   # everything else is handled by application.rb
-  before_filter :login_required, only: [:list, :index, :new_related_set_from_archive_file]
+  before_filter :login_required, only: %i[list index new_related_set_from_archive_file]
 
-  permit 'site_admin or admin of :current_basket or tech_admin of :site', except: [:new_related_set_from_archive_file, :create]
+  permit 'site_admin or admin of :current_basket or tech_admin of :site', except: %i[new_related_set_from_archive_file create]
 
-  before_filter :permitted_to_create_imports, only: [:new_related_set_from_archive_file, :create]
+  before_filter :permitted_to_create_imports, only: %i[new_related_set_from_archive_file create]
 
   ### TinyMCE WYSIWYG editor stuff
   # uses_tiny_mce :only => VALID_TINYMCE_ACTIONS

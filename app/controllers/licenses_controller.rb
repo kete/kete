@@ -10,8 +10,8 @@ class LicensesController < ApplicationController
   permit 'site_admin or admin of :site or tech_admin of :site'
 
   active_scaffold :license do |config|
-    config.columns = [:name, :description, :url, :image_url, :metadata, :is_available, :is_creative_commons]
-    config.list.columns = [:id, :name, :url]
+    config.columns = %i[name description url image_url metadata is_available is_creative_commons]
+    config.list.columns = %i[id name url]
 
     config.columns[:metadata].options = { rows: 5 }
   end

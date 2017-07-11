@@ -57,7 +57,7 @@ module SearchSourcesHelper
     image_tag(media_data, alt: "#{h(entry.title)}. ", title: "#{h(entry.title)}. ", width: 50, height: 50)
   end
 
-  [:or_syntax, :and_syntax, :not_syntax].each do |syntax|
+  %i[or_syntax and_syntax not_syntax].each do |syntax|
     define_method "#{syntax.to_s}_form_column" do |record, input_name|
       value = if params[:record] && params[:record][syntax]
                 params[:record][syntax]

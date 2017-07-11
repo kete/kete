@@ -1,13 +1,13 @@
 # frozen_string_literal: true
 
 class BasketsController < ApplicationController
-  permit 'site_admin or admin of :current_basket', only: [:edit, :update, :homepage_options, :destroy,
-                                                          :add_index_topic, :appearance, :update_appearance,
-                                                          :set_settings]
+  permit 'site_admin or admin of :current_basket', only: %i[edit update homepage_options destroy
+                                                            add_index_topic appearance update_appearance
+                                                            set_settings]
 
-  before_filter :redirect_if_current_user_cant_add_or_request_basket, only: [:new, :create]
+  before_filter :redirect_if_current_user_cant_add_or_request_basket, only: %i[new create]
 
-  after_filter :remove_robots_txt_cache, only: [:create, :update, :destroy]
+  after_filter :remove_robots_txt_cache, only: %i[create update destroy]
 
   # Get the Privacy Controls helper for the add item forms
   helper :privacy_controls
@@ -412,7 +412,7 @@ class BasketsController < ApplicationController
     return if profile_rules.blank?
 
     # we need to check all form types for the values
-    form_types = [:edit, :appearance, :homepage_options]
+    form_types = %i[edit appearance homepage_options]
 
     # make the params values hash if they aren't already
     params[:basket] ||= {}
@@ -576,7 +576,7 @@ class BasketsController < ApplicationController
   # and convert back to booleans or nil later. We have to take boolean
   # as well though, as they are used in functional tests
   def convert_text_fields_to_boolean
-    boolean_fields = [:show_privacy_controls, :private_default, :file_private_default, :allow_non_member_comments]
+    boolean_fields = %i[show_privacy_controls private_default file_private_default allow_non_member_comments]
     boolean_fields.each do |field|
       params[:basket][field] = case params[:basket][field]
                                when 'true', true

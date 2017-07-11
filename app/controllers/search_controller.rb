@@ -7,19 +7,19 @@ class SearchController < ApplicationController
 
   # James - 2008-09-03
   # Check for access before running private searches
-  before_filter :require_login_if_private_search, only: [:rss, :for, :all]
-  before_filter :private_search_authorisation, only: [:rss, :for, :all]
+  before_filter :require_login_if_private_search, only: %i[rss for all]
+  before_filter :private_search_authorisation, only: %i[rss for all]
 
   # RSS caching has now moved to fragement caching
   # for finer grain caching (and to suit a larger number of cases)
   # after_filter :write_rss_cache, :only => [:rss]
 
   # Reset slideshow object on new searches
-  before_filter :reset_slideshow, only: [:for, :all]
+  before_filter :reset_slideshow, only: %i[for all]
 
   # After running a search, store the results in a session
   # for slideshow functionality.
-  after_filter :store_results_for_slideshow, only: [:for, :all]
+  after_filter :store_results_for_slideshow, only: %i[for all]
 
   def for
     query = SearchQuery.new(params)

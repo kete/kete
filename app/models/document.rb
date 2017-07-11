@@ -1,12 +1,12 @@
 class Document < ActiveRecord::Base
   include PgSearch
   include PgSearchCustomisations
-  multisearchable against: [
-    :title,
-    :description,
-    :raw_tag_list,
-    :short_summary,
-    :searchable_extended_content_values
+  multisearchable against: %i[
+    title
+    description
+    raw_tag_list
+    short_summary
+    searchable_extended_content_values
   ]
 
   # all the common configuration is handled by this module
@@ -81,7 +81,7 @@ class Document < ActiveRecord::Base
   acts_as_licensed
 
   def attachment_attributes_valid?
-    [:size, :content_type].each do |attr_name|
+    %i[size content_type].each do |attr_name|
       enum = attachment_options[attr_name]
       if attr_name.to_s == 'content_type' && !enum.blank?
         logger.debug("what is received #{attr_name}: " + send(attr_name).inspect)

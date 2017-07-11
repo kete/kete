@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'zoom_controller_helpers'
 class ZoomIndexRebuildWorker < BackgrounDRb::MetaWorker
   set_worker_name :zoom_index_rebuild_worker
@@ -6,7 +8,7 @@ class ZoomIndexRebuildWorker < BackgrounDRb::MetaWorker
   # for prepare_to_zoom, etc.
   include ZoomControllerHelpers
 
-  def create(args = nil)
+  def create(_args = nil)
     results = { do_work_time: Time.now.utc.to_s,
                 done_with_do_work: false,
                 done_with_do_work_time: nil,

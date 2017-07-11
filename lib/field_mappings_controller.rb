@@ -2,7 +2,7 @@ module FieldMappingsController
   unless included_modules.include? FieldMappingsController
 
     def self.included(klass)
-      klass.send :before_filter, :login_required, only: [:list, :index]
+      klass.send :before_filter, :login_required, only: %i[list index]
       klass.send :permit, 'site_admin or admin of :site'
 
       # GETs should be safe (see

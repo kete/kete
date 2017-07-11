@@ -1,7 +1,7 @@
 class MembersController < ApplicationController
-  permit 'site_admin or admin of :current_basket', except: [:index, :list, :join, :remove, :rss]
+  permit 'site_admin or admin of :current_basket', except: %i[index list join remove rss]
 
-  before_filter :permitted_to_view_memberlist, only: [:index, :list, :rss]
+  before_filter :permitted_to_view_memberlist, only: %i[index list rss]
 
   before_filter :permitted_to_remove_basket_members, only: [:remove]
 

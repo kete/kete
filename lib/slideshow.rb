@@ -10,16 +10,16 @@ class Slideshow
     @store = HashWithIndifferentAccess.new
   end
 
-  methods_to_set_up = [
-    :key,
-    :results,
-    :last_requested,
-    :search_params,
-    :total,
-    :total_pages,
-    :current_page,
-    :image_view_size,
-    :number_per_page
+  methods_to_set_up = %i[
+    key
+    results
+    last_requested
+    search_params
+    total
+    total_pages
+    current_page
+    image_view_size
+    number_per_page
   ]
 
   methods_to_set_up.each do |method_name|

@@ -4,13 +4,13 @@ require 'rake'
 
 class ConfigureController < ApplicationController
   # everything else is handled by application.rb
-  before_filter :login_required, only: [:section, :finish,
-                                        :done_with_settings, :zoom_dbs_edit,
-                                        :zoom_dbs_update, :start_zebra,
-                                        :index]
+  before_filter :login_required, only: %i[section finish
+                                          done_with_settings zoom_dbs_edit
+                                          zoom_dbs_update start_zebra
+                                          index]
 
   permit 'tech_admin of :site'
-  permit 'site_admin of :site', only: [:add_link_to_kete_net, :send_information, :get_site_linking_progress]
+  permit 'site_admin of :site', only: %i[add_link_to_kete_net send_information get_site_linking_progress]
 
   include SiteLinking
 

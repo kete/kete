@@ -13,11 +13,11 @@ module EmailController
       end
 
       # set a few instance variables to be used later on
-      klass.send :before_filter, settings_method, only: [:contact, :send_email, :redirect_if_contact_form_disabled]
+      klass.send :before_filter, settings_method, only: %i[contact send_email redirect_if_contact_form_disabled]
 
       # make sure we redirect with a flash message
       # if the basket contact form isn't enabled
-      klass.send :before_filter, :redirect_if_contact_form_disabled, only: [:contact, :send_email]
+      klass.send :before_filter, :redirect_if_contact_form_disabled, only: %i[contact send_email]
     end
 
     def contact
