@@ -226,7 +226,6 @@ class UserNotifier < ActionMailer::Base
     @recipient = user # less confusing than user
   end
 
-
   def setup_body_with(revision, url, message, submitter = nil)
     @revision = revision
     @url = url

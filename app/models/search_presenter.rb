@@ -274,7 +274,6 @@ class SearchPresenter
     ''
   end
 
-
   def title_setup_first_part(title_so_far, span_around_zoom_class=false)
     # if @current_basket != @site_basket
     #   title_so_far += @current_basket.name + ' '

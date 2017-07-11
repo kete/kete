@@ -43,7 +43,6 @@ class Document < ActiveRecord::Base
     content_item_relations =          ContentItemRelation.arel_table
     deleted_content_item_relations =  Arel::Table.new(:deleted_content_item_relations)
 
-
     join_table = ::Document.outer_joins(:taggings).
                             outer_joins(:contributions).
                             outer_joins(:content_item_relations).

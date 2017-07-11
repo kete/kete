@@ -51,7 +51,6 @@ namespace :tools do
     end
   end
 
-
   desc 'Displays server uptime'
   task :uptime do
     run 'uptime'

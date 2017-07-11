@@ -25,8 +25,6 @@ module ZoomSearch
       {}
     end
 
-
-
     # Performs a search and returns a Zoom Object (which you can run .size)
     # Since this is purely for the amount, we :dont_parse_results => true
     # which stops parse_results from running (saves time)

@@ -191,7 +191,6 @@ class PqfQuery
     oai_identifier_include(terms, options)
   end
 
-
   # expects term_or_terms to be strings that are in db normalized datetimes
   # can (and probably should) include utc offset
   # i.e. "1999-12-31 23:59:59+00:00"

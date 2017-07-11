@@ -5,7 +5,6 @@
 #    en.base.lots_o_things: lots of {{t.base.thing.pluralize}}
 #    ...
 
-
 require 'yaml'
 require 'active_support/inflector'
 
@@ -105,7 +104,6 @@ class LocaleFileNormaliser
         walk_hash(value,  keys_array)
       end
   end
-
 
   def save_string_to_gsub_pair(value, keys_array)
     search_key = keys_array.join('.')

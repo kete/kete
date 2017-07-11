@@ -31,7 +31,6 @@ module KeteFlaggingMethods
     end
   end
 
-
   def disputed?
     tags.size > 0 && tags.join(',') !~ /(\#{already_moderated_flags.join('|')})/
   end

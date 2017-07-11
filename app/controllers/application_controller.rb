@@ -726,7 +726,6 @@ class ApplicationController < ActionController::Base
     false
   end
 
-
   # Check whether the attached files for a given item should be displayed
   # Note this is independent of file privacy.
   def show_attached_files_for?(item)

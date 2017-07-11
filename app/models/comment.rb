@@ -66,7 +66,6 @@ class Comment < ActiveRecord::Base
     commentable_str.constantize.find(commentable_id)
   end
 
-
   # We need to pretend to respond to privacy related methods in order
   # for the customized ActsAsZoom to store the comment record in the
   # correct Zebra instance.

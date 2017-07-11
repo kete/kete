@@ -67,12 +67,10 @@ class IndexPageController < ApplicationController
               # disabled_recent_topics_baskets = ConfigurableSetting.where(:name => 'disable_site_recent_topics_display', :value => true.to_yaml).select(:configurable_id).where("configurable_id != ?", @site_basket)
               disabled_recent_topics_baskets =  Basket.where('1 = 0') # EOIN: this is a terrible hack to get an empty instance of ActiveRecord::Relation
 
-
               disabled_recent_topics_baskets.collect! { |setting| setting.configurable_id }
             end
             # If we have a blank array, reset it to nil so later on, it'll default to 0 (instead of causing the SQL to return nothing)
             disabled_recent_topics_baskets = nil unless disabled_recent_topics_baskets.size > 0
-
 
             @recent_topics_items = Array.new
             @total_items = Topic.count

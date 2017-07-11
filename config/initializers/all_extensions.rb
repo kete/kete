@@ -85,7 +85,6 @@ end
 
 # Include extensions into Rails components here
 
-
 module ActiveRecord
   class Base
     # Kieran Pilkington, 2009-07-09

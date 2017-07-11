@@ -5,7 +5,6 @@ require File.expand_path('../application', __FILE__)
 # For holding info about the kete application instance
 # require File.join(File.dirname(__FILE__), '../lib/kete')
 
-
 # Walter McGinnis, 2007-10-18
 # moving this up before other things that need it
 # acts_as_zoom declarations in models
@@ -42,8 +41,6 @@ CACHES_CONTROLLERS = ['audio', 'baskets', 'comments', 'documents', 'images', 'to
 #     end
 #   end
 # end
-
-
 
 # Rails::Initializer.run do |config|
 #  # Settings in config/environments/* take precedence over those specified here.

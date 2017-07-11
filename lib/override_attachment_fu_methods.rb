@@ -27,7 +27,6 @@ module OverrideAttachmentFuMethods
     end
   end
 
-
   private
 
   # not in attachment_fu

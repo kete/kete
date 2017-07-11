@@ -75,7 +75,6 @@ class ExtendedFieldsController < ApplicationController
     @item_type_for_params = params[:item_type_for_params]
     @field_multiple_id = params[:field_multiple_id]
 
-
     render :update do |page|
 
       # Generate the DOM ID

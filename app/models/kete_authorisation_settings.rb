@@ -9,7 +9,6 @@ module KeteAuthorisationSettings
   #       Probably these will be from app/controllers/application_controller.rb
   #       and lib/kete_authorization.rb.
 
-
   def basket_policy_request_with_permissions?
     SystemSetting.basket_creation_policy == 'request' && !@site_admin
   end
@@ -98,7 +97,6 @@ module KeteAuthorisationSettings
     current_user_is?(basket.import_archive_set_policy_with_inheritance, basket)
   end
   alias :current_user_can_import_archive_sets? :current_user_can_import_archive_sets_for?
-
 
   def current_user_can_see_contributors?
     # ROB:  Was previously current_user_can_see_flagging?(). Hiding the contributors
@@ -195,7 +193,6 @@ module KeteAuthorisationSettings
     true
   end
 
-
   def private_item_notification_for(item, type)
     return if item.skip_email_notification == '1'
     return unless show_notification_controls?(item.basket)
@@ -220,7 +217,6 @@ module KeteAuthorisationSettings
       end
     end
   end
-
 
   private
 

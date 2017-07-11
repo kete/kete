@@ -67,7 +67,6 @@ module OaiZoom
                   # related topics and items should have dc:subject elem here with their title
                   oai_dc_xml_dc_relations_and_subjects(xml, request)
 
-
                   oai_dc_xml_dc_type(xml)
 
                   oai_dc_xml_tags_to_dc_subjects(xml)

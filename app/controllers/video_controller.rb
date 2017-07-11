@@ -43,7 +43,6 @@ class VideoController < ApplicationController
     @video = Video.new(params[:video])
     @successful = @video.save
 
-
     # add this to the user's empire of creations
     # TODO: allow current_user whom is at least moderator to pick another user
     # as creator

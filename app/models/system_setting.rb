@@ -11,7 +11,6 @@ class SystemSetting
     # clearer, we can (if required) add the ability to load settings from
     # YAML/DB/whatever.
 
-
     def contact_email
       'kete@library.org.nz'
     end
@@ -423,7 +422,6 @@ class SystemSetting
     end
   end
 end
-
 
 class SystemSetting
   # EOIN:

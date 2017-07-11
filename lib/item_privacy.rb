@@ -36,7 +36,6 @@ module ItemPrivacy
 
     module InstanceMethods
 
-
       # TODO: Work out how to invoke an instance method from an included module..
       # Might need to overload self.non_versioned_columns the method
       # self.non_versioned_columns << "file_private"
@@ -108,7 +107,6 @@ module ItemPrivacy
       def is_private?
         respond_to?(:private) && private?
       end
-
 
       # "save the model to DB but skip the store_correct_versions_after_save method callback"
       def save_without_saving_private!
@@ -203,7 +201,6 @@ module ItemPrivacy
 
           # EOIN: private_version_serialized contains an Array
           raise 'No private attributes' if private_attrs.nil? || !private_attrs.kind_of?(Array)
-
 
           # EOIN: private_version_serialized contains an Array of 2-tuples (Array with two values)
           private_attrs.each do |key, value|

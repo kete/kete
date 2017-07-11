@@ -21,8 +21,6 @@
 #   * moderation
 #   * review
 
-
-
 # Moderation
 # ==========
 # * moderation is implemented by saving particular tags with the model
@@ -40,7 +38,6 @@
 
 # the following flags are inferred by the state of other flags
 # * disputed
-
 
 # when a model has been moderated, it has one of the following values:
 #     [0] "reviewed by moderator",

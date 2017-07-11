@@ -8,7 +8,6 @@ class ExtendedContentParser
   #      The idea was to be a bit more easier to follow (it's only marginally better) but at least now 
   #      this takes values and returns values with no side-effects in the middle.
 
-
   # Method for converting an content-item's extended_content field to key value pairs for 
   # display (in RSS for instance).
   def self.key_value_pairs(item)
@@ -78,7 +77,6 @@ class ExtendedContentParser
     #   <creator xml_element_name="dc:creator"></creator>
     #   <creation_date xml_element_name="dc:date"></creation_date>
     #   <user_reference xml_element_name="dc:identifier"></user_reference>
-
 
     fields_with_position_hash = item.xml_attributes
     
@@ -224,7 +222,6 @@ class ExtendedContentParser
       end
     end
   end
-
 
   # Make sure that the name is a valid XML name and escape common patterns (spaces to underscores) 
   # to prevent import errors

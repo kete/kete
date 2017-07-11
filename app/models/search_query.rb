@@ -98,7 +98,6 @@ class SearchQuery
     end
   end
 
-
   private
 
   def to_hash

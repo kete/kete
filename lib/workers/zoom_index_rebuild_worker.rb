@@ -135,7 +135,6 @@ class ZoomIndexRebuildWorker < BackgrounDRb::MetaWorker
                                                       conditions: "id > #{@last_id}").id
           end
 
-
         # the_class.find_in_batches(:conditions => [clause, clause_values]) do |batch_of_the_class|
           # batch_of_the_class.each do |item|
         the_class.find(:all, conditions: [clause, clause_values], limit: batch_size, order: 'id').each do |item|

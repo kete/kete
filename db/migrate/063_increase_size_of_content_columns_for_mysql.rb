@@ -3,7 +3,6 @@ class IncreaseSizeOfContentColumnsForMysql < ActiveRecord::Migration
     
     # TODO. Add a warning here?
 
-
     # Check that the MySQL adaptor exists
     return unless defined?(ActiveRecord::ConnectionAdapters::MysqlAdapter)
     
