@@ -21,7 +21,7 @@ module HasContributorsTestUnitHelper
     model.creators << user
 
     # update model to have new version
-    model.update_attributes(:title => 'something else')
+    model.update_attributes(title: 'something else')
 
     # make sure that version is 2
     assert_equal 2, model.version, "#{@base_class} failed didn't update version"

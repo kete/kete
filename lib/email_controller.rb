@@ -13,21 +13,21 @@ module EmailController
       end
 
       # set a few instance variables to be used later on
-      klass.send :before_filter, settings_method, :only => [:contact, :send_email, :redirect_if_contact_form_disabled]
+      klass.send :before_filter, settings_method, only: [:contact, :send_email, :redirect_if_contact_form_disabled]
 
       # make sure we redirect with a flash message
       # if the basket contact form isn't enabled
-      klass.send :before_filter, :redirect_if_contact_form_disabled, :only => [:contact, :send_email]
+      klass.send :before_filter, :redirect_if_contact_form_disabled, only: [:contact, :send_email]
     end
 
     def contact
-      render :template => 'email/contact'
+      render template: 'email/contact'
     end
 
     def send_email
       if params[:contact].nil? || params[:contact][:subject].blank? || params[:contact][:message].blank?
         flash[:error] = I18n.t('email_controller_lib.send_email.need_subject_and_message')
-        render :template => 'email/contact'
+        render template: 'email/contact'
       else
         # are we sending to multiple recipients, or only one?
         if @recipient.kind_of? Array
@@ -59,7 +59,7 @@ module EmailController
       @recipient = @user
       @recipient_name = @user.user_name
       @from_basket = nil
-      @redirect_to = { :controller => 'account', :action => 'show', :id => @user.id }
+      @redirect_to = { controller: 'account', action: 'show', id: @user.id }
     end
 
     def redirect_if_contact_form_disabled

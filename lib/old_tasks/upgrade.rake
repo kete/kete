@@ -7,7 +7,7 @@
 #
 namespace :kete do
   desc "Do everything that we need done, like adding data to the db, for an upgrade."
-  task :upgrade => ['kete:upgrade:add_new_baskets',
+  task upgrade: ['kete:upgrade:add_new_baskets',
                     'kete:upgrade:add_tech_admin',
                     'kete:upgrade:add_new_system_settings',
                     'kete:upgrade:add_new_default_topics',
@@ -34,9 +34,9 @@ namespace :kete do
                     'kete:upgrade:add_missing_users']
   namespace :upgrade do
     desc 'Privacy Controls require that Comment#commentable_private be set.  Update existing comments to have this data.'
-    task :update_existing_comments_commentable_private => :environment do
+    task update_existing_comments_commentable_private: :environment do
       comment_count = 0
-      Comment.find(:all, :conditions => "commentable_private is null").each do |comment|
+      Comment.find(:all, conditions: "commentable_private is null").each do |comment|
         comment.commentable_private = false if comment.commentable_private.blank?
         comment.save!
         comment_count += 1
@@ -45,7 +45,7 @@ namespace :kete do
     end
 
     desc 'Add the new system settings that are missing from our system.'
-    task :add_new_system_settings => :environment do
+    task add_new_system_settings: :environment do
       system_settings_from_yml = YAML.load_file("#{RAILS_ROOT}/db/bootstrap/system_settings.yml")
 
       printed_related_items_notice = false
@@ -92,7 +92,7 @@ namespace :kete do
     end
 
     desc 'Add the new default topics that are missing from our Kete installation.'
-    task :add_new_default_topics => :environment do
+    task add_new_default_topics: :environment do
       topics_from_yml = YAML.load_file("#{RAILS_ROOT}/db/bootstrap/topics.yml")
 
       # support for legacy kete installations where basket ids
@@ -127,7 +127,7 @@ namespace :kete do
     end
 
     desc 'Add any new default baskets that are missing from our system.'
-    task :add_new_baskets => :environment do
+    task add_new_baskets: :environment do
       baskets_from_yml = YAML.load_file("#{RAILS_ROOT}/db/bootstrap/baskets.yml")
       # For each basket from yml
       # check if it's in the db
@@ -151,7 +151,7 @@ namespace :kete do
     end
 
     desc 'Add tech_admin role if it is missing from our system.'
-    task :add_tech_admin => :environment do
+    task add_tech_admin: :environment do
       roles_from_yml = YAML.load_file("#{RAILS_ROOT}/db/bootstrap/roles.yml")
 
       admin_user = User.find(1)
@@ -164,7 +164,7 @@ namespace :kete do
     end
 
     desc 'Change zebra password file to use clear text since encrypted is broken.'
-    task :change_zebra_password => :environment do
+    task change_zebra_password: :environment do
       ENV['ZEBRA_PASSWORD'] = ZoomDb.find(1).zoom_password
       Rake::Task['zebra:stop'].invoke
       Rake::Task['zebra:set_keteaccess'].invoke
@@ -173,7 +173,7 @@ namespace :kete do
     end
 
     desc 'This checks for missing required software and installs it if possible.'
-    task :check_required_software => :environment do
+    task check_required_software: :environment do
       include RequiredSoftware
       required_software = load_required_software
       missing_software = { 'Gems' => missing_libs(required_software), 'Commands' => missing_commands(required_software)}
@@ -182,7 +182,7 @@ namespace :kete do
     end
 
     desc 'Fix the default baskets settings for unedited baskets so they inherit (like they were intended to)'
-    task :correct_basket_defaults => :environment do
+    task correct_basket_defaults: :environment do
       Basket.all.each do |basket|
         next unless Basket.standard_baskets.include?(basket.id)
         next unless basket.created_at == basket.updated_at
@@ -206,7 +206,7 @@ namespace :kete do
     end
 
     desc 'Make Site basket have membership requests closed, and member list visibility at least admin.'
-    task :set_default_join_and_memberlist_policies => :environment do
+    task set_default_join_and_memberlist_policies: :environment do
       # set some defaults in the site basket
       site_basket = Basket.first # site
       site_basket.set_setting(:basket_join_policy, 'closed') if site_basket.setting(:basket_join_policy).class == NilClass
@@ -218,15 +218,15 @@ namespace :kete do
     end
 
     desc 'Make all baskets with the status of NULL set to approved'
-    task :make_baskets_approved_if_status_null => :environment do
+    task make_baskets_approved_if_status_null: :environment do
       Basket.all.each do |basket|
-        basket.update_attributes!({ :status => 'approved',
-                                    :creator_id => 1}) if basket.status.blank?
+        basket.update_attributes!({ status: 'approved',
+                                    creator_id: 1}) if basket.status.blank?
       end
     end
 
     desc 'Make about, documentation, and help baskets ignore on the site basket recent topics if not done yet.'
-    task :ignore_default_baskets_if_setting_not_set => :environment do
+    task ignore_default_baskets_if_setting_not_set: :environment do
       Basket.find_all_by_urlified_name(['about', 'documentation', 'help']).each do |basket|
         if basket.setting(:disable_site_recent_topics_display).class == NilClass
           basket.set_setting(:disable_site_recent_topics_display, true)
@@ -235,10 +235,10 @@ namespace :kete do
     end
 
     desc 'Ensure logins are valid before continuing (1.1 allowed spaces, 1.2 onwards does not).'
-    task :ensure_logins_all_valid => :environment do
+    task ensure_logins_all_valid: :environment do
       users = User.all.collect { |user| (user.login =~ /\s/) ? user : nil }.compact.flatten
       users.each do |user|
-        user.update_attributes!({ :login => user.login.gsub(/\s/, '_') })
+        user.update_attributes!({ login: user.login.gsub(/\s/, '_') })
         UserNotifier.deliver_login_changed(user)
         p "Altered login of #{user.user_name}#{" (#{user.login})" if user.login != user.user_name}."
         # we should clear the contribution caches but we don't have access to this method here
@@ -247,9 +247,9 @@ namespace :kete do
     end
 
     desc 'Transfer the old user names in the extended content fields into the display/resolved name fields on the users table, and remove the user name field mapping for Users'
-    task :move_user_name_to_display_and_resolved_name => :environment do
+    task move_user_name_to_display_and_resolved_name: :environment do
       user_count = 0
-      User.find(:all, :conditions => { :resolved_name => '' }).each do |user|
+      User.find(:all, conditions: { resolved_name: '' }).each do |user|
         if user.display_name.blank?
           user_name_field = SystemSetting.extended_field_for_user_name
           extended_content_hash = user.xml_attributes_without_position
@@ -275,12 +275,12 @@ namespace :kete do
     end
 
     desc 'Give existing users a default locale if they don\'t already have one.'
-    task :set_default_locale_for_existing_users => :environment do
-      User.update_all({ :locale => 'en' }, { :locale => nil })
+    task set_default_locale_for_existing_users: :environment do
+      User.update_all({ locale: 'en' }, { locale: nil })
     end
 
     desc 'Expire old style page caching for RSS feeds, otherwise they will conflict with new RSS caching system.'
-    task :expire_depreciated_rss_cache => :environment do
+    task expire_depreciated_rss_cache: :environment do
       # needed for zoom_class_controller method
       include ZoomControllerHelpers
 
@@ -323,7 +323,7 @@ namespace :kete do
     end
 
     desc 'Make site basket default browse type blank, and other baskets inherit'
-    task :set_default_browse_type => :environment do
+    task set_default_browse_type: :environment do
       # set some defaults in the site basket
       site_basket = Basket.first # site
       site_basket.set_setting(:browse_view_as, '') if site_basket.setting(:browse_view_as).class == NilClass
@@ -334,9 +334,9 @@ namespace :kete do
     end
 
     desc 'Add basket id to taggings that dont have a basket id yet'
-    task :add_basket_id_to_taggings => :environment do
+    task add_basket_id_to_taggings: :environment do
       puts "Adding Basket ID to Tagging records"
-      records = Tagging.all(:conditions => { :basket_id => nil })
+      records = Tagging.all(conditions: { basket_id: nil })
       records.each do |tagging|
         item = tagging.taggable_type.constantize.find_by_id(tagging.taggable_id)
         tagging.update_attribute(:basket_id, item.basket_id) if item
@@ -345,38 +345,38 @@ namespace :kete do
     end
 
     desc "Make all baskets have private item notification 'do not email' if setting doesn't exist"
-    task :make_baskets_private_notification_do_not_email => :environment do
+    task make_baskets_private_notification_do_not_email: :environment do
       Basket.all.each do |basket|
         basket.set_setting(:private_item_notification, 'do_not_email') if basket.setting(:private_item_notification).blank?
       end
     end
 
     desc "Add the parent_id, lft, and rgt values to comments that were created before acts_as_nested_set was put in place"
-    task :add_nested_values_to_comments => :environment do
-      Comment.renumber_all if (Comment.count(:conditions => { :lft => nil }) > 0)
+    task add_nested_values_to_comments: :environment do
+      Comment.renumber_all if (Comment.count(conditions: { lft: nil }) > 0)
     end
 
     desc "Migrate from older style related items inset booleans to newer related items position flags"
-    task :change_inset_to_position => :environment do
+    task change_inset_to_position: :environment do
       # Use Model.update_all({ changes }, { :id => id }) to get
       # around time consuming validations and possible failures
 
       conditions = ["related_items_position IS NULL OR related_items_position IN (?)", ['', '0', '1']]
-      topics = Topic::Version.all(:conditions => conditions)
+      topics = Topic::Version.all(conditions: conditions)
       topics.each do |topic|
         Topic::Version.update_all({
-          :related_items_position => (topic.related_items_position.to_i == 1 ? 'inset' : 'below')
-        }, { :id => topic.id })
+          related_items_position: (topic.related_items_position.to_i == 1 ? 'inset' : 'below')
+        }, { id: topic.id })
       end
 
-      topics = Topic.all(:conditions => conditions)
+      topics = Topic.all(conditions: conditions)
       topics.each do |topic|
         Topic.update_all({
-          :related_items_position => (topic.related_items_position.to_i == 1 ? 'inset' : 'below')
-        }, { :id => topic.id })
+          related_items_position: (topic.related_items_position.to_i == 1 ? 'inset' : 'below')
+        }, { id: topic.id })
       end
 
-      topics = Topic.all(:conditions => "private_version_serialized LIKE '%related_items_inset%'")
+      topics = Topic.all(conditions: "private_version_serialized LIKE '%related_items_inset%'")
       topics.each do |topic|
         private_data = YAML.load(topic.private_version_serialized)
         private_data.each_with_index do |(key, value), index|
@@ -385,7 +385,7 @@ namespace :kete do
           private_data << ['related_items_position', (value && value.to_i == 1 ? 'inset' : 'below')]
         end
         private_data = YAML.dump(private_data)
-        Topic.update_all({ :private_version_serialized => private_data }, { :id => topic.id })
+        Topic.update_all({ private_version_serialized: private_data }, { id: topic.id })
       end
 
       inset_default = SystemSetting.find_by_name('Related Items Inset Default')
@@ -404,20 +404,20 @@ namespace :kete do
     end
 
     desc "Set all NULL value private_only values on topic type and content type field mappings to false."
-    task :set_null_private_only_mappings_to_false => :environment do
-      ContentTypeToFieldMapping.update_all({ :private_only => false }, "private_only IS NULL")
-      TopicTypeToFieldMapping.update_all({ :private_only => false }, "private_only IS NULL")
+    task set_null_private_only_mappings_to_false: :environment do
+      ContentTypeToFieldMapping.update_all({ private_only: false }, "private_only IS NULL")
+      TopicTypeToFieldMapping.update_all({ private_only: false }, "private_only IS NULL")
     end
 
     desc 'Make all baskets import archive set functionality at least member.'
-    task :set_default_import_archive_set_policy => :environment do
+    task set_default_import_archive_set_policy: :environment do
       Basket.all.each do |basket|
         basket.setting(:import_archive_set_policy, 'at least admin') if basket.setting(:import_archive_set_policy).class == NilClass
       end
     end
 
     desc 'Add any default users that have not been added already.'
-    task :add_missing_users => :environment do
+    task add_missing_users: :environment do
       users_from_yml = YAML.load(ERB.new(File.read("#{Rails.root}/db/bootstrap/users.yml")).result)
 
       # for each system_setting from yml
@@ -455,7 +455,7 @@ namespace :kete do
     end
 
     desc 'Checks for mimetypes an adds them if needed.'
-    task :add_missing_mime_types => ['kete:upgrade:add_octet_stream_and_word_types',
+    task add_missing_mime_types: ['kete:upgrade:add_octet_stream_and_word_types',
                                      'kete:upgrade:add_excel_variants_to_documents',
                                      'kete:upgrade:add_aiff_to_audio_recordings',
                                      'kete:upgrade:add_tar_to_documents',
@@ -467,7 +467,7 @@ namespace :kete do
                                      'kete:upgrade:add_file_mime_type_variants']
 
     desc 'Adds psd variants if needed to images and documents'
-    task :add_psd_and_gimp_to_images_and_documents => :environment do
+    task add_psd_and_gimp_to_images_and_documents: :environment do
       ['Document Content Types', 'Image Content Types'].each do |setting_name|
         setting = SystemSetting.find_by_name(setting_name)
         ['image/vnd.adobe.photoshop', 'image/x-photoshop', 'application/x-photoshop', 'image/xcf'].each do |new_type|
@@ -479,7 +479,7 @@ namespace :kete do
     end
 
     desc 'Adds excel variants if needed'
-    task :add_excel_variants_to_documents => :environment do
+    task add_excel_variants_to_documents: :environment do
       setting = SystemSetting.find_by_name('Document Content Types')
       ['application/excel', 'application/x-excel', 'application/x-msexcel'].each do |new_type|
         if setting.push(new_type)
@@ -489,7 +489,7 @@ namespace :kete do
     end
 
     desc 'Adds application/octet-stream and application/word if needed'
-    task :add_octet_stream_and_word_types => :environment do
+    task add_octet_stream_and_word_types: :environment do
       ['Document Content Types', 'Video Content Types', 'Audio Content Types'].each do |setting_name|
         setting = SystemSetting.find_by_name(setting_name)
         if setting.push('application/octet-stream')
@@ -504,7 +504,7 @@ namespace :kete do
     end
 
     desc 'Adds application/x-tar if needed'
-    task :add_tar_to_documents => :environment do
+    task add_tar_to_documents: :environment do
       setting = SystemSetting.find_by_name('Document Content Types')
       if setting.push('application/x-tar')
         p "added application/x-tar mime type to " + setting.name
@@ -512,7 +512,7 @@ namespace :kete do
     end
 
     desc 'Adds jpeg types to documents if needed.  A lot of archive and repository sites call scans to jpeg of a historical document pages.'
-    task :add_jpegs_to_documents => :environment do
+    task add_jpegs_to_documents: :environment do
       setting = SystemSetting.find_by_name('Document Content Types')
       ['image/jpeg', 'image/jpg'].each do |type|
         if setting.push(type)
@@ -522,7 +522,7 @@ namespace :kete do
     end
 
     desc 'Adds audio/x-aiff if needed'
-    task :add_aiff_to_audio_recordings => :environment do
+    task add_aiff_to_audio_recordings: :environment do
       setting = SystemSetting.find_by_name('Audio Content Types')
       if setting.push('audio/x-aiff')
         p "added audio/x-aiff mime type to " + setting.name
@@ -530,7 +530,7 @@ namespace :kete do
     end
 
     desc 'Adds image/bmp if needed to images'
-    task :add_bmp_to_images => :environment do
+    task add_bmp_to_images: :environment do
       setting = SystemSetting.find_by_name('Image Content Types')
       if setting.push('image/bmp')
         p "added image/bmp mime type to " + setting.name
@@ -538,7 +538,7 @@ namespace :kete do
     end
 
     desc 'Adds eps (application/postscript) if needed to images'
-    task :add_eps_to_images => :environment do
+    task add_eps_to_images: :environment do
       setting = SystemSetting.find_by_name('Image Content Types')
       if setting.push('application/postscript')
         p "added eps (application/postscript) mime type to " + setting.name
@@ -546,7 +546,7 @@ namespace :kete do
     end
 
     desc 'Adds OpenOffice document types if needed'
-    task :add_open_office_document_types => :environment do
+    task add_open_office_document_types: :environment do
       oo_types = ['application/vnd.oasis.opendocument.chart',
                   'application/vnd.oasis.opendocument.database',
                   'application/vnd.oasis.opendocument.formula',
@@ -567,7 +567,7 @@ namespace :kete do
     end
 
     desc 'Adds File mime type variants'
-    task :add_file_mime_type_variants => :environment do
+    task add_file_mime_type_variants: :environment do
       new_mime_types =  [
                           [ 'Image Content Types',    [ 'image/quicktime', 'image/x-quicktime', 'image/x-ms-bmp' ] ],
                           [ 'Document Content Types', [ 'application/x-zip', 'application/x-zip-compressed', 'application/x-compressed-tar', 'application/xml' ] ],

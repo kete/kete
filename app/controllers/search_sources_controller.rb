@@ -8,7 +8,7 @@ class SearchSourcesController < ApplicationController
   before_filter ExternalSearchSources[:login_method]
   before_filter :redirect_if_not_authorized
   before_filter :set_page_title
-  before_filter :get_search_source, :only => [ :move_higher, :move_lower ]
+  before_filter :get_search_source, only: [ :move_higher, :move_lower ]
   before_filter :prepare_available_search_sources
 
 #   active_scaffold :search_sources do |config|
@@ -71,13 +71,13 @@ class SearchSourcesController < ApplicationController
   def move_higher
     @search_source.move_higher
     flash[:notice] = I18n.t('search_sources_controller.move_higher.moved_higher')
-    redirect_to ExternalSearchSources[:default_url_options].merge(:action => 'list')
+    redirect_to ExternalSearchSources[:default_url_options].merge(action: 'list')
   end
 
   def move_lower
     @search_source.move_lower
     flash[:notice] = I18n.t('search_sources_controller.move_lower.moved_lower')
-    redirect_to ExternalSearchSources[:default_url_options].merge(:action => 'list')
+    redirect_to ExternalSearchSources[:default_url_options].merge(action: 'list')
   end
 
   def install_search_source
@@ -98,7 +98,7 @@ class SearchSourcesController < ApplicationController
     else
       flash[:error] = t('search_sources_controller.install_search_source.no_import')
     end
-    redirect_to ExternalSearchSources[:default_url_options].merge(:action => 'list')
+    redirect_to ExternalSearchSources[:default_url_options].merge(action: 'list')
   end
 
   private

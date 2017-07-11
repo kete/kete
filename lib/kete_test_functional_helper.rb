@@ -22,15 +22,15 @@ module KeteTestFunctionalHelper
       #
 
       def index_path(attributes = {})
-        { :urlified_name => 'site', :controller => @base_class.tableize, :action => 'index' }.merge(attributes)
+        { urlified_name: 'site', controller: @base_class.tableize, action: 'index' }.merge(attributes)
       end
 
       def show_path(attributes = {})
-        { :urlified_name => 'site', :controller => @base_class.tableize, :action => 'show', :id => 1 }.merge(attributes)
+        { urlified_name: 'site', controller: @base_class.tableize, action: 'show', id: 1 }.merge(attributes)
       end
 
       def new_path(attributes = {})
-        { :urlified_name => 'site', :controller => @base_class.tableize, :action => 'new' }.merge(attributes)
+        { urlified_name: 'site', controller: @base_class.tableize, action: 'new' }.merge(attributes)
       end
 
       def create_record(attributes = {}, location = {})
@@ -41,7 +41,7 @@ module KeteTestFunctionalHelper
       end
 
       def edit_path(attributes = {})
-        { :urlified_name => 'site', :controller => @base_class.tableize, :action => 'edit', :id => 1 }.merge(attributes)
+        { urlified_name: 'site', controller: @base_class.tableize, action: 'edit', id: 1 }.merge(attributes)
       end
 
       def update_record(attributes = {}, location = {})

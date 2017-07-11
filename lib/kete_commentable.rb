@@ -3,7 +3,7 @@ module KeteCommentable
   unless included_modules.include? KeteCommentable
     def self.included(klass)
       # we can't use object.comments, because that is used by related content stuff
-      klass.send :has_many, :comments, :as => :commentable, :dependent => :destroy, :order => 'lft'
+      klass.send :has_many, :comments, as: :commentable, dependent: :destroy, order: 'lft'
 
       klass.class_eval do
 
@@ -11,9 +11,9 @@ module KeteCommentable
         # that have suitable privacy
         def non_pending_comments
           if respond_to?(:private?)
-            comments.all(:conditions => ['title != ? AND commentable_private = ?', SystemSetting.blank_title, private?])
+            comments.all(conditions: ['title != ? AND commentable_private = ?', SystemSetting.blank_title, private?])
           else
-            comments.all(:conditions => ['title != ?', SystemSetting.blank_title])
+            comments.all(conditions: ['title != ?', SystemSetting.blank_title])
           end
         end
 

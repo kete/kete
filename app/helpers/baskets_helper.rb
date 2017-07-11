@@ -1,15 +1,15 @@
 module BasketsHelper
   def link_to_link_index_topic(options={})
     link_to options[:phrase], {
-      :controller => 'search',
-      :action => 'find_index',
-      :current_basket_id => options[:current_basket_id],
-      :current_homepage_id => options[:current_homepage_id] },
-    :popup => ['links', 'height=500,width=500,scrollbars=yes,top=100,left=100'], :tabindex => '1'
+      controller: 'search',
+      action: 'find_index',
+      current_basket_id: options[:current_basket_id],
+      current_homepage_id: options[:current_homepage_id] },
+    popup: ['links', 'height=500,width=500,scrollbars=yes,top=100,left=100'], tabindex: '1'
   end
 
   def link_to_add_index_topic(options={})
-    link_to options[:phrase], {:controller => 'topics', :action => :new, :index_for_basket => options[:index_for_basket]}, :tabindex => '1'
+    link_to options[:phrase], {controller: 'topics', action: :new, index_for_basket: options[:index_for_basket]}, tabindex: '1'
   end
 
   def basket_preferences_inheritance_message
@@ -36,11 +36,11 @@ module BasketsHelper
        profile_rules[@form_type.to_s]['rule_type'] != 'all'
       html += '<span class="show_all_fields">['
       action = params[:action] == 'render_basket_form' ? 'new' : params[:action]
-      location = { :action => action, :basket_profile => params[:basket_profile] }
+      location = { action: action, basket_profile: params[:basket_profile] }
       if params[:show_all_fields]
-        html += link_to t('baskets_helper.show_all_fields_link.show_allowed_fields'), location.merge(:show_all_fields => nil)
+        html += link_to t('baskets_helper.show_all_fields_link.show_allowed_fields'), location.merge(show_all_fields: nil)
       else
-         html += link_to t('baskets_helper.show_all_fields_link.show_all_fields'), location.merge(:show_all_fields => true)
+         html += link_to t('baskets_helper.show_all_fields_link.show_all_fields'), location.merge(show_all_fields: true)
       end
       html += ']</span>'
     end

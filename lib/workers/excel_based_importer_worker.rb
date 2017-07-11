@@ -123,7 +123,7 @@ class ExcelPreProcessor < Nokogiri::XML::SAX::Document
                   require 'prawn'
                   images = Dir["#{images_path}/*"]
                   FileUtils.mkdir_p pdfs_path unless File.directory?(pdfs_path)
-                  Prawn::Document.generate(pdf_file, :page_layout => :landscape) do
+                  Prawn::Document.generate(pdf_file, page_layout: :landscape) do
                     images.each_with_index do |file, index|
                       start_new_page unless index == 0
                       image file
@@ -183,9 +183,9 @@ class ExcelBasedImporterWorker < BackgrounDRb::MetaWorker
 
     return if File.exist?(path_to_records_file_output)
 
-    rows = ExcelPreProcessor.new(path_to_xl_xml_file, :zoom_class => @zoom_class, :import_dir_path => @import_dir_path, :record_interval => @record_interval).records
+    rows = ExcelPreProcessor.new(path_to_xl_xml_file, zoom_class: @zoom_class, import_dir_path: @import_dir_path, record_interval: @record_interval).records
 
-    builder = Nokogiri::XML::Builder.new(:encoding => 'UTF-8') { |xml|
+    builder = Nokogiri::XML::Builder.new(encoding: 'UTF-8') { |xml|
       xml.records {
         rows.each { |row|
           xml.record {

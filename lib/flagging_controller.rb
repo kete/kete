@@ -18,7 +18,7 @@ module FlaggingController
       end
 
       # use one form template for all controllers
-      render :template => 'topics/flag_form'
+      render template: 'topics/flag_form'
     end
 
     def flag_version
@@ -39,12 +39,12 @@ module FlaggingController
 
       flagging_clear_caches_and_update_zoom(@item)
 
-      @item.notify_moderators_immediatelly_if_necessary(:flag => @flag,
-                                                        :history_url => history_url(@item),
-                                                        :flagging_user => @current_user,
-                                                        :version =>  @version,
-                                                        :submitter => @submitter,
-                                                        :message => @message)
+      @item.notify_moderators_immediatelly_if_necessary(flag: @flag,
+                                                        history_url: history_url(@item),
+                                                        flagging_user: @current_user,
+                                                        version: @version,
+                                                        submitter: @submitter,
+                                                        message: @message)
 
       flash[:notice] = I18n.t('flagging_controller_lib.flag_version.item_flagged')
       redirect_to @item_url
@@ -84,14 +84,14 @@ module FlaggingController
         # Set the version comment
         params[name_for_params.to_sym] = {}
         params[name_for_params.to_sym][:version_comment] = I18n.t('flagging_controller_lib.restore.version_comment',
-                                                                  :version => @version)
+                                                                  version: @version)
 
         # Exempt the next version from moderation
         # See app/controllers/application.rb lines 241 through 282
         exempt_next_version_from_moderation!(@item)
 
         flash[:notice] = I18n.t('flagging_controller_lib.restore.missing_details')
-        render :action => 'edit'
+        render action: 'edit'
 
         @item.send(:allow_nil_values_for_extended_content=, true)
 
@@ -104,7 +104,7 @@ module FlaggingController
 
         @item.tag_list = @item.raw_tag_list
         @item.version_comment = I18n.t('flagging_controller_lib.restore.version_comment',
-                                       :version => @version)
+                                       version: @version)
         @item.do_not_moderate = true
 
         versions_before_save = @item.versions.size
@@ -132,8 +132,8 @@ module FlaggingController
         flagging_clear_caches_and_update_zoom(@item)
 
         approval_message = I18n.t('flagging_controller_lib.restore.made_live',
-                                  :site_name => SystemSetting.pretty_site_name,
-                                  :basket_name => @current_basket.name)
+                                  site_name: SystemSetting.pretty_site_name,
+                                  basket_name: @current_basket.name)
 
         # notify the contributor of this revision
         UserNotifier.deliver_approval_of(@version,
@@ -143,7 +143,7 @@ module FlaggingController
 
 
         flash[:notice] = I18n.t('flagging_controller_lib.restore.approved',
-                                :zoom_class => zoom_class_humanize(@item.class.name))
+                                zoom_class: zoom_class_humanize(@item.class.name))
 
         redirect_to @item_url
       end
@@ -154,8 +154,8 @@ module FlaggingController
     def review
       setup_flagging_vars
 
-      @item.review_this(@version, :message => @message,
-                                  :restricted => params[:restricted].present?)
+      @item.review_this(@version, message: @message,
+                                  restricted: params[:restricted].present?)
 
       # notify the contributor of this revision
       UserNotifier.deliver_reviewing_of(@version,
@@ -164,7 +164,7 @@ module FlaggingController
                                         @message)
 
       flash[:notice] = I18n.t('flagging_controller_lib.review.reviewed',
-                              :zoom_class => zoom_class_humanize(@item.class.name))
+                              zoom_class: zoom_class_humanize(@item.class.name))
 
       redirect_to @item_url
     end
@@ -172,8 +172,8 @@ module FlaggingController
     def reject
       setup_flagging_vars
 
-      @item.reject_this(@version, :message => @message,
-                                  :restricted => params[:restricted].present?)
+      @item.reject_this(@version, message: @message,
+                                  restricted: params[:restricted].present?)
 
       # notify the contributor of this revision
       UserNotifier.deliver_rejection_of(@version,
@@ -182,7 +182,7 @@ module FlaggingController
                                         @message)
 
       flash[:notice] = I18n.t('flagging_controller_lib.reject.rejected',
-                              :zoom_class => zoom_class_humanize(@item.class.name))
+                              zoom_class: zoom_class_humanize(@item.class.name))
 
       redirect_to @item_url
     end
@@ -217,7 +217,7 @@ module FlaggingController
       @contributor_index = 0
 
       @item_taggings = Hash.new
-      taggings = Tagging.all(:conditions => ["taggable_type = ? AND taggable_id IN (?) AND context = 'flags'", "#{@item.class.name}::Version", @versions])
+      taggings = Tagging.all(conditions: ["taggable_type = ? AND taggable_id IN (?) AND context = 'flags'", "#{@item.class.name}::Version", @versions])
       taggings.each do |tagging|
         @item_taggings[tagging[:taggable_id]] ||= Array.new
         @item_taggings[tagging[:taggable_id]] << tagging.tag
@@ -226,7 +226,7 @@ module FlaggingController
       @users = Hash.new
 
       # one template (with logic) for all controllers
-      render :template => 'topics/history'
+      render template: 'topics/history'
     end
 
     # preview a version of an item
@@ -256,12 +256,12 @@ module FlaggingController
         end
 
         # one template (with logic) for all controllers
-        render :template => 'topics/preview'
+        render template: 'topics/preview'
       end
     rescue ActiveRecord::RecordNotFound
       flash[:notice] = I18n.t('flagging_controller_lib.preview.no_public',
-                              :controller => params[:controller].singularize)
-      redirect_to :controller => 'account', :action => 'login'
+                              controller: params[:controller].singularize)
+      redirect_to controller: 'account', action: 'login'
     end
 
     def can_preview?(options = { })

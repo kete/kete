@@ -19,9 +19,9 @@ module SearchSourcesHelper
       #       @template was probably supplied by one of the plugin that
       #       was removed
       html += render('search_sources/search_source',
-                               :search_text => search_text,
-                               :source => source,
-                               :options => options)
+                               search_text: search_text,
+                               source: source,
+                               options: options)
     end
     return html if html.blank?
     "<div id='search_sources'>" +
@@ -40,22 +40,22 @@ module SearchSourcesHelper
   end
 
   def cache_key_for(source)
-    { :search_source => source.title_id, :id => params[:id].to_i }
+    { search_source: source.title_id, id: params[:id].to_i }
   end
 
   def search_source_title_for(entry, length=50)
-    entry.title ? truncate(strip_tags(entry.title).squish, :length => length, :omission => '...') : ''
+    entry.title ? truncate(strip_tags(entry.title).squish, length: length, omission: '...') : ''
   end
 
   def search_source_summary_for(entry, length=300)
     summary = entry.title
-    summary += " - " + truncate(strip_tags(entry.summary).squish, :length => length, :omission => '...') if entry.summary
+    summary += " - " + truncate(strip_tags(entry.summary).squish, length: length, omission: '...') if entry.summary
     summary
   end
 
   def search_source_image_for(entry)
     media_data = entry.media_thumbnail || entry.enclosure
-    image_tag(media_data, :alt => "#{h(entry.title)}. ", :title => "#{h(entry.title)}. ", :width => 50, :height => 50)
+    image_tag(media_data, alt: "#{h(entry.title)}. ", title: "#{h(entry.title)}. ", width: 50, height: 50)
   end
 
   [:or_syntax, :and_syntax, :not_syntax].each do |syntax|
@@ -73,22 +73,22 @@ module SearchSourcesHelper
       html = String.new
 
       html += "<span id='record_#{syntax}_case_div'>" +
-        label_tag("#{input_name}[case]", t("search_sources_helper.#{syntax.to_s}_form_column.case"), :class => 'inline') +
+        label_tag("#{input_name}[case]", t("search_sources_helper.#{syntax.to_s}_form_column.case"), class: 'inline') +
         select_tag("#{input_name}[case]", options_for_select(SearchSource.case_values, value[:case])) +
       '</span>'
 
       if syntax == :or_syntax
         html += " <span id='record_or_syntax_position_div'>"
-        html += label_tag("#{input_name}[position]", t('search_sources_helper.or_syntax_form_column.position'), :class => 'inline')
+        html += label_tag("#{input_name}[position]", t('search_sources_helper.or_syntax_form_column.position'), class: 'inline')
         html += select_tag("#{input_name}[position]", options_for_select(SearchSource.or_positions, value[:position]))
         html += '</span>'
       end
 
-      html = content_tag('div', html, :id => "#{syntax.to_s}_form_div")
+      html = content_tag('div', html, id: "#{syntax.to_s}_form_div")
 
       if syntax != :or_syntax
         html += content_tag('div', t("search_sources_helper.#{syntax.to_s}_form_column.not_available"),
-                            :id => "#{syntax.to_s}_not_available", :style => 'font-size: 80%; display:none;')
+                            id: "#{syntax.to_s}_not_available", style: 'font-size: 80%; display:none;')
         html += javascript_tag("function hide_or_show_and_not_syntax() {
           if ($('record_or_syntax_position').value == 'none') {
             $('#{syntax.to_s}_not_available').hide();

@@ -40,7 +40,7 @@ namespace :deploy do
   namespace :kete do
 
     desc 'Upgrade Kete Installation'
-    task :upgrade, :role => :app do
+    task :upgrade, role: :app do
       set_app_environment
       run "cd #{current_path} && RAILS_ENV=#{app_environment} rake kete:upgrade"
     end
@@ -49,27 +49,27 @@ namespace :deploy do
     namespace :prepare do
 
       desc "The directory that holds everything related to zebra needs to live under share/system/zebradb"
-      task :setup_zebra, :roles => :app do
+      task :setup_zebra, roles: :app do
         run "cp -r #{latest_release}/zebradb #{shared_path}/system/"
       end
 
       desc "The directory that holds everything related to imports needs to live under share/system/imports"
-      task :setup_imports, :roles => :app do
+      task :setup_imports, roles: :app do
         run "cp -r #{latest_release}/imports #{shared_path}/system/"
       end
 
       desc "The directory that holds everything related to private items needs to live under share/system/private"
-      task :setup_private, :roles => :app do
+      task :setup_private, roles: :app do
         run "cp -r #{latest_release}/private #{shared_path}/system/"
       end
 
       desc "The directory that holds everything related to themes needs to live under share/system/themes"
-      task :setup_themes, :roles => :app do
+      task :setup_themes, roles: :app do
         run "cp -r #{latest_release}/public/themes #{shared_path}/system/"
       end
 
       desc "The directory that holds locales (translations) needs to live under share/system/locales"
-      task :setup_locales, :roles => :app do
+      task :setup_locales, roles: :app do
         run "cp -r #{latest_release}/config/locales #{shared_path}/system/"
       end
 
@@ -92,21 +92,21 @@ namespace :deploy do
 
       root_dirs.each do |dir|
         desc "Symlink the /#{dir} directory"
-        task dir.to_sym, :role => :app do
+        task dir.to_sym, role: :app do
           symlink_system_directory(dir)
         end
       end
 
       config_dirs.each do |dir|
         desc "Symlink the /config/#{dir} directory"
-        task dir.to_sym, :role => :app do
+        task dir.to_sym, role: :app do
           symlink_system_directory(dir, 'config/')
         end
       end
 
       public_dirs.each do |dir|
         desc "Symlink the /public/#{dir} directory"
-        task dir.to_sym, :role => :app do
+        task dir.to_sym, role: :app do
           symlink_system_directory(dir, 'public/')
         end
       end
@@ -130,7 +130,7 @@ namespace :deploy do
     end
 
     desc 'Update Kete TinyMCE imageselector plugin configuration to reflect Kete system settings'
-    task :configure_imageselector, :role => :app do
+    task :configure_imageselector, role: :app do
       set_app_environment
       run "cd #{current_path} && RAILS_ENV=#{app_environment} rake kete:tools:tiny_mce:configure_imageselector"
     end

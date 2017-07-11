@@ -58,7 +58,7 @@ class WebLink < ActiveRecord::Base
   validates_presence_of :url
   validates_uniqueness_of :url, case_sensitive: false
 
-  validates_url :url, :if => Proc.new { |web_link| web_link.new_record? && !web_link.force_url }
+  validates_url :url, if: Proc.new { |web_link| web_link.new_record? && !web_link.force_url }
 
   # ItemPrivacy::All
   # * adds method overrides for:

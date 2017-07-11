@@ -8,7 +8,7 @@
 # * you can identify the objects by their <guid> tag which is the old <identifier> tag in <head>
 # * the url schema has changed slightly so <dc:identifier> is slightly different
 
-xml.instruct! :xml, :version => "1.0" 
+xml.instruct! :xml, version: "1.0" 
 xml.rss("version" => "2.0", "xmlns:dc" => "http://purl.org/dc/elements/1.1/") do
   xml.channel do
     xml.title("#{SystemSetting.site_domain} #{@list_type} RSS Feed")

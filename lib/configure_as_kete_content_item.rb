@@ -4,7 +4,7 @@ module ConfigureAsKeteContentItem
       # each topic or content item lives in exactly one basket
       klass.send :belongs_to, :basket
 
-      klass.send :scope, :in_basket, lambda { |basket| { :conditions => { :basket_id => basket } } }
+      klass.send :scope, :in_basket, lambda { |basket| { conditions: { basket_id: basket } } }
 
       # where we handle creator and contributor tracking
       klass.send :include, HasContributors
@@ -48,7 +48,7 @@ module ConfigureAsKeteContentItem
       # # we override acts_as_versioned dependent => delete_all
       # # because of the complexity our relationships of our models
       # # delete_all won't do the right thing (at least not in migrations)
-      klass.send :acts_as_versioned, :association_options => { :dependent => :destroy }
+      klass.send :acts_as_versioned, association_options: { dependent: :destroy }
 
       # this is a little tricky
       # the acts_as_taggable declaration for the original
@@ -120,15 +120,15 @@ module ConfigureAsKeteContentItem
     # Walter McGinnis, 2012-06-21
     # create redirect_registration if basket_id has changed
     def register_redirect_if_necessary
-      old_basket_id = self.class.find(:first, :select => "basket_id", :conditions => { :id => id }).basket_id
+      old_basket_id = self.class.find(:first, select: "basket_id", conditions: { id: id }).basket_id
       if old_basket_id != basket_id
-        old_urlified_name = Basket.find(:first, :select => "urlified_name", :conditions => { :id => old_basket_id }).urlified_name
-        new_urlified_name = Basket.find(:first, :select => "urlified_name", :conditions => { :id => basket_id }).urlified_name
+        old_urlified_name = Basket.find(:first, select: "urlified_name", conditions: { id: old_basket_id }).urlified_name
+        new_urlified_name = Basket.find(:first, select: "urlified_name", conditions: { id: basket_id }).urlified_name
 
         old_url = url_for_dc_identifier(self)
         new_url = old_url.sub(old_urlified_name, new_urlified_name)
 
-        RedirectRegistration.create!(:source_url_pattern => old_url, :target_url_pattern => new_url)
+        RedirectRegistration.create!(source_url_pattern: old_url, target_url_pattern: new_url)
       end
     end
   end

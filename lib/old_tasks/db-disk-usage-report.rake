@@ -3,7 +3,7 @@
 # Walter McGinnis, 2007-10-11
 namespace :db do
   desc 'Get the size of the db disk storage. Currently assumes MySQL.'
-  task :disk_usage_report => :environment do
+  task disk_usage_report: :environment do
     sql  = "show table status"
     ActiveRecord::Base.establish_connection
     total_size = 0

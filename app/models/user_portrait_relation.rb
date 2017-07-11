@@ -2,7 +2,7 @@ class UserPortraitRelation < ActiveRecord::Base
   belongs_to :user
   belongs_to :still_image
 
-  acts_as_list :scope => :user
+  acts_as_list scope: :user
 
   def self.new_portrait_for(user, still_image)
     return false unless still_image.created_by?(user)
@@ -11,8 +11,8 @@ class UserPortraitRelation < ActiveRecord::Base
     return true unless still_image.portrayed_user.nil?
 
     # if the image is theirs and not already added, then make the relation
-    user_portrait_relation = self.create(:user_id => user.id,
-                                         :still_image_id => still_image.id)
+    user_portrait_relation = self.create(user_id: user.id,
+                                         still_image_id: still_image.id)
 
     user_portrait_relation.valid?
   end

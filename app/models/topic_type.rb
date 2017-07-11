@@ -1,18 +1,18 @@
 class TopicType < ActiveRecord::Base
   # dependent topics should be what if a topic_type is destroyed?
   has_many :topics
-  has_many :topic_type_to_field_mappings, :dependent => :destroy, :order => 'position'
+  has_many :topic_type_to_field_mappings, dependent: :destroy, order: 'position'
   # Walter McGinnis (walter@katipo.co.nz), 2006-10-05
   # these association extension maybe able to be cleaned up with modules or something in rails proper down the line
   # code based on work by hasmanythrough.com
   # you have to do the elimination of duplicates through the sql
   # otherwise, rails will reorder by topic_type_to_field_mapping.id after the sql has bee run
-  has_many :form_fields, :through => :topic_type_to_field_mappings, :source => :extended_field, :select => "distinct topic_type_to_field_mappings.position, extended_fields.*", :order => 'position' do
+  has_many :form_fields, through: :topic_type_to_field_mappings, source: :extended_field, select: "distinct topic_type_to_field_mappings.position, extended_fields.*", order: 'position' do
     def <<(extended_field)
       TopicTypeToFieldMapping.add_as_to("false", self, extended_field)
     end
   end
-  has_many :required_form_fields, :through => :topic_type_to_field_mappings, :source => :required_form_field, :select => "distinct topic_type_to_field_mappings.position, extended_fields.*", :conditions => "topic_type_to_field_mappings.required = 'true'", :order => 'position' do
+  has_many :required_form_fields, through: :topic_type_to_field_mappings, source: :required_form_field, select: "distinct topic_type_to_field_mappings.position, extended_fields.*", conditions: "topic_type_to_field_mappings.required = 'true'", order: 'position' do
     def <<(required_form_field)
       TopicTypeToFieldMapping.add_as_to("true", self, required_form_field)
     end
@@ -22,15 +22,15 @@ class TopicType < ActiveRecord::Base
   # they specify a topic type of thing they are importing
   # or a topic type for the item that relates groups of things
   # that they are importing
-  has_many :imports, :dependent => :destroy
+  has_many :imports, dependent: :destroy
 
   scope :from_urlified_name, lambda {|urlified_name| where('LOWER(name) = ?', urlified_name.downcase.gsub('_', ' ') ) }
 
   validates_presence_of :name, :description
-  validates_uniqueness_of :name, :case_sensitive => false
+  validates_uniqueness_of :name, case_sensitive: false
 
   # don't allow special characters in label that will break urls
-  validates_format_of :name, :with => /^[^\'\":<>\&,\/\\\?\.]*$/, :message => lambda { I18n.t('topic_type_model.invalid_chars', :invalid_chars => ": \', \\, /, &, \", ?, <, >, and .") }
+  validates_format_of :name, with: /^[^\'\":<>\&,\/\\\?\.]*$/, message: lambda { I18n.t('topic_type_model.invalid_chars', invalid_chars: ": \', \\, /, &, \", ?, <, >, and .") }
 
   # to support inheritance of fields from ancestor topic types
   acts_as_nested_set
@@ -59,7 +59,7 @@ class TopicType < ActiveRecord::Base
 
   # MySQL ordering doesn't work well here so we do our own ordering
   def all_field_mappings
-    mappings = TopicTypeToFieldMapping.find_all_by_topic_type_id(self_and_ancestors_ids, :order => 'position ASC')
+    mappings = TopicTypeToFieldMapping.find_all_by_topic_type_id(self_and_ancestors_ids, order: 'position ASC')
     self_and_ancestors_ids.collect do |id|
       mappings.select { |mapping| mapping.topic_type_id == id }
     end.flatten

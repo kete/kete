@@ -19,11 +19,11 @@ class Comment < ActiveRecord::Base
   # http://www.juixe.com/techknow/index.php/2006/06/18/acts-as-commentable-plugin/
   # however, we do user contribution tracking, searchability, etc.
   # through our standard kete content item stuff (see include below)
-  belongs_to :commentable, :polymorphic => true
+  belongs_to :commentable, polymorphic: true
 
   ZOOM_CLASSES.each do |zoom_class|
     unless zoom_class == 'Comment'
-      belongs_to "direct_#{zoom_class.tableize.singularize}".to_sym, :class_name => zoom_class, :foreign_key => "commentable_id"
+      belongs_to "direct_#{zoom_class.tableize.singularize}".to_sym, class_name: zoom_class, foreign_key: "commentable_id"
     end
   end
 
@@ -56,7 +56,7 @@ class Comment < ActiveRecord::Base
   # Helper class method to look up all comments for
   # commentable class name and commentable id.
   def self.find_comments_for_commentable(commentable_str, commentable_id)
-    where(:commentable_type => commentable_str, :commentable_id => commentable_id).order('lft')
+    where(commentable_type: commentable_str, commentable_id: commentable_id).order('lft')
   end
 
   # pulled almost directly from acts_as_commentable
@@ -110,7 +110,7 @@ class Comment < ActiveRecord::Base
     else
       children.each do |comment|
         # Use update_all instead of self.update_attribute to avoid validations and callbacks
-        Comment.update_all("#{parent_column_name} = NULL", { :id => comment.id })
+        Comment.update_all("#{parent_column_name} = NULL", { id: comment.id })
       end
     end
   end

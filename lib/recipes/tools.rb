@@ -47,7 +47,7 @@ namespace :tools do
       sudo "chmod 0700 ~/.ssh"
       put(ssh_options[:keys].collect{|key| File.read(key+'.pub')}.join("\n"),
         File.join('/home', user, '.ssh/authorized_keys'),
-        :mode => 0600 )
+        mode: 0600 )
     end
   end
 

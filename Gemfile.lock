@@ -192,6 +192,7 @@ GEM
       nokogiri
       rails (~> 3.2.8)
     packet (0.1.15)
+    parallel (1.11.2)
     parser (2.4.0.0)
       ast (~> 2.2)
     pg (0.21.0)
@@ -282,7 +283,8 @@ GEM
       rspec-mocks (~> 3.6.0)
       rspec-support (~> 3.6.0)
     rspec-support (3.6.0)
-    rubocop (0.47.1)
+    rubocop (0.49.1)
+      parallel (~> 1.10)
       parser (>= 2.3.3.1, < 3.0)
       powerpack (~> 0.1)
       rainbow (>= 1.99.1, < 3.0)
@@ -402,7 +404,7 @@ DEPENDENCIES
   rmagick (~> 2.16.0)
   routing-filter (~> 0.3.1)
   rspec-rails (~> 3.5)
-  rubocop (~> 0.47.0)
+  rubocop (= 0.49.1)
   sass-rails
   selenium-webdriver (~> 2.45.0)
   strong_parameters
@@ -416,7 +418,6 @@ DEPENDENCIES
   will_paginate (~> 3.0.5)
   xml-simple
   ya2yaml
-
 
 RUBY VERSION
    ruby 2.3.3p222

@@ -32,7 +32,7 @@ class TopicsController < ApplicationController
 
     respond_to do |format|
       format.html
-      format.xml { render_oai_record_xml(:item => @topic) }
+      format.xml { render_oai_record_xml(item: @topic) }
     end
   end
 
@@ -40,7 +40,7 @@ class TopicsController < ApplicationController
     @topic = Topic.new
     respond_to do |format|
       format.html
-      format.js { render :file => File.join(Rails.root, 'app/views/topics/pick_form.js.rjs') }
+      format.js { render file: File.join(Rails.root, 'app/views/topics/pick_form.js.rjs') }
     end
   end
 
@@ -55,7 +55,7 @@ class TopicsController < ApplicationController
     else
       # this is the site's index page, but they don't have permission to edit
       flash[:notice] = t('topics_controller.edit.not_authorized')
-      redirect_to :action => 'show', :id => params[:id]
+      redirect_to action: 'show', id: params[:id]
     end
   end
 
@@ -73,7 +73,7 @@ class TopicsController < ApplicationController
       # in the meantime we'll just use :name or :first_names and :last_names
 
       # We need to set the topic_type first, because extended_content= depends on it.
-      @topic = Topic.new(:topic_type_id => params[:topic][:topic_type_id])
+      @topic = Topic.new(topic_type_id: params[:topic][:topic_type_id])
       @topic.attributes = params[:topic]
       @successful = @topic.save
 
@@ -110,19 +110,19 @@ class TopicsController < ApplicationController
       case where_to_redirect
       when 'show_related'
         flash[:notice] = t('topics_controller.create.created_related')
-        redirect_to_related_item(@relate_to_item, { :private => (params[:related_item_private] && params[:related_item_private] == 'true' && permitted_to_view_private_items?) })
+        redirect_to_related_item(@relate_to_item, { private: (params[:related_item_private] && params[:related_item_private] == 'true' && permitted_to_view_private_items?) })
       when 'basket'
-        redirect_to :action => 'add_index_topic',
-        :controller => 'baskets',
-        :index_for_basket => params[:index_for_basket],
-        :return_to_homepage => params[:return_to_homepage],
-        :topic => @topic
+        redirect_to action: 'add_index_topic',
+        controller: 'baskets',
+        index_for_basket: params[:index_for_basket],
+        return_to_homepage: params[:return_to_homepage],
+        topic: @topic
       else
         flash[:notice] = t('topics_controller.create.created')
-        redirect_to :action => 'show', :id => @topic, :private => (params[:topic][:private] == "true")
+        redirect_to action: 'show', id: @topic, private: (params[:topic][:private] == "true")
       end
     else
-      render :action => 'new'
+      render action: 'new'
     end
   end
 
@@ -140,12 +140,12 @@ class TopicsController < ApplicationController
       old_topic_type = TopicType.find(@topic.topic_type_id)
       new_topic_type = TopicType.find(params[:topic][:topic_type_id].to_i)
       @topic.update_attributes(
-        :topic_type_id => params[:topic][:topic_type_id].to_i,
-        :version_comment => "Changed Topic Type from #{old_topic_type.name} to #{new_topic_type.name}"
+        topic_type_id: params[:topic][:topic_type_id].to_i,
+        version_comment: "Changed Topic Type from #{old_topic_type.name} to #{new_topic_type.name}"
       )
 
       # add a contributor to the previous topic update
-      version = @topic.versions.where(:order => 'version DESC').first.version
+      version = @topic.versions.where(order: 'version DESC').first.version
       @topic.add_as_contributor(current_user, version)
 
       # reload, get the correct privacy and return the user to the topic form
@@ -177,12 +177,12 @@ class TopicsController < ApplicationController
       logger.debug("after zoom item update")
       flash[:notice] = t('topics_controller.update.updated')
 
-      redirect_to_show_for @topic, :private => (params[:topic][:private] == "true")
+      redirect_to_show_for @topic, private: (params[:topic][:private] == "true")
     else
       if @topic != @site_basket.index_topic or permit?("site_admin of :site_basket or admin of :site_basket")
         @topic_types = @topic.topic_type.full_set
       end
-      render :action => 'edit'
+      render action: 'edit'
     end
   end
 

@@ -8,9 +8,9 @@ class OaiPmhRepositoryController < ApplicationController
       options = params.delete_if { |k,v| %w{controller action}.include?(k) }
       provider = OaiPmhRepositoryProvider.new
       response =  provider.process_request(options)
-      render :text => response, :content_type => 'text/xml'
+      render text: response, content_type: 'text/xml'
     else
-      render :text => t('oai_pmh_repository_controller.not_available')
+      render text: t('oai_pmh_repository_controller.not_available')
     end
   end
 

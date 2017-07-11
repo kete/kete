@@ -24,10 +24,10 @@ class Topic < ActiveRecord::Base
   # , :counter_cache => true
   belongs_to :basket
 
-  scope :in_basket, lambda { |basket| { :conditions => { :basket_id => basket } } }
+  scope :in_basket, lambda { |basket| { conditions: { basket_id: basket } } }
 
   # a topic may be the designated index page for it's basket
-  belongs_to :index_for_basket, :class_name => 'Basket', :foreign_key => 'index_for_basket_id'
+  belongs_to :index_for_basket, class_name: 'Basket', foreign_key: 'index_for_basket_id'
 
   # where we handle creator and contributor tracking
   include HasContributors
@@ -40,12 +40,12 @@ class Topic < ActiveRecord::Base
   include KeteCommentable
 
   # this is where we handled "related to"
-  has_many :content_item_relations, :order => 'position', :dependent => :delete_all
+  has_many :content_item_relations, order: 'position', dependent: :delete_all
 
   # Content Item Relationships when the topic is on the related_item end
   # of the relationship, and another topic occupies topic_id.
-  has_many :child_content_item_relations, :class_name => "ContentItemRelation", :as => :related_item, :dependent => :delete_all
-  has_many :parent_related_topics, :through => :child_content_item_relations, :source => :topic
+  has_many :child_content_item_relations, class_name: "ContentItemRelation", as: :related_item, dependent: :delete_all
+  has_many :parent_related_topics, through: :child_content_item_relations, source: :topic
 
   def self.updated_since(date)
     # Topic.where( <Topic or its join tables is newer than date>  )
@@ -130,7 +130,7 @@ class Topic < ActiveRecord::Base
   # we override acts_as_versioned dependent => delete_all
   # because of the complexity our relationships of our models
   # delete_all won't do the right thing (at least not in migrations)
-  acts_as_versioned :association_options => { :dependent => :destroy }
+  acts_as_versioned association_options: { dependent: :destroy }
 
   # acts as licensed but this is not versionable (cant change a license once it is applied)
   acts_as_licensed
@@ -236,7 +236,7 @@ class Topic < ActiveRecord::Base
   end
 
   def still_images
-    content_item_relations.where(:related_item_type => "StillImage").map(&:related_item)
+    content_item_relations.where(related_item_type: "StillImage").map(&:related_item)
   end
 
   def first_related_image

@@ -48,7 +48,7 @@ module Embedded
       conditions = "name LIKE '%Synonyms'"
       conditions += " AND name NOT LIKE 'Short Summary%'" unless %w(Topic Document).include?(self.class.name)
 
-      relevant_settings = SystemSetting.find(:all, :conditions => conditions)
+      relevant_settings = SystemSetting.find(:all, conditions: conditions)
 
       # work through the settings and get their derived constant name
       standard_attribute_synonyms = Hash.new
@@ -128,7 +128,7 @@ module Embedded
         end
 
         # limit scope to only those extended fields mapped to the item's content type
-        matching_extended_fields = ContentType.find_by_class_name(self.class.name).form_fields.find(:all, :conditions => "import_synonyms like \'%#{key}%\'")
+        matching_extended_fields = ContentType.find_by_class_name(self.class.name).form_fields.find(:all, conditions: "import_synonyms like \'%#{key}%\'")
 
         matching_extended_fields.each do |field|
           if %{ map map_address }.include?(field.ftype)

@@ -255,10 +255,10 @@ module Flagging
       else
         # we leave required fields alone
         # and let the view handle whether they should be shown
-        update_hash = { :title => SystemSetting.blank_title,
-          :description => nil,
-          :extended_content => nil,
-          :tag_list => nil }
+        update_hash = { title: SystemSetting.blank_title,
+          description: nil,
+          extended_content: nil,
+          tag_list: nil }
 
         update_hash[:private] = self.private? if self.respond_to?(:private)
         update_hash[:description] = SystemSetting.pending_flag if self.class.name == 'Comment'
@@ -332,10 +332,10 @@ module Flagging
         history_url = if !options[:history_url].blank?
           options[:history_url]
         else
-          url_for(:host => SystemSetting.site_name,
-                  :urlified_name => basket.urlified_name,
-                  :controller => zoom_class_controller(self.class.name),
-                  :action => 'history', :id => self, :locale => false)
+          url_for(host: SystemSetting.site_name,
+                  urlified_name: basket.urlified_name,
+                  controller: zoom_class_controller(self.class.name),
+                  action: 'history', id: self, locale: false)
         end
 
         message = !options[:message].blank? ? options[:message] : nil
@@ -365,9 +365,9 @@ module Flagging
         UserNotifier.deliver_pending_review_for(version.version, submitter)
 
         # if instant moderator notifcation
-        notify_moderators_immediatelly_if_necessary(:flag => SystemSetting.pending_flag,
-                                                    :version => version.version,
-                                                    :submitter => submitter)
+        notify_moderators_immediatelly_if_necessary(flag: SystemSetting.pending_flag,
+                                                    version: version.version,
+                                                    submitter: submitter)
       end
     end
 
@@ -412,9 +412,9 @@ module Flagging
       full_version_class_name = base_class.name + '::' + self.versioned_class_name
 
       conditions = {
-        :basket_id => basket_id,
-        :context => 'flags',
-        :taggable_type => full_version_class_name
+        basket_id: basket_id,
+        context: 'flags',
+        taggable_type: full_version_class_name
       }
 
       case flagging_type
@@ -435,8 +435,8 @@ module Flagging
       end
 
       flaggings = Tagging.all(
-        :include => [:tag, { :taggable => [:flags] }],
-        :conditions => conditions
+        include: [:tag, { taggable: [:flags] }],
+        conditions: conditions
       )
 
       flaggings.collect do |flagging|
@@ -462,7 +462,7 @@ module Flagging
         conditions_string = "title != :pending_title"
         conditions_string += " or description is not null" if name != 'Comment'
       end
-      find(type, :conditions => [conditions_string, { :pending_title => SystemSetting.blank_title }])
+      find(type, conditions: [conditions_string, { pending_title: SystemSetting.blank_title }])
     end
 
     def find_all_public_non_pending

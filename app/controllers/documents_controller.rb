@@ -31,7 +31,7 @@ class DocumentsController < ApplicationController
 
     respond_to do |format|
       format.html
-      format.xml { render_oai_record_xml(:item => @document) }
+      format.xml { render_oai_record_xml(item: @document) }
     end
   end
 
@@ -52,7 +52,7 @@ class DocumentsController < ApplicationController
       @document.do_notifications_if_pending(1, current_user)
     end
 
-    setup_related_topic_and_zoom_and_redirect(@document, nil, :private => (params[:document][:private] == "true"))
+    setup_related_topic_and_zoom_and_redirect(@document, nil, private: (params[:document][:private] == "true"))
   end
 
   def edit
@@ -73,9 +73,9 @@ class DocumentsController < ApplicationController
       after_successful_zoom_item_update(@document, version_after_update)
       flash[:notice] = t('documents_controller.update.updated')
 
-      redirect_to_show_for(@document, :private => (params[:document][:private] == "true"))
+      redirect_to_show_for(@document, private: (params[:document][:private] == "true"))
     else
-      render :action => 'edit'
+      render action: 'edit'
     end
   end
 
@@ -91,14 +91,14 @@ class DocumentsController < ApplicationController
     else
       flash[:error] = error_msg
     end
-    redirect_to_show_for(@document, :private => (params[:private] == "true"))
+    redirect_to_show_for(@document, private: (params[:private] == "true"))
   end
 
   def make_theme
     @document = Document.find(params[:id])
     @document.decompress_as_theme
     flash[:notice] = t('documents_controller.make_theme.made_theme')
-    redirect_to :action => :appearance, :controller => 'baskets'
+    redirect_to action: :appearance, controller: 'baskets'
   end
 
   def destroy

@@ -16,23 +16,23 @@ module ZoomControllerActions
       @worker_key ||= worker_key_for(@worker_type)
 
 
-      import_request = { :host => request.host,
-        :protocol => request.protocol,
-        :request_uri => request.original_url }
+      import_request = { host: request.host,
+        protocol: request.protocol,
+        request_uri: request.original_url }
 
       @worker_running = false
       # only one rebuild should be running at a time
       unless backgroundrb_is_running?(@worker_type)
-        MiddleMan.new_worker( :worker => @worker_type, :worker_key => @worker_key )
+        MiddleMan.new_worker( worker: @worker_type, worker_key: @worker_key )
 
-        MiddleMan.worker(@worker_type, @worker_key).async_do_work( :arg => {
-                                                                     :zoom_class => @zoom_class,
-                                                                     :start_id => @start_id,
-                                                                     :end_id => @end_id,
-                                                                     :skip_existing => @skip_existing,
-                                                                     :skip_private => @skip_private,
-                                                                     :clear_zebra => @clear_zebra,
-                                                                     :import_request => import_request } )
+        MiddleMan.worker(@worker_type, @worker_key).async_do_work( arg: {
+                                                                     zoom_class: @zoom_class,
+                                                                     start_id: @start_id,
+                                                                     end_id: @end_id,
+                                                                     skip_existing: @skip_existing,
+                                                                     skip_private: @skip_private,
+                                                                     clear_zebra: @clear_zebra,
+                                                                     import_request: import_request } )
         @worker_running = true
       else
         flash[:notice] = I18n.t('worker_controller_helpers_lib.rebuild_zoom_index.aready_rebuilding')

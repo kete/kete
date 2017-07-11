@@ -2,7 +2,7 @@
 # currently only used for basket profiles
 # (i.e. setting what basket options a basket admin can change)
 class ProfilesController < ApplicationController
-  before_filter :login_required, :only => [ :list, :index ]
+  before_filter :login_required, only: [ :list, :index ]
 
   before_filter :set_page_title
 

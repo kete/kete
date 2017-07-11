@@ -14,5 +14,5 @@ class Role < ActiveRecord::Base
     RolesUser.find_by_role_id_and_user_id(@role, user, options)
   end
 
-  belongs_to :authorizable, :polymorphic => true
+  belongs_to :authorizable, polymorphic: true
 end

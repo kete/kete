@@ -6,25 +6,25 @@ namespace :deploy do
   namespace :apache do
 
     desc "Start Apache webserver"
-    task :start, :roles => :app do
+    task :start, roles: :app do
       set_apache_clt
       sudo "#{apache_ctl} start"
     end
 
     desc "Stop Apache webserver"
-    task :stop, :roles => :app do
+    task :stop, roles: :app do
       set_apache_clt
       sudo "#{apache_ctl} stop"
     end
 
     desc "Restart Apache webserver"
-    task :restart, :roles => :app do
+    task :restart, roles: :app do
       set_apache_clt
       sudo "#{apache_ctl} restart"
     end
 
     desc "Restart Rails Application"
-    task :restart_app, :roles => :app do
+    task :restart_app, roles: :app do
       run "cd #{current_path} && touch tmp/restart.txt"
     end
 

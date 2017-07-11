@@ -92,7 +92,7 @@ namespace :manage_gems do
     end
 
     desc "Check that you have required gems"
-    task :check => :environment do
+    task check: :environment do
       required_software = load_required_software
       missing_lib_count = 0
       puts "Missing Gems or Libs:\n-----"

@@ -9,7 +9,7 @@ module RelatedItemsTestUnitHelper
 
         setup do
           @related_item = Module.class_eval(@base_class).create! @new_model
-          @topic_related_to = Basket.find(1).topics.create!({ :title => "The topic that the item is related to", :topic_type_id => 1 })
+          @topic_related_to = Basket.find(1).topics.create!({ title: "The topic that the item is related to", topic_type_id: 1 })
         end
 
         should "be able to be added as a content item relation to a topic" do

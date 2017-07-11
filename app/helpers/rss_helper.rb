@@ -94,7 +94,7 @@ module RssHelper
     if item.respond_to?(:license) && !item.license.blank?
       item.license.url
     else
-      terms_and_conditions_topic = Basket.about_basket.topics.find(:first, :conditions => "UPPER(title) like '%TERMS AND CONDITIONS'")
+      terms_and_conditions_topic = Basket.about_basket.topics.find(:first, conditions: "UPPER(title) like '%TERMS AND CONDITIONS'")
       terms_and_conditions_topic ||= 4
 
       basket_topic_url(terms_and_conditions_topic.basket, terms_and_conditions_topic)

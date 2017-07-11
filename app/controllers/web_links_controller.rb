@@ -33,7 +33,7 @@ class WebLinksController < ApplicationController
 
     respond_to do |format|
       format.html
-      format.xml { render_oai_record_xml(:item => @web_link) }
+      format.xml { render_oai_record_xml(item: @web_link) }
     end
   end
 
@@ -50,7 +50,7 @@ class WebLinksController < ApplicationController
       @web_link.do_notifications_if_pending(1, current_user)
     end
 
-    setup_related_topic_and_zoom_and_redirect(@web_link, nil, :private => (params[:web_link][:private] == "true"))
+    setup_related_topic_and_zoom_and_redirect(@web_link, nil, private: (params[:web_link][:private] == "true"))
   end
 
   def edit
@@ -71,9 +71,9 @@ class WebLinksController < ApplicationController
       after_successful_zoom_item_update(@web_link, version_after_update)
       flash[:notice] = t('web_links_controller.update.updated')
 
-      redirect_to_show_for(@web_link, :private => (params[:web_link][:private] == "true"))
+      redirect_to_show_for(@web_link, private: (params[:web_link][:private] == "true"))
     else
-      render :action => 'edit'
+      render action: 'edit'
     end
   end
 

@@ -6,14 +6,14 @@ namespace :kete do
   namespace :repair do
 
     # Run all tasks
-    task :all => ['kete:repair:fix_topic_versions',
+    task all: ['kete:repair:fix_topic_versions',
                   'kete:repair:set_missing_contributors',
                   'kete:repair:correct_thumbnail_privacies',
                   'kete:repair:correct_site_basket_roles',
                   'kete:repair:extended_fields']
 
     desc "Fix invalid topic versions (adds version column value or prunes on a case-by-case basis."
-    task :fix_topic_versions => :environment do
+    task fix_topic_versions: :environment do
 
       # This task repairs all Topic::Versions where #version is nil. This is a problem because it causes
       # exceptions when visiting history pages on items.
@@ -21,7 +21,7 @@ namespace :kete do
       pruned, fixed = 0, 0
 
       # First, find all the candidate versions
-      Topic::Version.find(:all, :conditions => ['version IS NULL'], :order => 'id ASC').each do |topic_version|
+      Topic::Version.find(:all, conditions: ['version IS NULL'], order: 'id ASC').each do |topic_version|
 
         topic = topic_version.topic
 
@@ -46,8 +46,8 @@ namespace :kete do
           # Set the version on this topic_version to the missing one..
 
           topic_version.update_attributes!(
-            :version => missing,
-            :version_comment => topic_version.version_comment.to_s + " NOTE: Version number fixed automatically."
+            version: missing,
+            version_comment: topic_version.version_comment.to_s + " NOTE: Version number fixed automatically."
           )
 
           print "Fixed missing version for Topic with id = #{topic_version.topic_id} (version #{missing}).\n"
@@ -83,7 +83,7 @@ namespace :kete do
     end
 
     desc "Set missing contributors on topic versions."
-    task :set_missing_contributors => :environment do
+    task set_missing_contributors: :environment do
       fixed = 0
 
       # This rake task runs through all topic_versions and adds a contributor/creator to any
@@ -112,10 +112,10 @@ namespace :kete do
         # Add the admin user as the contributor and add a note to the version comment.
 
         Contribution.create(
-          :contributed_item => topic_version.topic,
-          :version => topic_version.version,
-          :contributor_role => topic_version.version == 1 ? "creator" : "contributor",
-          :user_id => 1
+          contributed_item: topic_version.topic,
+          version: topic_version.version,
+          contributor_role: topic_version.version == 1 ? "creator" : "contributor",
+          user_id: 1
         )
 
         topic_version.update_attribute(:version_comment, topic_version.version_comment.to_s + " NOTE: Contributor added automatically. Actual contributor unknown.")
@@ -128,7 +128,7 @@ namespace :kete do
     end
 
     desc "Copies incorrectly located uploads to the correct location"
-    task :correct_upload_locations => :environment do
+    task correct_upload_locations: :environment do
 
       # Display a warning to the user, since we're copying files around on the file system
       # and there is a possibility of overwriting something important.
@@ -178,7 +178,7 @@ namespace :kete do
     end
 
     desc "Check uploaded files for accessibility"
-    task :check_uploaded_files => :environment do
+    task check_uploaded_files: :environment do
 
       puts "Checking files.. please wait.\n\n"
 
@@ -206,7 +206,7 @@ namespace :kete do
     end
 
     desc "Makes sure thumbnails are stored in the correct privacy for their still image"
-    task :correct_thumbnail_privacies => :environment do
+    task correct_thumbnail_privacies: :environment do
       puts "Getting all private StillImages and their public ImageFiles\n"
       StillImage.all.each do |still_image|
         any_incorrect_thumbnails = false
@@ -227,7 +227,7 @@ namespace :kete do
 
     # this is not a standard repair, but useful for some legacy sites with bad attached file privacy setting for specific files
     desc "Move original files that have been mistakenly made publicly downloadable to private original files, specify still images ids with IDS= or a basket with the still images with BASKET_ID="
-    task :fix_still_image_originals_privacies => :environment do
+    task fix_still_image_originals_privacies: :environment do
       puts "Getting specified StillImages and updating their originals to be file_private\n"
       still_images = Array.new
       if ENV['BASKET_ID']
@@ -263,22 +263,22 @@ namespace :kete do
         to = File.join(RAILS_ROOT, 'public', file_path)
       end
       puts "Moving #{from.gsub(RAILS_ROOT, "")} to #{to.gsub(RAILS_ROOT, "")}"
-      FileUtils.mv(from, to, :force => true)
+      FileUtils.mv(from, to, force: true)
       image_file.force_privacy = true
       image_file.file_private = to_be_private
       image_file.save!
     end
 
     desc "Correct site basket role creation dates for legacy databases"
-    task :correct_site_basket_roles => :environment do
+    task correct_site_basket_roles: :environment do
       site_basket = Basket.site_basket
       member_role = Role.find_by_name_and_authorizable_type_and_authorizable_id('member', 'Basket', site_basket)
       if member_role # skip this task incase there is no member role in site basket
         puts "Syncing basket role creation dates with user creation dates"
-        user_roles = member_role.user_roles.all(:include => :user)
+        user_roles = member_role.user_roles.all(include: :user)
         user_roles.each do |role|
           next if role.created_at == role.user.created_at
-          RolesUser.update_all({:created_at => role.user.created_at}, {:user_id => role.user, :role_id => member_role})
+          RolesUser.update_all({created_at: role.user.created_at}, {user_id: role.user, role_id: member_role})
           puts "Updated role creation date for #{role.user.user_name}"
         end
         puts "Synced basket role creation dates"
@@ -286,15 +286,15 @@ namespace :kete do
     end
 
     desc "Run all extended field repair tasks"
-    task :extended_fields => ['kete:repair:extended_fields:legacy_google_map',
+    task extended_fields: ['kete:repair:extended_fields:legacy_google_map',
                               'kete:repair:extended_fields:repopulate_related_items_from_topic_type_choices']
 
     namespace :extended_fields do
 
       desc "Run the legacy google map repair tasks"
-      task :legacy_google_map => :environment do
+      task legacy_google_map: :environment do
         map_types = ['map', 'map_address']
-        map_fields = ExtendedField.all(:conditions => ["ftype IN (?)", map_types]).collect { |f| f.label_for_params }
+        map_fields = ExtendedField.all(conditions: ["ftype IN (?)", map_types]).collect { |f| f.label_for_params }
         if map_fields.size > 0
           map_sql = map_fields.collect { |f| "extended_content LIKE '%<#{f}%'" }.join(' OR ')
           each_item_with_extended_fields("(#{map_sql})") do |item|
@@ -328,7 +328,7 @@ namespace :kete do
       end
 
       desc "Repopulate related items from Topic Type choices extended field"
-      task :repopulate_related_items_from_topic_type_choices => :environment do
+      task repopulate_related_items_from_topic_type_choices: :environment do
         topic_type_extended_fields = ExtendedField.find_all_by_ftype('topic_type')
         if topic_type_extended_fields.size > 0
           any_updated_items = false
@@ -366,7 +366,7 @@ namespace :kete do
       def each_item_with_extended_fields(conditions = nil, &block)
         conditions = "extended_content IS NOT NULL AND extended_content != '' AND #{(conditions || '1=1')}"
         ZOOM_CLASSES.each do |zoom_class|
-          zoom_class.constantize.all(:conditions => conditions).each do |item|
+          zoom_class.constantize.all(conditions: conditions).each do |item|
             yield(item)
           end
         end
@@ -375,8 +375,8 @@ namespace :kete do
 
     namespace :zebra do
       desc 'Update Zebra hosts to 127.0.0.1 if localhost and ONLY if Debian Lenny/YAZ combination make your Zebra unresponsive. You will likely need to run update_hosts_to_localhost at some point in the future if you upgrade your OS/YAZ.'
-      task :update_hosts_to_ip => :environment do
-        dbs = ZoomDb.find(:all, :conditions => { :host => 'localhost' })
+      task update_hosts_to_ip: :environment do
+        dbs = ZoomDb.find(:all, conditions: { host: 'localhost' })
 
         # only necessary if localhost specified
         if dbs.size > 0
@@ -392,8 +392,8 @@ namespace :kete do
       end
 
       desc 'Update Zebra hosts to localhost if 127.0.0.1 and ONLY if Debian OS version/YAZ combination make your Zebra unresponsive (i.e. you upgrade to Squeeze).'
-      task :update_hosts_to_localhost => :environment do
-        dbs = ZoomDb.find(:all, :conditions => { :host => '127.0.0.1' })
+      task update_hosts_to_localhost: :environment do
+        dbs = ZoomDb.find(:all, conditions: { host: '127.0.0.1' })
 
         # only necessary if localhost specified
         if dbs.size > 0

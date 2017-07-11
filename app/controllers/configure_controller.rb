@@ -4,13 +4,13 @@ require 'rake'
 
 class ConfigureController < ApplicationController
   # everything else is handled by application.rb
-  before_filter :login_required, :only => [:section, :finish,
+  before_filter :login_required, only: [:section, :finish,
                                            :done_with_settings, :zoom_dbs_edit,
                                            :zoom_dbs_update, :start_zebra,
                                            :index]
 
   permit "tech_admin of :site"
-  permit "site_admin of :site", :only => [:add_link_to_kete_net, :send_information, :get_site_linking_progress]
+  permit "site_admin of :site", only: [:add_link_to_kete_net, :send_information, :get_site_linking_progress]
 
   include SiteLinking
 
@@ -36,10 +36,10 @@ class ConfigureController < ApplicationController
   def section
     @section = params[:section]
     @advanced = params[:advanced]
-    @settings = SystemSetting.where(:section => @section)
+    @settings = SystemSetting.where(section: @section)
     if request.xhr?
       flash[:notice] = nil
-      render :layout => false
+      render layout: false
     else
       render
     end
@@ -48,7 +48,7 @@ class ConfigureController < ApplicationController
   def update
     @section = params[:section]
 
-    @settings = SystemSetting.where(:section => @section).each {  |s| s.value = params[:setting][s.id.to_s][:value] }
+    @settings = SystemSetting.where(section: @section).each {  |s| s.value = params[:setting][s.id.to_s][:value] }
 
     # run validations
     @settings.each(&:valid?)
@@ -63,14 +63,14 @@ class ConfigureController < ApplicationController
     if @settings.all? { |s| s.errors.empty? }
       @settings.each(&:save!)
       if !request.xhr?
-        redirect_to :action => 'index'
+        redirect_to action: 'index'
       end
     else
       @has_errors = true
       if !request.xhr?
-        render :action => 'section'
+        render action: 'section'
       else
-        @section_html = render_to_string :action => 'section', :layout => false
+        @section_html = render_to_string action: 'section', layout: false
       end
     end
   end
@@ -87,7 +87,7 @@ class ConfigureController < ApplicationController
 
   def done_with_settings
     if !request.xhr?
-      redirect_to :action => 'index', :search_engine_show => true
+      redirect_to action: 'index', search_engine_show: true
     else
       render :update do |page|
         page.hide("settings")
@@ -101,7 +101,7 @@ class ConfigureController < ApplicationController
     @zoom_dbs = ZoomDb.all()
     @kete_password = @zoom_dbs.first.zoom_password
     if request.xhr?
-      render :layout => false
+      render layout: false
     else
       render
     end
@@ -145,14 +145,14 @@ class ConfigureController < ApplicationController
       ENV.delete 'PRIVATE_PORT'
 
       if !request.xhr?
-        redirect_to :action => 'index', :search_engine_setup => true, :search_engine_show => true
+        redirect_to action: 'index', search_engine_setup: true, search_engine_show: true
       end
     else
       @has_errors = true
       if !request.xhr?
-        render :action => 'zoom_dbs_edit'
+        render action: 'zoom_dbs_edit'
       else
-        @zoom_dbs_html = render_to_string :action => 'zoom_dbs_edit', :layout => false
+        @zoom_dbs_html = render_to_string action: 'zoom_dbs_edit', layout: false
       end
     end
   end
@@ -175,7 +175,7 @@ class ConfigureController < ApplicationController
     end
 
     if !request.xhr?
-      redirect_to :action => 'index', :search_engine_primed => true, :search_engine_show => true, :finished => true
+      redirect_to action: 'index', search_engine_primed: true, search_engine_show: true, finished: true
     else
       # check to see if the site is already listed
       # loads variable used in the reload-site-index section
@@ -214,10 +214,10 @@ class ConfigureController < ApplicationController
         delete_existing_workers_for(@worker_type)
 
         unless backgroundrb_is_running?(@worker_type)
-          MiddleMan.new_worker( :worker => @worker_type, :worker_key => @worker_key )
-          MiddleMan.worker(@worker_type, @worker_key).async_do_work( :arg => { :params => params } )
+          MiddleMan.new_worker( worker: @worker_type, worker_key: @worker_key )
+          MiddleMan.worker(@worker_type, @worker_key).async_do_work( arg: { params: params } )
           render :update do |page|
-            page.replace_html("updater", periodically_call_remote(:url => { :action => 'get_site_linking_progress' }, :frequency => 10))
+            page.replace_html("updater", periodically_call_remote(url: { action: 'get_site_linking_progress' }, frequency: 10))
           end
         else
           render :update do |page|
@@ -247,7 +247,7 @@ class ConfigureController < ApplicationController
 
           if status[:linking_success] == true
             top_message = t('configure_controller.get_site_linking_progress.site_registered',
-                            :kete_sites_link => @kete_sites)
+                            kete_sites_link: @kete_sites)
             render :update do |page|
               page.hide('spinner')
               page.replace_html("updater", '')
@@ -288,7 +288,7 @@ class ConfigureController < ApplicationController
     @is_configured_setting.value = 'true'
     @success = @is_configured_setting.save
     if @success and !request.xhr?
-        redirect_to :action => 'index', :ready_to_restart => :true
+        redirect_to action: 'index', ready_to_restart: :true
     end
   end
 
@@ -306,7 +306,7 @@ class ConfigureController < ApplicationController
     else
       flash[:error] = t('configure_controller.restart_server.problem_restarting')
     end
-    redirect_to :urlified_name => @site_basket.urlified_name, :controller => 'configure', :action => 'index'
+    redirect_to urlified_name: @site_basket.urlified_name, controller: 'configure', action: 'index'
   end
 
   def clear_cache
@@ -317,7 +317,7 @@ class ConfigureController < ApplicationController
     else
       flash[:error] = t('configure_controller.clear_cache.problem_clearing_cache')
     end
-    redirect_to :urlified_name => @site_basket.urlified_name, :controller => 'configure', :action => 'index'
+    redirect_to urlified_name: @site_basket.urlified_name, controller: 'configure', action: 'index'
   end
 
   private

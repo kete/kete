@@ -6,7 +6,7 @@ namespace :deploy do
   namespace :mongrel do
 
     desc "Configure Mongrel processes"
-    task :configure, :roles => :app do
+    task :configure, roles: :app do
       set_mongrel_conf
 
       argv = []
@@ -22,25 +22,25 @@ namespace :deploy do
     end
 
     desc "Start Mongrel processes"
-    task :start, :roles => :app do
+    task :start, roles: :app do
       set_mongrel_conf
       run "mongrel_rails cluster::start -C #{mongrel_conf}"
     end
 
     desc "Stop Mongrel processes"
-    task :stop, :roles => :app do
+    task :stop, roles: :app do
       set_mongrel_conf
       run "mongrel_rails cluster::stop -C #{mongrel_conf}"
     end
 
     desc "Restart the Mongrel processes"
-    task :restart, :roles => :app do
+    task :restart, roles: :app do
       set_mongrel_conf
       run "mongrel_rails cluster::restart -C #{mongrel_conf}"
     end
 
     desc "Deletes mongrel configuration file."
-    task :delete, :roles => :app do
+    task :delete, roles: :app do
       set_mongrel_conf
       sudo "rm #{mongrel_conf}"
     end

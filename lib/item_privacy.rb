@@ -86,8 +86,8 @@ module ItemPrivacy
         # EOIN: there seems to be something special about the "no public version" title ???
         # EOIN: this seems to rely on id's sequentially increasing as new rows are added to the table. Is that wise?
         last_version = versions.find(:first,
-                                     :conditions => "title != \'#{SystemSetting.no_public_version_title}\'",
-                                     :order => 'id DESC')
+                                     conditions: "title != \'#{SystemSetting.no_public_version_title}\'",
+                                     order: 'id DESC')
 
         # EOIN: if the last version has a boolean attribute named 'private' and that attribute is set to true, then return true. Otherwise return false
         last_version.respond_to?(:private?) && last_version.private?
@@ -229,12 +229,12 @@ module ItemPrivacy
 
             # EOIN: it seems like update_hash is a default set of attributes tha
             update_hash = {
-              :title => SystemSetting.no_public_version_title,
-              :description => SystemSetting.no_public_version_description,
-              :extended_content => nil,
-              :tag_list => nil,
-              :private => false,
-              :basket_id => basket_id
+              title: SystemSetting.no_public_version_title,
+              description: SystemSetting.no_public_version_description,
+              extended_content: nil,
+              tag_list: nil,
+              private: false,
+              basket_id: basket_id
             }
 
             update_hash[:short_summary] = nil if can_have_short_summary?

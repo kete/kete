@@ -4,18 +4,18 @@ class SearchSource < ActiveRecord::Base
   acts_as_list
 
   validates_presence_of :title, :source_type
-  validates_format_of :base_url, :with => /^http:\/\/.*/, :message => I18n.t('search_source_model.requires_http')
-  validates_numericality_of :limit, :only_integer => true, :allow_blank => true
-  validates_numericality_of :cache_interval, :only_integer => true, :allow_blank => true
+  validates_format_of :base_url, with: /^http:\/\/.*/, message: I18n.t('search_source_model.requires_http')
+  validates_numericality_of :limit, only_integer: true, allow_blank: true
+  validates_numericality_of :cache_interval, only_integer: true, allow_blank: true
 
   %w{ source_types source_targets limit_params }.each do |config|
     cattr_accessor "acceptable_#{config}".to_sym
     class_eval("@@acceptable_#{config} = ExternalSearchSources[config.to_sym]")
-    validates_inclusion_of config.singularize.to_sym, :in => class_eval("@@acceptable_#{config}"), :allow_blank => (config == 'limit_params'),
-                           :message => I18n.t('search_source_model.must_be_one_of', :types => class_eval("@@acceptable_#{config}.join(', ')"))
+    validates_inclusion_of config.singularize.to_sym, in: class_eval("@@acceptable_#{config}"), allow_blank: (config == 'limit_params'),
+                           message: I18n.t('search_source_model.must_be_one_of', types: class_eval("@@acceptable_#{config}.join(', ')"))
   end
 
-  default_scope :order => 'position ASC'
+  default_scope order: 'position ASC'
 
   # in the case no limit is supplied, set a default one of 5
   before_save :set_limit
@@ -68,7 +68,7 @@ class SearchSource < ActiveRecord::Base
   end
 
   def fetch(search_text, options = {})
-    return { :total => 0 } if search_text.blank?
+    return { total: 0 } if search_text.blank?
 
     logger.debug "Search text before parsing: #{search_text}"
     parse_search_text(search_text)
@@ -79,10 +79,10 @@ class SearchSource < ActiveRecord::Base
     logger.debug "Getting search source results from: #{source_url}"
 
     begin
-      feed = Feedzirra::Feed.fetch_and_parse(source_url, { :timeout => ExternalSearchSources[:timeout] })
+      feed = Feedzirra::Feed.fetch_and_parse(source_url, { timeout: ExternalSearchSources[:timeout] })
     rescue
       # some search terms may result in errors on the search source
-      return { :total => 0 }
+      return { total: 0 }
     end
     # In the case that the feed can't be parsed, it returns a Fixnum, so check
     # if the output is a Feedzirra object, and if not, return a blank array
@@ -92,7 +92,7 @@ class SearchSource < ActiveRecord::Base
   end
 
   def self.import_from_yaml(yaml_file, options = {})
-    options = { :verbose => true }.merge(options)
+    options = { verbose: true }.merge(options)
 
     attr_sets = YAML.load(File.open(yaml_file))
     attr_sets.each do |attrs|
@@ -109,7 +109,7 @@ class SearchSource < ActiveRecord::Base
           attrs['base_url'].gsub!('[api_key]', options[:api_key])
         end
         ss = SearchSource.new(attrs)
-        ss.or_syntax = { :position => or_syntax[0], :case => or_syntax[1] }
+        ss.or_syntax = { position: or_syntax[0], case: or_syntax[1] }
         ss.save!
         puts "Inserted search source: '#{attrs["title"]}'." if options[:verbose]
       rescue
@@ -172,7 +172,7 @@ class SearchSource < ActiveRecord::Base
       end
       total += 1
     end
-    { :total => total, :links => links, :images => images }
+    { total: total, links: links, images: images }
   end
 
   def looks_like_image_url?(link)

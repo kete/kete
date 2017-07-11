@@ -3,7 +3,7 @@ class AddLicenseAndBaseTagsToImport < ActiveRecord::Migration
   def self.up
     change_table :imports do |t|
       t.string :base_tags
-      t.integer :license_id, :references => nil
+      t.integer :license_id, references: nil
     end
   end
 

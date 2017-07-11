@@ -45,12 +45,12 @@ class Search < ActiveRecord::Base
 
   # The URL should be unique. If it exists, we should be updating it instead
   # Also, it should be scoped to the user, so that other users with the same search work ok
-  validates_uniqueness_of :url, :scope => :user_id
+  validates_uniqueness_of :url, scope: :user_id
 
   # First sort by the updated_at. This gets updated when a same search is made
   # When updated_at values are identical (when you login, multiple ones are added
   # at once), then sort by the id desc, the order they were entered
-  default_scope :order => "updated_at desc, id desc"
+  default_scope order: "updated_at desc, id desc"
 
   attr_accessor :zoom_db, :pqf_query
 
@@ -62,7 +62,7 @@ class Search < ActiveRecord::Base
   def sort_type_options_for(sort_type, action, with_relevance = false)
     with_relevance = with_relevance || (action == 'for' ? true : false)
 
-    sort_type = sort_type(:action => action, :user_specified => sort_type, :default => 'none')
+    sort_type = sort_type(action: action, user_specified: sort_type, default: 'none')
 
     sort_type_options = String.new
     full_sort_types = with_relevance ? ['relevance'] + Search.sort_types : Search.sort_types
@@ -99,10 +99,10 @@ class Search < ActiveRecord::Base
   end
 
   def add_sort_to_query_if_needed(options = { })
-    sort_type = sort_type(:default => 'none',
-                          :user_specified => options[:user_specified],
-                          :action => options[:action],
-                          :search_terms => options[:search_terms])
+    sort_type = sort_type(default: 'none',
+                          user_specified: options[:user_specified],
+                          action: options[:action],
+                          search_terms: options[:search_terms])
 
     return @pqf_query if sort_type == 'none'
 

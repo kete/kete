@@ -1,7 +1,7 @@
 class CreateBaskets < ActiveRecord::Migration
   def self.up
     create_table :baskets do |t|
-      t.column :name, :string, :null => false
+      t.column :name, :string, null: false
       t.column :urlified_name, :string
       t.column :extended_content, :text
       t.column :created_at, :datetime

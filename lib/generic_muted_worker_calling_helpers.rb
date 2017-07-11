@@ -11,8 +11,8 @@ module GenericMutedWorkerCallingHelpers
 
       worker_type = :generic_muted_worker
 
-      the_worker_name = worker_name_for(:stub => method_name,
-                                        :key => key_parts_from(options))
+      the_worker_name = worker_name_for(stub: method_name,
+                                        key: key_parts_from(options))
 
       class_key = options.delete(:class_key)
       the_object = options.delete(:object)
@@ -34,16 +34,16 @@ module GenericMutedWorkerCallingHelpers
       backgroundrb_worker_started = false
       if backgroundrb_started?
         # only allow a single generic worker called with the same key to happen at once
-        MiddleMan.new_worker( :worker => worker_type,
-                              :worker_key => worker_key)
+        MiddleMan.new_worker( worker: worker_type,
+                              worker_key: worker_key)
 
         logger.debug("what is worker_key: " + worker_key.inspect)
         logger.debug("what are worker options last " + options.inspect)
 
         MiddleMan.worker( worker_type,
-                          worker_key ).async_do_work( :arg => {
-                                                        :method_name => method_name,
-                                                        :options => options
+                          worker_key ).async_do_work( arg: {
+                                                        method_name: method_name,
+                                                        options: options
                                                       } )
 
         backgroundrb_worker_started = true

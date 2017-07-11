@@ -2,7 +2,7 @@ class AddBrainBuster < ActiveRecord::Migration
   class BrainBuster < ActiveRecord::Base; end;
   
   def self.up
-    create_table "brain_busters", :force => true do |t|
+    create_table "brain_busters", force: true do |t|
       t.column :question, :string
       t.column :answer, :string
     end
@@ -34,7 +34,7 @@ class AddBrainBuster < ActiveRecord::Migration
   
   # create a logic captcha - answers should be lower case
   def self.create(question, answer)
-    BrainBuster.create(:question => question, :answer => answer.downcase)
+    BrainBuster.create(question: question, answer: answer.downcase)
   end
   
 end

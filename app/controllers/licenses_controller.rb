@@ -14,7 +14,7 @@ class LicensesController < ApplicationController
     config.columns = [:name, :description, :url, :image_url, :metadata, :is_available, :is_creative_commons]
     config.list.columns = [:id, :name, :url]
 
-    config.columns[:metadata].options = { :rows => 5 }
+    config.columns[:metadata].options = { rows: 5 }
   end
 
   def install_license
@@ -34,7 +34,7 @@ class LicensesController < ApplicationController
     else
       flash[:error] = t('licenses_controller.install_license.no_import')
     end
-    redirect_to :urlified_name => @site_basket.urlified_name, :controller => 'licenses', :action => 'list'
+    redirect_to urlified_name: @site_basket.urlified_name, controller: 'licenses', action: 'list'
   end
 
   private

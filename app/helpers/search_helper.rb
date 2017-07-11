@@ -117,9 +117,9 @@ module SearchHelper
 
   def will_paginate_atom(collection, xml)
     total_pages = WillPaginate::ViewHelpers.total_pages_for_collection(collection)
-    xml.send("atom:link", :rel => 'next', :href => derive_url_for_rss(:page => collection.current_page + 1)) unless collection.current_page.eql?(total_pages)
-    xml.send("atom:link", :rel => 'prev', :href => derive_url_for_rss(:page => collection.current_page - 1)) unless collection.current_page.eql?(1)
-    xml.send("atom:link", :rel => 'last', :href => derive_url_for_rss(:page => total_pages))
+    xml.send("atom:link", rel: 'next', href: derive_url_for_rss(page: collection.current_page + 1)) unless collection.current_page.eql?(total_pages)
+    xml.send("atom:link", rel: 'prev', href: derive_url_for_rss(page: collection.current_page - 1)) unless collection.current_page.eql?(1)
+    xml.send("atom:link", rel: 'last', href: derive_url_for_rss(page: total_pages))
   end
 
   def other_results
@@ -135,11 +135,11 @@ module SearchHelper
   include SearchDcDateFormulator
 
   def tag_show_link_options(tag)
-    { :title => t('search_helper.tag_show_link_options.title', :tag_name => tag.name) }
+    { title: t('search_helper.tag_show_link_options.title', tag_name: tag.name) }
   end
 
   def contributor_show_link_options(contributor)
-    { :title => t('search_helper.contributor_show_link_options.title', :user_name => contributor.user_name) }
+    { title: t('search_helper.contributor_show_link_options.title', user_name: contributor.user_name) }
   end
 
   # Methods to replace the old and complex search routes. These should now pass

@@ -3,22 +3,22 @@ class ExtendedFieldsController < ApplicationController
   helper ExtendedFieldsHelper
 
   # everything else is handled by application.rb
-  before_filter :login_required, :only => [:list, :index, :add_field_to_multiples, :fetch_subchoices, :fetch_topics_from_topic_type, :validate_topic_type_entry ]
+  before_filter :login_required, only: [:list, :index, :add_field_to_multiples, :fetch_subchoices, :fetch_topics_from_topic_type, :validate_topic_type_entry ]
 
   before_filter :set_page_title
 
   permit "site_admin or admin of :site or tech_admin of :site",
-          :except => [ :add_field_to_multiples, :fetch_subchoices, :fetch_topics_from_topic_type, :validate_topic_type_entry ]
+          except: [ :add_field_to_multiples, :fetch_subchoices, :fetch_topics_from_topic_type, :validate_topic_type_entry ]
 
   active_scaffold :extended_field do |config|
     # Default columns and column exclusions
     config.columns = [:label, :description, :xml_element_name, :ftype, :import_synonyms, :example, :multiple, :user_choice_addition, :link_choice_values]
     config.list.columns.exclude [:updated_at, :created_at, :topic_type_id, :xsi_type, :user_choice_addition, :link_choice_values]
 
-    config.columns[:description].options = { :rows => 4, :cols => 50 }
+    config.columns[:description].options = { rows: 4, cols: 50 }
 
     config.columns[:import_synonyms].description = I18n.t('extended_fields_controller.import_synonyms_description')
-    config.columns[:import_synonyms].options = { :rows => 4, :cols => 50 }
+    config.columns[:import_synonyms].options = { rows: 4, cols: 50 }
 
     config.columns << [:base_url]
     config.columns[:base_url].label = I18n.t('extended_fields_controller.base_url')
@@ -65,9 +65,9 @@ class ExtendedFieldsController < ApplicationController
     choices = choices.reject { |c| !extended_field.choices.member?(c) }
 
     options = {
-      :choices => choices,
-      :level => params[:for_level].to_i + 1,
-      :extended_field => extended_field
+      choices: choices,
+      level: params[:for_level].to_i + 1,
+      extended_field: extended_field
     }
 
     # Ensure we have a standard environment to work with. Some parts of the helpers (esp. ID and NAME
@@ -85,8 +85,8 @@ class ExtendedFieldsController < ApplicationController
         page.replace_html dom_id, ""
       else
         page.replace_html dom_id,
-          :partial => "extended_fields/choice_#{params[:editor]}_editor",
-          :locals => params[:options].merge(options)
+          partial: "extended_fields/choice_#{params[:editor]}_editor",
+          locals: params[:options].merge(options)
       end
     end
   end
@@ -109,19 +109,19 @@ class ExtendedFieldsController < ApplicationController
     search_term = search_term.split(' (').first if search_term =~ /.+ \(.+\)/
     logger.debug("What is search term: #{search_term}")
 
-    topic_type_ids = TopicType.where(:id => parent_topic_type).full_set.collect { |a| a.id } rescue []
+    topic_type_ids = TopicType.where(id: parent_topic_type).full_set.collect { |a| a.id } rescue []
 
     topics = Topic.where("title LIKE ? AND topic_type_id IN (?)", "%#{search_term}%", topic_type_ids).order("title ASC").limit(10)
     logger.debug("Topics are: #{topics.inspect}")
 
     topics = topics.map { |entry|
-      @template.content_tag("li", "#{entry.title.sanitize} (#{@template.url_for(:urlified_name => entry.basket.urlified_name,
-                                                                          :controller => 'topics',
-                                                                          :action => 'show',
-                                                                          :id => entry,
-                                                                          :only_path => false).sub("/#{I18n.locale}/", '/')})")
+      @template.content_tag("li", "#{entry.title.sanitize} (#{@template.url_for(urlified_name: entry.basket.urlified_name,
+                                                                          controller: 'topics',
+                                                                          action: 'show',
+                                                                          id: entry,
+                                                                          only_path: false).sub("/#{I18n.locale}/", '/')})")
     }
-    render :inline => @template.content_tag("ul", topics.uniq)
+    render inline: @template.content_tag("ul", topics.uniq)
   end
 
   def validate_topic_type_entry
@@ -136,7 +136,7 @@ class ExtendedFieldsController < ApplicationController
     js = no_value_js
     unless value.blank?
       js = invalid_value_js
-      topic = Topic.where(:id => value.split('/').last.to_i).select('topic_type_id')
+      topic = Topic.where(id: value.split('/').last.to_i).select('topic_type_id')
       if topic
         valid_topic_type_ids = parent_topic_type.full_set.collect { |topic_type| topic_type.id }
         js = valid_value_js if valid_topic_type_ids.include?(topic.topic_type_id)
@@ -145,7 +145,7 @@ class ExtendedFieldsController < ApplicationController
 
     respond_to do |format|
       format.js do
-        render :text => js, :layout => false
+        render text: js, layout: false
       end
     end
   end
@@ -154,7 +154,7 @@ class ExtendedFieldsController < ApplicationController
 
   def base_url_form_column(record, input_name)
     value = record.id.nil? ? '' : record.base_url
-    @template.text_field_tag(input_name, value, { :id => 'record_base_url' })
+    @template.text_field_tag(input_name, value, { id: 'record_base_url' })
   end
   helper_method :base_url_form_column
 

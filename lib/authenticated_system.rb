@@ -129,9 +129,9 @@ module AuthenticatedSystem
 
           flash[:notice] += I18n.t('authenticated_system_lib.access_denied.before_proceeding')
 
-          redirect_to :urlified_name => Basket.site_basket.urlified_name,
-                      :controller => 'account',
-                      :action => 'login'
+          redirect_to urlified_name: Basket.site_basket.urlified_name,
+                      controller: 'account',
+                      action: 'login'
         end
         accepts.xml do
           if user = authenticate_or_request_with_http_basic { |u, p| User.authenticate(u, p) }
@@ -194,7 +194,7 @@ module AuthenticatedSystem
       if user && user.remember_token?
         user.remember_me
         self.current_user = user
-        cookies[:auth_token] = { :value => self.current_user.remember_token , :expires => self.current_user.remember_token_expires_at }
+        cookies[:auth_token] = { value: self.current_user.remember_token , expires: self.current_user.remember_token_expires_at }
         flash[:notice] = I18n.t('authenticated_system_lib.login_from_cookie.logged_in')
       end
     end

@@ -15,7 +15,7 @@ module FriendlyUrlsTestUnitHelper
     format_friendly = format_friendly_unicode_for('something wicked this way comes!')
     assert_equal '-something-wicked-this-way-comes', format_friendly, "#{@base_class}. format_friendly_unicode_for failed"
 
-    format_friendly = format_friendly_unicode_for('something wicked this way comes!', :demarkator => "_", :at_end => true, :at_start => false)
+    format_friendly = format_friendly_unicode_for('something wicked this way comes!', demarkator: "_", at_end: true, at_start: false)
     assert_equal 'something_wicked_this_way_comes_', format_friendly, "#{@base_class}. format_friendly_unicode_for failed"
 
     format_friendly = format_friendly_unicode_for('& it is āēīōū and in your 家!')
@@ -42,7 +42,7 @@ module FriendlyUrlsTestUnitHelper
     #   :select => 'name'
     #   :select => 'basket.name'
     ["#{title_or_name_attr}", "#{@base_class.tableize}.#{title_or_name_attr}"].each do |select_type|
-      selected_model = @base_class.constantize.find(:all, :select => "#{select_type}, created_at").last
+      selected_model = @base_class.constantize.find(:all, select: "#{select_type}, created_at").last
       assert_equal selected_model.id.to_s + '-something-else', selected_model.format_for_friendly_urls, "#{@base_class}.format_for_friendly_urls didn't format the #{title_or_name_attr} correctly"
     end
   end

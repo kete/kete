@@ -68,7 +68,7 @@ class Array
     name_and_counts = Hash.new
 
     attr_ids = collect { |item| item.send(attr_name_id) }
-    attr_types = attr_name.to_s.classify.constantize.all(:conditions => { :id => attr_ids })
+    attr_types = attr_name.to_s.classify.constantize.all(conditions: { id: attr_ids })
     attr_types.each do |attr_type|
       name_and_counts[attr_type] = select { |item| item.send(attr_name_id) == attr_type.id }.size
     end
@@ -170,12 +170,12 @@ module I18n
          # end
 
          PluralizeValues = {
-           :mi => { :prefix => 'ngā ' },
-           :zh => { :prefix => '', :suffix => '' }
+           mi: { prefix: 'ngā ' },
+           zh: { prefix: '', suffix: '' }
          }
          SingularizeValues = {
-           :mi => { :prefix => 'te ' },
-           :zh => { :prefix => '', :suffix => '' }
+           mi: { prefix: 'te ' },
+           zh: { prefix: '', suffix: '' }
          }
 
          def pluralize_with_locale(locale, string)

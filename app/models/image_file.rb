@@ -12,10 +12,10 @@ class ImageFile < ActiveRecord::Base
   # from vendor/plugins/attachment_fu/lib/technoweenie/attachment_fu/processors/rmagick.rb
   # we also make non-web friendly image files end up with jpegs for resized versions
   # see lib/resize_as_jpeg_when_necessary
-  attachment_options = { :storage => :file_system,
-    :content_type => SystemSetting.image_content_types,
-    :thumbnails => SystemSetting.image_sizes,
-    :max_size => SystemSetting.maximum_uploaded_file_size }
+  attachment_options = { storage: :file_system,
+    content_type: SystemSetting.image_content_types,
+    thumbnails: SystemSetting.image_sizes,
+    max_size: SystemSetting.maximum_uploaded_file_size }
 
   # allow sites to opt-in for keeping embedded metadata from original with resized versions
   if SystemSetting.keep_embedded_metadata_for_all_sizes
@@ -75,7 +75,7 @@ class ImageFile < ActiveRecord::Base
       enum = attachment_options[attr_name]
       unless enum.nil? || enum.include?(send(attr_name))
         errors.add attr_name, I18n.t("image_file_model.not_acceptable_#{attr_name}",
-                                     :max_size => (SystemSetting.maximum_uploaded_file_size / 1.megabyte))
+                                     max_size: (SystemSetting.maximum_uploaded_file_size / 1.megabyte))
       end
     end
   end
@@ -88,14 +88,14 @@ class ImageFile < ActiveRecord::Base
       thumb.temp_paths.unshift temp_file
       assign_attributes_args = []
       assign_attributes_args << {
-        :content_type             => content_type,
-        :filename                 => thumbnail_name_for(file_name_suffix),
-        :thumbnail_resize_options => size,
-        :file_private             => (self.item_private || false) # <- attr_accessor, not a model attribute
+        content_type: content_type,
+        filename: thumbnail_name_for(file_name_suffix),
+        thumbnail_resize_options: size,
+        file_private: (self.item_private || false) # <- attr_accessor, not a model attribute
       }
       if defined?(Rails) && Rails::VERSION::MAJOR == 3
         # assign_attributes API in Rails 2.3 doesn't take a second argument
-        assign_attributes_args << { :without_protection => true }
+        assign_attributes_args << { without_protection: true }
       end
       thumb.send(:assign_attributes, *assign_attributes_args)
       callback_with_args :before_thumbnail_saved, thumb

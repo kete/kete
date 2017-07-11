@@ -5,7 +5,7 @@ namespace :deploy do
   namespace :db do
 
     desc 'Bootstrap the Database'
-    task :bootstrap, :roles => :app do
+    task :bootstrap, roles: :app do
       set_app_environment
       run "cd #{current_path} && RAILS_ENV=#{app_environment} rake db:bootstrap"
     end

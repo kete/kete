@@ -14,9 +14,9 @@ class FormHelper < ActionView::Helpers::FormBuilder
       required_icon = required ? ' <em>*</em>' : ''
 
       label = String.new
-      label = label(field, options.delete(:label) + required_icon, :class => classes) if options[:label].present?
+      label = label(field, options.delete(:label) + required_icon, class: classes) if options[:label].present?
 
-      field_example = options[:example].nil? ? '' : @template.content_tag(:div, options.delete(:example), :class => 'form-example')
+      field_example = options[:example].nil? ? '' : @template.content_tag(:div, options.delete(:example), class: 'form-example')
 
       fields = ''
       if name == 'radio_button' && args.first.is_a?(Array) # a set of radio buttons
@@ -25,7 +25,7 @@ class FormHelper < ActionView::Helpers::FormBuilder
           label_text, radio_value = radio[0], radio[1]
           label_for, note = radio[2].delete(:label_for), radio[2].delete(:note)
           radio_field = super(field, radio_value, options.merge(radio[2]))
-          radio_label = label(field, label_text, :for => label_for)
+          radio_label = label(field, label_text, for: label_for)
           fields += @template.content_tag(:li, "\n#{radio_field}\n#{radio_label} #{note unless note.blank?}\n") + "\n"
         end
         fields += "</ul>\n"
@@ -33,7 +33,7 @@ class FormHelper < ActionView::Helpers::FormBuilder
         fields += super
       end
 
-      @template.content_tag(:div, "\n#{label}\n#{fields}\n#{field_example}", :class => 'form-element') + "\n"
+      @template.content_tag(:div, "\n#{label}\n#{fields}\n#{field_example}", class: 'form-element') + "\n"
     end
   end
 end
