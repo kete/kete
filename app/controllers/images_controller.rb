@@ -129,6 +129,6 @@ class ImagesController < ApplicationController
   end
 
   def destroy
-    zoom_destroy_and_redirect('StillImage','Image')
+    zoom_destroy_and_redirect('StillImage', 'Image')
   end
 end

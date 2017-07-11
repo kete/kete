@@ -41,7 +41,7 @@ class Basket < ActiveRecord::Base
   end
 
   def self.level_value_from(key)
-    Basket.all_level_options.select { |v,k| k == key }.first.first
+    Basket.all_level_options.select { |v, k| k == key }.first.first
   end
 
   # profile forms, these should correspond to actions in the controller
@@ -286,33 +286,33 @@ class Basket < ActiveRecord::Base
   # TODO clean this up using define_method (meta programming magic)
   def show_flagging_as_options(site_basket, default=nil)
     current_show_flagging_value = default || setting(:show_flagging) || site_basket.setting(:show_flagging) || 'all users'
-    select_options = array_to_options_list_with_defaults(Basket.user_level_options,current_show_flagging_value)
+    select_options = array_to_options_list_with_defaults(Basket.user_level_options, current_show_flagging_value)
   end
 
   def show_add_links_as_options(site_basket, default=nil)
     current_show_add_links_value = default || setting(:show_add_links) || site_basket.setting(:show_add_links) || 'all users'
-    select_options = array_to_options_list_with_defaults(Basket.user_level_options,current_show_add_links_value)
+    select_options = array_to_options_list_with_defaults(Basket.user_level_options, current_show_add_links_value)
   end
 
   def show_action_menu_as_options(site_basket, default=nil)
     current_show_actions_value = default || setting(:show_action_menu) || site_basket.setting(:show_action_menu) || 'all users'
-    select_options = array_to_options_list_with_defaults(Basket.user_level_options,current_show_actions_value)
+    select_options = array_to_options_list_with_defaults(Basket.user_level_options, current_show_actions_value)
   end
 
   def show_discussion_as_options(site_basket, default=nil)
     current_show_discussion_value = default || setting(:show_discussion) || site_basket.setting(:show_discussion) || 'all users'
-    select_options = array_to_options_list_with_defaults(Basket.user_level_options,current_show_discussion_value)
+    select_options = array_to_options_list_with_defaults(Basket.user_level_options, current_show_discussion_value)
   end
 
   def side_menu_ordering_of_topics_as_options(site_basket, default=nil)
     current_value = default || setting(:side_menu_ordering_of_topics) || site_basket.setting(:side_menu_ordering_of_topics) || 'updated_at'
-    options_array = [['Latest', 'latest'],['Alphabetical', 'alphabetical']]
-    select_options = array_to_options_list_with_defaults(options_array,current_value)
+    options_array = [['Latest', 'latest'], ['Alphabetical', 'alphabetical']]
+    select_options = array_to_options_list_with_defaults(options_array, current_value)
   end
 
   def private_file_visibility_as_options(site_basket, default=nil)
     current_value = default || setting(:private_file_visibility) || site_basket.setting(:private_file_visibility) || 'at least member'
-    select_options = array_to_options_list_with_defaults(Basket.member_level_options,current_value)
+    select_options = array_to_options_list_with_defaults(Basket.member_level_options, current_value)
   end
 
   def private_file_visibilty_selected_or_default(value, site_basket)

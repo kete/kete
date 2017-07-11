@@ -399,7 +399,7 @@ module ItemPrivacy
           FileUtils.mv @old_filename, full_filename
 
           # Remove the directory we moved from too if it's empty
-          Dir.rmdir(File.dirname(@old_filename)) if (Dir.entries(File.dirname(@old_filename))-['.','..']).empty?
+          Dir.rmdir(File.dirname(@old_filename)) if (Dir.entries(File.dirname(@old_filename))-['.', '..']).empty?
         end
         @old_filename =  nil
         true

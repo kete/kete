@@ -28,7 +28,7 @@ module ZoomControllerHelpers
     # but we're not bothering to rename it at the moment
     # the main thing is that it cause related items zoom records to be rebuilt
     # the zoom_item_destroy makes sure comments are deleted as expected
-    def zoom_destroy_and_redirect(zoom_class,pretty_zoom_class = nil)
+    def zoom_destroy_and_redirect(zoom_class, pretty_zoom_class = nil)
       if pretty_zoom_class.nil?
         pretty_zoom_class = zoom_class
       end

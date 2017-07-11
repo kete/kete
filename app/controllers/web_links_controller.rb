@@ -78,6 +78,6 @@ class WebLinksController < ApplicationController
   end
 
   def destroy
-    zoom_destroy_and_redirect('WebLink','Web link')
+    zoom_destroy_and_redirect('WebLink', 'Web link')
   end
 end

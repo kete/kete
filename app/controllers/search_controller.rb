@@ -753,7 +753,7 @@ class SearchController < ApplicationController
   # James Stradling <james@katipo.co.nz> - 2008-05-02
   # Refactored to use acts_as_zoom#has_appropriate_records?
   #### DEPRECIATED?
-  def zoom_update_and_test(item,zoom_db)
+  def zoom_update_and_test(item, zoom_db)
     item_class = item.class.name
 
     if !session[:skip_existing].nil? and session[:skip_existing] == true

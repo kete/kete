@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 
-RAILS_HOME = File.expand_path(File.join(File.dirname(__FILE__),'..'))
+RAILS_HOME = File.expand_path(File.join(File.dirname(__FILE__), '..'))
 
 require 'rubygems'
 require 'active_support'
@@ -16,9 +16,9 @@ require 'backgroundrb'
 
 BDRB_HOME = ::BackgrounDRb::BACKGROUNDRB_ROOT
 
-['server','server/lib','lib','lib/backgroundrb'].each { |x| $LOAD_PATH.unshift(BDRB_HOME + "/#{x}")}
+['server', 'server/lib', 'lib', 'lib/backgroundrb'].each { |x| $LOAD_PATH.unshift(BDRB_HOME + "/#{x}")}
 
-$LOAD_PATH.unshift(File.join(RAILS_HOME,'lib','workers'))
+$LOAD_PATH.unshift(File.join(RAILS_HOME, 'lib', 'workers'))
 
 require 'bdrb_config'
 

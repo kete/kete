@@ -5,7 +5,7 @@ module FriendlyUrls
     # needs testing against IE6 to see if it works
     def format_friendly_for(string)
       require 'unicode'
-      Unicode::normalize_KD('-'+string+'-').downcase.gsub('&', 'and').gsub(/[^a-z0-9\s_-]+/,'').gsub(/[\s_-]+/,'-')[0..-2]
+      Unicode::normalize_KD('-'+string+'-').downcase.gsub('&', 'and').gsub(/[^a-z0-9\s_-]+/, '').gsub(/[\s_-]+/, '-')[0..-2]
     end
 
     def format_friendly_unicode_for(string, options = { })

@@ -26,7 +26,7 @@ module MergeTestUnitHelper
         end
 
         should 'be able to be merge specified versions of an item to create a new merged version' do
-          @item.merge_values_from(2,3)
+          @item.merge_values_from(2, 3)
           @item.save!
           @item.reload
 
@@ -40,7 +40,7 @@ module MergeTestUnitHelper
           @item.save!
           @item.reload
 
-          @item.merge_values_from(2,3,4)
+          @item.merge_values_from(2, 3, 4)
           @item.save!
 
           assert_equal @item.title, 'version 4'

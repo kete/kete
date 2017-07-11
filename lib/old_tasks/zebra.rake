@@ -32,7 +32,7 @@ namespace :zebra do
     end
 
     # write out new file content
-    dest = File.new(conf_file_path,'w+')
+    dest = File.new(conf_file_path, 'w+')
     dest << servers_conf_xml
     dest.close
   end

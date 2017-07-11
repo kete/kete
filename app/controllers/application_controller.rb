@@ -659,7 +659,7 @@ class ApplicationController < ActionController::Base
 
     # if there is a query string, tack it on the end
     unless query_parameters.blank?
-      formatted = query_parameters.collect { |k,v| k.to_s + '=' + v.to_s }
+      formatted = query_parameters.collect { |k, v| k.to_s + '=' + v.to_s }
       url += '?' + formatted.join('&')
     end
     url

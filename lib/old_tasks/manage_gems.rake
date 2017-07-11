@@ -36,7 +36,7 @@ namespace :manage_gems do
     no_rdoc_or_ri = '--no-rdoc --no-ri'
 
     required = load_required_software
-    required[ENV['GEMS_TO_GRAB']].each do |key,value|
+    required[ENV['GEMS_TO_GRAB']].each do |key, value|
       if !value.blank? && value.kind_of?(Hash)
 
         # Pre install command (like clearing old gem versions)
@@ -47,7 +47,7 @@ namespace :manage_gems do
 
         # If this gem relies on dependancies it doesn't properly take care of, manually install them
         unless value['gem_deps'].blank?
-          value['gem_deps'].each do |dependancy_key,dependancy_value|
+          value['gem_deps'].each do |dependancy_key, dependancy_value|
             p "gem #{ENV['GEMS_ACTION']} #{no_rdoc_or_ri} #{dependancy_key}"
             `gem #{ENV['GEMS_ACTION']} #{no_rdoc_or_ri} #{dependancy_key}`
           end

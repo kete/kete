@@ -58,7 +58,7 @@ module ExtendedContentController
         # lastly value is just a string
         # e.g. "Joe Bob (http://kete/end/topics/show/16-joe-bob)"
         @extended_fields ||= ExtendedField.find_all_by_ftype('topic_type')
-        extended_values.each_pair do |key,value|
+        extended_values.each_pair do |key, value|
           if value.is_a?(Hash)
             # check for multiple with nested position keys
             extended_field = @extended_fields.find { |ef| qualified_name_for_field(ef) == key }

@@ -92,7 +92,7 @@ class ExtendedContentParser
     #   user_reference:
         # xml_element_name: dc:identifier
 
-    sorted_fields_with_position_hash = fields_with_position_hash.sort_by { |k,v| k.to_s }.to_h
+    sorted_fields_with_position_hash = fields_with_position_hash.sort_by { |k, v| k.to_s }.to_h
     fields_in_sorted_array = sorted_fields_with_position_hash.values
 
     # fields_in_sorted_array like this:
