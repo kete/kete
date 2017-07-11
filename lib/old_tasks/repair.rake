@@ -4,17 +4,15 @@
 
 namespace :kete do
   namespace :repair do
-
     # Run all tasks
     task all: ['kete:repair:fix_topic_versions',
-                  'kete:repair:set_missing_contributors',
-                  'kete:repair:correct_thumbnail_privacies',
-                  'kete:repair:correct_site_basket_roles',
-                  'kete:repair:extended_fields']
+               'kete:repair:set_missing_contributors',
+               'kete:repair:correct_thumbnail_privacies',
+               'kete:repair:correct_site_basket_roles',
+               'kete:repair:extended_fields']
 
     desc 'Fix invalid topic versions (adds version column value or prunes on a case-by-case basis.'
     task fix_topic_versions: :environment do
-
       # This task repairs all Topic::Versions where #version is nil. This is a problem because it causes
       # exceptions when visiting history pages on items.
 
@@ -22,7 +20,6 @@ namespace :kete do
 
       # First, find all the candidate versions
       Topic::Version.find(:all, conditions: ['version IS NULL'], order: 'id ASC').each do |topic_version|
-
         topic = topic_version.topic
 
         # Skip any problem topics
@@ -75,7 +72,6 @@ namespace :kete do
           pruned = pruned + 1
 
         end
-
       end
 
       print "Finished. Removed #{pruned} invalid topic versions.\n"
@@ -93,7 +89,6 @@ namespace :kete do
       # topic history pages.
 
       Topic::Version.find(:all).each do |topic_version|
-
         # Check that this is a valid topic version.
         next if topic_version.version.nil?
 
@@ -129,7 +124,6 @@ namespace :kete do
 
     desc 'Copies incorrectly located uploads to the correct location'
     task correct_upload_locations: :environment do
-
       # Display a warning to the user, since we're copying files around on the file system
       # and there is a possibility of overwriting something important.
 
@@ -179,7 +173,6 @@ namespace :kete do
 
     desc 'Check uploaded files for accessibility'
     task check_uploaded_files: :environment do
-
       puts "Checking files.. please wait.\n\n"
 
       inaccessible_files = [AudioRecording, Document, ImageFile, Video].collect do |item_type|
@@ -287,10 +280,9 @@ namespace :kete do
 
     desc 'Run all extended field repair tasks'
     task extended_fields: ['kete:repair:extended_fields:legacy_google_map',
-                              'kete:repair:extended_fields:repopulate_related_items_from_topic_type_choices']
+                           'kete:repair:extended_fields:repopulate_related_items_from_topic_type_choices']
 
     namespace :extended_fields do
-
       desc 'Run the legacy google map repair tasks'
       task legacy_google_map: :environment do
         map_types = ['map', 'map_address']
@@ -315,7 +307,7 @@ namespace :kete do
                 end
 
                 value = { 'zoom_lvl' => (map_data['zoom_lvl'] || SystemSetting.default_zoom_level.to_s),
-                  'no_map' => (map_data['no_map'] || '0'), 'coords' => map_data['coords'] }
+                          'no_map' => (map_data['no_map'] || '0'), 'coords' => map_data['coords'] }
                 value['address'] = map_data['address'] if map_data['address']
                 item.send("#{field}=", value)
               end

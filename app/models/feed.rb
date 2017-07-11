@@ -2,7 +2,6 @@ require 'open-uri'
 require 'feedzirra'
 
 class Feed < ActiveRecord::Base
-
   belongs_to :basket
 
   before_validation :add_missing_values
@@ -17,7 +16,7 @@ class Feed < ActiveRecord::Base
 
   serialize :serialized_feed
 
-  def self.fetch(url, escape=true)
+  def self.fetch(url, escape = true)
     Rails.logger.debug("Original feed url: #{url}")
     url = escape ? URI.escape(url) : url
     Rails.logger.debug("Escaped feed url: #{url}")
@@ -38,7 +37,7 @@ class Feed < ActiveRecord::Base
       File.delete(file_path) if File.exists?(file_path)
     end
   end
-  
+
   def destroy_caches
     clear_caches
   end
@@ -48,7 +47,7 @@ class Feed < ActiveRecord::Base
       entries = Feed.fetch(url)
       if serialized_feed != entries # is there something different
         update_attributes({ serialized_feed: entries,
-                                 last_downloaded: Time.now.utc.to_s(:db) })
+                            last_downloaded: Time.now.utc.to_s(:db) })
         clear_caches
       end
     rescue
@@ -76,5 +75,4 @@ class Feed < ActiveRecord::Base
   def destroy_feed_workers
     delete_existing_workers_for(:feeds_worker, to_worker_key, false)
   end
-
 end

@@ -1,5 +1,4 @@
 class MembersController < ApplicationController
-
   permit 'site_admin or admin of :current_basket', except: [:index, :list, :join, :remove, :rss]
 
   before_filter :permitted_to_view_memberlist, only: [:index, :list, :rss]
@@ -56,12 +55,11 @@ class MembersController < ApplicationController
     @rss_tag_link = rss_tag(replace_page_with_rss: true, auto_detect: false)
   end
 
-  def list_members_in(role_name, order='users.login asc')
+  def list_members_in(role_name, order = 'users.login asc')
     @non_member_roles_plural = Hash.new
     @possible_roles = { 'admin' => t('members_controller.list_members_in.admin'),
-      'moderator' => t('members_controller.list_members_in.moderator'),
-      'member' => t('members_controller.list_members_in.member')
-    }
+                        'moderator' => t('members_controller.list_members_in.moderator'),
+                        'member' => t('members_controller.list_members_in.member') }
 
     @admin_actions = Hash.new
 
@@ -119,8 +117,9 @@ class MembersController < ApplicationController
     @potential_new_members = Array.new
     unless params[:search_name].blank?
       @potential_new_members = User.where(
-          'id not in (?) and login like ? or display_name like ?',
-          @existing_users, '%'+params[:search_name]+'%', '%'+params[:search_name]+'%' )
+        'id not in (?) and login like ? or display_name like ?',
+        @existing_users, '%' + params[:search_name] + '%', '%' + params[:search_name] + '%'
+      )
     end
   end
 

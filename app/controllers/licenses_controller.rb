@@ -4,7 +4,6 @@ require 'rake'
 # require 'tasks/rails'
 
 class LicensesController < ApplicationController
-
   before_filter :login_required
   before_filter :set_page_title
   before_filter :prepare_available_licenses
@@ -44,8 +43,7 @@ class LicensesController < ApplicationController
   end
 
   def prepare_available_licenses
-    @available_licenses = Rake.application.tasks.
-                            collect { |task| task.name =~ /acts_as_licensed:import:(\w+)$/ ? $1 : nil }.compact
+    @available_licenses = Rake.application.tasks
+                              .collect { |task| task.name =~ /acts_as_licensed:import:(\w+)$/ ? $1 : nil }.compact
   end
-
 end

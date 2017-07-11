@@ -6,6 +6,6 @@ class AddExtendedFieldsExampleAndFtype < ActiveRecord::Migration
 
   def self.down
     remove_column :extended_fields, :example
-    remove_column :extended_fields, :ftype    
+    remove_column :extended_fields, :ftype
   end
 end

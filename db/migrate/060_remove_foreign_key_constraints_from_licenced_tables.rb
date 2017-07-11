@@ -8,7 +8,7 @@ class RemoveForeignKeyConstraintsFromLicencedTables < ActiveRecord::Migration
     remove_column 'still_images', 'license_id'
     remove_column 'topics', 'license_id'
     remove_column 'users', 'license_id'
-    
+
     # Add the columns again without foreign keys
     add_column 'audio_recordings', 'license_id', :integer, references: nil
     add_column 'videos', 'license_id', :integer, references: nil
@@ -27,7 +27,7 @@ class RemoveForeignKeyConstraintsFromLicencedTables < ActiveRecord::Migration
     remove_column 'still_images', 'license_id'
     remove_column 'topics', 'license_id'
     remove_column 'users', 'license_id'
-    
+
     add_column 'audio_recordings', 'license_id', :integer
     add_column 'videos', 'license_id', :integer
     add_column 'documents', 'license_id', :integer

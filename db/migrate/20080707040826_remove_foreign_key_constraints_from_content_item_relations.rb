@@ -16,9 +16,7 @@ class RemoveForeignKeyConstraintsFromContentItemRelations < ActiveRecord::Migrat
   end
 
   class << self
-
     def add_foreign_key_constraint(table_name, symbol, foreign_table, foreign_primary_key = 'id')
-
       if postgres?
         execute(postgres_add_fk_statement(table_name, symbol, foreign_table, foreign_primary_key))
       elsif mysql?
@@ -67,5 +65,4 @@ class RemoveForeignKeyConstraintsFromContentItemRelations < ActiveRecord::Migrat
       defined?(ActiveRecord::ConnectionAdapters::PostgreSQLAdapter)
     end
   end
-
 end

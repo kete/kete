@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 class BasketsController < ApplicationController
   permit 'site_admin or admin of :current_basket', only: [:edit, :update, :homepage_options, :destroy,
                                                           :add_index_topic, :appearance, :update_appearance,
@@ -559,7 +560,8 @@ class BasketsController < ApplicationController
     @default_sorting = { order: 'created_at', direction: 'desc' }
     paginate_order = current_sorting_options(
       @default_sorting[:order],
-      @default_sorting[:direction], %w(name created_at))
+      @default_sorting[:direction], %w(name created_at)
+    )
 
     options = { page: params[:page],
                 per_page: per_page,

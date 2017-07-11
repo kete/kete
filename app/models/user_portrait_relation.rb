@@ -12,7 +12,7 @@ class UserPortraitRelation < ActiveRecord::Base
 
     # if the image is theirs and not already added, then make the relation
     user_portrait_relation = create(user_id: user.id,
-                                         still_image_id: still_image.id)
+                                    still_image_id: still_image.id)
 
     user_portrait_relation.valid?
   end
@@ -44,5 +44,4 @@ class UserPortraitRelation < ActiveRecord::Base
     user_portrait_relation = find_by_user_id_and_still_image_id(user, still_image)
     user_portrait_relation.move_lower
   end
-
 end

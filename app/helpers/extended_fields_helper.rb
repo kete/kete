@@ -1,5 +1,4 @@
 module ExtendedFieldsHelper
-
   # Override for ActiveScaffold extended field controller edit view
   # Refer to http://activescaffold.com/docs/form-overrides for details
 
@@ -13,7 +12,7 @@ module ExtendedFieldsHelper
   def circa_form_column(record, input_name)
     checkbox = check_box('record', 'circa', { checked: (!record.new_record? && record.circa?) })
     content_tag('div', checkbox, id: "hidden_choices_circa_#{record.id.to_s}",
-                style: record.new_record? || record.ftype != 'year' ? 'display:none;' : '')
+                                 style: record.new_record? || record.ftype != 'year' ? 'display:none;' : '')
   end
 
   # Using YUI TreeView
@@ -24,23 +23,22 @@ module ExtendedFieldsHelper
     # Containing DIV for theme
     '<div class="yui-skin-sam" style="float: left" id="hidden_choices_select_' + record.id.to_s + '">' +
 
-    # Expand all and collapse all links
-    content_tag('p', link_to_function(t('extended_fields_helper.pseudo_choices_form_column.expand_all'), '', id: "#{id}_expand") + ' | ' + link_to_function(t('extended_fields_helper.pseudo_choices_form_column.collapse_all'), '', id: "#{id}_collapse")) +
+      # Expand all and collapse all links
+      content_tag('p', link_to_function(t('extended_fields_helper.pseudo_choices_form_column.expand_all'), '', id: "#{id}_expand") + ' | ' + link_to_function(t('extended_fields_helper.pseudo_choices_form_column.collapse_all'), '', id: "#{id}_collapse")) +
 
-    # Actual XHTML list that is shown in the case JS fails or is not supported
-    '<div id="choice_selection_' + record.id.to_s + '"><ul>' +
-    top_level.inject('') do |m, choice|
-      m = m + build_ul_for_choice(choice, record)
-    end +
-    '</ul></div>' +
-    '<div id="allow_user_additions">' +
-      "#{t('extended_fields_helper.pseudo_choices_form_column.allow_user_choices')} #{t('extended_fields_helper.pseudo_choices_form_column.allow_user_choices_yes')} " + radio_button_tag('record[user_choice_addition]', 1, record.user_choice_addition?) + " #{t('extended_fields_helper.pseudo_choices_form_column.allow_user_choices_no')} " +   radio_button_tag('record[user_choice_addition]', 0, !record.user_choice_addition?) +
-    '</div>' +
-    '<div id="link_choice_values">' +
+      # Actual XHTML list that is shown in the case JS fails or is not supported
+      '<div id="choice_selection_' + record.id.to_s + '"><ul>' +
+      top_level.inject('') do |m, choice|
+        m = m + build_ul_for_choice(choice, record)
+      end +
+      '</ul></div>' +
+      '<div id="allow_user_additions">' +
+      "#{t('extended_fields_helper.pseudo_choices_form_column.allow_user_choices')} #{t('extended_fields_helper.pseudo_choices_form_column.allow_user_choices_yes')} " + radio_button_tag('record[user_choice_addition]', 1, record.user_choice_addition?) + " #{t('extended_fields_helper.pseudo_choices_form_column.allow_user_choices_no')} " + radio_button_tag('record[user_choice_addition]', 0, !record.user_choice_addition?) +
+      '</div>' +
+      '<div id="link_choice_values">' +
       "#{t('extended_fields_helper.pseudo_choices_form_column.link_choice_values')} #{t('extended_fields_helper.pseudo_choices_form_column.link_choice_values_yes')} " + radio_button_tag('record[link_choice_values]', 1, !record.dont_link_choice_values?) + " #{t('extended_fields_helper.pseudo_choices_form_column.link_choice_values_no')} " + radio_button_tag('record[link_choice_values]', 0, record.dont_link_choice_values?) +
-    '</div>' +
-    '</div>'
-
+      '</div>' +
+      '</div>'
   end
 
   # Build hierarchical UL, LI structure for a choice and recurse through children elements
@@ -62,10 +60,10 @@ module ExtendedFieldsHelper
       ''
     else
       '<ul>' +
-      choice.children.inject('') do |m, child|
-        m = m + build_ul_for_choice(child, record)
-      end +
-      '</ul>'
+        choice.children.inject('') do |m, child|
+          m = m + build_ul_for_choice(child, record)
+        end +
+        '</ul>'
     end
   end
 
@@ -74,7 +72,6 @@ module ExtendedFieldsHelper
   # Same as above, but for ftype.
   # We are not being strict about which ftypes are allowed and which are not.
   def ftype_form_column(record, input_name)
-
     options_for_select = [
       [t('extended_fields_helper.ftype_form_column.check_box'), 'checkbox'],
       [t('extended_fields_helper.ftype_form_column.radio_button'), 'radio'],
@@ -93,7 +90,7 @@ module ExtendedFieldsHelper
     end
 
     if record.new_record?
-      select(:record, :ftype, options_for_select, {}, name: input_name )
+      select(:record, :ftype, options_for_select, {}, name: input_name)
     else
       "#{record.ftype} #{t('extended_fields_helper.ftype_form_column.cannot_be_changed')}"
     end
@@ -194,7 +191,6 @@ module ExtendedFieldsHelper
 
   # Build a generic editor for the extended field
   def extended_field_editor(extended_field, value = nil, options = HashWithIndifferentAccess.new)
-
     @field_multiple_id = options[:multiple] || 1
 
     # Compile options for text_field_tag
@@ -286,7 +282,6 @@ module ExtendedFieldsHelper
   end
 
   def extended_field_choice_select_editor(name, value, options, extended_field, choices, level = 1)
-
     # Build OPTION tags
     if choices.size > 0
       option_tags = options_for_select([["- choose #{"sub-" if level > 1}#{display_label_for(extended_field).singularize.downcase} -", '']] +
@@ -300,9 +295,9 @@ module ExtendedFieldsHelper
       class: "#{id_for_extended_field(extended_field)}_choice_dropdown extended_field_choice_dropdown",
       tabindex: 1,
       onchange: remote_function(url: { controller: 'extended_fields', action: 'fetch_subchoices', for_level: level },
-                                   with: "'value='+escape(Form.Element.getValue(this))+'&options[name]=#{name}&options[value]=#{value}&options[extended_field_id]=#{extended_field.id}&item_type_for_params=#{@item_type_for_params}&field_multiple_id=#{@field_multiple_id}&editor=select'",
-                                   before: "Element.show('#{id_for_extended_field(extended_field)}_level_#{level}_spinner')",
-                                   complete: "Element.hide('#{id_for_extended_field(extended_field)}_level_#{level}_spinner')")
+                                with: "'value='+escape(Form.Element.getValue(this))+'&options[name]=#{name}&options[value]=#{value}&options[extended_field_id]=#{extended_field.id}&item_type_for_params=#{@item_type_for_params}&field_multiple_id=#{@field_multiple_id}&editor=select'",
+                                before: "Element.show('#{id_for_extended_field(extended_field)}_level_#{level}_spinner')",
+                                complete: "Element.hide('#{id_for_extended_field(extended_field)}_level_#{level}_spinner')")
     }
 
     html = select_tag("#{name}[#{level}][preset]", option_tags, options.merge(default_options))
@@ -317,7 +312,6 @@ module ExtendedFieldsHelper
   end
 
   def extended_field_choice_autocomplete_editor(name, value, options, extended_field, choices, level = 1)
-
     # Build a list of available choices
     choices = choices.map { |c| c.label }
 
@@ -332,18 +326,17 @@ module ExtendedFieldsHelper
                                   complete: "Element.hide('#{id_for_extended_field(extended_field)}_#{level}_spinner')")
 
     text_field_tag("#{name}[#{level}]", value, options.merge(id: "#{id_for_extended_field(extended_field)}_#{level}", autocomplete: 'off', tabindex: 1)) +
-    "<img src='#{image_path('indicator.gif')}' width='16' height='16' alt='#{t('extended_fields_helper.extended_field_choice_autocomplete_editor.getting_choices')}' id='#{id_for_extended_field(extended_field)}_#{level}_spinner' style='display:none;' />" +
-    tag('br') +
-    content_tag('div', nil,
-                class: 'extended_field_autocomplete',
-                id: id_for_extended_field(extended_field) + "_autocomplete_#{level}",
-                style: 'display: none'
-    ) +
+      "<img src='#{image_path('indicator.gif')}' width='16' height='16' alt='#{t('extended_fields_helper.extended_field_choice_autocomplete_editor.getting_choices')}' id='#{id_for_extended_field(extended_field)}_#{level}_spinner' style='display:none;' />" +
+      tag('br') +
+      content_tag('div', nil,
+                  class: 'extended_field_autocomplete',
+                  id: id_for_extended_field(extended_field) + "_autocomplete_#{level}",
+                  style: 'display: none') +
 
-    # We need to let our controller know that we're using autocomplete for this field.
-    # We know the field we expect should be something like topic[extended_content][someonething]..
+      # We need to let our controller know that we're using autocomplete for this field.
+      # We know the field we expect should be something like topic[extended_content][someonething]..
 
-    hidden_field_tag("#{name.split(/\[/).first}[extended_content][#{name.scan(/\[([a-z_]*)\]/).flatten.at(1)}_from_autocomplete]", 'true', id: id_for_extended_field(extended_field) + '_from_autocomplete')
+      hidden_field_tag("#{name.split(/\[/).first}[extended_content][#{name.scan(/\[([a-z_]*)\]/).flatten.at(1)}_from_autocomplete]", 'true', id: id_for_extended_field(extended_field) + '_from_autocomplete')
   end
 
   def extended_field_topic_type_editor(name, value, tag_options, extended_field)
@@ -364,8 +357,7 @@ module ExtendedFieldsHelper
                                              extended_field_id: extended_field.id,
                                              extended_field_for: name.split(/\[/)[0],
                                              multiple_id: (extended_field.multiple? ? @field_multiple_id : nil)
-                                           }
-                                         })
+                                           } })
     html += "<img src='#{image_path('indicator.gif')}' width='16' height='16' alt='#{t('extended_fields_helper.extended_field_topic_type_editor.getting_topics')}' id='#{spinner_id}' style='display:none;' />"
 
     # Add some images and text to indicate whether the value entered is valid or invalid
@@ -388,10 +380,10 @@ module ExtendedFieldsHelper
   end
 
   def extended_field_year_editor(name, value, tag_options, extended_field)
-    html = text_field_tag(name+'[value]', (value['value'] if value), tag_options)
+    html = text_field_tag(name + '[value]', (value['value'] if value), tag_options)
     if extended_field.circa?
-      html += hidden_field_tag(name+'[circa]', '0')
-      html += (check_box_tag(name+'[circa]', '1', (value && value['circa'].to_s == '1')) + 'Circa?')
+      html += hidden_field_tag(name + '[circa]', '0')
+      html += (check_box_tag(name + '[circa]', '1', (value && value['circa'].to_s == '1')) + 'Circa?')
     end
     html
   end
@@ -410,14 +402,13 @@ module ExtendedFieldsHelper
 
   def additional_extended_field_control(extended_field, n)
     id = id_for_extended_field(extended_field) + '_additional'
-    text = t( 'extended_fields_helper.additional_extended_field_control.add_another', 
-              field_name: display_label_for(extended_field).singularize.downcase)
+    text = t('extended_fields_helper.additional_extended_field_control.add_another',
+             field_name: display_label_for(extended_field).singularize.downcase)
     url = { controller: 'extended_fields',
-             action: 'add_field_to_multiples',
-             extended_field_id: extended_field.id,
-             n: n, item_key: @item_type_for_params 
-    }
-    link_to(text, url, { id: id, remote: true } )
+            action: 'add_field_to_multiples',
+            extended_field_id: extended_field.id,
+            n: n, item_key: @item_type_for_params }
+    link_to(text, url, { id: id, remote: true })
   end
 
   def qualified_name_for_field(extended_field)
@@ -448,7 +439,6 @@ module ExtendedFieldsHelper
     else
       field_values
     end
-
   rescue
     ''
   end
@@ -471,15 +461,13 @@ module ExtendedFieldsHelper
 
                   top_level.inject('') { |memo, choice|
                     memo + list_item_for_choice(choice)
-                  }
-
-      )
+                  })
     else
       ''
     end
   end
 
-  def list_item_for_choice(choice, options={}, url_hash={})
+  def list_item_for_choice(choice, options = {}, url_hash = {})
     options = {
       include_children: true,
       current: false,
@@ -511,21 +499,20 @@ module ExtendedFieldsHelper
 
   private
 
-    def base_name_for_extended_field(extended_field)
-      "#{@item_type_for_params}[extended_content_values][#{qualified_name_for_field(extended_field)}]"
-    end
+  def base_name_for_extended_field(extended_field)
+    "#{@item_type_for_params}[extended_content_values][#{qualified_name_for_field(extended_field)}]"
+  end
 
-    def name_for_extended_field(extended_field)
-      base = base_name_for_extended_field(extended_field)
-      extended_field.multiple? ? "#{base}[#{@field_multiple_id}]" : base
-    end
+  def name_for_extended_field(extended_field)
+    base = base_name_for_extended_field(extended_field)
+    extended_field.multiple? ? "#{base}[#{@field_multiple_id}]" : base
+  end
 
-    def id_for_extended_field(extended_field)
-      create_safe_extended_field_string(name_for_extended_field(extended_field))
-    end
+  def id_for_extended_field(extended_field)
+    create_safe_extended_field_string(name_for_extended_field(extended_field))
+  end
 
-    def create_safe_extended_field_string(string)
-      string.gsub(/\]/, '').gsub(/\[/, '_')
-    end
-
+  def create_safe_extended_field_string(string)
+    string.gsub(/\]/, '').gsub(/\[/, '_')
+  end
 end

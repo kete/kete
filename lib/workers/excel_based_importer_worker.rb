@@ -92,7 +92,7 @@ class ExcelPreProcessor < Nokogiri::XML::SAX::Document
   private
 
   def process_value(value)
-  @logger.info "in process_value: #{value}"
+    @logger.info "in process_value: #{value}"
     return unless within_table && within_data
 
     if self.current_row == 1
@@ -109,7 +109,7 @@ class ExcelPreProcessor < Nokogiri::XML::SAX::Document
           # we use "path_to_file" internally, but "File" or "file" are likely the column name
           # change those to path_to_file element_name. Resolve the absolute path of file too
           element_name = 'path_to_file'
-	  value = value[0] if value.is_a?(Array)
+          value = value[0] if value.is_a?(Array)
           value = @import_dir_path + '/files/' + value
           has_path_to_file = true
         when 'folder'
@@ -199,5 +199,4 @@ class ExcelBasedImporterWorker < BackgrounDRb::MetaWorker
 
     File.open(path_to_records_file_output, 'w') { |f| f.write(builder.to_xml) }
   end
-
 end

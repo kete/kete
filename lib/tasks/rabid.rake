@@ -1,12 +1,10 @@
 namespace :rabid do
-
   desc 'Merges users who have multiple accounts on same email address.'
   task fixup_duplicate_users: :environment do
-
     all_emails = User.select(:email).all.map(&:email)
     log("There are #{all_emails.count} accounts in the system")
 
-    duplicate_emails = all_emails.select {|email| all_emails.count(email) > 1 }.uniq
+    duplicate_emails = all_emails.select { |email| all_emails.count(email) > 1 }.uniq
     log("There are #{duplicate_emails.count} duplicate accounts in the system")
 
     duplicate_emails.each do |email|
@@ -17,13 +15,12 @@ namespace :rabid do
       log ("Users #{alias_accs.map(&:id)} are alias accounts")
 
       alias_accs.each do |alias_acc|
-
         log('Contribution')
-        change_has_one(Contribution.where(user_id: alias_acc.id),         alias_acc, primary_acc)
+        change_has_one(Contribution.where(user_id: alias_acc.id), alias_acc, primary_acc)
         log('Import')
-        change_has_one(Import.where(user_id: alias_acc.id),               alias_acc, primary_acc)
+        change_has_one(Import.where(user_id: alias_acc.id), alias_acc, primary_acc)
         log('Search')
-        change_has_one(Search.where(user_id: alias_acc.id),               alias_acc, primary_acc)
+        change_has_one(Search.where(user_id: alias_acc.id), alias_acc, primary_acc)
         log('UserPortraitRelation')
         change_has_one(UserPortraitRelation.where(user_id: alias_acc.id), alias_acc, primary_acc)
 
@@ -48,7 +45,6 @@ namespace :rabid do
   end
 
   def change_has_many(instances, from_user, to_user)
-
     log("User #{from_user.id} is referenced from the following model ids: #{instances.map(&:id)}")
 
     instances.each do |instance|

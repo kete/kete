@@ -8,7 +8,7 @@ module KeteTestUnitHelper
     else
       # If @base_class has validation, then use the following:
       assert !model.valid?, "#{@base_class} should not be valid without initialisation parameters"
-      @req_attr_names.each {|attr_name| assert model.errors.invalid?(attr_name.to_sym), "Should be an error message for :#{attr_name}"}
+      @req_attr_names.each { |attr_name| assert model.errors.invalid?(attr_name.to_sym), "Should be an error message for :#{attr_name}" }
     end
   end
 
@@ -56,6 +56,7 @@ module KeteTestUnitHelper
     assert_not_nil RedirectRegistration.find(:first,
                                              conditions: {
                                                source_url_pattern: old_url,
-                                               target_url_pattern: new_url })
+                                               target_url_pattern: new_url
+                                             })
   end
 end

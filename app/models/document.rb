@@ -1,5 +1,4 @@
 class Document < ActiveRecord::Base
-
   include PgSearch
   include PgSearchCustomisations
   multisearchable against: [
@@ -43,22 +42,22 @@ class Document < ActiveRecord::Base
     content_item_relations =          ContentItemRelation.arel_table
     deleted_content_item_relations =  Arel::Table.new(:deleted_content_item_relations)
 
-    join_table = ::Document.outer_joins(:taggings).
-                            outer_joins(:contributions).
-                            outer_joins(:content_item_relations).
-                            joins('LEFT OUTER JOIN  deleted_content_item_relations ' +
+    join_table = ::Document.outer_joins(:taggings)
+                           .outer_joins(:contributions)
+                           .outer_joins(:content_item_relations)
+                           .joins('LEFT OUTER JOIN  deleted_content_item_relations ' +
                                   'ON deleted_content_item_relations.related_item_id = documents.id ' +
                                   "AND deleted_content_item_relations.related_item_type = 'Document'")
 
     result = join_table.where(
-      documents[:updated_at].gt(date).
-      or( taggings[:created_at].gt(date) ). # Tagging doesn't have a updated_at column.
-      or( contributions[:updated_at].gt(date) ).
-      or( content_item_relations[:updated_at].gt(date) ).
-      or( deleted_content_item_relations[:updated_at].gt(date) )
+      documents[:updated_at].gt(date)
+      .or(taggings[:created_at].gt(date)) # Tagging doesn't have a updated_at column.
+      .or(contributions[:updated_at].gt(date))
+      .or(content_item_relations[:updated_at].gt(date))
+      .or(deleted_content_item_relations[:updated_at].gt(date))
     )
 
-    result.uniq   # Joins give us repeated results
+    result.uniq # Joins give us repeated results
   end
 
   after_save :store_correct_versions_after_save

@@ -13,7 +13,7 @@ BDRB_HOME = ::BackgrounDRb::BACKGROUNDRB_ROOT
 WORKER_ROOT = File.join(RAILS_HOME, 'lib', 'workers')
 WORKER_LOAD_ENV = File.join(RAILS_HOME, 'script', 'load_worker_env')
 
-['server', 'server/lib', 'lib', 'lib/backgroundrb'].each { |x| $LOAD_PATH.unshift(BDRB_HOME + "/#{x}")}
+['server', 'server/lib', 'lib', 'lib/backgroundrb'].each { |x| $LOAD_PATH.unshift(BDRB_HOME + "/#{x}") }
 $LOAD_PATH.unshift(WORKER_ROOT)
 
 require 'bdrb_config'
@@ -28,7 +28,7 @@ daemon = BackgrounDRb::StartStop.new
 case ARGV[0]
 when 'start'; daemon.start
 when 'stop'; daemon.stop
-when 'restart'; daemon.stop;daemon.start
+when 'restart'; daemon.stop; daemon.start
 when 'status'
   if daemon.running?
     puts 'BackgrounDRb Running'
@@ -49,4 +49,3 @@ else
   require 'backgroundrb_server'
   BackgrounDRb::MasterProxy.new()
 end
-

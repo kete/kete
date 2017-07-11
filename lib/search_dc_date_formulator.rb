@@ -47,7 +47,7 @@ module SearchDcDateFormulator
         # date in the middle. Including the year itself, from the first date, there is 10 years in total
         # So if the next dc:date is 10 years away, and the one after that 5 years, we are dealing with a circa
         # Rescue false incase any of the three dates doesn't respond to #year (like a string)
-        if ((dc_dates.size >= 2 && (date+10.years).year == dc_dates[0].year && (date+5.years).year == dc_dates[1].year) rescue false)
+        if ((dc_dates.size >= 2 && (date + 10.years).year == dc_dates[0].year && (date + 5.years).year == dc_dates[1].year) rescue false)
           dates << "c.#{format_date_from(dc_dates[1])}" # the last one is the circa date
           2.times { dc_dates.shift } # remove the dates 10 & 5 years ahead (convered in circa)
         else

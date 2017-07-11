@@ -38,9 +38,7 @@ class BasketSettings
       #     'all users'
       memberlist_policy: 'at least member',
 
-      show_action_menu: 'all users'  # ROB: all users can see "Item Details"/"Edit"/... menu for items in a basket.
+      show_action_menu: 'all users' # ROB: all users can see "Item Details"/"Edit"/... menu for items in a basket.
     }
   end
 end
-
-

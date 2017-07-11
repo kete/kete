@@ -10,7 +10,6 @@ class CreateTagsAndTaggings < ActiveRecord::Migration
       t.column :taggable_type, :string, null: false
       t.column :created_at, :datetime
     end
-
   end
 
   def self.down

@@ -81,24 +81,26 @@ class BaseLoginProxy
   end
 
   private
-    def authenticated
-      raise NotImplementedError
-    end
 
-    def check
-      raise NotImplementedError
-    end
+  def authenticated
+    raise NotImplementedError
+  end
 
-    def method_missing(method, *args)
-      @controller.reset!
-      authenticate
-      @controller.send(method, *args)
-      check
-    end
+  def check
+    raise NotImplementedError
+  end
+
+  def method_missing(method, *args)
+    @controller.reset!
+    authenticate
+    @controller.send(method, *args)
+    check
+  end
 end
 
 class HttpLoginProxy < BaseLoginProxy
   protected
+
     def authenticate
       @controller.login_as @login if @login
     end
@@ -110,6 +112,7 @@ end
 
 class XmlLoginProxy < BaseLoginProxy
   protected
+
     def authenticate
       @controller.accept 'application/xml'
       @controller.authorize_as @login if @login

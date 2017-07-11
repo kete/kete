@@ -1,5 +1,4 @@
 module SslHelpers
-
   def self.included(klass)
     if defined?(SystemSetting.force_https_on_restricted_pages) && SystemSetting.force_https_on_restricted_pages
       # ActionView::Base.send(:include, SslHelpers::FormTagHelper)
@@ -10,7 +9,6 @@ module SslHelpers
 
       # Ensure SSL is allowed on all controllers
       klass.class_eval do
-
         # We need to ensure certain actions are run with SSL requirement if applicable
         include SslRequirement
         include SslHelpers::Base
@@ -48,7 +46,6 @@ module SslHelpers
 
   # Overload for ActionView::Helpers::PrototypeHelper
   module PrototypeHelper
-
     # Uses form_remote_tag for the nuts and bolts work
     # ActionView::Helpers::PrototypeHelper#remote_form_for
 
@@ -58,7 +55,6 @@ module SslHelpers
 
       super(options, &block)
     end
-
   end
 
   # When it matters, requests are passed to ActionController::Base
@@ -69,7 +65,6 @@ module SslHelpers
 
   # Overload for ActionController::Base
   module Base
-
     def url_for(options = nil)
       if options.kind_of?(Hash)
         options.merge!(protocol: 'https://') if options[:private] == 'true'
@@ -92,12 +87,10 @@ module SslHelpers
       options.merge!(protocol: 'https://') if options.kind_of?(Hash)
       super(record_or_hash_or_array, options)
     end
-
   end
 
   # Overload for ActionController::UrlWriter
   module UrlWriter
-
     # Used in contexts other than ActionController and ActionView
     def url_for(options)
       if options.kind_of?(Hash) && options[:private] == 'true'
@@ -106,7 +99,6 @@ module SslHelpers
 
       super(options)
     end
-
   end
 
   private
@@ -119,15 +111,14 @@ module SslHelpers
       redirect_to params.merge(protocol: 'https')
       return false
     elsif request.port == 443 && !ssl_required? &&
-        ( (params[:privacy_type].blank? && params[:private].blank?) ||
-          ( (params[:privacy_type].present? || params[:private].present?) &&
-            (params[:privacy_type].blank? || params[:privacy_type] != 'private') &&
-            (params[:private].blank? || params[:private] != 'true') ) )
+          ((params[:privacy_type].blank? && params[:private].blank?) ||
+            ((params[:privacy_type].present? || params[:private].present?) &&
+              (params[:privacy_type].blank? || params[:privacy_type] != 'private') &&
+              (params[:private].blank? || params[:private] != 'true')))
 
       redirect_to params.merge(protocol: 'http')
       return false
     end
     true
   end
-
 end

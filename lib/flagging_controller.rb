@@ -9,12 +9,12 @@ module FlaggingController
     def flag_form
       @flag = params[:flag]
       @form_target = case @flag
-      when SystemSetting.rejected_flag
-        'reject'
-      when SystemSetting.reviewed_flag
-        'review'
-      else
-        'flag_version'
+                     when SystemSetting.rejected_flag
+                       'reject'
+                     when SystemSetting.reviewed_flag
+                       'review'
+                     else
+                       'flag_version'
       end
 
       # use one form template for all controllers
@@ -275,7 +275,7 @@ module FlaggingController
       @version = !params[:version].blank? ? params[:version] : @item.version
       @version_after_update = @item.max_version + 1
       if !params[:message].blank? and !params[:message][0].blank?
-        @message =  params[:message][0]
+        @message = params[:message][0]
       else
         @message = String.new
       end

@@ -8,7 +8,7 @@ class CreateRoles < ActiveRecord::Migration
       t.column :updated_at,         :datetime
     end
 
-    create_table :roles_users, id: false, force: true  do |t|
+    create_table :roles_users, id: false, force: true do |t|
       t.column :user_id,          :integer
       t.column :role_id,          :integer
       t.column :created_at,       :datetime

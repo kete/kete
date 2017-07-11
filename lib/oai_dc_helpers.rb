@@ -59,7 +59,7 @@ module OaiDcHelpers
           end
         end
       elsif !is_a?(Comment) && content_item_relations.count > 0 &&
-          content_item_relations.last.updated_at > most_recent_updated_at
+            content_item_relations.last.updated_at > most_recent_updated_at
         most_recent_updated_at = content_item_relations.last.updated_at
       end
 

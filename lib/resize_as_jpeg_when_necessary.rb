@@ -15,7 +15,6 @@ module ResizeAsJpegWhenNecessary
     end
 
     module ClassMethods
-
       # https://github.com/kete/attachment_fu/blob/master/lib/technoweenie/attachment_fu.rb#L190
       #   * attachment_fu limits image content types to too narrow a view - we
       #     make it match what the user has set as configuration.
@@ -35,7 +34,7 @@ module ResizeAsJpegWhenNecessary
       def should_be_converted?(name)
         ext = File.extname(name).gsub('.', '')
         # we leave along formats that make thumbnails fine themselves
-        !%w( gif jpg jpeg png ).include?(ext.downcase) && rmagick_can_read_extension?(ext)
+        !%w(gif jpg jpeg png).include?(ext.downcase) && rmagick_can_read_extension?(ext)
       end
 
       # Not in attachment_fu

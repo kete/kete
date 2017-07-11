@@ -1,5 +1,4 @@
 class Choice < ActiveRecord::Base
-
   ROOT = Choice.find(1) rescue nil
 
   # find a choice based on params[:limit_to_choice]
@@ -27,7 +26,7 @@ class Choice < ActiveRecord::Base
   has_many :choice_mappings
 
   has_many :extended_fields, through: :choice_mappings,
-    source: :field, source_type: 'ExtendedField'
+                             source: :field, source_type: 'ExtendedField'
 
   # Use better nested set for STI
   acts_as_nested_set
@@ -80,7 +79,6 @@ class Choice < ActiveRecord::Base
   alias :choices :children
 
   def children=(array_of_choice_ids)
-
     # Remove existing children
     children.each do |choice|
       choice.move_to_child_of(ROOT)
@@ -141,5 +139,4 @@ class Choice < ActiveRecord::Base
   # turn pretty urls on or off here
   include FriendlyUrls
   alias :to_param :format_for_friendly_unicode_urls
-
 end

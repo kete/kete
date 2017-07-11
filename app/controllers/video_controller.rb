@@ -9,7 +9,7 @@ class VideoController < ApplicationController
   def list
     respond_to do |format|
       format.html { redirect_to basket_video_index_path }
-      format.rss do 
+      format.rss do
         date = DateTime.parse(params[:updated_since]) if params[:updated_since]
         date = DateTime.now.beginning_of_month        if date.nil?
 
@@ -27,7 +27,7 @@ class VideoController < ApplicationController
     @creator = @video.creator
     @last_contributor = @video.contributors.last || @creator
 
-    @related_item_topics = @video.related_items.select {|ri| ri.is_a? Topic}
+    @related_item_topics = @video.related_items.select { |ri| ri.is_a? Topic }
 
     respond_to do |format|
       format.html
@@ -81,5 +81,4 @@ class VideoController < ApplicationController
   def destroy
     zoom_destroy_and_redirect('Video')
   end
-
 end

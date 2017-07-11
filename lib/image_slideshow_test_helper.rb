@@ -2,10 +2,8 @@ module ImageSlideshowTestHelper
   unless included_modules.include? ImageSlideshowTestHelper
     def self.included(base)
       base.class_eval do
-
         if base.name == 'IndexPageControllerTest'
           context 'The index page' do
-
             setup do
               3.times { |i| create_new_still_image_with(title: "site basket image #{i + 1}") }
 
@@ -19,22 +17,22 @@ module ImageSlideshowTestHelper
 
             should 'have slideshow be populated in the session on selected image visit when it is for the site basket with all images in both site and other basket' do
               run_through_selected_images(selected_image_params: {
-                                            urlified_name: Basket.first.urlified_name },
+                                            urlified_name: Basket.first.urlified_name
+                                          },
                                           total: 6)
             end
 
             should 'have slideshow be populated in the session on selected image visit when it is not for the site basket, but another basket limited to just the basket images' do
               run_through_selected_images(selected_image_params: {
                                             urlified_name: @different_basket.urlified_name,
-                                            controller: 'index_page' })
+                                            controller: 'index_page'
+                                          })
             end
           end
         else
 
           context 'The topic related image slideshow' do
-
             context 'when several images are related to a topic' do
-
               setup do
                 @non_site_basket_1 = create_new_basket({ name: 'basket 1' })
 
@@ -54,9 +52,11 @@ module ImageSlideshowTestHelper
 
               context 'and the images are in a different basket from topic' do
                 setup do
-                  3.times { |i| create_new_image_relation_to(@topic,
-                                                             basket_id: create_new_basket({ name: "basket #{i + 1}" }).id,
-                                                             title: "Child Image in Another Basket #{i + 1}" )}
+                  3.times { |i|
+                    create_new_image_relation_to(@topic,
+                                                 basket_id: create_new_basket({ name: "basket #{i + 1}" }).id,
+                                                 title: "Child Image in Another Basket #{i + 1}")
+                  }
                 end
 
                 should 'have slideshow be populated in the session on selected image visit' do
@@ -75,7 +75,7 @@ module ImageSlideshowTestHelper
           if @topic
             options[:topic_id] = @topic.id
             selected_image_params = { urlified_name: @topic.basket.urlified_name,
-              topic_id: @topic.id }
+                                      topic_id: @topic.id }
           end
 
           # initial population and correct values (clicking play button)
@@ -112,7 +112,7 @@ module ImageSlideshowTestHelper
 
           new_still_image = StillImage.create({ title: 'Child Image', basket_id: Basket.first }.merge(options))
           new_still_image.creator = User.first
-          new_image_file  = ImageFile.create(uploaded_data: @@documentdata, still_image_id: new_still_image.id)
+          new_image_file = ImageFile.create(uploaded_data: @@documentdata, still_image_id: new_still_image.id)
           new_still_image
         end
 

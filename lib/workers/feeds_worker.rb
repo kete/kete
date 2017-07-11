@@ -23,5 +23,4 @@ class FeedsWorker < BackgrounDRb::MetaWorker
       logger.info("issue with updating feed #{feed_id}: #{$!}")
     end
   end
-
 end

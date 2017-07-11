@@ -1,5 +1,4 @@
 class AccountController < ApplicationController
-
   #####################################################################
   #####################################################################
   ### CONFIGURATION
@@ -65,7 +64,7 @@ class AccountController < ApplicationController
         # anonymous users can't use remember me, check for login password
         if @anonymous_user.blank? && params[:remember_me] == '1'
           current_user.remember_me
-          cookies[:auth_token] = { value: current_user.remember_token , expires: current_user.remember_token_expires_at }
+          cookies[:auth_token] = { value: current_user.remember_token, expires: current_user.remember_token_expires_at }
         end
         unless @anonymous_user
           move_session_searches_to_current_user

@@ -4,8 +4,8 @@ ExternalSearchSources[:default_url_options] = { urlified_name: SystemSetting.def
 ExternalSearchSources[:default_link_classes] = 'generic-result-wrapper skip_div_click'
 ExternalSearchSources[:image_link_classes] = 'image-result-wrapper skip_div_click'
 ExternalSearchSources[:cache_results] = true
-ExternalSearchSources[:source_targets] = %w{ all search items }
- ExternalSearchSources[:timeout] = 10  # (default is 2, but this may not be long enough)
+ExternalSearchSources[:source_targets] = %w{all search items}
+ExternalSearchSources[:timeout] = 10 # (default is 2, but this may not be long enough)
 
 module SearchSourcesHelper
   def cache_key_for(source)

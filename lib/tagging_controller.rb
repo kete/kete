@@ -25,7 +25,7 @@ module TaggingController
         # klass.send :auto_complete_for, item_key, :tag_list, {}, { :through => { :object => 'tag', :method => 'name' } }
         auto_complete_methods << "auto_complete_for_#{item_key}_tag_list".to_sym
       end
-      auto_complete_methods = ([ :add_tags ] + auto_complete_methods).flatten.compact
+      auto_complete_methods = ([:add_tags] + auto_complete_methods).flatten.compact
       klass.send :permit, 'site_admin or moderator of :current_basket or member of :current_basket or admin of :current_basket', only: auto_complete_methods
     end
 

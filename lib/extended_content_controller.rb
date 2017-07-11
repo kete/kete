@@ -13,14 +13,14 @@ module ExtendedContentController
       klass.send :include, AnonymousFinishedAfterFilter
 
       if klass.name == 'CommentsController'
-        klass.send :before_filter, :is_authorized?, only: [ :new, :create, :edit, :update ]
+        klass.send :before_filter, :is_authorized?, only: [:new, :create, :edit, :update]
       else
         klass.send :permit, 'site_admin or moderator of :current_basket or member of :current_basket or admin of :current_basket',
-                   only: [ :new, :create, :edit, :update, :convert ]
+                   only: [:new, :create, :edit, :update, :convert]
       end
 
       klass.send :permit, 'site_admin or moderator of :current_basket or admin of :current_basket',
-                 only: [ :destroy, :restore, :reject, :make_theme ]
+                 only: [:destroy, :restore, :reject, :make_theme]
 
       # GETs should be safe (see http://www.w3.org/2001/tag/doc/whenToUseGet.html)
       # klass.send :verify, :method => :post,
@@ -41,7 +41,7 @@ module ExtendedContentController
 
       private
 
-      def build_relations_from_topic_type_extended_field_choices(extended_values=nil)
+      def build_relations_from_topic_type_extended_field_choices(extended_values = nil)
         params_key = zoom_class_params_key_from_controller(params[:controller])
         extended_values ||= params[params_key][:extended_content_values] if !params[params_key].blank? && !params[params_key][:extended_content_values].blank?
 
@@ -111,7 +111,6 @@ module ExtendedContentController
       def qualified_name_for_field(extended_field)
         extended_field.label.downcase.gsub(/\s/, '_')
       end
-
     end
   end
 end

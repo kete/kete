@@ -8,8 +8,8 @@ class DocumentsController < ApplicationController
 
   def list
     respond_to do |format|
-      format.html { redirect_to basket_documents_path } 
-      format.rss do 
+      format.html { redirect_to basket_documents_path }
+      format.rss do
         date = DateTime.parse(params[:updated_since]) if params[:updated_since]
         date = DateTime.now.beginning_of_month        if date.nil?
 
@@ -27,7 +27,7 @@ class DocumentsController < ApplicationController
     @creator = @document.creator
     @last_contributor = @document.contributors.last || @creator
 
-    @related_item_topics = @document.related_items.select {|ri| ri.is_a? Topic}
+    @related_item_topics = @document.related_items.select { |ri| ri.is_a? Topic }
 
     respond_to do |format|
       format.html
@@ -104,5 +104,4 @@ class DocumentsController < ApplicationController
   def destroy
     zoom_destroy_and_redirect('Document')
   end
-
 end

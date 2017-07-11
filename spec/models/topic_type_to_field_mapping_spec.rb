@@ -5,4 +5,3 @@ describe TopicTypeToFieldMapping do
     foo = TopicTypeToFieldMapping.new
   end
 end
-

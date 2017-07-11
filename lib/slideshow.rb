@@ -1,5 +1,4 @@
 class Slideshow
-
   def initialize(session_key)
     raise ArgumentError, "Passed in session key not valid. Must be an instance of HashWithIndifferentAccess, but was #{session_key.class.name}." \
       unless session_key.is_a?(HashWithIndifferentAccess)
@@ -12,16 +11,16 @@ class Slideshow
   end
 
   methods_to_set_up = [
-                       :key,
-                       :results,
-                       :last_requested,
-                       :search_params,
-                       :total,
-                       :total_pages,
-                       :current_page,
-                       :image_view_size,
-                       :number_per_page
-                      ]
+    :key,
+    :results,
+    :last_requested,
+    :search_params,
+    :total,
+    :total_pages,
+    :current_page,
+    :image_view_size,
+    :number_per_page
+  ]
 
   methods_to_set_up.each do |method_name|
     define_method(method_name) do
@@ -91,7 +90,7 @@ class Slideshow
     first?(url) && on_first_page?
   end
 
-  def next(url=nil)
+  def next(url = nil)
     if url
       in_set?(url) ? after(url) : nil
     else
@@ -99,7 +98,7 @@ class Slideshow
     end
   end
 
-  def previous(url=nil)
+  def previous(url = nil)
     if url
       in_set?(url) ? before(url) : nil
     else
@@ -109,13 +108,12 @@ class Slideshow
 
   private
 
-    def exists?(index)
-      results.at(index) != nil
-    end
+  def exists?(index)
+    results.at(index) != nil
+  end
 
-    # The Array index of the given item
-    def index_of(url)
-      results.index(url)
-    end
-
+  # The Array index of the given item
+  def index_of(url)
+    results.index(url)
+  end
 end

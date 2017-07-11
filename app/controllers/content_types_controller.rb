@@ -12,5 +12,4 @@ class ContentTypesController < ApplicationController
   def edit
     @content_type = ContentType.find(params[:id])
   end
-
 end

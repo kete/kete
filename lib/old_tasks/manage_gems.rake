@@ -139,5 +139,4 @@ namespace :manage_gems do
       Rake::Task['manage_gems:exec_action'].execute(ENV)
     end
   end
-
 end

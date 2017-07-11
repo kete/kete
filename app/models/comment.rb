@@ -1,5 +1,4 @@
 class Comment < ActiveRecord::Base
-
   include PgSearch
   include PgSearchCustomisations
   multisearchable against: [
@@ -113,5 +112,4 @@ class Comment < ActiveRecord::Base
       end
     end
   end
-
 end

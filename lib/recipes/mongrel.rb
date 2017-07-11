@@ -2,9 +2,7 @@
 # Adapted from Capistrano Bells plugin (http://github.com/nakajima/capistrano-bells)
 
 namespace :deploy do
-
   namespace :mongrel do
-
     desc 'Configure Mongrel processes'
     task :configure, roles: :app do
       set_mongrel_conf
@@ -48,7 +46,5 @@ namespace :deploy do
     def set_mongrel_conf
       begin; mongrel_conf; rescue; set(:mongrel_conf, "/etc/mongrel_cluster/#{application}.yml"); end
     end
-
   end
-
 end

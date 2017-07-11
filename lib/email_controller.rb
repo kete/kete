@@ -1,9 +1,9 @@
 module EmailController
   unless included_modules.include? EmailController
     # this module DOES NOT cover the following (they must be added per controller)
-      # permit declarations (add :contact and :send_email to the :only/:except params as needed)
-      # routes (will be accessible via basket/controller/contact by default,
-      #         but if you want basket/contact, you need to add that route manually)
+    # permit declarations (add :contact and :send_email to the :only/:except params as needed)
+    # routes (will be accessible via basket/controller/contact by default,
+    #         but if you want basket/contact, you need to add that route manually)
 
     def self.included(klass)
       if klass.name == 'BasketsController'

@@ -1,5 +1,4 @@
 class SearchResultPresenter
-
   include ActionView::Helpers::UrlHelper
 
   attr_reader :model
@@ -37,7 +36,7 @@ class SearchResultPresenter
     if model.respond_to? :description
       summary = model.description || ''
     elsif model.respond_to? :short_summary
-      summary =  model.short_summary || ''
+      summary = model.short_summary || ''
     end
 
     summary.sanitize.truncate(180, omission: '...')
@@ -84,7 +83,7 @@ class SearchResultPresenter
 
   def thumbnail_file
     (model.respond_to? :thumbnail_file) ? model.thumbnail_file : ''
-  end  
+  end
 
   private
 

@@ -55,16 +55,14 @@ class PqfQuery
 
   # TODO: my hash_fu is failing me, DRY this up
   DATETIME_SPECS = { 'oai_datestamp' => ATTRIBUTE_SPECS['last_modified'],
-    'last_modified' => ATTRIBUTE_SPECS['last_modified'],
-    'date' => ATTRIBUTE_SPECS['date']
-  } unless defined?(DATETIME_SPECS)
+                     'last_modified' => ATTRIBUTE_SPECS['last_modified'],
+                     'date' => ATTRIBUTE_SPECS['date'] } unless defined?(DATETIME_SPECS)
 
   DATETIME_COMPARISON_SPECS = { 'before' => QUALIFYING_ATTRIBUTE_SPECS['lt'],
-    'after' => QUALIFYING_ATTRIBUTE_SPECS['gt'],
-    'on' => QUALIFYING_ATTRIBUTE_SPECS['eq'],
-    'on_or_before' => QUALIFYING_ATTRIBUTE_SPECS['le'],
-    'on_or_after' => QUALIFYING_ATTRIBUTE_SPECS['ge']
-  } unless defined?(DATETIME_COMPARISON_SPECS)
+                                'after' => QUALIFYING_ATTRIBUTE_SPECS['gt'],
+                                'on' => QUALIFYING_ATTRIBUTE_SPECS['eq'],
+                                'on_or_before' => QUALIFYING_ATTRIBUTE_SPECS['le'],
+                                'on_or_after' => QUALIFYING_ATTRIBUTE_SPECS['ge'] } unless defined?(DATETIME_COMPARISON_SPECS)
 
   # all ATTRIBUTE_SPECS wll have ..._include method created for them
   # except what is specified here
@@ -122,7 +120,7 @@ class PqfQuery
       full_query_parts = full_query.split(prepend_at_pattern)
       no_relevance_query_string =
 
-      full_query = String.new
+        full_query = String.new
       full_query += full_query_parts[0] unless full_query_parts[0].nil?
       full_query += '@or ' + prepend_at_pattern
       full_query += full_query_parts[1] unless full_query_parts[1].nil?
@@ -138,7 +136,7 @@ class PqfQuery
       # have a slightly different format (specifies structure of date normalized as @attr 4=5)
       # grab the correct spec for sorting
       @sort_spec = @sort_spec +
-        '_sort' if Search.date_types.include?(@sort_spec) && !@sort_spec.include?('_sort')
+                   '_sort' if Search.date_types.include?(@sort_spec) && !@sort_spec.include?('_sort')
 
       full_query = '@or ' + full_query + QUALIFYING_ATTRIBUTE_SPECS['sort_stub'] + @direction_value.to_s + ' ' + ATTRIBUTE_SPECS[@sort_spec] + ' 0 '
     end
@@ -183,7 +181,7 @@ class PqfQuery
     options = options.first || Hash.new
 
     terms = terms_as_array(term_or_terms).collect { |term| ":#{term.to_s}:" }
-    
+
     # oai is a special case, can't have : precede it
     # replace it with proper version if found
     terms << 'oai:' if terms.delete(':oai:')
@@ -427,5 +425,4 @@ class PqfQuery
     push_to_appropriate_variables(options.merge(query_part: query_part))
     query_part
   end
-
 end

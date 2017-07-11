@@ -39,7 +39,7 @@ module ZoomControllerHelpers
 
         @successful = zoom_item_destroy(item)
       rescue
-        flash[:error], @successful  = $!.to_s, false
+        flash[:error], @successful = $!.to_s, false
       end
 
       if @successful

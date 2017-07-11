@@ -1,5 +1,5 @@
 class ExtendedFieldSettings
-  # ROB:  This class is here to remove settings stored in the acts_as_configurable 
+  # ROB:  This class is here to remove settings stored in the acts_as_configurable
   #       table.
   #       This would be per-object settings with targetable_type = "extended_field"
 
@@ -19,9 +19,8 @@ class ExtendedFieldSettings
     {
       base_url: '/',
       # ROB:  presumably it's possible for baskets to have different
-      #       base-URLs on the same server. Lets not use the system 
+      #       base-URLs on the same server. Lets not use the system
       #       one for the time being.
     }
   end
 end
-

@@ -10,7 +10,6 @@ namespace :db do
   desc "Load initial datamodel, then fixtures (in db/bootstrap/, but include default set here for ordering purposes) into the current environment's database.  Load specific fixtures using BOOTSTRAP_FIXTURES=x,y"
   task bootstrap: ['db:drop', 'db:create', 'db:bootstrap:load']
   namespace :bootstrap do
-
     desc 'Going back to VERSION 0 is currently broken for Kete, use db:drop the db:create instead.'
     task rewind: :environment do
       # migrate back to the stone age
@@ -64,50 +63,50 @@ namespace :db do
   # Walter McGinnis, 2007-08-13
   # poaching some tasks that are included in edge rails for creating and dropping dbs based on your enviroment
   # TODO: Pull this after we upgrade from 1.2.3 to a later version of Rails
-#   desc 'Creates the databases defined in your config/database.yml (unless they already exist)'
-#   task :create => :environment do
-#     ActiveRecord::Base.configurations.each_value do |config|
-#       begin
-#         ActiveRecord::Base.establish_connection(config)
-#         ActiveRecord::Base.connection
-#       rescue
-#         case config['adapter']
-#         when 'mysql'
-#           @charset   = ENV['CHARSET']   || 'utf8'
-#           @collation = ENV['COLLATION'] || 'utf8_general_ci'
+  #   desc 'Creates the databases defined in your config/database.yml (unless they already exist)'
+  #   task :create => :environment do
+  #     ActiveRecord::Base.configurations.each_value do |config|
+  #       begin
+  #         ActiveRecord::Base.establish_connection(config)
+  #         ActiveRecord::Base.connection
+  #       rescue
+  #         case config['adapter']
+  #         when 'mysql'
+  #           @charset   = ENV['CHARSET']   || 'utf8'
+  #           @collation = ENV['COLLATION'] || 'utf8_general_ci'
 
-#           ActiveRecord::Base.establish_connection(config.merge({'database' => nil}))
-#           ActiveRecord::Base.connection.create_database(config['database'], {:charset => @charset, :collation => @collation})
-#           ActiveRecord::Base.establish_connection(config)
-#         when 'postgresql'
-#           # thanks to Sam Vilain at Catalyst
-#           # for the pg patch
-#           ENV['PGHOST'] ||= config['host']
-#           ENV['PGUSER'] ||= config['user']
-#           ENV['PGPORT'] ||= config['port']
-#           `createdb "#{config['database']}" -E utf8`
-#         end
-#       end
-#     end
-#     ActiveRecord::Base.establish_connection(ActiveRecord::Base.configurations[RAILS_ENV || 'development'])
-#   end
+  #           ActiveRecord::Base.establish_connection(config.merge({'database' => nil}))
+  #           ActiveRecord::Base.connection.create_database(config['database'], {:charset => @charset, :collation => @collation})
+  #           ActiveRecord::Base.establish_connection(config)
+  #         when 'postgresql'
+  #           # thanks to Sam Vilain at Catalyst
+  #           # for the pg patch
+  #           ENV['PGHOST'] ||= config['host']
+  #           ENV['PGUSER'] ||= config['user']
+  #           ENV['PGPORT'] ||= config['port']
+  #           `createdb "#{config['database']}" -E utf8`
+  #         end
+  #       end
+  #     end
+  #     ActiveRecord::Base.establish_connection(ActiveRecord::Base.configurations[RAILS_ENV || 'development'])
+  #   end
 
   # desc 'Drops the database for your currenet RAILS_ENV as defined in config/database.yml'
-#   task :drop => :environment do
-#     config = ActiveRecord::Base.configurations[RAILS_ENV || 'development']
-#     case config['adapter']
-#     when 'mysql'
-#       ActiveRecord::Base.connection.drop_database config['database']
-#     when 'sqlite3'
-#       FileUtils.rm_f File.join(RAILS_ROOT, config['database'])
-#     when 'postgresql'
-#       # thanks to Sam Vilain at Catalyst
-#       # for the pg patch
-#       ActiveRecord::Base.disconnect!
-#       ENV['PGHOST'] ||= config['host']
-#       ENV['PGUSER'] ||= config['user']
-#       ENV['PGPORT'] ||= config['port']
-#       `dropdb "#{config['database']}"`
-#     end
-#   end
+  #   task :drop => :environment do
+  #     config = ActiveRecord::Base.configurations[RAILS_ENV || 'development']
+  #     case config['adapter']
+  #     when 'mysql'
+  #       ActiveRecord::Base.connection.drop_database config['database']
+  #     when 'sqlite3'
+  #       FileUtils.rm_f File.join(RAILS_ROOT, config['database'])
+  #     when 'postgresql'
+  #       # thanks to Sam Vilain at Catalyst
+  #       # for the pg patch
+  #       ActiveRecord::Base.disconnect!
+  #       ENV['PGHOST'] ||= config['host']
+  #       ENV['PGUSER'] ||= config['user']
+  #       ENV['PGPORT'] ||= config['port']
+  #       `dropdb "#{config['database']}"`
+  #     end
+  #   end
 end

@@ -1,5 +1,4 @@
 class IndexPageController < ApplicationController
-
   include ImageSlideshow
 
   def index
@@ -11,8 +10,8 @@ class IndexPageController < ApplicationController
 
       @topic = @current_basket.index_topic(true) # must load this each time or the topic gets cached a private permanently next
       if @topic && (params[:private] == 'true' || (params[:private].blank? && @current_basket.private_default_with_inheritance?)) &&
-          @topic.has_private_version? && permitted_to_view_private_items?
-          @topic.private_version!
+         @topic.has_private_version? && permitted_to_view_private_items?
+        @topic.private_version!
       end
 
       if !@topic.nil?
@@ -31,20 +30,20 @@ class IndexPageController < ApplicationController
         if !@topic.nil? # if @topic is not nil do ...
           case @current_basket.index_page_link_to_index_topic_as
           when 'full topic and comments'
-            @url_to_full_topic = url_for( urlified_name: @topic.basket.urlified_name,
-                                          action: :show,
-                                          controller: 'topics',
-                                          id: @topic )
+            @url_to_full_topic = url_for(urlified_name: @topic.basket.urlified_name,
+                                         action: :show,
+                                         controller: 'topics',
+                                         id: @topic)
             @url_to_comments = url_for(action: 'show',
                                        urlified_name: @topic.basket.urlified_name,
                                        controller: 'topics',
                                        id: @topic,
                                        anchor: 'comments')
           when 'full topic'
-            @url_to_full_topic = url_for( urlified_name: @topic.basket.urlified_name,
-                                          action: :show,
-                                          controller: 'topics',
-                                          id: @topic )
+            @url_to_full_topic = url_for(urlified_name: @topic.basket.urlified_name,
+                                         action: :show,
+                                         controller: 'topics',
+                                         id: @topic)
           when 'comments'
             @url_to_comments = url_for(action: 'show',
                                        urlified_name: @topic.basket.urlified_name,
@@ -65,7 +64,7 @@ class IndexPageController < ApplicationController
 
               # EOIN: not sure how to handle this yet ConfigurableSetting.where(:name => 'disable_site_recent_topics_display', :value => true.to_yaml).select(:configurable_id).where("configurable_id != ?", @site_basket)
               # disabled_recent_topics_baskets = ConfigurableSetting.where(:name => 'disable_site_recent_topics_display', :value => true.to_yaml).select(:configurable_id).where("configurable_id != ?", @site_basket)
-              disabled_recent_topics_baskets =  Basket.where('1 = 0') # EOIN: this is a terrible hack to get an empty instance of ActiveRecord::Relation
+              disabled_recent_topics_baskets = Basket.where('1 = 0') # EOIN: this is a terrible hack to get an empty instance of ActiveRecord::Relation
 
               disabled_recent_topics_baskets.collect! { |setting| setting.configurable_id }
             end
@@ -85,13 +84,13 @@ class IndexPageController < ApplicationController
             while @recent_topics_items.size < @recent_topics_limit && items_offset <= @total_items
               # Make the find query based on current basket and privacy level
               if @current_basket == @site_basket
-                recent_topics_items = Topic.recent.includes(:versions).
-                                      offset(items_offset).limit(@recent_topics_limit).
-                                      exclude_baskets_and_id(disabled_recent_topics_baskets, @topic)
+                recent_topics_items = Topic.recent.includes(:versions)
+                                           .offset(items_offset).limit(@recent_topics_limit)
+                                           .exclude_baskets_and_id(disabled_recent_topics_baskets, @topic)
               else
-                recent_topics_items = @current_basket.topics.recent.includes(:versions).
-                                      offset(items_offset).limit(@recent_topics_limit).
-                                      exclude_baskets_and_id(disabled_recent_topics_baskets, @topic)
+                recent_topics_items = @current_basket.topics.recent.includes(:versions)
+                                                     .offset(items_offset).limit(@recent_topics_limit)
+                                                     .exclude_baskets_and_id(disabled_recent_topics_baskets, @topic)
               end
 
               recent_topics_items = recent_topics_items.public unless @allow_private
@@ -130,7 +129,7 @@ class IndexPageController < ApplicationController
 
             # with the final topic, sort by the versions created_at,
             # rather than the public topics created_at
-            @recent_topics_items.sort! { |t1, t2| t2.created_at<=>t1.created_at }
+            @recent_topics_items.sort! { |t1, t2| t2.created_at <=> t1.created_at }
           end
         end
 
@@ -185,7 +184,7 @@ class IndexPageController < ApplicationController
   def zebra_uptime
     zoom_dbs = [ZoomDb.find_by_database_name('public')]
     # zoom_dbs <<  ZoomDb.find_by_database_name('private')
-    zoom_dbs.each { |db| Module.class_eval('Topic').process_query(zoom_db: db, query: "@attr 1=_ALLRECORDS @attr 2=103 ''")}
+    zoom_dbs.each { |db| Module.class_eval('Topic').process_query(zoom_db: db, query: "@attr 1=_ALLRECORDS @attr 2=103 ''") }
     render(text: 'success')
   end
 
@@ -214,5 +213,4 @@ class IndexPageController < ApplicationController
       format.xml { render layout: false }
     end
   end
-
 end

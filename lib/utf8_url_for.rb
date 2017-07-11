@@ -16,4 +16,3 @@ module Utf8UrlFor
     end
   end
 end
-

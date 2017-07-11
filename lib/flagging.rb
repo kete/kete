@@ -97,7 +97,6 @@ module Flagging
     end
 
     def flag_live_version_with(flag, message = nil)
-
       # Keep track if we're working with a public or private version
       show_serialized = respond_to?(:private) && private?
 
@@ -218,7 +217,7 @@ module Flagging
       last_version_tags_count = last_version.tags.size
 
       if last_version_number > 1
-        while last_version_tags_count > 0 || ( last_version.respond_to?(:private) && last_version.private? != private? )
+        while last_version_tags_count > 0 || (last_version.respond_to?(:private) && last_version.private? != private?)
           last_version_number = last_version_number - 1
           break if last_version_number == 0
 
@@ -236,7 +235,7 @@ module Flagging
       # if there isn't a unflagged version, we create a new blank one
       # that states that the item is pending
       # and return that version
-      if last_version_tags_count == 0 && ( !last_version.respond_to?(:private?) || last_version.private? == private? )
+      if last_version_tags_count == 0 && (!last_version.respond_to?(:private?) || last_version.private? == private?)
 
         if last_version.respond_to?(:private?) && last_version.private?
 
@@ -253,9 +252,9 @@ module Flagging
         # we leave required fields alone
         # and let the view handle whether they should be shown
         update_hash = { title: SystemSetting.blank_title,
-          description: nil,
-          extended_content: nil,
-          tag_list: nil }
+                        description: nil,
+                        extended_content: nil,
+                        tag_list: nil }
 
         update_hash[:private] = private? if respond_to?(:private)
         update_hash[:description] = SystemSetting.pending_flag if self.class.name == 'Comment'
@@ -327,12 +326,12 @@ module Flagging
       if SystemSetting.frequency_of_moderation_email.is_a?(String) and SystemSetting.frequency_of_moderation_email == 'instant'
         # if histor_url is blank it will be figured out in view
         history_url = if !options[:history_url].blank?
-          options[:history_url]
-        else
-          url_for(host: SystemSetting.site_name,
-                  urlified_name: basket.urlified_name,
-                  controller: zoom_class_controller(self.class.name),
-                  action: 'history', id: self, locale: false)
+                        options[:history_url]
+                      else
+                        url_for(host: SystemSetting.site_name,
+                                urlified_name: basket.urlified_name,
+                                controller: zoom_class_controller(self.class.name),
+                                action: 'history', id: self, locale: false)
         end
 
         message = !options[:message].blank? ? options[:message] : nil
@@ -371,34 +370,32 @@ module Flagging
     # EOIN: I do not know what the purpose of making these methods protected is.
     protected
 
-      def do_moderation
-        # if are we are using full moderation
-        # where everything has to approved by an admin
-        # before being seen in the basket
-        # flag the submitted revision
-        # which will have the side effect
-        # of either staying at the last unflagged version
-        # or
-        # adding a blank revision, if no unflagged version is available
+    def do_moderation
+      # if are we are using full moderation
+      # where everything has to approved by an admin
+      # before being seen in the basket
+      # flag the submitted revision
+      # which will have the side effect
+      # of either staying at the last unflagged version
+      # or
+      # adding a blank revision, if no unflagged version is available
 
-        reload # make sure we have the latest attribute values (specifically version)
-        if should_moderate?
-          flag_live_version_with(SystemSetting.pending_flag)
-        end
-
+      reload # make sure we have the latest attribute values (specifically version)
+      if should_moderate?
+        flag_live_version_with(SystemSetting.pending_flag)
       end
+    end
 
-      def should_moderate?
-        fully_moderated? and
-          !do_not_moderate? and
-          !already_at_blank_version? and
-          !at_placeholder_public_version?
-      end
+    def should_moderate?
+      fully_moderated? and
+        !do_not_moderate? and
+        !already_at_blank_version? and
+        !at_placeholder_public_version?
+    end
 
   end
 
   module ClassMethods
-
     def already_moderated_flags
       [SystemSetting.reviewed_flag, SystemSetting.rejected_flag, SystemSetting.restricted_flag, SystemSetting.blank_flag]
     end
@@ -422,7 +419,7 @@ module Flagging
         # otherwise all taggings that are flags are disputed
         if already_moderated_flag_ids.size > 0
           # have to do a more complex set of conditions to get "tag_id not in" into the where clause
-          conditions_sql_array = conditions.keys.collect { |k| "#{k.to_s} = :#{k.to_s}"}
+          conditions_sql_array = conditions.keys.collect { |k| "#{k.to_s} = :#{k.to_s}" }
           conditions_sql = conditions_sql_array.join(' AND ')
           conditions_sql += " AND tag_id not in (#{already_moderated_flag_ids.join(',')})"
           conditions = [conditions_sql, conditions]
@@ -446,7 +443,7 @@ module Flagging
     # find_disputed(basket_id)
     # find_reviewed(basket_id)
     # find_rejected(basket_id)
-    %w{ disputed reviewed rejected }.each do |type|
+    %w{disputed reviewed rejected}.each do |type|
       define_method("find_#{type}") do |basket_id|
         # the select with the predicate method covers versions
         # that have multiple flaggings on them
@@ -469,6 +466,5 @@ module Flagging
     def find_all_non_pending
       find_non_pending
     end
-
   end
 end

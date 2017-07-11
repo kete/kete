@@ -50,5 +50,4 @@ class SiteLinkingWorker < BackgrounDRb::MetaWorker
 
     cache[:results] = results
   end
-
 end

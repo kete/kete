@@ -5,9 +5,9 @@ require 'rake'
 class ConfigureController < ApplicationController
   # everything else is handled by application.rb
   before_filter :login_required, only: [:section, :finish,
-                                           :done_with_settings, :zoom_dbs_edit,
-                                           :zoom_dbs_update, :start_zebra,
-                                           :index]
+                                        :done_with_settings, :zoom_dbs_edit,
+                                        :zoom_dbs_update, :start_zebra,
+                                        :index]
 
   permit 'tech_admin of :site'
   permit 'site_admin of :site', only: [:add_link_to_kete_net, :send_information, :get_site_linking_progress]
@@ -48,7 +48,7 @@ class ConfigureController < ApplicationController
   def update
     @section = params[:section]
 
-    @settings = SystemSetting.where(section: @section).each {  |s| s.value = params[:setting][s.id.to_s][:value] }
+    @settings = SystemSetting.where(section: @section).each { |s| s.value = params[:setting][s.id.to_s][:value] }
 
     # run validations
     @settings.each(&:valid?)
@@ -214,8 +214,8 @@ class ConfigureController < ApplicationController
         delete_existing_workers_for(@worker_type)
 
         unless backgroundrb_is_running?(@worker_type)
-          MiddleMan.new_worker( worker: @worker_type, worker_key: @worker_key )
-          MiddleMan.worker(@worker_type, @worker_key).async_do_work( arg: { params: params } )
+          MiddleMan.new_worker(worker: @worker_type, worker_key: @worker_key)
+          MiddleMan.worker(@worker_type, @worker_key).async_do_work(arg: { params: params })
           render :update do |page|
             page.replace_html('updater', periodically_call_remote(url: { action: 'get_site_linking_progress' }, frequency: 10))
           end
@@ -288,7 +288,7 @@ class ConfigureController < ApplicationController
     @is_configured_setting.value = 'true'
     @success = @is_configured_setting.save
     if @success and !request.xhr?
-        redirect_to action: 'index', ready_to_restart: :true
+      redirect_to action: 'index', ready_to_restart: :true
     end
   end
 
@@ -321,5 +321,6 @@ class ConfigureController < ApplicationController
   end
 
   private
+
   include SslControllerHelpers
 end

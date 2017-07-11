@@ -6,7 +6,6 @@ module RelatedItemsTestUnitHelper
   def self.included(base)
     base.class_eval do
       context "A #{@base_class}" do
-
         setup do
           @related_item = Module.class_eval(@base_class).create! @new_model
           @topic_related_to = Basket.find(1).topics.create!({ title: 'The topic that the item is related to', topic_type_id: 1 })

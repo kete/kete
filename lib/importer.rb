@@ -32,8 +32,8 @@ module Importer
         FileUtils.copy_file file, tmp.path
         (class << tmp; self; end;).class_eval do
           alias local_path path
-          define_method(:original_filename) {  filename }
-          define_method(:content_type) {  content_type }
+          define_method(:original_filename) { filename }
+          define_method(:content_type) { content_type }
         end
       end
     end
@@ -69,8 +69,8 @@ module Importer
       @description_end_templates = Hash.new
       @collections_to_skip = Array.new
       @results = { do_work_time: Time.now.to_s,
-        done_with_do_work: false,
-        records_processed: 0 }
+                   done_with_do_work: false,
+                   records_processed: 0 }
 
       cache[:results] = @results
     end
@@ -252,7 +252,7 @@ module Importer
           params[zoom_class_for_params]['extended_content_values'] = Hash.new if \
             params[zoom_class_for_params]['extended_content_values'].nil?
 
-          if %w{ choice autocomplete }.include?(extended_field.ftype)
+          if %w{choice autocomplete}.include?(extended_field.ftype)
             params[zoom_class_for_params]['extended_content_values'][extended_field.label_for_params] ||= Hash.new
             if extended_field.multiple
               value.split(',').each_with_index do |multiple_choice, multiple_index|
@@ -279,12 +279,12 @@ module Importer
               logger.info 'finding topic in topic type: ' + topic_type.inspect
 
               topics = importer_fetch_related_topics(value, params, {
-                                                      item_type: 'topics',
-                                                      topic_type: topic_type,
-                                                      extended_field_data: {
-                                                        label: @extended_field_that_contains_related_topics_reference.label_for_params,
-                                                        value: value
-                                                      }
+                                                       item_type: 'topics',
+                                                       topic_type: topic_type,
+                                                       extended_field_data: {
+                                                         label: @extended_field_that_contains_related_topics_reference.label_for_params,
+                                                         value: value
+                                                       }
                                                      })
               logger.info 'what is found topics? ' + topics.inspect
               return params if topics.blank?
@@ -338,7 +338,6 @@ module Importer
 
       builder = Nokogiri::XML::Builder.new
       builder.root do |xml|
-
         @fields.each do |field_to_xml|
           field_name = field_to_xml.extended_field_label.downcase.gsub(/ /, '_')
           if field_to_xml.extended_field_multiple
@@ -369,7 +368,6 @@ module Importer
                                            extended_field: field_to_xml.extended_field)
           end
         end
-
       end
 
       params[item_key][:extended_content] = builder.to_stripped_xml
@@ -406,7 +404,7 @@ module Importer
     def importer_prepare_short_summary(source_string, length = 25, end_string = '')
       # length is how many words, rather than characters
       words = source_string.split()
-      words[0..(length-1)].join(' ') + (words.length > length ? end_string : '')
+      words[0..(length - 1)].join(' ') + (words.length > length ? end_string : '')
     end
 
     def importer_prepare_path_to_image_file(image_file)
@@ -428,8 +426,8 @@ module Importer
         # this may not work on all systems, so falling back to only checking extensions after
         case_insensitive_matches = Dir.glob(path_to_file_to_grab, File::FNM_CASEFOLD)
         if case_insensitive_matches.any?
-            path_to_file_to_grab = case_insensitive_matches.first
-            logger.debug('path_to_file_to_grab is different by case: ' + path_to_file_to_grab)
+          path_to_file_to_grab = case_insensitive_matches.first
+          logger.debug('path_to_file_to_grab is different by case: ' + path_to_file_to_grab)
         else
 
           file_name_array = the_file_name.scan(/(.+)(\.[^\d]+$)/)[0]
@@ -452,7 +450,7 @@ module Importer
       # make a copy of any files that have spaces in their name
       # a better formed name
       # to avoid problems later
-      if !the_file_name.scan(' ').blank? and  File.exists?(path_to_file_to_grab)
+      if !the_file_name.scan(' ').blank? and File.exists?(path_to_file_to_grab)
         the_new_file_name = the_file_name.gsub(' ', "\.")
         new_file_path = directories_up_to + the_new_file_name
 
@@ -495,7 +493,7 @@ module Importer
     end
 
     def importer_update_processing_vars_if_rescue
-      @results[:error], @successful  = $!.to_s, false
+      @results[:error], @successful = $!.to_s, false
       @results[:done_with_do_work] = true
       cache[:results] = @results
       @import.update_attributes(status: I18n.t('importer_lib.importer_update_processing_vars_if_rescue.failed_status'))
@@ -606,15 +604,15 @@ module Importer
 
       if record_hash[@record_identifier_xml_field].present? && @extended_field_that_contains_record_identifier.present?
         options.merge!(extended_field_data: {
-          label: @extended_field_that_contains_record_identifier.label_for_params,
-          value: record_hash[@record_identifier_xml_field]
-        })
+                         label: @extended_field_that_contains_record_identifier.label_for_params,
+                         value: record_hash[@record_identifier_xml_field]
+                       })
       end
 
       # attachable classes may have an upload file specified in file xml element
       # if file exists, we know we are uploading files for an attachable class
       if record_hash['path_to_file'].present? &&
-          File.exist?(record_hash['path_to_file'])
+         File.exist?(record_hash['path_to_file'])
         logger.info('setting filename check')
         options[:filename] = File.basename(record_hash['path_to_file'])
       end
@@ -728,12 +726,12 @@ module Importer
             # it tosses the original <Record> or <export> line, so that it can be replaced
             # putting in both styles of records
             if line.include?('<ACCESSNO') || line.include?('<accessno') ||
-                line.include?('<DESCRIP') || line.include?('<descrip') ||
-                line.include?("<\/DESCRIP") || line.include?("<\/descrip") ||
-                line.include?("<\/Record") || line.include?("<\/export") ||
-                line.include?('<Information') || line.include?("<\/Information") ||
-                line.include?('<Root') || line.include?('<VFPData') ||
-                line.include?("<\/Root") || line.include?("<\/VFPData")
+               line.include?('<DESCRIP') || line.include?('<descrip') ||
+               line.include?("<\/DESCRIP") || line.include?("<\/descrip") ||
+               line.include?("<\/Record") || line.include?("<\/export") ||
+               line.include?('<Information') || line.include?("<\/Information") ||
+               line.include?('<Root') || line.include?('<VFPData') ||
+               line.include?("<\/Root") || line.include?("<\/VFPData")
 
               # we expect accessno to be on one line, this will break if not
               if line.include?('<accessno') || line.include?('<ACCESSNO')
@@ -1089,13 +1087,13 @@ module Importer
 
             if @last_related_topic_identifier.blank? || @last_related_topic_identifier != related_topic_identifier
               related_topics = importer_fetch_related_topics(related_topic_identifier, params, {
-                item_type: 'topics',
-                topic_type: @related_topic_type,
-                extended_field_data: {
-                  label: @extended_field_that_contains_related_topics_reference.label_for_params,
-                  value: related_topic_identifier
-                }
-              }) if @extended_field_that_contains_related_topics_reference.present?
+                                                               item_type: 'topics',
+                                                               topic_type: @related_topic_type,
+                                                               extended_field_data: {
+                                                                 label: @extended_field_that_contains_related_topics_reference.label_for_params,
+                                                                 value: related_topic_identifier
+                                                               }
+                                                             }) if @extended_field_that_contains_related_topics_reference.present?
             else
               related_topics = @last_related_topics
             end
@@ -1166,10 +1164,9 @@ module Importer
                                     license_id: topic_params[:topic][:license_id],
                                     topic_type_id: topic_params[:topic][:topic_type_id],
                                     do_not_moderate: true,
-                                    related_items_position: (SystemSetting.related_items_position_default ? SystemSetting.related_items_position_default : 'inset')
-                                    )
+                                    related_items_position: (SystemSetting.related_items_position_default ? SystemSetting.related_items_position_default : 'inset'))
 
-      related_topic.creator =  @contributing_user
+      related_topic.creator = @contributing_user
       related_topic
     end
   end

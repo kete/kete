@@ -25,7 +25,7 @@ module ImageSlideshow
       update_id = (topic_slideshow? ? 'related_items_slideshow' : 'selected-image-display')
       @template.periodically_call_remote(update: update_id,
                                          url: { action: 'selected_image',
-                                                   topic_id: topic_slideshow? ? params[:id] : nil },
+                                                topic_id: topic_slideshow? ? params[:id] : nil },
                                          frequency: 15,
                                          method: 'get',
                                          before: "if (!$('selected-image-display') || $('selected-image-display-paused')) { return false; }")
@@ -165,18 +165,18 @@ module ImageSlideshow
     # controls are enabled and the current user is able to view them
     def display_private_items?
       @display_private_items ||= @current_basket.show_privacy_controls_with_inheritance? && \
-                                    permitted_to_view_private_items?
+                                 permitted_to_view_private_items?
     end
 
     # We have to make sure the images we get are either in baskets we have access to, or publicly viewable images
     def public_conditions
       prefix = topic_slideshow? ? 'still_images.' : ''
       { conditions: ["((#{prefix}basket_id IN (:basket_ids)) OR ((#{PUBLIC_CONDITIONS}) AND (#{prefix}file_private = :file_private OR #{prefix}file_private is null)))",
-                        { basket_ids: @basket_access_hash.collect { |b| b[1][:id] }, file_private: false }] }
+                     { basket_ids: @basket_access_hash.collect { |b| b[1][:id] }, file_private: false }] }
     end
 
     # Finds all basket images scoped to the correct still image collection
-    def find_basket_images(limit=20)
+    def find_basket_images(limit = 20)
       find_args_hash = { select: 'id, title, created_at, basket_id, file_private', limit: limit }
       find_args_hash.merge!(public_conditions) unless display_private_items?
       # Order results acording to the basket setting
@@ -186,7 +186,7 @@ module ImageSlideshow
     end
 
     # Finds all basket images scoped to the current topic
-    def find_related_images(limit=20)
+    def find_related_images(limit = 20)
       raise 'ERROR: Tried to populate topic slideshow without passing in params[:topic_id]' unless params[:topic_id]
       find_args_hash = { select: 'still_images.id, still_images.title, still_images.created_at, still_images.basket_id, still_images.file_private', limit: limit }
       find_args_hash.merge!(public_conditions) unless display_private_items?

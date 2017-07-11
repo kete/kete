@@ -13,19 +13,19 @@ module ExtendedContentHelpers
 
       fields_in_sorted_array = fields_with_position.keys.sort_by { |s| s.to_s }.map { |key| fields_with_position[key] }
       fields_in_sorted_array.each do |field_hash|
-          field_hash.each_pair do |field_key, field_data|
-          # If this is google map contents, and no_map is '1', then do not use this data
-          next if field_data.is_a?(Hash) && field_data['no_map'] && field_data['no_map'] == '1'
+        field_hash.each_pair do |field_key, field_data|
+        # If this is google map contents, and no_map is '1', then do not use this data
+        next if field_data.is_a?(Hash) && field_data['no_map'] && field_data['no_map'] == '1'
 
-          if field_key =~ /_multiple$/
-            # We are dealing with multiple instances of an attribute
-            field_data.each_pair do |index, data|
-              oai_dc_xml_for_field_dataset(field_key, data.values.first)
-            end
-          else
-            oai_dc_xml_for_field_dataset(field_key, field_data)
+        if field_key =~ /_multiple$/
+          # We are dealing with multiple instances of an attribute
+          field_data.each_pair do |index, data|
+            oai_dc_xml_for_field_dataset(field_key, data.values.first)
           end
+        else
+          oai_dc_xml_for_field_dataset(field_key, field_data)
         end
+      end
       end
 
       # Build the anonymous fields that have no dc:* attributes.
@@ -99,7 +99,6 @@ module ExtendedContentHelpers
           end
         end
       end
-
     end
 
     # extended_content_xml_helpers
@@ -107,7 +106,6 @@ module ExtendedContentHelpers
     # extended_field.method because it will fail (example, lib/importer.rb)
     # Pass any extended field values you need through options
     def extended_content_field_xml_tag(options = {})
-
       begin
         xml = options[:xml]
         field = options[:field]
@@ -190,7 +188,6 @@ module ExtendedContentHelpers
 
                   # for possible translation purposes, we always specify label now
                   tag.safe_send(k, choice.value, label: choice.label)
-
                 rescue
                   next
                 end
@@ -221,11 +218,11 @@ module ExtendedContentHelpers
             # in case we are given something like this [ { 'value' => 'this', :label => 'that' } ]
             # This happens in the case of using replace_value_for method (field=) on a different field
             parts = if value.is_a?(Array) && value_label_hash?(value.first)
-              [nil, value.first['label'], value.first['value']]
-            elsif value.is_a?(String)
-              value.match(/(.+)\(([^\(\)]+)\)\Z/).to_a
-            else
-              Array.new
+                      [nil, value.first['label'], value.first['value']]
+                    elsif value.is_a?(String)
+                      value.match(/(.+)\(([^\(\)]+)\)\Z/).to_a
+                    else
+                      Array.new
             end
 
             unless parts.blank?
@@ -236,7 +233,6 @@ module ExtendedContentHelpers
 
           xml.safe_send(field, value, options)
         end
-
       rescue
         logger.error("failed to format xml: #{$!.to_s}")
       end

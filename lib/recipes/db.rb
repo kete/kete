@@ -1,9 +1,7 @@
 # capistrano recipes specific to database server
 
 namespace :deploy do
-
   namespace :db do
-
     desc 'Bootstrap the Database'
     task :bootstrap, roles: :app do
       set_app_environment
@@ -13,7 +11,5 @@ namespace :deploy do
     def set_app_environment
       begin; app_environment; rescue; set(:app_environment, 'production'); end
     end
-
   end
-
 end

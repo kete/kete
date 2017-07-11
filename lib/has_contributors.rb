@@ -7,9 +7,9 @@ module HasContributors
       # :select => "distinct contributions.role, users.*",
       # creator is intended to be just one, but we need :through functionality
       klass.send :has_many, :creators, through: :contributions,
-      source: :user,
-      conditions: "contributions.contributor_role = 'creator'",
-      order: 'contributions.created_at' do
+                                       source: :user,
+                                       conditions: "contributions.contributor_role = 'creator'",
+                                       order: 'contributions.created_at' do
         def <<(user)
           begin
             user.version = 1
@@ -20,10 +20,10 @@ module HasContributors
         end
       end
       klass.send :has_many, :contributors, through: :contributions,
-      source: :user,
-      select: 'contributions.version, contributions.created_at as version_created_at, users.*',
-      conditions: "contributions.contributor_role = 'contributor'",
-      order: 'contributions.created_at' do
+                                           source: :user,
+                                           select: 'contributions.version, contributions.created_at as version_created_at, users.*',
+                                           conditions: "contributions.contributor_role = 'contributor'",
+                                           order: 'contributions.created_at' do
         def <<(user)
           # TODO: assumes user has a version method (virtual attribute on user set before this is called)
           begin

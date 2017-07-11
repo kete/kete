@@ -47,7 +47,6 @@ module MergeTestUnitHelper
           assert_equal @item.first, 'version 4'
           assert_equal @item.second, 'version 3'
         end
-
       end
       include ExtendedContentHelpersForTestSetUp
     end

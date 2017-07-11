@@ -1,12 +1,10 @@
 module PgSearchCustomisations
-
   def self.included(base)
     base.send :extend, ClassMethods
     base.send :include, InstanceMethods
   end
 
   module ClassMethods
-
     # * this is the method that PgSearch calls to rebuild the index for a model
     # * override it because PgSearch default does not work with dynamic
     #   attributes (which we use for extended content)
@@ -18,7 +16,6 @@ module PgSearchCustomisations
   end
 
   module InstanceMethods
-
     # * extract the values from the XML in the model's 'extended_content' attribute
     # * return them as a concatentated string suitable for adding to the search index
     def searchable_extended_content_values

@@ -1,6 +1,6 @@
 class AddActsAsDeletableToContentItemRelation < ActiveRecord::Migration
   def self.up
-    # Creating able manually as ::Deleted.create_table generates MySQL foreign keys for 
+    # Creating able manually as ::Deleted.create_table generates MySQL foreign keys for
     # all foreign key columns on the table due to foreign_key_migrations. This normally
     # causes a failure because related_items does not exist (see below).
     create_table 'deleted_content_item_relations' do |t|

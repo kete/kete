@@ -25,7 +25,6 @@ class DfcXmlImporterWorker < BackgrounDRb::MetaWorker
     path_to_dfc_convertor_log = @import_dir_path + '/convert.log'
 
     File.open(path_to_dfc_convertor_log, 'w') do |log|
-
       # we don't need a separate trimming of fat from the xml file
       # as Nokogiri does that for use in XML building process
       @skip_trimming = true
@@ -83,14 +82,11 @@ class DfcXmlImporterWorker < BackgrounDRb::MetaWorker
 
               xml.Record_Title(title_parts.join(' - '))
             end
-
           end
         end
       end
 
-      File.open(path_to_records_file_output, 'w') {|f| f.write(output.to_xml) }
-
+      File.open(path_to_records_file_output, 'w') { |f| f.write(output.to_xml) }
     end
   end
-
 end

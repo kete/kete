@@ -1,11 +1,10 @@
 class IncreaseSizeOfContentColumnsForMysql < ActiveRecord::Migration
   def self.up
-    
     # TODO. Add a warning here?
 
     # Check that the MySQL adaptor exists
     return unless defined?(ActiveRecord::ConnectionAdapters::MysqlAdapter)
-    
+
     # Only run this migration for MySQL backed Kete.
     if ActiveRecord::Base.connection.is_a?(ActiveRecord::ConnectionAdapters::MysqlAdapter)
 
@@ -28,13 +27,13 @@ class IncreaseSizeOfContentColumnsForMysql < ActiveRecord::Migration
         'web_links'                 => ['description', 'extended_content', 'private_version_serialized'],
         'web_link_versions'         => ['description', 'extended_content']
       }
-      
+
       tables_and_columns.each do |table, columns|
         columns.each do |column|
           execute "ALTER TABLE #{table} CHANGE COLUMN #{column} #{column} MEDIUMTEXT"
         end
       end
-      
+
     else
       print 'Skipping migration. MySQL specific.'
     end
@@ -42,10 +41,10 @@ class IncreaseSizeOfContentColumnsForMysql < ActiveRecord::Migration
 
   def self.down
     print "\n/!\\ Skipping down migration. MySQL MEDIUMTEXT -> TEXT migration could be dangerous. /!\\ \n\n"
-    
+
     # Only run this migration for MySQL backed Kete.
     # if ActiveRecord::Base.connection.is_a?(ActiveRecord::ConnectionAdapters::MysqlAdapter)
-    # 
+    #
     #   # List of tables and columns to be changed to MEDIUMTEXT
     #   tables_and_columns = {
     #     "audio_recordings"          => ["description", "extended_content", "private_version_serialized"],
@@ -65,13 +64,13 @@ class IncreaseSizeOfContentColumnsForMysql < ActiveRecord::Migration
     #     "web_links"                 => ["description", "extended_content", "private_version_serialized"],
     #     "web_link_versions"         => ["description", "extended_content"]
     #   }
-    #   
+    #
     #   tables_and_columns.each do |table, columns|
     #     columns.each do |column|
     #       execute "ALTER TABLE #{table} CHANGE COLUMN #{column} #{column} TEXT"
     #     end
     #   end
-    #   
+    #
     # end
   end
 end

@@ -13,7 +13,7 @@ task :prep_app do
 
   # can't do tasks that need rails environment, apparently
   # , 'db:bootstrap'
-  the_tasks = [ 'manage_gems:management:install', 'manage_gems:required:install']
+  the_tasks = ['manage_gems:management:install', 'manage_gems:required:install']
 
   the_tasks.each do |t|
     Rake::Task[t].invoke

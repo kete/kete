@@ -10,7 +10,7 @@ class Search < ActiveRecord::Base
     types
   end
 
-  def self.view_as_types_as_options(current, show_inherit=true)
+  def self.view_as_types_as_options(current, show_inherit = true)
     options = String.new
     options += "<option value='inherit'>#{I18n.t('search_model.view_as_types_as_options.inherit')}</option>" if show_inherit
     Search.view_as_types.each do |type|
@@ -110,5 +110,4 @@ class Search < ActiveRecord::Base
 
     @pqf_query.sort_spec = sort_type
   end
-
 end

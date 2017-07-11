@@ -5,4 +5,3 @@ describe ProfileMapping do
     foo = ProfileMapping.new
   end
 end
-

@@ -46,7 +46,6 @@ namespace :kete do
     end
 
     namespace :locales do
-
       desc 'Make a timestamped copy of specified locale if there are changes from last backup. THIS=[language_code] e.g. rake kete:tools:locales:backup_for THIS=zh'
       task :backup_for do
         locale = ENV['THIS']
@@ -59,7 +58,7 @@ namespace :kete do
           exit
         end
 
-        last_backup_filename = Dir.entries(path_stub).select { |entry| entry.include?(locale + '.yml.')}.last
+        last_backup_filename = Dir.entries(path_stub).select { |entry| entry.include?(locale + '.yml.') }.last
 
         do_backup = false
 
@@ -81,13 +80,11 @@ namespace :kete do
           puts "No backup needed. Last backup matches current #{locale}.yml."
         end
       end
-
     end
 
     desc 'Resets the database and zebra to their preconfigured state.'
     task reset: ['kete:tools:reset:zebra', 'db:bootstrap', 'kete:tools:restart']
     namespace :reset do
-
       desc 'Stops and clears zebra'
       task zebra: :environment do
         Rake::Task['zebra:stop'].invoke
@@ -121,7 +118,6 @@ namespace :kete do
 
       # loop over every parent image file
       ImageFile.all(conditions: ['parent_id IS NULL']).each do |parent_image_file|
-
         @logger.info "  Fetched parent image #{parent_image_file.id}"
 
         # start an array with all thumbnail keys and remove ones as we go through
@@ -129,7 +125,6 @@ namespace :kete do
 
         # loop over the parent images files children thumbnails
         ImageFile.all(conditions: ['parent_id = ?', parent_image_file]).each do |child_image_file|
-
           @logger.info "    Fetched child image #{child_image_file.id}"
 
           # remove this image files thumbnail key from the missing image size keys array
@@ -148,13 +143,11 @@ namespace :kete do
           # increase the amount of resized images
           @logger.info '      Incrementing resizes images count'
           resized_images_count += 1
-
         end
 
         # loop over and keys we still have remaining
         @logger.info "    Image sizes keys not yet used: #{missing_image_size_keys.collect { |s| s.to_s }.join(',')}"
         missing_image_size_keys.each do |size|
-
           @logger.info "    Creating image for thumbnail size #{size}"
 
           # get the parent filename and attach the size to it for the new filename
@@ -177,9 +170,7 @@ namespace :kete do
           # increase the amount of created images
           @logger.info '      Incrementing created images count'
           created_images_count += 1
-
         end
-
       end
 
       # Let the user know how many were resized and how many were created
@@ -191,7 +182,7 @@ namespace :kete do
       # ITEM_CLASSES is not available here
       %w(Topic StillImage AudioRecording Video WebLink Document).each do |item_class|
         namespace item_class.tableize.to_sym do
-          %w{ inset below sidebar }.each do |setting|
+          %w{inset below sidebar}.each do |setting|
             desc "Update all #{item_class.tableize} so that the related items section in each is positioned #{setting}."
             task "position_to_#{setting}" => :environment do
               set_related_items_inset_to(item_class, setting)
@@ -203,7 +194,7 @@ namespace :kete do
 
       # Provide an option to make everything a certain type at once
       namespace :all do
-        %w{ inset below sidebar }.each do |setting|
+        %w{inset below sidebar}.each do |setting|
           desc "Update all item types so that the related items section in each is positioned #{setting}."
           task "position_to_#{setting}" => :environment do
             %w(Topic StillImage AudioRecording Video WebLink Document).each do |item_class|
@@ -248,10 +239,9 @@ namespace :kete do
     end
 
     namespace :tiny_mce do
-
       desc 'Do everything that we need done, like adding data to the db, for an upgrade.'
       task configure_imageselector: ['kete:tools:tiny_mce:write_default_imageselector_providers_json',
-                          'kete:tools:tiny_mce:write_default_imageselector_sizes_json']
+                                     'kete:tools:tiny_mce:write_default_imageselector_sizes_json']
 
       desc 'Write javascripts/image_selector_config/providers.json file that reflects this site. Will replace file if it exists.'
       task write_default_imageselector_providers_json: :environment do
@@ -262,28 +252,26 @@ namespace :kete do
           domain: SystemSetting.site_name,
           oembed_endpoint: SystemSetting.site_url + 'oembed',
           upload_startpoint: { label: 'Upload New Image',
-            url: SystemSetting.site_url + 'site/images/new?as_service=true&append_show_url=true' },
+                               url: SystemSetting.site_url + 'site/images/new?as_service=true&append_show_url=true' },
           insertIntoEditor: { editor: 'TinyMCE' },
           sources: [
-                       { name: 'Latest',
-                         media_type: 'image',
-                         media_type_plural: 'images',
-                         url: SystemSetting.site_url + 'site/all/images/rss.xml',
-                         searchable_stub: false,
-                         limit_parameter: '?count=',
-                         display_limit: 4,
-                         page_parameter: '&page='
-                       },
-                       { name: 'Search',
-                         media_type: 'image',
-                         media_type_plural: 'images',
-                         url: SystemSetting.site_url + 'site/search/images/for/terms/rss.xml?search_terms=',
-                         searchable_stub: true,
-                         limit_parameter: '&count=',
-                         display_limit: 4,
-                         page_parameter: '&page='
-                       }
-                      ]
+            { name: 'Latest',
+              media_type: 'image',
+              media_type_plural: 'images',
+              url: SystemSetting.site_url + 'site/all/images/rss.xml',
+              searchable_stub: false,
+              limit_parameter: '?count=',
+              display_limit: 4,
+              page_parameter: '&page=' },
+            { name: 'Search',
+              media_type: 'image',
+              media_type_plural: 'images',
+              url: SystemSetting.site_url + 'site/search/images/for/terms/rss.xml?search_terms=',
+              searchable_stub: true,
+              limit_parameter: '&count=',
+              display_limit: 4,
+              page_parameter: '&page=' }
+          ]
         }
 
         # write out new file content

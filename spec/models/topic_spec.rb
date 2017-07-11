@@ -36,6 +36,5 @@ describe Topic do
       topic.creator = user
       expect(topic.creator).to eq(user)
     end
-
   end
 end

@@ -15,7 +15,7 @@ namespace :db do
 
   # modified to dump to either db/bootstrap or test/fixtures
   task extract_fixtures: :environment do
-    sql  = 'SELECT * FROM %s'
+    sql = 'SELECT * FROM %s'
     skip_tables = ['schema_info']
     ActiveRecord::Base.establish_connection
     (ActiveRecord::Base.connection.tables - skip_tables).each do |table_name|

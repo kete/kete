@@ -10,9 +10,7 @@
 # - it is not clean which of those methods shadow methods in the gems that provide versioning, tagging, attachments
 
 module ItemPrivacy
-
   module All
-
     def self.included(klass)
       klass.class_eval do
         include ActsAsVersionedOverload::InstanceMethods
@@ -22,11 +20,9 @@ module ItemPrivacy
         extend TaggingOverload::SingletonMethods
       end
     end
-
   end
 
   module ActsAsVersionedOverload
-
     def self.included(klass)
       klass.class_eval do
         include InstanceMethods
@@ -35,7 +31,6 @@ module ItemPrivacy
     end
 
     module InstanceMethods
-
       # TODO: Work out how to invoke an instance method from an included module..
       # Might need to overload self.non_versioned_columns the method
       # self.non_versioned_columns << "file_private"
@@ -118,148 +113,144 @@ module ItemPrivacy
       # EOIN: what does protected mean from an included module?
       protected
 
-        def latest_public_version
-          version = latest_unflagged_version_with_condition do |v|
-            !v.private?
-          end
+      def latest_public_version
+        version = latest_unflagged_version_with_condition do |v|
+          !v.private?
         end
+      end
 
-        # ROB:  From what I can see this function:
-        #       * if is private?:  stashes the model's values, loads the last public version,
-        #         then re-applies the old private-version's id (strangely).
-        #       * if is public but has private-version:  gets the private version and then
-        #         updates it's id to the public-version's id
-        # EOIN:
-        # * #save_without_saving_private! saves the model but skips this method
-        # * this is hooked up as an after_save callback directly in the model class file
-        #   which implies that not all models that include this module will want this method as a callback
-        def store_correct_versions_after_save
-          if private?
-            store_private!
+      # ROB:  From what I can see this function:
+      #       * if is private?:  stashes the model's values, loads the last public version,
+      #         then re-applies the old private-version's id (strangely).
+      #       * if is public but has private-version:  gets the private version and then
+      #         updates it's id to the public-version's id
+      # EOIN:
+      # * #save_without_saving_private! saves the model but skips this method
+      # * this is hooked up as an after_save callback directly in the model class file
+      #   which implies that not all models that include this module will want this method as a callback
+      def store_correct_versions_after_save
+        if private?
+          store_private!
 
-            # Store the basket id from the private version for future use..
-            private_basket_id = basket_id
+          # Store the basket id from the private version for future use..
+          private_basket_id = basket_id
 
-            load_public!
+          load_public!
 
-            # James - 2008-12-08
-            # Ensure we keep the public verion of the item in sync if the basket of the private
-            # version has changed.
-            update_attribute(:basket_id, private_basket_id) if basket_id != private_basket_id
+          # James - 2008-12-08
+          # Ensure we keep the public verion of the item in sync if the basket of the private
+          # version has changed.
+          update_attribute(:basket_id, private_basket_id) if basket_id != private_basket_id
 
-          elsif has_private_version?
+        elsif has_private_version?
 
-            # Ensure we keep the private version of the item in sync as well..
-            public_basket_id = basket_id
+          # Ensure we keep the private version of the item in sync as well..
+          public_basket_id = basket_id
 
-            private_version do
-              update_attribute(:basket_id, public_basket_id) if basket_id != public_basket_id
-            end
-
-          end
-
-          ## Always return true to avoid halting the filter chain
-          true
-        end
-
-        # Using Marshall as..
-        # YAML is 34.65 times slower in serialization and 5.66 times slower in unserialization.
-        # http://significantbits.wordpress.com/2008/01/29/yaml-vs-marshal-performance/
-        #
-        # ROB:  store_private! loops through the columns set to be versioned and creates a array
-        #       of name-value tuples. These are converted to YAML and stashed in the a variable
-        #       which is STORED ON THE IN-MEMORY MODEL (ie not in the database).
-        def store_private!(save_after_serialization = false)
-
-          prepared_array = self.class.versioned_columns.inject(Array.new) do |memo, k|
-            memo << [k.name, send(k.name.to_sym)]
-          end
-
-          # Also save the current version into the private version column
-          prepared_array << ['version', version]
-
-          # Save the prepared array into the attribute column..
-          without_revision do
-            without_saving_private do
-              self.private_version_serialized = YAML.dump(prepared_array)
-              save!
-            end
+          private_version do
+            update_attribute(:basket_id, public_basket_id) if basket_id != public_basket_id
           end
 
         end
 
-        # Load the saved private attributes into the current instance.
-        #
-        # ROB:  load_private: loads the information stashed on the IN-MEMORY MODEL by
-        #       store_private! and applies these to the model's active-record variables.
-        def load_private!
-          # EOIN:reload the current model from the DB, presumably this makes sure we have the most recent version of it
-          reload
+        ## Always return true to avoid halting the filter chain
+        true
+      end
 
-          # EOIN: => private_version_serialized contains YAML
-          private_attrs = YAML.load(private_version_serialized)
-
-          # EOIN: private_version_serialized contains an Array
-          raise 'No private attributes' if private_attrs.nil? || !private_attrs.kind_of?(Array)
-
-          # EOIN: private_version_serialized contains an Array of 2-tuples (Array with two values)
-          private_attrs.each do |key, value|
-            # EOIN: create a attribute writer for each element of the private_version_serialized array
-            send("#{key}=".to_sym, value)
-          end
-
-          self
+      # Using Marshall as..
+      # YAML is 34.65 times slower in serialization and 5.66 times slower in unserialization.
+      # http://significantbits.wordpress.com/2008/01/29/yaml-vs-marshal-performance/
+      #
+      # ROB:  store_private! loops through the columns set to be versioned and creates a array
+      #       of name-value tuples. These are converted to YAML and stashed in the a variable
+      #       which is STORED ON THE IN-MEMORY MODEL (ie not in the database).
+      def store_private!(save_after_serialization = false)
+        prepared_array = self.class.versioned_columns.inject(Array.new) do |memo, k|
+          memo << [k.name, send(k.name.to_sym)]
         end
 
-        # Revert to the most recent public version and save.
-        # We do this after_save via store_correct_versions_after_save in order to keep
-        # the latest public version in the 'master' model record.
-        def load_public!
-          if public_version = latest_public_version
-            without_saving_private do
-              revert_to!(public_version)
-            end
+        # Also save the current version into the private version column
+        prepared_array << ['version', version]
 
-            # At this point, I know from testing that the reverted version
-            # and current model are public and appropriate.
-          else
+        # Save the prepared array into the attribute column..
+        without_revision do
+          without_saving_private do
+            self.private_version_serialized = YAML.dump(prepared_array)
+            save!
+          end
+        end
+      end
 
-            # EOIN: it seems like update_hash is a default set of attributes tha
-            update_hash = {
-              title: SystemSetting.no_public_version_title,
-              description: SystemSetting.no_public_version_description,
-              extended_content: nil,
-              tag_list: nil,
-              private: false,
-              basket_id: basket_id
-            }
+      # Load the saved private attributes into the current instance.
+      #
+      # ROB:  load_private: loads the information stashed on the IN-MEMORY MODEL by
+      #       store_private! and applies these to the model's active-record variables.
+      def load_private!
+        # EOIN:reload the current model from the DB, presumably this makes sure we have the most recent version of it
+        reload
 
-            update_hash[:short_summary] = nil if can_have_short_summary?
+        # EOIN: => private_version_serialized contains YAML
+        private_attrs = YAML.load(private_version_serialized)
 
-            # Update without callbacks
-            # EOIN: this also saves the record in the DB
-            update_attributes!(update_hash)
+        # EOIN: private_version_serialized contains an Array
+        raise 'No private attributes' if private_attrs.nil? || !private_attrs.kind_of?(Array)
 
-            # EOIN: this seems to assume that the first user in the DB will be the admin. This seems dangerous ???
-            add_as_contributor(User.find(:first))
+        # EOIN: private_version_serialized contains an Array of 2-tuples (Array with two values)
+        private_attrs.each do |key, value|
+          # EOIN: create a attribute writer for each element of the private_version_serialized array
+          send("#{key}=".to_sym, value)
+        end
+
+        self
+      end
+
+      # Revert to the most recent public version and save.
+      # We do this after_save via store_correct_versions_after_save in order to keep
+      # the latest public version in the 'master' model record.
+      def load_public!
+        if public_version = latest_public_version
+          without_saving_private do
+            revert_to!(public_version)
           end
 
-          reload
+          # At this point, I know from testing that the reverted version
+          # and current model are public and appropriate.
+        else
+
+          # EOIN: it seems like update_hash is a default set of attributes tha
+          update_hash = {
+            title: SystemSetting.no_public_version_title,
+            description: SystemSetting.no_public_version_description,
+            extended_content: nil,
+            tag_list: nil,
+            private: false,
+            basket_id: basket_id
+          }
+
+          update_hash[:short_summary] = nil if can_have_short_summary?
+
+          # Update without callbacks
+          # EOIN: this also saves the record in the DB
+          update_attributes!(update_hash)
+
+          # EOIN: this seems to assume that the first user in the DB will be the admin. This seems dangerous ???
+          add_as_contributor(User.find(:first))
+        end
+
+        reload
         # rescue
         #   false
-        end
+      end
 
-        # EOIN:
-        # * this instance method just passes the call on to the class method with the same name
-        # * the class method is implemented below
-        def without_saving_private(&block)
-          self.class.without_saving_private(&block)
-        end
-
+      # EOIN:
+      # * this instance method just passes the call on to the class method with the same name
+      # * the class method is implemented below
+      def without_saving_private(&block)
+        self.class.without_saving_private(&block)
+      end
     end
 
     module ClassMethods
-
       # replace the store_correct_versions_after_save method with an empty one
       # then run the given block
       # then re-enable the original store_correct_versions_after_save method
@@ -275,13 +266,10 @@ module ItemPrivacy
           alias_method :store_correct_versions_after_save, :orig_store_correct_versions_after_save
         end
       end
-
     end
-
   end
 
   module TaggingOverload
-
     def self.included(klass)
       klass.class_eval do
         include InstanceMethods
@@ -290,7 +278,6 @@ module ItemPrivacy
     end
 
     module InstanceMethods
-
       # Transparently map tags for the current item to the tags of the correct privacy
       def tags
         order_tags(private? ? private_tags : public_tags)
@@ -328,27 +315,21 @@ module ItemPrivacy
         end
         tags
       end
-
     end
 
     module SingletonMethods
-
       # Required by tag cloud functionality on basket home-pages.
-      def tag_counts(options, private_tags=false)
-
+      def tag_counts(options, private_tags = false)
         # Only return public tags (for the time being..)
         tags = Hash.new
         tags[:public] = public_tag_counts(options)
         tags[:private] = private_tags ? private_tag_counts(options) : {}
         tags
       end
-
     end
-
   end
 
   module AttachmentFuOverload
-
     # Not in attachment_fu
     attr_accessor :force_privacy
 
@@ -380,31 +361,29 @@ module ItemPrivacy
 
     private
 
-      # Not in attachment_fu
-      # * Get the path we should be using based on the item's privacy
-      def attachment_path_prefix
-        file_private? ? 'private' : 'public'
+    # Not in attachment_fu
+    # * Get the path we should be using based on the item's privacy
+    def attachment_path_prefix
+      file_private? ? 'private' : 'public'
+    end
+
+    # https://github.com/kete/attachment_fu/blob/master/lib/technoweenie/attachment_fu/backends/file_system_backend.rb#L97
+    # * Renames the given file before saving
+    def rename_file
+      return unless @old_filename && @old_filename != full_filename
+      if save_attachment? && File.exists?(@old_filename)
+        FileUtils.rm @old_filename
+      elsif File.exists?(@old_filename)
+
+        # Ensure there a folder to move the file into
+        FileUtils.mkdir_p(File.dirname(full_filename))
+        FileUtils.mv @old_filename, full_filename
+
+        # Remove the directory we moved from too if it's empty
+        Dir.rmdir(File.dirname(@old_filename)) if (Dir.entries(File.dirname(@old_filename)) - ['.', '..']).empty?
       end
-
-      # https://github.com/kete/attachment_fu/blob/master/lib/technoweenie/attachment_fu/backends/file_system_backend.rb#L97
-      # * Renames the given file before saving
-      def rename_file
-        return unless @old_filename && @old_filename != full_filename
-        if save_attachment? && File.exists?(@old_filename)
-          FileUtils.rm @old_filename
-        elsif File.exists?(@old_filename)
-
-          # Ensure there a folder to move the file into
-          FileUtils.mkdir_p(File.dirname(full_filename))
-          FileUtils.mv @old_filename, full_filename
-
-          # Remove the directory we moved from too if it's empty
-          Dir.rmdir(File.dirname(@old_filename)) if (Dir.entries(File.dirname(@old_filename))-['.', '..']).empty?
-        end
-        @old_filename =  nil
-        true
-      end
-
+      @old_filename = nil
+      true
+    end
   end
-
 end

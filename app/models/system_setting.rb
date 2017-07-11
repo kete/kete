@@ -108,11 +108,11 @@ class SystemSetting
     # end
 
     def basket_creation_policy
-     'closed'
+      'closed'
     end
 
     def related_items_position_default
-      # ROB: In the exisiting data this is often saved as the empty string. 
+      # ROB: In the exisiting data this is often saved as the empty string.
       #      Some models also have "inset" or "sidebar"
       'below'
     end
@@ -142,7 +142,7 @@ class SystemSetting
     end
 
     def default_search_privacy
-     'public'
+      'public'
     end
 
     # def language_choices_display_type
@@ -186,7 +186,7 @@ class SystemSetting
     end
 
     def uses_basket_list_navigation_menu_on_every_page
-     false
+      false
     end
 
     def enable_user_portraits
@@ -414,11 +414,11 @@ class SystemSetting
     end
 
     def download_warning
-      'You are about to download a file from Kete. Kete is an open digital repository'+
-      'and as such we can not guarantee the integrity of any file in the repository.  '+
-      'Please ensure that your virus scan software is operating and is configured to '+
-      "scan this download.\n"+
-      'Are you sure you want to proceed?'
+      'You are about to download a file from Kete. Kete is an open digital repository' +
+        'and as such we can not guarantee the integrity of any file in the repository.  ' +
+        'Please ensure that your virus scan software is operating and is configured to ' +
+        "scan this download.\n" +
+        'Are you sure you want to proceed?'
     end
   end
 end

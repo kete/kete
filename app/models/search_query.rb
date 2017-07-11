@@ -1,5 +1,4 @@
 class SearchQuery
-
   # Responsibilities
   # * encapsulate the user's question to us (their search)
   # * be an opaque barrier between
@@ -63,7 +62,7 @@ class SearchQuery
 
     @tag = params[:tag]
 
-    @related_item_id = params[:related_item_id ]
+    @related_item_id = params[:related_item_id]
     @related_item_type = params[:related_item_type]
 
     @user_id = params[:user_id]

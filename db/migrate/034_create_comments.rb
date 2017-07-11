@@ -12,10 +12,10 @@ class CreateComments < ActiveRecord::Migration
       t.column :updated_at, :datetime, null: false
     end
     ContentType.create! class_name: 'Comment',
-    description: 'Where we store comments on items and topics, also known as discussion.',
-    humanized_plural: 'Discussion',
-    controller: 'comments',
-    humanized: 'Discussion'
+                        description: 'Where we store comments on items and topics, also known as discussion.',
+                        humanized_plural: 'Discussion',
+                        controller: 'comments',
+                        humanized: 'Discussion'
   end
 
   def self.down

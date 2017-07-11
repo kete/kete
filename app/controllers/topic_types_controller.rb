@@ -16,9 +16,8 @@ class TopicTypesController < ApplicationController
   private
 
   def set_ancestory(topic_type)
-      # setup of ancestory
-      parent_id = params[:parent_id] || topic_type.parent_id || 1
-      topic_type.move_to_child_of TopicType.find(parent_id)
+    # setup of ancestory
+    parent_id = params[:parent_id] || topic_type.parent_id || 1
+    topic_type.move_to_child_of TopicType.find(parent_id)
   end
-
 end

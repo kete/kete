@@ -1,7 +1,6 @@
 # kete specific capistrano recipes
 
 namespace :deploy do
-
   task :default do
     puts "This task shouldn't be run. Use deploy:first_time or deploy:update"
   end
@@ -38,7 +37,6 @@ namespace :deploy do
   end
 
   namespace :kete do
-
     desc 'Upgrade Kete Installation'
     task :upgrade, role: :app do
       set_app_environment
@@ -47,7 +45,6 @@ namespace :deploy do
 
     desc 'What to we need to happen after code checkout, but before the app is ready to be started.'
     namespace :prepare do
-
       desc 'The directory that holds everything related to zebra needs to live under share/system/zebradb'
       task :setup_zebra, roles: :app do
         run "cp -r #{latest_release}/zebradb #{shared_path}/system/"
@@ -72,15 +69,13 @@ namespace :deploy do
       task :setup_locales, roles: :app do
         run "cp -r #{latest_release}/config/locales #{shared_path}/system/"
       end
-
     end
 
     desc 'Symlink folders for existing Kete installations'
     namespace :symlink do
-
-      public_dirs = %w{ audio documents image_files video themes }
-      root_dirs = %w{ zebradb imports private }
-      config_dirs = %w{ locales }
+      public_dirs = %w{audio documents image_files video themes}
+      root_dirs = %w{zebradb imports private}
+      config_dirs = %w{locales}
       all_dirs = public_dirs + root_dirs + config_dirs
 
       desc 'Symlink all files'
@@ -113,7 +108,7 @@ namespace :deploy do
 
       # For each directory, setup a system folder, copy the repository files to it,
       # remove the folder from the current directory and in it's place, put a symlink
-      def symlink_system_directory(dir, prefix='')
+      def symlink_system_directory(dir, prefix = '')
         run "mkdir -p #{shared_path}/system/#{dir}"
         # The keteaccess password file is rewritten later.
         # Let's just move it to make sure we can fall back to something if it goes wrong
@@ -122,7 +117,6 @@ namespace :deploy do
         run "rm -rf #{current_path}/#{prefix}#{dir}"
         run "ln -nfs #{shared_path}/system/#{dir} #{current_path}/#{prefix}#{dir}"
       end
-
     end
 
     def set_app_environment
@@ -134,6 +128,5 @@ namespace :deploy do
       set_app_environment
       run "cd #{current_path} && RAILS_ENV=#{app_environment} rake kete:tools:tiny_mce:configure_imageselector"
     end
-
   end
 end
