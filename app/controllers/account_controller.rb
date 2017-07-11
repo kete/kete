@@ -192,9 +192,7 @@ class AccountController < ApplicationController
   end
 
   def agreed_terms?
-    if params[:user][:agree_to_terms] == '1'
-      return true
-    end
+    return true if params[:user][:agree_to_terms] == '1'
   end
 
   def logout
