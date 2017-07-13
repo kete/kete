@@ -89,7 +89,7 @@ class ImportersController < ApplicationController
                     when 'fmpdsoresult_no_images' then 'Topic'
                     else
                       (only_valid_zoom_class(params[:zoom_class]).name || 'StillImage')
-      end
+                    end
 
       # only run one import at a time for the moment
       unless backgroundrb_is_running?(@worker_type)

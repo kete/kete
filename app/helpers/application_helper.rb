@@ -1539,7 +1539,7 @@ module ApplicationHelper
                   current_choice.choices.find_top_level.reject { |c| !categories_field.choices.member?(c) }
                 else
                   current_choice.choices.reject { |c| !categories_field.choices.member?(c) }
-      end
+                end
 
       # Skip this choice if it doesn't have any choices
       next if choices.empty?
@@ -1592,7 +1592,7 @@ module ApplicationHelper
                             current_user.locale
                           else
                             I18n.locale
-    end
+                          end
     locales = I18n.available_locales_with_labels.collect { |key, value| [value, key] }
     locales = ([[options[:pre_text], '']] + locales) if options[:pre_text]
     if form

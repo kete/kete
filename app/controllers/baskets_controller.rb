@@ -511,7 +511,7 @@ class BasketsController < ApplicationController
               else
                 # else, see if it has a setting (which will returns nil if not)
                 @basket.settings[name.to_sym]
-      end
+              end
     end
 
     # if by this point we still have nothing/nil
@@ -583,7 +583,7 @@ class BasketsController < ApplicationController
                                  true
                                when 'false', false
                                  false
-      end
+                               end
     end
   end
 

@@ -223,7 +223,7 @@ module ExtendedContentHelpers
                       value.match(/(.+)\(([^\(\)]+)\)\Z/).to_a
                     else
                       Array.new
-            end
+                    end
 
             unless parts.blank?
               options.merge!(label: parts[1].chomp(' '))

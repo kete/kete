@@ -140,7 +140,7 @@ class SearchSource < ActiveRecord::Base
                       search_text.strip.gsub(/\s/, " #{or_string} ")
                     else
                       search_text
-      end
+                    end
     else
       if or_syntax && or_syntax[:case]
         or_string = or_syntax[:case] == 'upper' ? 'OR' : 'or'
