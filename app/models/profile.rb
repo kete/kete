@@ -84,7 +84,7 @@ class Profile < ActiveRecord::Base
                  v['allowed'].collect { |a| a.humanize }.join(', ') + '.'
                else
                  I18n.t('profile_model.rules.none')
-      end
+               end
       data << value
     end
     data.join(' ')

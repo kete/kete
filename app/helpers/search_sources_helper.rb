@@ -65,7 +65,7 @@ module SearchSourcesHelper
                 record.send(syntax)
               else
                 nil
-      end
+              end
 
       value = Hash.new if value.blank?
       html = String.new

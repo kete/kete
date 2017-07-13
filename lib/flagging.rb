@@ -332,7 +332,7 @@ module Flagging
                                 urlified_name: basket.urlified_name,
                                 controller: zoom_class_controller(self.class.name),
                                 action: 'history', id: self, locale: false)
-        end
+                      end
 
         message = !options[:message].blank? ? options[:message] : nil
 

@@ -76,7 +76,7 @@ module FieldMappings
                           else
                             content_type.class_name.constantize::Version.all
                           end
-      end
+                        end
 
       ef_label = Regexp.escape(extended_field_label.downcase.gsub(/ /, '_'))
       element_label = extended_field_multiple ? "#{ef_label}_multiple" : ef_label

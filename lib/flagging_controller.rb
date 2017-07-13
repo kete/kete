@@ -15,7 +15,7 @@ module FlaggingController
                        'review'
                      else
                        'flag_version'
-      end
+                     end
 
       # use one form template for all controllers
       render template: 'topics/flag_form'
