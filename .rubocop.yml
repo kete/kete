@@ -16,6 +16,7 @@ AllCops:
     - 'vendor/**/*'
     - 'horowhenua_spec/**/*'
     - 'db/schema.rb'
+    - 'node_modules/**'
 
 # Not in rails 3
 Rails/DynamicFindBy:
