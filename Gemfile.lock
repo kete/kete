@@ -148,7 +148,7 @@ GEM
       railties (>= 3.0.0)
     faraday (0.12.2)
       multipart-post (>= 1.2, < 3)
-    faraday_middleware (0.11.0.1)
+    faraday_middleware (0.12.0)
       faraday (>= 0.7.4, < 1.0)
     ffi (1.9.18)
     figaro (0.7.0)
@@ -192,7 +192,7 @@ GEM
       nokogiri
       rails (~> 3.2.8)
     packet (0.1.15)
-    parallel (1.11.2)
+    parallel (1.12.0)
     parser (2.4.0.0)
       ast (~> 2.2)
     pg (0.21.0)
