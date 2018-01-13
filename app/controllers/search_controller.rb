@@ -187,7 +187,7 @@ class SearchController < ApplicationController
     @date_until = params[:date_until].blank? ? nil : params[:date_until]
 
     # calculate where to start and end based on page
-    @current_page = (params[:page] && params[:page].to_i > 0) ? params[:page].to_i : 1
+    @current_page = params[:page] && params[:page].to_i > 0 ? params[:page].to_i : 1
     @next_page = @current_page + 1
     @previous_page = @current_page - 1
 
@@ -379,8 +379,8 @@ class SearchController < ApplicationController
 
     sort_type = @current_basket.setting(:sort_order_default)
     sort_direction = @current_basket.setting(:sort_direction_reversed_default)
-    search_sort_type = (params[:sort_type].blank? and !sort_type.blank?) ? sort_type : params[:sort_type]
-    search_sort_direction = (params[:sort_type].blank? and !sort_direction.blank?) ? sort_direction : params[:sort_direction]
+    search_sort_type = params[:sort_type].blank? and !sort_type.blank? ? sort_type : params[:sort_type]
+    search_sort_direction = params[:sort_type].blank? and !sort_direction.blank? ? sort_direction : params[:sort_direction]
     @search.add_sort_to_query_if_needed(user_specified: search_sort_type,
                                         direction: search_sort_direction,
                                         action: params[:action],
@@ -632,7 +632,7 @@ class SearchController < ApplicationController
     # that can be related to a topic through content_item_relations
     # topics related to topics are a special case
     # the method name is called 'related_topics'
-    method_name_for_related_items = (params[:relate_to_type] == 'Topic' && related_class_is_topic) ? 'related_topics' : related_class_name.tableize
+    method_name_for_related_items = params[:relate_to_type] == 'Topic' && related_class_is_topic ? 'related_topics' : related_class_name.tableize
 
     # Look up existing relationships, we use these in 2 out of three functions
     existing = @relate_to_item.send(method_name_for_related_items) unless params[:function] == 'restore'
@@ -663,7 +663,7 @@ class SearchController < ApplicationController
       @search_terms = params[:search_terms]
       if @search_terms.present?
         related_items_search
-        current_page = (params[:page] && params[:page].to_i > 0) ? params[:page].to_i : 1
+        current_page = params[:page] && params[:page].to_i > 0 ? params[:page].to_i : 1
         @results = @results.paginate(page: current_page)
 
         # Store pagination information, we'll need this later
@@ -732,7 +732,7 @@ class SearchController < ApplicationController
     store_results_for_slideshow
 
     # Redirect to the first or last object on the page, depending on the direction we're going..
-    url = (params[:direction] == 'up') ? session[:slideshow][:results].first : session[:slideshow][:results].last
+    url = params[:direction] == 'up' ? session[:slideshow][:results].first : session[:slideshow][:results].last
 
     # Preserve the image view size when redirecting to the next page.
     url = append_options_to_url(url, "view_size=#{slideshow.image_view_size}") if slideshow.image_view_size

@@ -101,7 +101,7 @@ namespace :kete do
       puts 'Resizing/created images based on SystemSetting.image_sizes...'
       @logger.info 'Starting image file resizing.'
 
-      force_resize = (ENV['FORCE_RESIZE'] && ENV['FORCE_RESIZE'] == 'true') ? true : false
+      force_resize = ENV['FORCE_RESIZE'] && ENV['FORCE_RESIZE'] == 'true' ? true : false
       if force_resize
         puts 'All image sizes will be recreated from originals, even if the same size image file already exists.'
         @logger.info 'FORCE_RESIZE=true'
