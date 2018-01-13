@@ -24,5 +24,4 @@ class ContentTypeTest < ActiveSupport::TestCase
 
   # TODO: <<(extended_field)
   # TODO: <<(required_form_field)
-
 end

@@ -180,5 +180,4 @@ class OaiDcHelpersTest < ActiveSupport::TestCase
     end
     builder.to_stripped_xml
   end
-
 end

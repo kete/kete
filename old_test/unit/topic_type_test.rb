@@ -121,7 +121,6 @@ class TopicTypeTest < ActiveSupport::TestCase
     assert mapping.required?, "The default for required in required_form_fields should be true."
   end
 
-
   # topic_type.required_form_fields should be ordered by position
   def test_required_form_fields_ordered_by_position
     @organization_type.required_form_fields << @name_field

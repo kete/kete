@@ -10,7 +10,6 @@ class SearchHelperTest < ActionView::TestCase
   end
 
   context "The other_results helper" do
-
     setup do
       @site_basket = Basket.site_basket
       @current_basket = @site_basket
@@ -21,7 +20,5 @@ class SearchHelperTest < ActionView::TestCase
       @result_sets = { 'Topic' => [], 'WebLink' => [1,2,3] }
       assert_equal ['<a href="/en/site/all/web_links/" tabindex="1">3 Web links</a>'], other_results
     end
-
   end
-
 end

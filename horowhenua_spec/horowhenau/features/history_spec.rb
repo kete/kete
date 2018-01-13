@@ -1,7 +1,6 @@
 require 'spec_helper'
 
 feature "History" do
-
   examples = {
     audio:    '/en/site/audio/2-anzac-speech-by-dominique-cooreman',
     video:    '/en/site/video/58-mayors-duffys-speech-it-ended-with-a-bang',
@@ -27,5 +26,4 @@ feature "History" do
       expect(find('.history-table').find('.contributor', match: :first).text.length).to be > 0
     end
   end
-
 end

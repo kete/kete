@@ -8,7 +8,6 @@ class DocumentsControllerTest < ActionController::TestCase
   include ItemPrivacyTestHelper::TestHelper
 
   def setup
-
     # Base class of the model
     @base_class = "Document"
 
@@ -24,7 +23,6 @@ class DocumentsControllerTest < ActionController::TestCase
       :uploaded_data => @@documentdata,
       :tag_list => ""
     }
-
   end
 
   def test_show_new_public_document_by_owner_and_admin
@@ -87,7 +85,6 @@ class DocumentsControllerTest < ActionController::TestCase
   end
 
   def test_show_public_with_no_public_version
-
     # Create the first (public version)
     id = create_record({ :private => true, :description => "Private version" })
 
@@ -103,7 +100,6 @@ class DocumentsControllerTest < ActionController::TestCase
     get :show, :id => id, :urlified_name => 'site'
     assert_response :success
     assert_template 'documents/show'
-
   end
 
   # Test that when an admin requests a private document,
@@ -171,7 +167,6 @@ class DocumentsControllerTest < ActionController::TestCase
   end
 
   def test_show_private_not_accessible
-
     id = create_record
 
     assert_raise ActionController::UnknownAction do
@@ -180,7 +175,6 @@ class DocumentsControllerTest < ActionController::TestCase
   end
 
   def test_show_public_not_accessible
-
     id = create_record
 
     assert_raise ActionController::UnknownAction do
@@ -189,7 +183,6 @@ class DocumentsControllerTest < ActionController::TestCase
   end
 
   def test_new
-
     # Login required..
     login_as(:admin)
 
@@ -201,7 +194,6 @@ class DocumentsControllerTest < ActionController::TestCase
   end
 
   def test_create
-
     # Login required..
     login_as(:admin)
 
@@ -226,5 +218,4 @@ class DocumentsControllerTest < ActionController::TestCase
 
   def test_destroy
   end
-
 end

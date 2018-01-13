@@ -11,7 +11,6 @@ class RssTest < ActionController::IntegrationTest
   # TODO: add privacy tests
   # after you start adding these TODOs, you'll immediately want to DRY up this testing
   context "An rss feed with items" do
-
     setup do
       add_admin_as_super_user
       login_as('admin')
@@ -70,7 +69,6 @@ class RssTest < ActionController::IntegrationTest
         body_should_contain "Latest 50 Results in combined"
         body_should_contain @item.title
       end
-
     end
 
     should "escape title and short summary" do
@@ -110,7 +108,5 @@ class RssTest < ActionController::IntegrationTest
       body_should_contain 'Topic 1'
       body_should_not_contain 'Topic 2'
     end
-
   end
-
 end

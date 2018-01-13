@@ -1,9 +1,7 @@
 require File.dirname(__FILE__) + '/integration_test_helper'
 
 class ExtendedContentTest < ActionController::IntegrationTest
-
   context "some configured extended fields on topics" do
-
     setup do
       @@extended_fields, @@topic_types = [], []
 
@@ -80,15 +78,11 @@ class ExtendedContentTest < ActionController::IntegrationTest
 
       body_should_contain "Required extended data cannot be blank"
     end
-
   end
 
   (ITEM_CLASSES - ["Topic"]).each do |class_name|
-
     context "a required extended field configured on #{class_name}" do
-
       setup do
-
         add_james_as_super_user
         login_as('james')
 
@@ -144,7 +138,6 @@ class ExtendedContentTest < ActionController::IntegrationTest
       end
 
       should "create a new #{class_name} with required extended data" do
-
         send("new_#{class_name.tableize.singularize}".to_sym, :title => "#{class_name} with required extended data") do
           fill_in "Extended data for #{class_name}", :with => "Extended information"
           attach_file_for(class_name)
@@ -164,13 +157,10 @@ class ExtendedContentTest < ActionController::IntegrationTest
 
         body_should_contain "Extended data for #{class_name} cannot be blank"
       end
-
     end
-
   end
 
   context "Embedded extended field data" do
-
     setup do
       add_james_as_super_user
       login_as(:james)
@@ -214,11 +204,9 @@ class ExtendedContentTest < ActionController::IntegrationTest
       assert_have_selector("#embedded_extended_field_data .detail-extended-field-table")
       assert_have_no_selector("#secondary-content-wrapper .detail-extended-field-table")
     end
-
   end
 
   context "A choice extended field" do
-
     setup do
       add_james_as_super_user
       login_as(:james)
@@ -252,11 +240,9 @@ class ExtendedContentTest < ActionController::IntegrationTest
       body_should_not_contain Regexp.new("<a .+>Somewhere way out there</a>")
       body_should_contain "Somewhere way out there"
     end
-
   end
 
   context "A year extended field type" do
-
     setup do
       add_james_as_super_user
       login_as(:james)
@@ -293,7 +279,6 @@ class ExtendedContentTest < ActionController::IntegrationTest
     end
 
     context "when those extended fields are required" do
-
       setup do
         TopicTypeToFieldMapping.destroy_all
         @topic_type.required_form_fields << @year_non_multiple
@@ -305,9 +290,7 @@ class ExtendedContentTest < ActionController::IntegrationTest
         body_should_contain Regexp.new("Publishing Year cannot be blank")
         body_should_contain Regexp.new("Republishing Years must have at least one value")
       end
-
     end
-
   end
 
   private
@@ -357,7 +340,6 @@ class ExtendedContentTest < ActionController::IntegrationTest
     end
 
     def attach_file_for(zoom_class_name)
-
       # get the attribute that defines each class
       if ATTACHABLE_CLASSES.include?(zoom_class_name)
         # put in a case statement
@@ -376,6 +358,5 @@ class ExtendedContentTest < ActionController::IntegrationTest
         WebLink.find_by_url("http://google.co.nz/").destroy rescue true
         fill_in "web_link[url]", :with => "http://google.co.nz/"
       end
-
     end
 end

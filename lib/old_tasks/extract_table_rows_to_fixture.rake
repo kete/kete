@@ -10,7 +10,6 @@ namespace :db do
   or you can set rows as all, i.e. ROWS=\'all\'.
   Default output to test/fixtures, but you can specify another location by
   setting OUTPUT_FIXTURES_TO_PATH (no trailing /).
-
   Defaults to development database.  Set RAILS_ENV to override.'
 
   # modified to dump to either db/bootstrap or test/fixtures

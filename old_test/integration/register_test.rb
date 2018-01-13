@@ -1,9 +1,7 @@
 require File.dirname(__FILE__) + '/integration_test_helper'
 
 class RegisterTest < ActionController::IntegrationTest
-
   context "When a user registers, they" do
-
     setup do
       visit '/site/account/signup'
     end
@@ -27,7 +25,6 @@ class RegisterTest < ActionController::IntegrationTest
   end
 
   context "When a user views signup form, the user" do
-
     should "get an option to use text question if site is configured to provide all captchas (the default)" do
       # all is the default for captcha type setting
       assert_equal CAPTCHA_TYPE, 'all'
@@ -71,6 +68,5 @@ class RegisterTest < ActionController::IntegrationTest
         set_constant :CAPTCHA_TYPE, 'all'
       end
     end
-
   end
 end

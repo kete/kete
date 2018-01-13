@@ -1,9 +1,7 @@
 require File.dirname(__FILE__) + '/../../test_helper'
 
 class ApplicationHelperTest < ActionView::TestCase
-
   context "The title_with_context" do
-
     should "only contain the site name in the right circumstances" do
       @title = "Topic Page"
       @site_basket = Basket.site_basket
@@ -14,11 +12,9 @@ class ApplicationHelperTest < ActionView::TestCase
       @current_basket = Basket.about_basket
       assert_equal 'Topic Page - About - Kete', title_with_context
     end
-
   end
 
   context "The dc_metadata_for" do
-
     should "return correctly formatted XHTML" do
       bob = create_new_user :login => 'bob', :display_name => 'Bob Jones'
       jill = create_new_user :login => 'jill'
@@ -66,11 +62,9 @@ class ApplicationHelperTest < ActionView::TestCase
 
       assert_equal data.squish, dc_metadata_for(item).squish
     end
-
   end
 
   context "The open_search_metadata" do
-
     should "return correctly formatted XHTML" do
       @current_class = "Topic"
       @result_sets = { @current_class => [1,2,3] }
@@ -85,11 +79,9 @@ class ApplicationHelperTest < ActionView::TestCase
 
       assert_equal data.squish, open_search_metadata.squish
     end
-
   end
 
   context "The open_search_documents" do
-
     should "return correctly formatted XHTML" do
       data = <<-DATA
         <link href="http://www.example.com/opensearchdescription.xml"
@@ -100,7 +92,5 @@ class ApplicationHelperTest < ActionView::TestCase
 
       assert_equal opensearch_descriptions.squish, data.squish
     end
-
   end
-
 end

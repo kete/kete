@@ -6,7 +6,6 @@ require File.dirname(__FILE__) + '/../stubs/captcha'
 set_constant('SystemSetting.enable_user_portraits?', true)
 
 class AccountControllerTest < ActionController::TestCase
-
   include KeteTestFunctionalHelper
 
   # fixtures preloaded
@@ -274,6 +273,7 @@ class AccountControllerTest < ActionController::TestCase
   end
 
   protected
+
     # James is working on this..
     def create_user(options = {})
       post :signup, { :user => { :login => 'quire', :email => 'quire@changme.com',

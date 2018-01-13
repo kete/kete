@@ -1,9 +1,7 @@
 require File.dirname(__FILE__) + '/integration_test_helper'
 
 class AccountTest < ActionController::IntegrationTest
-
   context "A User" do
-
     setup do
       add_paul_as_regular_user
     end
@@ -44,7 +42,6 @@ class AccountTest < ActionController::IntegrationTest
     end
 
     context "when homepage slideshow controls are on" do
-
       setup do
         @@site_basket.update_attribute(:index_page_image_as, 'random')
         login_as('paul')
@@ -65,11 +62,9 @@ class AccountTest < ActionController::IntegrationTest
                    :by_form => true })
         url_should_contain Regexp.new("/$")
       end
-
     end
 
     context "when private items are enabled" do
-
       setup do
         @@site_basket.update_attribute(:show_privacy_controls, true)
         login_as('paul')
@@ -154,7 +149,6 @@ class AccountTest < ActionController::IntegrationTest
       end
 
       should "have anonymous user email in session" do
-
       end
 
       should "not allow anonymous access to action accept for allowd_for and finished_after action" do
@@ -166,6 +160,7 @@ class AccountTest < ActionController::IntegrationTest
   end
 
   private
+
   # current basket homepage is now the default redirect
   def should_be_on_site_homepage
     request_params = response.request.parameters

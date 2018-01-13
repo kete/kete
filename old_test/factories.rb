@@ -9,7 +9,6 @@
 # Topic   (makes homepage and topic show page caches)
 #
 
-
 #
 # Basket Factory
 #
@@ -25,7 +24,6 @@ def create_new_basket(options)
   assert_kind_of Basket, @basket
   @basket
 end
-
 
 #
 # User Factory

@@ -1,7 +1,6 @@
 require File.dirname(__FILE__) + '/../test_helper'
 
 class UserPortraitRelationTest < ActiveSupport::TestCase
-
   def test_relation_should_belong_to_user
     new_image_with_creator
     assert_not_nil @relation.user

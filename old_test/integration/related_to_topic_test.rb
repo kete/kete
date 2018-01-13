@@ -5,9 +5,7 @@ require File.dirname(__FILE__) + '/integration_test_helper'
 end
 
 class RelatedToTopicTest < ActionController::IntegrationTest
-
   context "A Topic\'s related items" do
-
     setup do
       enable_production_mode
       add_john_as_regular_user
@@ -19,7 +17,6 @@ class RelatedToTopicTest < ActionController::IntegrationTest
     end
 
     context "when a topic is added" do
-
       setup do
         @topic = new_topic(:title => 'Topic 1 Title')
       end
@@ -29,9 +26,7 @@ class RelatedToTopicTest < ActionController::IntegrationTest
       end
 
       ITEM_CLASSES.each do |class_name|
-
         context "the related #{class_name} subsection" do
-
           setup do
             # strangely i couldn't just do these as local variables outside of the setup scope
             # except for tableize, zoom_class_... helper methods were not being found
@@ -76,7 +71,6 @@ class RelatedToTopicTest < ActionController::IntegrationTest
           end
 
           context "with a linkable item available" do
-
             setup do
               @item_for_relating = send("new_#{@tableized.singularize}", :title => "Item for relating") do
                 fill_in_needed_information_for(class_name)
@@ -141,7 +135,6 @@ class RelatedToTopicTest < ActionController::IntegrationTest
           end
 
           context "which has been added to a topic" do
-
             setup do
               @item_for_relating = send("new_#{@tableized.singularize}", :title => "Item for relating", :relate_to => @topic) do
                 fill_in_needed_information_for(class_name)
@@ -176,7 +169,6 @@ class RelatedToTopicTest < ActionController::IntegrationTest
             end
 
             context "and then removed from the item" do
-
               setup do
                 ContentItemRelation.destroy_relation_to_topic(@topic, @item_for_relating)
                 Rake::Task['tmp:cache:clear'].execute(ENV)
@@ -207,7 +199,6 @@ class RelatedToTopicTest < ActionController::IntegrationTest
                 body_should_contain "#{@humanized_plural} (1)"
                 body_should_contain @item_for_relating.title
               end
-
             end
 
             should "be dropped from the parent related #{class_name} list when the child item is destroyed" do
@@ -242,19 +233,16 @@ class RelatedToTopicTest < ActionController::IntegrationTest
               visit "/site/#{@item_controller}/show/#{@item_for_relating.to_param}"
               body_should_not_contain @topic.title
             end
-
           end
 
           # if ATTACHABLE_CLASSES.include?(class_name)
           #   # should_eventually "be able to upload a zip file of related #{@tableized}"
           # end
-
         end
       end # End of item class iteration
     end # End of context "when a topic is added"
 
     context "when a private related topic is added" do
-
       setup do
         @@site_basket.update_attributes({ :show_privacy_controls => true })
         @topic1 = new_topic({ :title => 'Parent Topic' })
@@ -276,13 +264,10 @@ class RelatedToTopicTest < ActionController::IntegrationTest
         logout
         check_private_topics_not_showing
       end
-
     end
-
   end
 
   context "The caching issue with related items" do
-
     setup do
       enable_production_mode
       add_jerry_as_super_user
@@ -295,9 +280,7 @@ class RelatedToTopicTest < ActionController::IntegrationTest
     end
 
     ITEM_CLASSES.each do |zoom_class|
-
       context "when a #{zoom_class} is added" do
-
         setup do
           @related_item = send("new_#{zoom_class.tableize.singularize}",
             { :title => 'Child Item 1', :relate_to => @parent_topic }) do |field_prefix|
@@ -359,9 +342,7 @@ class RelatedToTopicTest < ActionController::IntegrationTest
           visit item_url
           body_should_not_contain '500 Error!'
         end
-
       end
-
     end
 
     #
@@ -382,9 +363,7 @@ class RelatedToTopicTest < ActionController::IntegrationTest
       puts "-------------------------------------------------------------------------------------------------------"
 
       ATTACHABLE_CLASSES.each do |zoom_class|
-
         context "when a set of #{zoom_class} are imported" do
-
           setup do
             visit "/#{@parent_topic.basket.urlified_name}/#{zoom_class_controller(@parent_topic.class.name)}/show/#{@parent_topic.id}"
             click_link 'Import Set'
@@ -476,13 +455,10 @@ class RelatedToTopicTest < ActionController::IntegrationTest
             visit item_url
             body_should_not_contain '500 Error!'
           end
-
         end
-
       end
 
     end
-
   end
 
   private
@@ -493,6 +469,5 @@ class RelatedToTopicTest < ActionController::IntegrationTest
     body_should_not_contain 'Child Topic 1'
     body_should_not_contain "/site/topics/show/#{@topic2.id}?private=true"
   end
-
 end
 

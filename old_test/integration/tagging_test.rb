@@ -1,9 +1,7 @@
 require File.dirname(__FILE__) + '/integration_test_helper'
 
 class TaggingTest < ActionController::IntegrationTest
-
   context "The quick add tag functionality" do
-
     setup do
       add_admin_as_super_user
       login_as('admin')
@@ -11,7 +9,6 @@ class TaggingTest < ActionController::IntegrationTest
     end
 
     context "when Javascript is off" do
-
       ITEM_CLASSES.each do |item_class|
         should "still function properly for #{item_class}" do
           item_type = item_class.underscore
@@ -35,11 +32,9 @@ class TaggingTest < ActionController::IntegrationTest
           add_tags_to @item, ['tag 1', 'tag 2', 'tag 3']
         end
       end
-
     end
 
     context "when a tag is added" do
-
       setup do
         @topic = new_topic
         add_tags_to @topic, ['tag 0', 'tag 10', 'tag 20']
@@ -52,7 +47,6 @@ class TaggingTest < ActionController::IntegrationTest
       end
 
       context "and several are added in quick succession" do
-
         setup do
           add_tags_to @topic, ['tag 2', 'tag 12', 'tag 22']
           add_tags_to @topic, ['tag 4', 'tag 14', 'tag 24']
@@ -72,11 +66,9 @@ class TaggingTest < ActionController::IntegrationTest
           body_should_contain '# 6'
           body_should_contain 'Only tags added: tag 8, tag 18, tag 28'
         end
-
       end
 
       context "and it contains wierd or other language chars" do
-
         setup do
           # escape chars, arabic, chinese, japanese, maori
           add_tags_to @topic, ['~ ! @ # $ % ^ * ( ) _ + { } | : " < > ? ` - = [ ] \\ ; \' . /']
@@ -87,13 +79,10 @@ class TaggingTest < ActionController::IntegrationTest
         end
 
         # we don't really need to test anything. If anything in add_tags_to fails, that's what we check
-
       end
-
     end
 
     context "when no tags are entered" do
-
       setup do
         @topic = new_topic
         add_tags_to @topic, Array.new, false
@@ -103,9 +92,7 @@ class TaggingTest < ActionController::IntegrationTest
         url_should_contain "/site/topics/show/#{@topic.id}"
         body_should_contain "There was an error adding the new tags to #{@topic.title}: No tags were entered."
       end
-
     end
-
   end
 
   private
@@ -123,5 +110,4 @@ class TaggingTest < ActionController::IntegrationTest
       tags.each { |tag| body_should_contain tag, :escape_chars => true }
     end
   end
-
 end

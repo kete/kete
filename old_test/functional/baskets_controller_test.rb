@@ -1,7 +1,6 @@
 require File.dirname(__FILE__) + '/../test_helper'
 
 class BasketsControllerTest < ActionController::TestCase
-
   include KeteTestFunctionalHelper
 
   def setup
@@ -249,7 +248,6 @@ class BasketsControllerTest < ActionController::TestCase
   end
 
   context "When basket profile(s) are available" do
-
     setup do
       @rules = {
         'edit' => {
@@ -333,7 +331,6 @@ class BasketsControllerTest < ActionController::TestCase
   end
 
   context "When a basket has a profile" do
-
     setup do
       @rules = {
         'edit' => {
@@ -418,7 +415,6 @@ class BasketsControllerTest < ActionController::TestCase
       assert_equal true, assigns(:basket).private_default
       assert_equal true, assigns(:basket).file_private_default
     end
-
   end
 
   private
@@ -429,5 +425,4 @@ class BasketsControllerTest < ActionController::TestCase
     raise "#{basket_urlified_name} basket not found" if @basket.nil?
     @basket.settings[setting.to_sym] = value
   end
-
 end

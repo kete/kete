@@ -1,7 +1,6 @@
 require 'test_helper'
 
 class ProfilesControllerTest < ActionController::TestCase
-
   def setup
     @base_class = "Profile"
     @urlified_name = Basket.find(:first).urlified_name
@@ -10,7 +9,6 @@ class ProfilesControllerTest < ActionController::TestCase
   include KeteTestFunctionalHelper
 
   context "The profiles controller" do
-
     # test that you must be logged in to access list
     should "test that you must be logged in to access list action" do
       assert_requires_login do |c|
@@ -20,7 +18,6 @@ class ProfilesControllerTest < ActionController::TestCase
 
     # test that only site admins can do anything
     context "when a logged in user accesses an action, the user" do
-
       should "be given access if they are a site admin" do
         login_as :admin
         get :list, :urlified_name => @urlified_name
@@ -78,11 +75,8 @@ class ProfilesControllerTest < ActionController::TestCase
             post :destroy, :urlified_name => @urlified_name, :id => @profile
           end
         end
-
       end
-
     end
-
   end
 
   private

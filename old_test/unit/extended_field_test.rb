@@ -53,7 +53,6 @@ class ExtendedFieldTest < ActiveSupport::TestCase
     extended_field = ExtendedField.create!(:label => ' ends and begins with spaces ',
                                        :description => "yyy")
 
-
     assert_equal "ends and begins with spaces", extended_field.label
   end
 

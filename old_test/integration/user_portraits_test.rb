@@ -1,9 +1,7 @@
 require File.dirname(__FILE__) + '/integration_test_helper'
 
 class AccountTest < ActionController::IntegrationTest
-
   context "If user portraits are disabled, there" do
-
     setup do
       configure_environment do
         set_constant :SystemSetting.enable_user_portraits?, false
@@ -28,11 +26,9 @@ class AccountTest < ActionController::IntegrationTest
       visit "/site/all/images/contributed_by/user/#{@lily.to_param}/"
       body_should_not_contain 'alt="lily\'s Avatar. "'
     end
-
   end
 
   context "If user portraits are enabled, a user" do
-
     setup do
       configure_environment do
         set_constant :SystemSetting.enable_user_portraits?, true
@@ -57,7 +53,6 @@ class AccountTest < ActionController::IntegrationTest
     end
 
     context "in order to add portraits" do
-
       should "have a link available on the profile page to make a new default portrait" do
         visit "/site/account/show"
         click_link 'new portrait'
@@ -77,11 +72,9 @@ class AccountTest < ActionController::IntegrationTest
         @item2 = new_still_image({ :portrait => true }) { attach_file "image_file_uploaded_data", "white.jpg" }
         portrait_are_in_order_for(@joe, [@item1,@item2])
       end
-
     end
 
     context "who has created an non portrait image" do
-
       setup do
         @item = new_still_image { attach_file "image_file_uploaded_data", "white.jpg" }
       end
@@ -95,11 +88,9 @@ class AccountTest < ActionController::IntegrationTest
         body_should_contain 'Selected<br />Portrait'
         body_should_contain Regexp.new("<a href=\"#{item_base_url}\"")
       end
-
     end
 
     context "with multiple portraits" do
-
       setup do
         @item1 = new_still_image({ :portrait => true }) { attach_file "image_file_uploaded_data", "white.jpg" }
         @item2 = new_still_image({ :portrait => true }) { attach_file "image_file_uploaded_data", "white.jpg" }
@@ -122,7 +113,6 @@ class AccountTest < ActionController::IntegrationTest
       end
 
       context "when controlling portraits with JS off" do
-
         should "be able to reorder, make selected, or remove portraits from the profile" do
           visit "/site/account/show"
           click_link "image_#{@item3.id}_controls_higher"
@@ -143,11 +133,9 @@ class AccountTest < ActionController::IntegrationTest
           click_link 'Make image selected portrait'
           portrait_are_in_order_for(@joe, [@item3,@item2])
         end
-
       end
 
       context "on the image show page" do
-
         should "exclude the displayed image and the default portrait" do
           [@item1, @item2, @item3].each do |item|
             visit "/site/images/show/#{item.to_param}"
@@ -155,13 +143,10 @@ class AccountTest < ActionController::IntegrationTest
             body_should_not_contain "id=\"image_#{@item1.id}\""
           end
         end
-
       end
-
     end
 
     context "with a selected portrait" do
-
       setup do
         @item = new_still_image({ :selected_portrait => true }) { attach_file "image_file_uploaded_data", "white.jpg" }
         add_paul_as_regular_user
@@ -191,7 +176,6 @@ class AccountTest < ActionController::IntegrationTest
       end
 
       context "and a comment on an item" do
-
         setup do
           add_sally_as_regular_user
           login_as('sally')
@@ -208,11 +192,8 @@ class AccountTest < ActionController::IntegrationTest
         should "have that image show up for comments" do
           body_should_contain Regexp.new("<img(.+)#{@item.thumbnail_file.public_filename}(.+)>(.+)<a(.+)contributed_by/user/#{@joe.to_param}(.+)>#{@joe.user_name}</a>")
         end
-
       end
-
     end
-
   end
 
   private
@@ -220,5 +201,4 @@ class AccountTest < ActionController::IntegrationTest
   def portrait_are_in_order_for(user, order)
     assert order, user.user_portrait_relations.collect { |relation| relation.still_image_id }
   end
-
 end

@@ -6,7 +6,6 @@ require File.dirname(__FILE__) + '/integration_test_helper'
 end
 
 class SearchTest < ActionController::IntegrationTest
-
   context "When getting results for topics, results" do
     setup do
       add_sally_as_regular_user
@@ -63,9 +62,7 @@ class SearchTest < ActionController::IntegrationTest
   end
 
   ['jane', 'īōūāē', 'a&b'].each do |login|
-
     context "Topics with alphanumeric chars in title, description, and tags, using #{login} as a user login" do
-
       setup do
         @user = create_new_user({:login => login})
         @user.add_as_member_to_default_baskets
@@ -88,11 +85,9 @@ class SearchTest < ActionController::IntegrationTest
         tag = Tag.last
         make_search_at("/site/all/topics/tagged/#{tag.id}", @fields, @should_have)
       end
-
     end
 
     context "Topics with utf8 chars in title, description, and tags, using #{login} as a user login" do
-
       setup do
         @user = create_new_user({:login => login})
         @user.add_as_member_to_default_baskets
@@ -115,11 +110,9 @@ class SearchTest < ActionController::IntegrationTest
         tag = Tag.last
         make_search_at("/site/all/topics/tagged/#{tag.id}", @fields, @should_have)
       end
-
     end
 
     context "Topics with specials chars in title, description, and tags, using #{login} as a user login" do
-
       setup do
         @user = create_new_user({:login => login})
         @user.add_as_member_to_default_baskets
@@ -142,13 +135,10 @@ class SearchTest < ActionController::IntegrationTest
         tag = Tag.last
         make_search_at("/site/all/topics/tagged/#{tag.id}", @fields, @should_have)
       end
-
     end
-
   end
 
   context "When a topic exists with related items, the search page" do
-
     setup do
       add_harry_as_regular_user
       login_as(:harry)
@@ -174,7 +164,6 @@ class SearchTest < ActionController::IntegrationTest
       visit "/#{@@site_basket.urlified_name}/all/images/"
       body_should_contain 'Related: 1 Topic' # child image should have parent
     end
-
   end
 
   private

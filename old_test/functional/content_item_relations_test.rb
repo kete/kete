@@ -1,7 +1,6 @@
 require File.dirname(__FILE__) + '/../test_helper'
 
 class ContentItemRelationsTest < ActionController::TestCase
-
   tests SearchController
 
   include KeteTestFunctionalHelper
@@ -64,7 +63,6 @@ class ContentItemRelationsTest < ActionController::TestCase
   end
 
   def test_find_related_remove_with_relationship
-
     # Add a test relationship
     add_relationship_between(Topic.find(1), Topic.find(2))
     assert_equal 1, Topic.find(1).related_topics.size
@@ -104,7 +102,6 @@ class ContentItemRelationsTest < ActionController::TestCase
   end
 
   def test_find_related_restore_with_relationship
-
     # Add and delete a test relationship
     add_relationship_between(Topic.find(1), Topic.find(2))
     assert_equal 1, Topic.find(1).related_topics.size
@@ -165,7 +162,6 @@ class ContentItemRelationsTest < ActionController::TestCase
   end
 
   def test_unlink_with_items
-
     # Add a test relationship
     add_relationship_between(Topic.find(3), Topic.find(4))
     assert_equal 1, Topic.find(3).related_topics.size
@@ -184,7 +180,6 @@ class ContentItemRelationsTest < ActionController::TestCase
   end
 
   def test_link_with_deleted_items
-
     # Add and delete a test relationship
     add_relationship_between(Topic.find(1), Topic.find(2))
     assert_equal 1, Topic.find(1).related_topics.size
@@ -218,6 +213,5 @@ class ContentItemRelationsTest < ActionController::TestCase
         :related_item_id => item.id
       )
     end
-
 end
 

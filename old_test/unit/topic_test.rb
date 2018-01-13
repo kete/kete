@@ -90,7 +90,6 @@ class TopicTest < ActiveSupport::TestCase
   end
 
   def test_extended_content_pairs_with_multiple_field_values
-
     field = ExtendedField.create!(
       :label => "Address",
       :xml_element_name => "dc:description",
@@ -110,11 +109,9 @@ class TopicTest < ActiveSupport::TestCase
 
     assert_equal [["first_names", "Joe"], ["last_name", "Bloggs"], ["address_multiple", [["Wollaston St."], ["Nelson"]]], ["place_of_birth", nil]].sort, \
       model.extended_content_pairs.sort
-
   end
 
   def test_extended_field_required_fields_are_validated
-
     # Test with valid fields
     model = create_person("city" => "Wellington")
 
@@ -254,7 +251,6 @@ class TopicTest < ActiveSupport::TestCase
   end
 
   def test_adding_a_new_extended_field_renders_all_versions_invalid
-
     # Create a topic
     topic_type = TopicType.create!(:name => "Test", :description => "A test", :parent_id => 1)
     topic = Topic.create!(@new_model.merge(:topic_type => topic_type))
@@ -280,7 +276,6 @@ class TopicTest < ActiveSupport::TestCase
 
     assert topic.valid?
   end
-
 
   def test_empty_values_are_validated_correctly_on_new_records
     topic_type = TopicType.create!(:name => "Test", :description => "A test", :parent_id => 1)
@@ -348,6 +343,7 @@ class TopicTest < ActiveSupport::TestCase
     topic.extended_content_values = nil
     assert !topic.valid?
   end
+
   def test_structured_extended_content_getter
     for_topic_with(TopicType.find_by_name("Person"), { :label => "Address", :multiple => true}) do |t|
       t.extended_content_values = default_extended_values_plus("address" => { "1" => "The Parade",
@@ -549,7 +545,6 @@ class TopicTest < ActiveSupport::TestCase
       t.extended_content_values = default_extended_values_plus("past_jobs" => { "1" => "Janitor",
                                                                  "2" => "Garbageman" })
 
-
       assert_equal "Joe", t.first_names
       assert_nil t.place_of_birth
       past_jobs = ['Janitor', 'Garbageman']
@@ -628,7 +623,6 @@ class TopicTest < ActiveSupport::TestCase
       expected = "<1><marital_status xml_element_name=\"dc:description\">Married</marital_status></1>"
       expected += "<2><marital_status xml_element_name=\"dc:description\">Single</marital_status></2>"
       assert t.extended_content.include?(expected), "#{expected} should be in extended content, but isn't. #{t.extended_content}"
-
     end
   end
 
@@ -721,7 +715,6 @@ class TopicTest < ActiveSupport::TestCase
     end
 
     context "supports the required methods needed by oembed and" do
-
       should "have ability to answer to title and have oembed_response.title" do
         assert @topic.oembed_response.title
         assert_equal @topic.title, @topic.oembed_response.title
@@ -744,7 +737,6 @@ class TopicTest < ActiveSupport::TestCase
     # Some helpers for extended field tests
     # Returns instance of TopicType.
     def add_field_to(topic_type, field_attribute_hash = {}, mapping_options = {})
-
       default_field_attributes = {
         :label => "Test",
         :xml_element_name => "dc:description",

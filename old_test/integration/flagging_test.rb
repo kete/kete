@@ -1,13 +1,11 @@
 require File.dirname(__FILE__) + '/integration_test_helper'
 
 class FlaggingTest < ActionController::IntegrationTest
-
   # start with handling simplest case
   # a user should be able to flag an item
   # user is told moderator will review
   # item ends up listed under moderate/list action
   context "A normal user" do
-
     setup do
       # Ensure a user account to log in with is present
       add_grant_as_regular_user

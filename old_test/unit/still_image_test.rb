@@ -22,7 +22,6 @@ class StillImageTest < ActiveSupport::TestCase
     # ImageFile fixture for testing
     @@documentdata ||= fixture_file_upload('/files/white.jpg', 'image/jpeg')
     @new_image_file = { :uploaded_data => @@documentdata }
-
   end
 
   # load in sets of tests and helper methods
@@ -68,7 +67,6 @@ class StillImageTest < ActiveSupport::TestCase
   end
 
   def test_updates_image_file_locations_on_update
-
     # Create the scenario
     still_image = new_still_image({ :file_private => true }, { :file_private => true })
 
@@ -112,7 +110,6 @@ class StillImageTest < ActiveSupport::TestCase
     thumbnails_of(still_image).each do |image|
       assert_equal false, image.file_private?
     end
-
   end
 
   def test_should_have_relation_and_user_when_in_portraits
@@ -158,7 +155,6 @@ class StillImageTest < ActiveSupport::TestCase
     end
 
     context "supports the required methods needed by oembed and" do
-
       should "have ability to answer to title and have oembed_response.title" do
         assert @still_image.oembed_response.title
         assert_equal @still_image.title, @still_image.oembed_response.title
@@ -209,10 +205,9 @@ class StillImageTest < ActiveSupport::TestCase
         assert @still_image.oembed_response.thumbnail_width
         assert @still_image.oembed_thumbnail_width
       end
-
     end
-
   end
+
   private
 
     def new_still_image(still_image_options, image_file_options)

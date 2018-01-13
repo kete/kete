@@ -1,6 +1,5 @@
 require 'spec_helper'
 
-
 def exec_with_horowhenua_attachments
    old_overide_url = Rails.configuration.attachments_overide_url
     Rails.configuration.attachments_overide_url = 'http://horowhenua.kete.net.nz'
@@ -9,7 +8,6 @@ def exec_with_horowhenua_attachments
 end
 
 feature "Related Items" do
-
   it "are listed on a page" do
     visit "/en/site/topics/2453"
 

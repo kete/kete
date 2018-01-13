@@ -1,11 +1,8 @@
 require File.dirname(__FILE__) + '/integration_test_helper'
 
 class TopicPrivacyTest < ActionController::IntegrationTest
-
   context "A Kete instance" do
-
     setup do
-
       # Allow anyone to create baskets for the purposes of this test
       configure_environment do
         set_constant :BASKET_CREATION_POLICY, "open"
@@ -21,13 +18,11 @@ class TopicPrivacyTest < ActionController::IntegrationTest
     end
 
     context "when privacy controls are enabled" do
-
       setup do
         @@site_basket.update_attribute(:show_privacy_controls, true)
       end
 
       should "create a public topic" do
-
         new_topic do
           fill_in "topic[title]", :with => "Test Topic"
           fill_in "topic[short_summary]", :with => "A test summary"
@@ -44,7 +39,6 @@ class TopicPrivacyTest < ActionController::IntegrationTest
       end
 
       should "create a private topic" do
-
         new_topic do
           choose "Private"
           fill_in "topic[title]", :with => "Test Topic"
@@ -69,11 +63,9 @@ class TopicPrivacyTest < ActionController::IntegrationTest
         body_should_contain("A test description")
         body_should_contain("Public version (live)")
       end
-
     end
 
     context 'with private baskets and items of various privacies' do
-
       setup do
         @first_basket   = new_basket({ :name => "First basket",
                                        :show_privacy_controls_true => true })
@@ -128,7 +120,6 @@ class TopicPrivacyTest < ActionController::IntegrationTest
         end
       end
     end
-
   end
 
   private
@@ -140,5 +131,4 @@ class TopicPrivacyTest < ActionController::IntegrationTest
     def should_not_be_private(item)
       assert !item.private?, "#{item.class.name} instance expected not to be private, but it was:  #{item.inspect}."
     end
-
 end

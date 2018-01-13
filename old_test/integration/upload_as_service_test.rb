@@ -1,7 +1,6 @@
 require File.dirname(__FILE__) + '/integration_test_helper'
 
 class UploadAsServiceTest < ActionController::IntegrationTest
-
   context "The uploading an item as a service functionality" do
     [StillImage, AudioRecording, Video, Document].each do |klass|
       context "as a normal user, when Javascript is off, when requesting new form for #{klass.name}" do

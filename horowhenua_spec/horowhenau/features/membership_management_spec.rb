@@ -1,7 +1,6 @@
 require 'spec_helper'
 
 feature 'Membership management', js: true do
-
   scenario 'Admin can view membership list' do
     sign_in
     within '#basket-toolbox' do

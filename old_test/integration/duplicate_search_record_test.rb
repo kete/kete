@@ -5,9 +5,7 @@ require File.dirname(__FILE__) + '/integration_test_helper'
 
 class DuplicateSearchRecordTest < ActionController::IntegrationTest
   context "A Kete instance" do
-
     setup do
-
       # Clean the zebra instance because we rely heavily on checking in this in tests.
       bootstrap_zebra_with_initial_records
 
@@ -150,11 +148,9 @@ class DuplicateSearchRecordTest < ActionController::IntegrationTest
         eval(class_name).destroy_all
       end
     end
-
   end
 
   context "a couple of related topics without moderation" do
-
     setup do
       add_robert_as_regular_user
       add_roberta_as_regular_user
@@ -186,13 +182,11 @@ class DuplicateSearchRecordTest < ActionController::IntegrationTest
       update_and_check_search_results(@related_topic)
       should_appear_once_in_search_results(@topic)
     end
-
   end
 
   private
 
     def create_a_topic_with_a_related_topic(basket = @@site_basket, options = {})
-
       options = {
         :member => 'paul',
         :moderator => 'sarah'
@@ -247,5 +241,4 @@ class DuplicateSearchRecordTest < ActionController::IntegrationTest
     def is_fully_moderated?(basket)
       basket.settings[:fully_moderated].to_s == "true"
     end
-
 end

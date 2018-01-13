@@ -5,9 +5,7 @@ require File.dirname(__FILE__) + '/../test_helper'
 end
 
 class UserNotifierTest < ActionMailer::TestCase
-
   context "When sending an item_flagged_for email" do
-
     setup do
       @user = User.first
       UserNotifier.deliver_item_flagged_for(@user, 'http://www.example.com/', 'pending', @user, @user, 1, 'test message')
@@ -21,11 +19,9 @@ class UserNotifierTest < ActionMailer::TestCase
       assert @email_body.include?('http://www.example.com/')
       assert @email_body.include?('test message')
     end
-
   end
 
   context "When sending an pending_review_for email" do
-
     setup do
       @user = User.first
       UserNotifier.deliver_pending_review_for(1, @user)
@@ -36,11 +32,9 @@ class UserNotifierTest < ActionMailer::TestCase
       assert @email_body.include?(@user.user_name)
       assert @email_body.include?('Revision # 1 of this item is pending')
     end
-
   end
 
   context "When invoking the do_notifications_if_pending method" do
-
     setup do
       @user = User.first
       set_constant :FREQUENCY_OF_MODERATION_EMAIL, 'instant'
@@ -70,7 +64,5 @@ class UserNotifierTest < ActionMailer::TestCase
       assert email_body.include?('Revision # 1 of this item as pending')
       assert email_body.include?("http://www.example.com/site/topics/history/#{@topic.id}")
     end
-
   end
-
 end

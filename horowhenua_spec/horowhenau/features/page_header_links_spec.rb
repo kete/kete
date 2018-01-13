@@ -38,7 +38,6 @@ feature "Page Header Basket-Links" do
   end
 end
 
-
 feature "Links are not rendered as escaped html" do
   it "for basket Trevor Heath Photography basket" do
     visit "/"
@@ -68,7 +67,6 @@ feature "Page header navigation Links" do
     click_link "Browse"
     expect(page.status_code).to be(200)
     expect(current_url).to end_with("/en/site/search/all/?controller_name_for_zoom_class=Topic")
-
   end
 
   it "About can be followed" do
