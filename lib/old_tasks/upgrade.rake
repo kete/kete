@@ -236,7 +236,7 @@ namespace :kete do
 
     desc 'Ensure logins are valid before continuing (1.1 allowed spaces, 1.2 onwards does not).'
     task ensure_logins_all_valid: :environment do
-      users = User.all.collect { |user| (user.login =~ /\s/) ? user : nil }.compact.flatten
+      users = User.all.collect { |user| user.login =~ /\s/ ? user : nil }.compact.flatten
       users.each do |user|
         user.update_attributes!({ login: user.login.gsub(/\s/, '_') })
         UserNotifier.deliver_login_changed(user)
@@ -353,7 +353,7 @@ namespace :kete do
 
     desc 'Add the parent_id, lft, and rgt values to comments that were created before acts_as_nested_set was put in place'
     task add_nested_values_to_comments: :environment do
-      Comment.renumber_all if (Comment.count(conditions: { lft: nil }) > 0)
+      Comment.renumber_all if Comment.count(conditions: { lft: nil }) > 0
     end
 
     desc 'Migrate from older style related items inset booleans to newer related items position flags'

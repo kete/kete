@@ -403,7 +403,7 @@ module Importer
 
     def importer_prepare_short_summary(source_string, length = 25, end_string = '')
       # length is how many words, rather than characters
-      words = source_string.split()
+      words = source_string.split
       words[0..(length - 1)].join(' ') + (words.length > length ? end_string : '')
     end
 
@@ -881,7 +881,7 @@ module Importer
           record_hash.each do |record_field, record_value|
             if record_value.present? && importer_field_methods[record_field.downcase]
               field_modifier = eval(importer_field_methods[record_field.downcase])
-              args = (field_modifier.arity == 2) ? [record_value, record_hash] : [record_value]
+              args = field_modifier.arity == 2 ? [record_value, record_hash] : [record_value]
               parsed_value = Array(field_modifier.call(*args))
               additional_fields_derived_from_processing_values.merge!(parsed_value.last) if parsed_value.last.is_a?(Hash)
               record_hash[record_field] = parsed_value.first

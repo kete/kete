@@ -29,7 +29,7 @@ class BasketsControllerTest < ActionController::TestCase
 
     @req_attr_names = %w(name private_default file_private_default)
     # name of fields that must be present, e.g. %(name description)
-    @duplicate_attr_names = %w( ) # name of fields that cannot be a duplicate, e.g. %(name description)
+    @duplicate_attr_names = %w() # name of fields that cannot be a duplicate, e.g. %(name description)
   end
 
   def test_redirect_to_basket_all
@@ -39,7 +39,7 @@ class BasketsControllerTest < ActionController::TestCase
 
   def test_index_and_list
     get :index, index_path
-    assert_redirect_to( :action => 'list' )
+    assert_redirect_to(:action => 'list')
 
     get :list, index_path({ :action => 'list' })
     assert_viewing_template 'baskets/list'
@@ -58,7 +58,7 @@ class BasketsControllerTest < ActionController::TestCase
     create_record
     assert_var_assigned
     assert_attributes_same_as @new_model
-    assert_redirect_to( edit_path({ :urlified_name => assigns(:basket).urlified_name, :id => assigns(:basket).id }) )
+    assert_redirect_to(edit_path({ :urlified_name => assigns(:basket).urlified_name, :id => assigns(:basket).id }))
     assert_equal 'Basket was successfully created.', flash[:notice]
   end
 

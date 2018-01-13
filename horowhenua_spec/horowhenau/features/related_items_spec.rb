@@ -40,11 +40,11 @@ feature "Related Items" do
   it "links to related items" do
     visit "/en/site/topics/2453"
     find("#detail-linked-images").click_on "Mayor Duffy takes a sledge hammer to the old Countdown building"
-    expect(current_url).to  end_with "en/site/images/18040-mayor-duffy-takes-a-sledge-hammer-to-the-old-countdown-building"
+    expect(current_url).to end_with "en/site/images/18040-mayor-duffy-takes-a-sledge-hammer-to-the-old-countdown-building"
 
     visit "/en/site/topics/2453"
     find("#detail-linked-topics").click_on "Volunteers Demolition Team at Work"
-    expect(current_url).to  end_with "/en/site/topics/2477-volunteers-demolition-team-at-work"
+    expect(current_url).to end_with "/en/site/topics/2477-volunteers-demolition-team-at-work"
 
     visit "/en/site/topics/2453"
     find("#detail-linked-video").click_on("Salute to Fund Raisers")
@@ -131,10 +131,10 @@ feature "Related Items" do
 
   it "can remove linked images and topics", js: true do
     exec_with_horowhenua_attachments do
-      topic_titles = [ "Tararua Rodders Inc. 2013 Hot Rod Show", "Colin N. Webber" ]
-      image_titles = [ "Manakau School 125th Jubilee programme", "IMG_0850  Manakau School, The front entrance   20-10-2012" ]
-      topic_ids = [ 2736, 2713 ]
-      image_ids = [ 21544, 20764 ]
+      topic_titles = ["Tararua Rodders Inc. 2013 Hot Rod Show", "Colin N. Webber"]
+      image_titles = ["Manakau School 125th Jubilee programme", "IMG_0850  Manakau School, The front entrance   20-10-2012"]
+      topic_ids = [2736, 2713]
+      image_ids = [21544, 20764]
       main_topic = "/en/site/topics/2657-manakau-school-125th-jubilee-2013-and-dedication-ceremony-at-the-completion-of-the-jubilee"
 
       sign_in

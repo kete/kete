@@ -212,7 +212,7 @@ class ExtendedContentParser
       # [{:label => 'Something', :value => 'This'}, {:label => 'Another', :value => 'That'}]
       # ['This', 'That']
       # (or a combination of both). So in this case, lets collect the correct values before continuing
-      data_for_values.collect! { |v| (v.is_a?(Hash) && v['value']) ? v['value'] : v }.flatten.compact
+      data_for_values.collect! { |v| v.is_a?(Hash) && v['value'] ? v['value'] : v }.flatten.compact
 
       if data_for_values.empty?
         nil

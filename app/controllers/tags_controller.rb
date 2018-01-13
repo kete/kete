@@ -9,7 +9,7 @@ class TagsController < ApplicationController
     @order = params[:order] || @default_order
     @direction = params[:direction] || 'desc'
 
-    @current_page = (params[:page] && params[:page].to_i > 0) ? params[:page].to_i : 1
+    @current_page = params[:page] && params[:page].to_i > 0 ? params[:page].to_i : 1
     # clouds can accommodate more tags per page than category view
     @number_per_page = 75
     @number_per_page = 25 if @type == 'categories'

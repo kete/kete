@@ -36,7 +36,7 @@ class TopicTypesControllerTest < ActionController::TestCase
     create_record
     assert_var_assigned
     assert_attributes_same_as @new_model
-    assert_redirect_to( edit_path({ :id => assigns(:topic_type).id }) )
+    assert_redirect_to(edit_path({ :id => assigns(:topic_type).id }))
     assert_equal 'Topic type was successfully created.', flash[:notice]
   end
 

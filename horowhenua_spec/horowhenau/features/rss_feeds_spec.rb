@@ -3,7 +3,7 @@ require 'spec_helper'
 def update_timestamp(item)
   title = item.title
 
-  item.update_attribute(:title, title+"CHANGE")
+  item.update_attribute(:title, title + "CHANGE")
   item.update_attribute(:title, title)
 end
 

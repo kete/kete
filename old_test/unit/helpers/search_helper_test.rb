@@ -17,7 +17,7 @@ class SearchHelperTest < ActionView::TestCase
 
     should "correctly return an array of zoom types and their results size" do
       @current_class = 'Topic'
-      @result_sets = { 'Topic' => [], 'WebLink' => [1,2,3] }
+      @result_sets = { 'Topic' => [], 'WebLink' => [1, 2, 3] }
       assert_equal ['<a href="/en/site/all/web_links/" tabindex="1">3 Web links</a>'], other_results
     end
   end

@@ -523,7 +523,7 @@ class ApplicationController < ActionController::Base
     require 'hpricot'
     source_string = source_string.to_s
     # length is how many words, rather than characters
-    words = source_string.split()
+    words = source_string.split
     short_summary = words[0..(length - 1)].join(' ') + (words.length > length ? end_string : '')
 
     # make sure that tags are closed

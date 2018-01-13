@@ -208,7 +208,7 @@ end
 # Loops over item privacy and extended field data and create an item. Pass in
 # the zoom class of the item to be made, the ef_data array, and an options hash
 # passed to the factory on item creation.
-def populate_extended_field_data_for(zoom_class, ef_data, options={})
+def populate_extended_field_data_for(zoom_class, ef_data, options = {})
   [true, false].each do |is_private|
      Factory(zoom_class.tableize.singularize.to_sym, { :extended_content => ef_data.join, :private => is_private }.merge(options))
   end

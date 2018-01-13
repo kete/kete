@@ -67,7 +67,7 @@ class ApplicationHelperTest < ActionView::TestCase
   context "The open_search_metadata" do
     should "return correctly formatted XHTML" do
       @current_class = "Topic"
-      @result_sets = { @current_class => [1,2,3] }
+      @result_sets = { @current_class => [1, 2, 3] }
       @current_page = 2
       @number_per_page = 1
 

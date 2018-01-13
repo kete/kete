@@ -67,7 +67,7 @@ class MemberListTest < ActionController::IntegrationTest
       ['Logged in user', 'logged in', 'john'],
       ['All users', 'all users', nil]
     ]
-    member_roles.each_with_index do |role,index|
+    member_roles.each_with_index do |role, index|
       title, at_least, user = role[0], role[1], role[2]
       context "when view policy is set to #{at_least}" do
         setup do

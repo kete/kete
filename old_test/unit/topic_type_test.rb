@@ -3,7 +3,7 @@ require File.dirname(__FILE__) + '/../test_helper'
 class TopicTypeTest < ActiveSupport::TestCase
   # fixtures preloaded
 
-  NEW_TOPIC_TYPE = {:name => 'Test TopicType', :description => 'Dummy', :parent_id => 1}
+  NEW_TOPIC_TYPE = { :name => 'Test TopicType', :description => 'Dummy', :parent_id => 1 }
   REQ_ATTR_NAMES       = %w(name description) # name of fields that must be present, e.g. %(name description)
   DUPLICATE_ATTR_NAMES = %w(name) # name of fields that cannot be a duplicate, e.g. %(name description)
 
@@ -23,7 +23,7 @@ class TopicTypeTest < ActiveSupport::TestCase
     else
       # If TopicType has validation, then use the following:
       assert !topic_type.valid?, "TopicType should not be valid without initialisation parameters"
-      REQ_ATTR_NAMES.each {|attr_name| assert topic_type.errors.invalid?(attr_name.to_sym), "Should be an error message for :#{attr_name}"}
+      REQ_ATTR_NAMES.each { |attr_name| assert topic_type.errors.invalid?(attr_name.to_sym), "Should be an error message for :#{attr_name}" }
     end
   end
 
@@ -85,7 +85,7 @@ class TopicTypeTest < ActiveSupport::TestCase
     mapping =
       TopicTypeToFieldMapping.find(:first,
                                    :conditions => ["extended_field_id = :extended_field_id and topic_type_id = :topic_type_id",
-                                                   {:extended_field_id => @name_field.id, :topic_type_id => @organization_type.id }] )
+                                                   { :extended_field_id => @name_field.id, :topic_type_id => @organization_type.id }])
     assert_equal @organization_type.form_fields.size, mapping.position
     assert !mapping.required?, "The default for required in form_fields should be false or nil."
   end
@@ -101,7 +101,7 @@ class TopicTypeTest < ActiveSupport::TestCase
       mapping =
         TopicTypeToFieldMapping.find(:first,
                                      :conditions => ["extended_field_id = :extended_field_id and topic_type_id = :topic_type_id",
-                                                     {:extended_field_id => field.id, :topic_type_id => @organization_type.id }] )
+                                                     { :extended_field_id => field.id, :topic_type_id => @organization_type.id }])
       test_position = mapping.position.to_i
       last_position = test_position
       assert test_position <= last_position, "form_fields not listed in order of position"
@@ -116,7 +116,7 @@ class TopicTypeTest < ActiveSupport::TestCase
     mapping =
       TopicTypeToFieldMapping.find(:first,
                                    :conditions => ["extended_field_id = :extended_field_id and topic_type_id = :topic_type_id",
-                                                   {:extended_field_id => @city_field.id, :topic_type_id => @organization_type.id }] )
+                                                   { :extended_field_id => @city_field.id, :topic_type_id => @organization_type.id }])
     assert_equal @organization_type.form_fields.size, mapping.position
     assert mapping.required?, "The default for required in required_form_fields should be true."
   end
@@ -132,7 +132,7 @@ class TopicTypeTest < ActiveSupport::TestCase
       mapping =
         TopicTypeToFieldMapping.find(:first,
                                      :conditions => ["extended_field_id = :extended_field_id and topic_type_id = :topic_type_id",
-                                                     {:extended_field_id => field.id, :topic_type_id => @organization_type.id }] )
+                                                     { :extended_field_id => field.id, :topic_type_id => @organization_type.id }])
       test_position = mapping.position.to_i
       last_position = test_position
       assert test_position <= last_position, "required_form_fields not listed in order of position"
@@ -143,7 +143,7 @@ class TopicTypeTest < ActiveSupport::TestCase
   def test_available_fields_not_already_mapped
     @organization_type.available_fields.each do |field|
       fcount = TopicTypeToFieldMapping.count :conditions => ["extended_field_id = :extended_field_id and topic_type_id = :topic_type_id",
-                                              {:extended_field_id => field.id, :topic_type_id => @organization_type.id }]
+                                              { :extended_field_id => field.id, :topic_type_id => @organization_type.id }]
       assert_equal fcount, 0, "There is a field listed in available_fields that has already been mapped to this topic_type."
     end
   end

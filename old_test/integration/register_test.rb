@@ -13,10 +13,10 @@ class RegisterTest < ActionController::IntegrationTest
                  :user_password_confirmation => 'test',
                  :user_display_name => 'Test',
                  :user_security_code => 'SECURITY' }
-      fields.each { |name,value| fill_in name.to_s, :with => '' }
+      fields.each { |name, value| fill_in name.to_s, :with => '' }
       click_button 'Sign up'
       body_should_contain '11 errors prohibited this user from being saved'
-      fields.each { |name,value| fill_in name.to_s, :with => value }
+      fields.each { |name, value| fill_in name.to_s, :with => value }
       check 'user_agree_to_terms'
       click_button 'Sign up'
       body_should_contain '1 error prohibited this user from being saved'

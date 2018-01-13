@@ -70,7 +70,7 @@ class ActionController::IntegrationTest
   # (see <tt>logout</tt>) visiting the root path (site basket homepage) and clicking the link "Login" in the
   # header. Then fill in fields and click "Log in" Takes required username, and optional password, whether to
   # navigate to login (not needed if we're there already) and whether we are expecting this login to fail
-  def login_as(username, password='test', options = {})
+  def login_as(username, password = 'test', options = {})
     options = { :navigate_to_login => false,
                 :by_form => false,
                 :logout_first => false,
@@ -159,7 +159,7 @@ class ActionController::IntegrationTest
     response_body = response.body.squish
     parts = response_body.split(divider).compact.flatten
     offset = options[:offset] ? options[:offset] : 0
-    parts.each_with_index do |part,index|
+    parts.each_with_index do |part, index|
       next if (index - offset) < 0 || text_array[(index - offset)].nil?
       assert part.include?(text_array[(index - offset)]), "#{text_array[(index - offset)]} is not in the right order it should be."
     end
@@ -442,7 +442,7 @@ class ActionController::IntegrationTest
 
   # Quick and easy flagging for any item
   # Takes item object and flag string/symbol
-  def flag_item_with(item, flag, version=nil)
+  def flag_item_with(item, flag, version = nil)
     version ||= item.version
     visit "/#{item.basket.urlified_name}/#{zoom_class_controller(item.class.name)}/flag_form/#{item.id}?flag=#{flag.to_s}&version=#{version}"
     fill_in 'message_', :with => 'Testing'
@@ -631,7 +631,7 @@ class ActionController::IntegrationTest
   #   add_[name] (e.g. add_jill, add jill but without any roles on any baskets)
   # Each user action automatically assigns an instance variable by the same name as the one provided in the method declaration
   # If a method doesn't match any of these, it is passed up to the super (parent) method_missing declaration
-  def method_missing( method_sym, *args, &block )
+  def method_missing(method_sym, *args, &block)
     method_name = method_sym.to_s
     if method_name =~ /^new_(\w+)$/
       # new_topic / new_audio_recording
@@ -651,7 +651,7 @@ class ActionController::IntegrationTest
       # can take single basket, or an array of them
       baskets = args[0] || Array.new
       args = args[1] || Hash.new
-      @user = create_new_user({:login => $1}.merge(args))
+      @user = create_new_user({ :login => $1 }.merge(args))
       baskets = [baskets] unless baskets.kind_of?(Array)
       baskets.each { |basket| @user.has_role($2, basket) }
       @@users_created << @user
@@ -659,7 +659,7 @@ class ActionController::IntegrationTest
     elsif method_name =~ /^add_(\w+)_as_super_user$/
       # add_bob_as_super_user
       args = args[0] || Hash.new
-      @user = create_new_user({:login => $1}.merge(args))
+      @user = create_new_user({ :login => $1 }.merge(args))
       @user.has_role('site_admin', @@site_basket)
       @user.has_role('tech_admin', @@site_basket)
       Basket.all(:conditions => ["id != 1"]).each { |basket| @user.has_role('admin', basket) }
@@ -675,7 +675,7 @@ class ActionController::IntegrationTest
         add_to_baskets = true
       end
       args = args[0] || Hash.new
-      @user = create_new_user({:login => login}.merge(args))
+      @user = create_new_user({ :login => login }.merge(args))
       @user.add_as_member_to_default_baskets if add_to_baskets
       @@users_created << @user
       eval("@#{login} = @user")
@@ -709,7 +709,7 @@ class ActionController::IntegrationTest
   # If a field isn't supported here, it will raise and exception.
   # The field can still be added via the block syntax that add_item takes
   def get_webrat_actions_from(hash, field_prefix)
-    hash.each do |key,value|
+    hash.each do |key, value|
       if value.kind_of?(String)
         fill_in "#{field_prefix}_#{key.to_s}", :with => value.to_s
       elsif value.is_a?(TrueClass)
@@ -733,7 +733,7 @@ class ActionController::IntegrationTest
   # as if checkboxes of ids with value true
   def item_checkbox_hash_from(*ids)
     item_checkbox_hash = Hash.new
-    ids.each { |id| item_checkbox_hash[id.to_s] = "true"}
+    ids.each { |id| item_checkbox_hash[id.to_s] = "true" }
     item_checkbox_hash
   end
 

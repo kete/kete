@@ -47,5 +47,5 @@ else
   require RAILS_HOME + '/config/environment'
   require 'bdrb_job_queue'
   require 'backgroundrb_server'
-  BackgrounDRb::MasterProxy.new()
+  BackgrounDRb::MasterProxy.new
 end

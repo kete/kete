@@ -82,7 +82,7 @@ class ProfilesControllerTest < ActionController::TestCase
   private
 
   def create_profile
-    random = rand()
+    random = rand
     post :create, :urlified_name => @urlified_name,
                   :record => {
                     :name => "Test Profile #{random}",

@@ -12,7 +12,7 @@ namespace :rabid do
       primary_acc, *alias_accs = *accounts # primary account is assumed to be the first account
 
       log("User #{primary_acc.id} is chosen as primary account")
-      log ("Users #{alias_accs.map(&:id)} are alias accounts")
+      log "Users #{alias_accs.map(&:id)} are alias accounts"
 
       alias_accs.each do |alias_acc|
         log('Contribution')
