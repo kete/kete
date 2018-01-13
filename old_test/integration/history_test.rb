@@ -45,7 +45,7 @@ class HistoryTest < ActionController::IntegrationTest
 
   private
 
-  def old_login_as(username, password='test', options = {})
+  def old_login_as(username, password = 'test', options = {})
     options = { :navigate_to_login => true,
                 :should_fail_login => false }.merge(options)
     if options[:navigate_to_login]
