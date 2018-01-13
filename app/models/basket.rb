@@ -557,7 +557,7 @@ class Basket < ActiveRecord::Base
 
   # get the current basket join policy. If nil, use the site baskets
   def join_policy_with_inheritance
-    (!setting(:basket_join_policy).blank?) ? setting(:basket_join_policy) : site_basket.setting(:basket_join_policy)
+    !setting(:basket_join_policy).blank? ? setting(:basket_join_policy) : site_basket.setting(:basket_join_policy)
   end
 
   # get a list of administrators (including site administrators

@@ -8,7 +8,7 @@
 require 'yaml'
 require 'active_support/inflector'
 
-def main()
+def main
   yaml_text = File.read('../config/locales/en.yml')
 
   normaliser = LocaleFileNormaliser.new(yaml_text)
@@ -53,13 +53,13 @@ class LocaleFileNormaliser
 
   def process_gsub_pluralize_capitalize(pair)
     search_key = "{{t.#{pair[0]}.pluralize.capitalize}}"
-    replace_value = "#{pair[1].pluralize().capitalize()}"
+    replace_value = "#{pair[1].pluralize.capitalize}"
     @yaml_text.gsub!(search_key, replace_value)
   end
 
   def process_gsub_capitalize_pluralize(pair)
     search_key = "{{t.#{pair[0]}.capitalize.pluralize}}"
-    replace_value = "#{pair[1].capitalize().pluralize()}"
+    replace_value = "#{pair[1].capitalize.pluralize}"
     @yaml_text.gsub!(search_key, replace_value)
   end
 
