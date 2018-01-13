@@ -1,16 +1,13 @@
 require File.dirname(__FILE__) + '/integration_test_helper'
 
 class AddItemTest < ActionController::IntegrationTest
-
   context "The add item functionality" do
-
     setup do
       add_admin_as_super_user
       login_as('admin')
     end
 
     context "as admin, when Javascript is off" do
-
       # TODO: this doesn't actually complete the process
       # it just tests the form
       # we should probably add tests for bad data (missing title) that should receive validation error
@@ -37,7 +34,6 @@ class AddItemTest < ActionController::IntegrationTest
     end
 
     context "as a normal user, when Javascript is off" do
-
       # TODO: this doesn't actually complete the process
       # it just tests the form
       # we should probably add tests for bad data (missing title) that should receive validation error

@@ -1,7 +1,6 @@
 require File.dirname(__FILE__) + '/../test_helper'
 
 class ImagesControllerTest < ActionController::TestCase
-
   # Load fixtures for users for login..
   fixtures :users
 
@@ -9,7 +8,6 @@ class ImagesControllerTest < ActionController::TestCase
   include ItemPrivacyTestHelper::TestHelper
 
   def setup
-
     # Base class of the model
     @base_class = "Images" # No actual Images class, just used to load Controller
 
@@ -21,7 +19,6 @@ class ImagesControllerTest < ActionController::TestCase
     # hash of params to create new instance of model, e.g. {:name => 'Test Model', :description => 'Dummy'}
     @new_still_image  = { :title => 'test still image', :basket_id => Basket.find(:first) }
     @new_image_file   = { :uploaded_data => @@documentdata }
-
   end
 
   def test_new
@@ -124,6 +121,4 @@ class ImagesControllerTest < ActionController::TestCase
     def original_of(still_image)
       still_image.original_file
     end
-
-
 end

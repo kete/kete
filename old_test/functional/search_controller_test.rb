@@ -1,7 +1,6 @@
 require File.dirname(__FILE__) + '/../test_helper'
 
 class SearchControllerTest < ActionController::TestCase
-
   include KeteTestFunctionalHelper
 
   def setup
@@ -90,7 +89,6 @@ class SearchControllerTest < ActionController::TestCase
   end
 
   context "Saved searches functionality" do
-
     setup do
       @admin = User.find_by_login('admin')
       @urlified_name = Basket.site_basket.urlified_name
@@ -121,7 +119,6 @@ class SearchControllerTest < ActionController::TestCase
       assert_equal 1, @admin.searches.size
       assert @admin.searches.first.url =~ /\/site\/all\/topics$/
     end
-
   end
 
   context "Parsing a date in preparation for searching on it" do

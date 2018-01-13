@@ -33,8 +33,10 @@ module BackgrounDRb
   class WorkerDummyLogger
     def info(data)
     end
+
     def debug(data)
     end
+
     def error(data)
     end
   end

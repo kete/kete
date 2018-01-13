@@ -1,9 +1,7 @@
 require File.dirname(__FILE__) + '/integration_test_helper'
 
 class SiteLockdownAuthTest < ActionController::IntegrationTest
-
   context "When viewing various pages, and" do
-
     setup do
       add_alice_as_regular_user
       login_as('alice')
@@ -16,7 +14,6 @@ class SiteLockdownAuthTest < ActionController::IntegrationTest
     end
 
     context "when a site has http credentials, it" do
-
       setup do
         configure_environment do
           set_constant :SITE_LOCKDOWN, { :username => 'test', :password => 'test' }
@@ -45,11 +42,9 @@ class SiteLockdownAuthTest < ActionController::IntegrationTest
           body_should_contain 'HTTP Basic: Access denied.'
         end
       end
-
     end
 
     context "when a site does not have HTTP Auth Credentials, it" do
-
       setup do
         configure_environment do
           set_constant :SITE_LOCKDOWN, {}
@@ -63,9 +58,6 @@ class SiteLockdownAuthTest < ActionController::IntegrationTest
           body_should_contain 'Kete'
         end
       end
-
     end
-
   end
-
 end

@@ -96,7 +96,6 @@ class DocumentTest < ActiveSupport::TestCase
   end
 
   def test_acts_as_taggable_abides_by_separate_contexts_when_deleting
-
     # This test case fails due to a bug in acts_as_taggable_on
 
     # Create a new document to test with
@@ -133,5 +132,4 @@ class DocumentTest < ActiveSupport::TestCase
     assert_equal ["a", "b", "c"], document.tags_on(:private_tags).map(&:name).sort
     assert_equal ["x", "y", "z"], document.tags_on(:public_tags).map(&:name).sort
   end
-
 end

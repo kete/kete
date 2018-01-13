@@ -1,7 +1,6 @@
 require File.dirname(__FILE__) + '/../test_helper'
 
 class ImportersControllerTest < ActionController::TestCase
-
   include KeteTestFunctionalHelper
 
   def setup

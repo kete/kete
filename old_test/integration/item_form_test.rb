@@ -1,18 +1,15 @@
 require File.dirname(__FILE__) + '/integration_test_helper'
 
 class ItemFormTest < ActionController::IntegrationTest
-
   # test each item add/edit/delete forms
 
   context "The update functionality" do
-
     setup do
       add_july_as_regular_user
       login_as(:july)
     end
 
     context "when changing the topic type" do
-
       setup do
         @topic = new_topic
         visit "/#{@topic.basket.urlified_name}/topics/edit/#{@topic.id}"
@@ -32,13 +29,10 @@ class ItemFormTest < ActionController::IntegrationTest
         body_should_contain 'Revision History'
         body_should_contain 'Changed Topic Type from Topic to Person'
       end
-
     end
-
   end
 
   context "The delete functionality in production mode" do
-
     setup do
       enable_production_mode
       add_paul_as_super_user
@@ -60,7 +54,5 @@ class ItemFormTest < ActionController::IntegrationTest
       visit "/#{@topic.basket.urlified_name}/topics/show/#{@topic.id}"
       body_should_contain '404 Error!'
     end
-
   end
-
 end

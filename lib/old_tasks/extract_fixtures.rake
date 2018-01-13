@@ -10,7 +10,6 @@ namespace :db do
   desc 'Create YAML fixtures from data in an existing database.
   Default output to test/fixtures, but you can specify another location by
   setting ENV\[\'OUTPUT_FIXTURES_TO_PATH\'\] (no trailing /).
-
   Defaults to development database.  Set RAILS_ENV to override.'
 
   # modified to dump to either db/bootstrap or test/fixtures

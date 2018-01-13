@@ -26,10 +26,8 @@ class CommentTest < ActiveSupport::TestCase
 
   context "A comment created by an anonymous user" do
     setup do
-
     end
     should "have an email address stored for the contribution that resolves to user address" do
     end
   end
-
 end

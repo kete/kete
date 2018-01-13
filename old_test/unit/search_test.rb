@@ -151,7 +151,6 @@ class SearchTest < ActiveSupport::TestCase
   #
 
   context "Previous search functionality" do
-
     setup do
       @search_options = { :title => 'Custom Search', :url => "http://something.com/#{rand}" }
       @user1 = create_new_user(:login => 'User1')
@@ -193,7 +192,5 @@ class SearchTest < ActiveSupport::TestCase
 
       assert_equal [search3, search2, search1], @user1.searches.all
     end
-
   end
-
 end

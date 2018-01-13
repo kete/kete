@@ -1,7 +1,6 @@
 require File.dirname(__FILE__) + '/../test_helper'
 
 class CommentsControllerTest < ActionController::TestCase
-
   include KeteTestFunctionalHelper
 
   def setup
@@ -32,7 +31,6 @@ class CommentsControllerTest < ActionController::TestCase
       :security_code_confirmation => 'test',
       :locale => 'en'
     }
-
 
     @closed_basket  = Basket.create!(@new_basket_model.merge({ :allow_non_member_comments => false, :name => "closed basket", :status => 'approved', :creator_id => 1 }))
     @open_basket    = Basket.create!(@new_basket_model.merge({ :allow_non_member_comments => true, :name => "open basket", :status => 'approved', :creator_id => 1 }))
@@ -113,5 +111,4 @@ class CommentsControllerTest < ActionController::TestCase
     assert_response :redirect
     assert_redirected_to :urlified_name => "about", :controller => "topics", :action => "show", :id => Topic.find(1), :locale => false, :anchor => assigns(:comment).to_anchor
   end
-
 end

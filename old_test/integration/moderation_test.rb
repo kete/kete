@@ -2,9 +2,7 @@ require File.dirname(__FILE__) + '/integration_test_helper'
 
 class ModerationTest < ActionController::IntegrationTest
   context "a Kete instance" do
-
     setup do
-
       # Clean the zebra instance because we rely heavily on checking in this in tests.
       bootstrap_zebra_with_initial_records
 
@@ -24,7 +22,6 @@ class ModerationTest < ActionController::IntegrationTest
     end
 
     context "a fully moderated basket" do
-
       setup do
         turn_on_full_moderation(@basket)
         login_as('paul', 'test', { :logout_first => true })
@@ -53,9 +50,7 @@ class ModerationTest < ActionController::IntegrationTest
     # end
 
     context "a topic with several revisions, one of which is invalid due to an additional extended field" do
-
       setup do
-
         @basket = new_basket :name => "Moderation test basket" do
           select 'moderator views before item approved', :from => 'settings_fully_moderated'
         end
@@ -137,7 +132,6 @@ class ModerationTest < ActionController::IntegrationTest
       end
 
       context "as a moderator" do
-
         setup do
           add_jenny_as_moderator_to(@basket)
           login_as('jenny', 'test', { :logout_first => true })
@@ -164,9 +158,7 @@ class ModerationTest < ActionController::IntegrationTest
           click_link I18n.t('topics.preview_actions.delete_all_versions')
           assert_equal "http://www.example.com/en/moderation_test_basket/all/topics/", current_url
         end
-
       end
-
     end
 
     teardown do
@@ -174,7 +166,6 @@ class ModerationTest < ActionController::IntegrationTest
         eval(class_name).destroy_all
       end
     end
-
   end
 
   private
@@ -182,7 +173,6 @@ class ModerationTest < ActionController::IntegrationTest
     # Some macros
 
     def create_a_new_pending_topic_and_accept_it
-
       # Create a new topic, which should be moderated since Paul is only a normal basket member.
       @topic = new_topic({ :title => "Test moderated topic" }, @basket)
       latest_version_should_be_pending(@topic)
@@ -265,5 +255,4 @@ class ModerationTest < ActionController::IntegrationTest
 
       return TopicType.last
     end
-
 end

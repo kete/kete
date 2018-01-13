@@ -47,7 +47,6 @@ class ContentRelationTest < ActiveSupport::TestCase
 
     assert_equal Topic.find(2), Topic.find(1).child_related_topics.first
     assert_equal Topic.find(1), Topic.find(2).parent_related_topics.first
-
   end
 
   def test_soft_delete
@@ -56,7 +55,6 @@ class ContentRelationTest < ActiveSupport::TestCase
   end
 
   def test_deleting_one_side_of_the_relation_deletes_relation_from_related_item_side
-
     # Do the necessary set up
     assert_kind_of Topic, Topic.find(1)
     topic = Topic.create(@new_topic_model)
@@ -85,7 +83,6 @@ class ContentRelationTest < ActiveSupport::TestCase
   end
 
   def test_deleting_one_side_of_the_relation_deletes_relation_from_related_item_side2
-
     # Do the necessary set up
     assert_kind_of Topic, Topic.find(1)
     web_link = WebLink.create(@new_web_link_model)
@@ -115,7 +112,6 @@ class ContentRelationTest < ActiveSupport::TestCase
   end
 
   def test_deleting_one_side_of_the_relation_deletes_relation_from_topic_side
-
     # Do the necessary set up
     assert_kind_of Topic, Topic.find(1)
     topic = Topic.create(@new_topic_model)
@@ -216,7 +212,6 @@ class ContentRelationTest < ActiveSupport::TestCase
     assert_equal [parent, child], subject.related_topics(true)
   end
 
-
   private
 
     def create_topic_set(number_of_topics)
@@ -226,7 +221,6 @@ class ContentRelationTest < ActiveSupport::TestCase
       end
       array
     end
-
 
   # James - 2008-06-13
   # Does not pass, unsure why right now; model attributes are identical.
@@ -238,5 +232,4 @@ class ContentRelationTest < ActiveSupport::TestCase
   #
   #   assert_soft_delete_models_are_equal a, b
   # end
-
 end

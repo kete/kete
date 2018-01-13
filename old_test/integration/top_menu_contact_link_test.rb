@@ -12,7 +12,6 @@ class TopMenuContactLinkTest < ActionController::IntegrationTest
       end
     end
 
-
     context "when Contact Email is set, but Contact URL is not set" do
       should "be a mailto link to the designated email address" do
         visit "/"

@@ -1,6 +1,5 @@
 # Mock for captcha
 class Captcha
-
   attr_accessor :id
   attr_accessor :imageblob
 
@@ -22,5 +21,4 @@ class Captcha
       return self.new
     end
   end
-
 end

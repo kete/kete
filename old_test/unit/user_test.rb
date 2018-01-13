@@ -25,7 +25,6 @@ class UserTest < ActiveSupport::TestCase
     @req_attr_names = %w(login email agree_to_terms security_code password password_confirmation locale)
     # name of fields that cannot be a duplicate, e.g. %(name description)
     @duplicate_attr_names = %w(login)
-
   end
 
   # load in sets of tests and helper methods
@@ -115,7 +114,6 @@ class UserTest < ActiveSupport::TestCase
   # Override constant setting so we can test
   # activation code is generated.
   def test_should_generate_activation_code
-
     Object.send(:remove_const, :REQUIRE_ACTIVATION)
     Object.send(:const_set, :REQUIRE_ACTIVATION, true)
 
@@ -143,7 +141,6 @@ class UserTest < ActiveSupport::TestCase
   end
 
   context "When dealing with display/resolved names, a user" do
-
     should "have the resolved name populated on save" do
       user = create_user({ :login => 'user100' })
       assert_equal 'user100', user.login
@@ -161,7 +158,6 @@ class UserTest < ActiveSupport::TestCase
       assert_equal 'User 102', user.resolved_name
       assert_equal 'User 102', user.user_name
     end
-
   end
 
   context "After a site is configured there" do
@@ -191,7 +187,6 @@ class UserTest < ActiveSupport::TestCase
       assert_equal anonymous.website, website
     end
   end
-
 
   protected
 

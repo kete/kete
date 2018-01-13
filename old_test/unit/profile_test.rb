@@ -15,18 +15,15 @@ class ProfileTest < ActiveSupport::TestCase
   should validate_presence_of :name
 
   context "The Profile class" do
-
     should "have valid type_options" do
       options_spec = [['None', 'none'],
                        ['All', 'all'],
                        ['Select Below', 'some']]
       assert_equal Profile.type_options, options_spec
     end
-
   end
 
   context "A Profile" do
-
     should "be able to set and get the rules during creation" do
       the_form = Basket.forms_options.first[1]
       the_type = Profile.type_options.first[1]
@@ -42,7 +39,6 @@ class ProfileTest < ActiveSupport::TestCase
     end
 
     context "after being created" do
-
       setup do
         @profile = Factory(:profile)
       end
@@ -83,9 +79,6 @@ class ProfileTest < ActiveSupport::TestCase
         assert !profile.authorized_for_destroy?
         assert !profile.authorized_for?(:action => :destroy)
       end
-
     end
-
   end
-
 end

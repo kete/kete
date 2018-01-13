@@ -1,7 +1,6 @@
 require 'spec_helper'
 
 feature "Users can CRUD videos" do
-
   def create_video(attrs = nil)
     if attrs.nil?
       attrs = {
