@@ -133,6 +133,6 @@ end
 #
 Factory.define :web_link do |w|
   w.title 'Web Link'
-  w.sequence(:url) {|n| "http://google.co.nz/#{rand}" }
+  w.sequence(:url) { |n| "http://google.co.nz/#{rand}" }
   w.basket_id 1
 end

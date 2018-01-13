@@ -231,7 +231,7 @@ class ModerationViewsTest < ActionController::IntegrationTest
     end
 
     should "work as expected and block access to moderators or above" do
-      %w{ admin sally }.each do |user|
+      %w{admin sally}.each do |user|
         login_as(user)
         visit "/site/topics/history/#{@topic.id}"
         body_should_contain 'preview' # rev 1

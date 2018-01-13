@@ -18,8 +18,8 @@ class ImageFilesTest < ActiveSupport::TestCase
     @@documentdata ||= fixture_file_upload('/files/white.jpg', 'image/jpeg')
 
     options_for_still_image = { :title => 'test still image', :basket => Basket.find(:first) }
-    @public_still_image =  StillImage.create(options_for_still_image.merge({ :file_private => false }))
-    @private_still_image =  StillImage.create(options_for_still_image.merge({ :file_private => true }))
+    @public_still_image = StillImage.create(options_for_still_image.merge({ :file_private => false }))
+    @private_still_image = StillImage.create(options_for_still_image.merge({ :file_private => true }))
 
     # hash of params to create new instance of model, e.g. {:name => 'Test Model', :description => 'Dummy'}
     @new_model = { :uploaded_data => @@documentdata, :still_image_id => @public_still_image.id }

@@ -20,7 +20,7 @@ class AudioRecordingTest < ActiveSupport::TestCase
       :uploaded_data => @@audiodata
     }
     @req_attr_names = %w(title) # name of fields that must be present, e.g. %(name description)
-    @duplicate_attr_names = %w( ) # name of fields that cannot be a duplicate, e.g. %(name description)
+    @duplicate_attr_names = %w() # name of fields that cannot be a duplicate, e.g. %(name description)
 
     # Name of the folder we expect files to be saved to
     @uploads_folder = 'audio'

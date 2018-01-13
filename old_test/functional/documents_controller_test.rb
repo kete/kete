@@ -61,7 +61,7 @@ class DocumentsControllerTest < ActionController::TestCase
   # they are shown the most recent public version.
   def test_show_public
     # Create the first (public version)
-    id = create_record({ :private => false, :description => "Public version"})
+    id = create_record({ :private => false, :description => "Public version" })
 
     # Create a new public version
     login_as(:admin)
@@ -110,7 +110,7 @@ class DocumentsControllerTest < ActionController::TestCase
   # they are shown the most recent version (regardless of privacy)
   def test_show_private
     # Create the first (public version)
-    id = create_record({ :private => false, :description => "Public version"})
+    id = create_record({ :private => false, :description => "Public version" })
 
     # Create a new public version
     login_as(:admin)
@@ -142,7 +142,7 @@ class DocumentsControllerTest < ActionController::TestCase
   # with public=true, they are shown the most recent public version
   def test_show_private
     # Create the first (public version)
-    id = create_record({ :private => false, :description => "Public version"})
+    id = create_record({ :private => false, :description => "Public version" })
 
     # Create a new public version
     login_as(:admin)

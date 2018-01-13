@@ -11,7 +11,7 @@ class Object
       attr_accessor *args
       args.each do |attr|
         define_method("set_#{attr}") do |b_value|
-          self.send("#{attr}=",b_value)
+          self.send("#{attr}=", b_value)
         end
       end
     end
@@ -22,7 +22,7 @@ class Object
           self.class.send(attr)
         end
         define_method("#{attr}=") do |b_value|
-          self.class.send("#{attr}=",b_value)
+          self.class.send("#{attr}=", b_value)
         end
       end
     end
@@ -55,7 +55,7 @@ module BackgrounDRb
   end
 
   class ThreadPool
-    def defer(args,&block)
+    def defer(args, &block)
       yield args
     end
   end

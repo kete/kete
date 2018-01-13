@@ -12,7 +12,7 @@ class SearchTest < ActiveSupport::TestCase
       :user_specified => nil,
       :direction => nil,
       :action => 'all',
-      :search_terms => nil}
+      :search_terms => nil }
 
     @sort_stub = '@attr 7='
   end
@@ -121,7 +121,7 @@ class SearchTest < ActiveSupport::TestCase
     Search.sort_types.each do |sort_type|
       method_name = "test_add_sort_to_query_if_needed_should_be_" + sort_type
 
-      local_options = { :user_specified => sort_type, :action => 'all'}
+      local_options = { :user_specified => sort_type, :action => 'all' }
 
       define_method(method_name) do
         options = @options.merge(local_options)
@@ -131,7 +131,7 @@ class SearchTest < ActiveSupport::TestCase
       end
 
       method_name += '_reverse'
-      local_options = local_options.merge({ :direction => 'reverse'})
+      local_options = local_options.merge({ :direction => 'reverse' })
       correct_reverse_sort_direction_value = Search.date_types.include?(sort_type) ? 1 : 2
 
       define_method(method_name) do

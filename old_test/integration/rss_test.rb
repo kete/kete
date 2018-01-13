@@ -74,7 +74,7 @@ class RssTest < ActionController::IntegrationTest
     end
 
     should "escape title and short summary" do
-      @item = new_topic({:title => 'This <or> That', :short_summary => 'This <and> that'})
+      @item = new_topic({ :title => 'This <or> That', :short_summary => 'This <and> that' })
       visit "/site/all/topics/rss.xml"
       body_should_contain "Latest 50 Results in topics"
       body_should_contain @item.title

@@ -17,7 +17,7 @@ class StillImageTest < ActiveSupport::TestCase
     # name of fields that must be present, e.g. %(name description)
     @req_attr_names = %w(title)
     # name of fields that cannot be a duplicate, e.g. %(name description)
-    @duplicate_attr_names = %w( )
+    @duplicate_attr_names = %w()
 
     # ImageFile fixture for testing
     @@documentdata ||= fixture_file_upload('/files/white.jpg', 'image/jpeg')
