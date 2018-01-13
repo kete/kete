@@ -166,7 +166,7 @@ class AccountControllerTest < ActionController::TestCase
     @user.forgot_password && @user.save
     assert_equal 1, @emails.length # make sure that it e-mails the user notifying that their password was reset
 
-    post :reset_password, :id => @user.password_reset_code, :user => { :password  => "new_password", :password_confirmation => "new_password" }, :urlified_name => @urlified_name
+    post :reset_password, :id => @user.password_reset_code, :user => { :password => "new_password", :password_confirmation => "new_password" }, :urlified_name => @urlified_name
 
     assert_match("Password reset", flash[:notice])
     assert_equal 2, @emails.length # make sure that it e-mails the user notifying that their password was reset
@@ -181,7 +181,7 @@ class AccountControllerTest < ActionController::TestCase
     @user.forgot_password && @user.save
     assert_equal(1, @emails.length) # Forgot password email dispatched
 
-    post :reset_password, :id => @user.password_reset_code, :user => { :password  => "new_password", :password_confirmation => "not matching password" }, :urlified_name => @urlified_name
+    post :reset_password, :id => @user.password_reset_code, :user => { :password => "new_password", :password_confirmation => "not matching password" }, :urlified_name => @urlified_name
 
     assert_equal(1, @emails.length) # No further email dispatched due to password mismatch.
     assert_match("Password mismatch", flash[:notice])
@@ -190,14 +190,14 @@ class AccountControllerTest < ActionController::TestCase
   end
 
   def test__reset_password__invalid_code__should_show_error
-    post :reset_password, :id => "Invalid Code", :password  => "new_password", :password_confirmation => "not matching password", :urlified_name => @urlified_name
+    post :reset_password, :id => "Invalid Code", :password => "new_password", :password_confirmation => "not matching password", :urlified_name => @urlified_name
 
     assert_match(/invalid password reset code/, flash[:notice])
   end
 
   ### changing password tests
   def test_should_allow_password_change
-    post :change_password, { :old_password => 'test', :password => 'newpassword', :password_confirmation => 'newpassword', :urlified_name => @urlified_name }, {  :user =>2 }
+    post :change_password, { :old_password => 'test', :password => 'newpassword', :password_confirmation => 'newpassword', :urlified_name => @urlified_name }, {  :user => 2 }
     assert_equal 'newpassword', assigns(:current_user).password
     assert_equal "Password changed", flash[:notice]
     post :logout, :urlified_name => @urlified_name

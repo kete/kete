@@ -13,7 +13,7 @@ class SearchTest < ActionController::IntegrationTest
       login_as('sally')
       @topic = new_topic(:title => 'abcdef')
       @image_file_base_url = SystemSetting.full_site_url + '/image_files/'
-      @first_image = new_still_image{ attach_file "image_file_uploaded_data", "white.jpg"}
+      @first_image = new_still_image { attach_file "image_file_uploaded_data", "white.jpg" }
     end
 
     should "have a topic with no related images should not have any images" do
@@ -67,7 +67,7 @@ class SearchTest < ActionController::IntegrationTest
     context "Topics with alphanumeric chars in title, description, and tags, using #{login} as a user login" do
 
       setup do
-        @user = create_new_user({:login => login})
+        @user = create_new_user({ :login => login })
         @user.add_as_member_to_default_baskets
         @@users_created << @user
         login_as(login)
@@ -94,7 +94,7 @@ class SearchTest < ActionController::IntegrationTest
     context "Topics with utf8 chars in title, description, and tags, using #{login} as a user login" do
 
       setup do
-        @user = create_new_user({:login => login})
+        @user = create_new_user({ :login => login })
         @user.add_as_member_to_default_baskets
         @@users_created << @user
         login_as(login)
@@ -121,7 +121,7 @@ class SearchTest < ActionController::IntegrationTest
     context "Topics with specials chars in title, description, and tags, using #{login} as a user login" do
 
       setup do
-        @user = create_new_user({:login => login})
+        @user = create_new_user({ :login => login })
         @user.add_as_member_to_default_baskets
         @@users_created << @user
         login_as(login)
@@ -181,7 +181,7 @@ class SearchTest < ActionController::IntegrationTest
 
   def make_search_at(url, fields, should_have)
     visit url
-    fields.each do |field,value|
+    fields.each do |field, value|
       # test unquoted
       fill_in 'search_terms', :with => "#{value}"
       click_button "Search"

@@ -14,7 +14,7 @@ class CommentTest < ActiveSupport::TestCase
       :commentable_type => 'Topic'
     }
     @req_attr_names = %w(title description) # name of fields that must be present, e.g. %(name description)
-    @duplicate_attr_names = %w( ) # name of fields that cannot be a duplicate, e.g. %(name description)
+    @duplicate_attr_names = %w() # name of fields that cannot be a duplicate, e.g. %(name description)
   end
 
   include KeteTestUnitHelper

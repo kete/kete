@@ -68,14 +68,14 @@ class AccountTest < ActionController::IntegrationTest
         @item1 = new_still_image({ :selected_portrait => true }) { attach_file "image_file_uploaded_data", "white.jpg" }
         portrait_are_in_order_for(@joe, [@item1])
         @item2 = new_still_image({ :selected_portrait => true }) { attach_file "image_file_uploaded_data", "white.jpg" }
-        portrait_are_in_order_for(@joe, [@item2,@item1])
+        portrait_are_in_order_for(@joe, [@item2, @item1])
       end
 
       should "be able to add an image as non default portrait automatically on item creation" do
         @item1 = new_still_image({ :portrait => true }) { attach_file "image_file_uploaded_data", "white.jpg" }
         portrait_are_in_order_for(@joe, [@item1])
         @item2 = new_still_image({ :portrait => true }) { attach_file "image_file_uploaded_data", "white.jpg" }
-        portrait_are_in_order_for(@joe, [@item1,@item2])
+        portrait_are_in_order_for(@joe, [@item1, @item2])
       end
 
     end
@@ -126,22 +126,22 @@ class AccountTest < ActionController::IntegrationTest
         should "be able to reorder, make selected, or remove portraits from the profile" do
           visit "/site/account/show"
           click_link "image_#{@item3.id}_controls_higher"
-          portrait_are_in_order_for(@joe, [@item1,@item3,@item2])
+          portrait_are_in_order_for(@joe, [@item1, @item3, @item2])
           click_link "image_#{@item1.id}_controls_lower"
-          portrait_are_in_order_for(@joe, [@item3,@item1,@item2])
+          portrait_are_in_order_for(@joe, [@item3, @item1, @item2])
           click_link "image_#{@item2.id}_controls_selected"
-          portrait_are_in_order_for(@joe, [@item2,@item3,@item1])
+          portrait_are_in_order_for(@joe, [@item2, @item3, @item1])
           click_link "image_#{@item3.id}_controls_remove"
-          portrait_are_in_order_for(@joe, [@item2,@item1])
+          portrait_are_in_order_for(@joe, [@item2, @item1])
         end
 
         should "be able to make selected or remove portraits from the image show page" do
           visit "/site/images/show/#{@item1.to_param}"
           click_link 'Remove image from portraits'
-          portrait_are_in_order_for(@joe, [@item2,@item3])
+          portrait_are_in_order_for(@joe, [@item2, @item3])
           visit "/site/images/show/#{@item3.to_param}"
           click_link 'Make image selected portrait'
-          portrait_are_in_order_for(@joe, [@item3,@item2])
+          portrait_are_in_order_for(@joe, [@item3, @item2])
         end
 
       end

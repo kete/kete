@@ -83,7 +83,7 @@ class TopicPrivacyTest < ActionController::IntegrationTest
         add_laura_as_super_user
         login_as('laura')
 
-        @private_topic  = new_topic({:title => 'Mixed topic (public)'}, @first_basket)
+        @private_topic = new_topic({ :title => 'Mixed topic (public)' }, @first_basket)
 
         update_item(@private_topic) do
           choose 'Private'

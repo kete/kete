@@ -56,7 +56,7 @@ class LicensesControllerTest < ActionController::TestCase
     create_record
     assert_var_assigned
     assert_attributes_same_as @new_model
-    assert_redirect_to( index_path )
+    assert_redirect_to(index_path)
   end
 
   def test_edit
@@ -66,14 +66,14 @@ class LicensesControllerTest < ActionController::TestCase
   end
 
   def test_update
-    update_record( {}, { :id => licenses(:one).id } )
+    update_record({}, { :id => licenses(:one).id })
     assert_var_assigned
     assert_attributes_same_as @updated_model
-    assert_redirect_to( index_path.merge(:action => 'index', :id => licenses(:one).id) )
+    assert_redirect_to(index_path.merge(:action => 'index', :id => licenses(:one).id))
   end
 
   def test_destroy
     destroy_record({ :id => licenses(:one).id })
-    assert_redirect_to( index_path.merge(:action => 'index', :id => licenses(:one).id) )
+    assert_redirect_to(index_path.merge(:action => 'index', :id => licenses(:one).id))
   end
 end

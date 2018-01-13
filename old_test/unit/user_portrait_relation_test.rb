@@ -51,7 +51,7 @@ class UserPortraitRelationTest < ActiveSupport::TestCase
 
   private
 
-    def new_image_with_creator(make_relation=true)
+    def new_image_with_creator(make_relation = true)
       @user = User.first
       @still_image = StillImage.create(:title => 'test item',
                                        :basket_id => Basket.find(:first))

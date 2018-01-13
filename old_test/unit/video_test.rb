@@ -23,7 +23,7 @@ class VideoTest < ActiveSupport::TestCase
     @req_attr_names = %w(title)
 
     # name of fields that cannot be a duplicate, e.g. %(name description)
-    @duplicate_attr_names = %w( )
+    @duplicate_attr_names = %w()
 
     # Name of the folder we expect files to be saved to
     @uploads_folder = 'video'
