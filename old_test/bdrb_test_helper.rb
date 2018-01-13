@@ -6,7 +6,7 @@ require "mocha"
 class Object
   def self.metaclass; class << self; self; end; end
 
-  def self.iattr_accessor *args
+  def self.iattr_accessor(*args)
     metaclass.instance_eval do
       attr_accessor *args
       args.each do |attr|

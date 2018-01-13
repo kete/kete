@@ -102,14 +102,14 @@ class BasketTest < ActiveSupport::TestCase
     params[:sort_type] = ''
     params[:sort_direction] = ''
     # the following two lines were taken from search_controller.rb
-    search_sort_type_1 = (params[:sort_type].blank? and !sort_type.blank?) ? sort_type : params[:sort_type]
-    search_sort_direction_1 = (params[:sort_type].blank? and !sort_direction.blank?) ? sort_direction : params[:sort_direction]
+    search_sort_type_1 = params[:sort_type].blank? and !sort_type.blank? ? sort_type : params[:sort_type]
+    search_sort_direction_1 = params[:sort_type].blank? and !sort_direction.blank? ? sort_direction : params[:sort_direction]
 
     params[:sort_type] = 'last_modified'
     params[:sort_direction] = ''
     # the following two lines were taken from search_controller.rb
-    search_sort_type_2 = (params[:sort_type].blank? and !sort_type.blank?) ? sort_type : params[:sort_type]
-    search_sort_direction_2 = (params[:sort_type].blank? and !sort_direction.blank?) ? sort_direction : params[:sort_direction]
+    search_sort_type_2 = params[:sort_type].blank? and !sort_type.blank? ? sort_type : params[:sort_type]
+    search_sort_direction_2 = params[:sort_type].blank? and !sort_direction.blank? ? sort_direction : params[:sort_direction]
 
     assert_equal 'date', search_sort_type_1
     assert_equal 'reverse', search_sort_direction_1

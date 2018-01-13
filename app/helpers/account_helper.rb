@@ -1,6 +1,6 @@
 module AccountHelper
   def String.random_alphanumeric(size = 16)
-    (1..size).collect { (i = Kernel.rand(62); i += ((i < 10) ? 48 : ((i < 36) ? 55 : 61))).chr }.join
+    (1..size).collect { (i = Kernel.rand(62); i += (i < 10 ? 48 : (i < 36 ? 55 : 61))).chr }.join
   end
 
   def generate_captcha
@@ -65,6 +65,6 @@ module AccountHelper
 
   def captcha_url(id)
     return url_for(controller: 'account', action: 'show_captcha',
-                   id: id, time: Time.now())
+                   id: id, time: Time.now)
   end
 end

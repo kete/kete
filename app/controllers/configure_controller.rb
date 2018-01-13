@@ -98,7 +98,7 @@ class ConfigureController < ApplicationController
   end
 
   def zoom_dbs_edit
-    @zoom_dbs = ZoomDb.all()
+    @zoom_dbs = ZoomDb.all
     @kete_password = @zoom_dbs.first.zoom_password
     if request.xhr?
       render layout: false
@@ -114,7 +114,7 @@ class ConfigureController < ApplicationController
     # so killing that pid is usually not enough
 
     @kete_password = params[:kete_password]
-    @zoom_dbs = ZoomDb.all().each do |zoom_db|
+    @zoom_dbs = ZoomDb.all.each do |zoom_db|
       zoom_db.zoom_password = @kete_password
       zoom_db.port = params[:zoom_db][zoom_db.id.to_s][:port]
     end

@@ -316,7 +316,7 @@ module ExtendedContent
           index = 1
           result[field_param_name] = field.inject(Hash.new) do |multiple, value|
             unless value.blank?
-              multiple[(index).to_s] = value
+              multiple[index.to_s] = value
               index += 1
             end
             multiple

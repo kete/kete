@@ -209,7 +209,7 @@ class AccountController < ApplicationController
       else
         @user = current_user
       end
-      @viewer_is_user = (@user == @current_user) ? true : false
+      @viewer_is_user = @user == @current_user ? true : false
       @viewer_portraits = !@user.portraits.empty? ? @user.portraits.all(conditions: ['position != 1']) : nil
     else
       flash[:notice] = t('account_controller.show.please_login')
@@ -242,7 +242,7 @@ class AccountController < ApplicationController
   def change_password
     return unless request.post?
     if User.authenticate(current_user.login, params[:old_password])
-      if (params[:password] == params[:password_confirmation])
+      if params[:password] == params[:password_confirmation]
         current_user.password_confirmation = params[:password_confirmation]
         current_user.password = params[:password]
         flash[:notice] = current_user.save ?
@@ -289,7 +289,7 @@ class AccountController < ApplicationController
     raise if @user.nil?
     # form should have user hash after it's been submitted
     return if @user unless params[:user]
-    if (params[:user][:password] == params[:user][:password_confirmation])
+    if params[:user][:password] == params[:user][:password_confirmation]
       self.current_user = @user # for the next two lines to work
       current_user.password_confirmation = params[:user][:password_confirmation]
       current_user.password = params[:user][:password]
