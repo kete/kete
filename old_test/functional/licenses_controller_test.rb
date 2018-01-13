@@ -1,7 +1,6 @@
 require File.dirname(__FILE__) + '/../test_helper'
 
 class LicensesControllerTest < ActionController::TestCase
-
   include KeteTestFunctionalHelper
 
   fixtures :licenses

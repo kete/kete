@@ -250,7 +250,6 @@ class BasketTest < ActiveSupport::TestCase
   # TODO: index_page_order_tags_by
 
   context "The users_to_notify_of_private_item method" do
-
     should "work with various settings" do
       basket = create_new_basket :name => 'Notify Basket'
 
@@ -280,11 +279,9 @@ class BasketTest < ActiveSupport::TestCase
       assert_equal 0, basket.users_to_notify_of_private_item.size
       assert_equal [], basket.users_to_notify_of_private_item.collect { |u| u.login }
     end
-
   end
 
   context "The moderators_or_next_in_line method" do
-
     should "return the correct users to notify" do
       site_basket = Basket.site_basket
       basket = create_new_basket :name => 'Moderated Basket'
@@ -316,7 +313,5 @@ class BasketTest < ActiveSupport::TestCase
       assert_equal 'jack', basket.moderators_or_next_in_line.first.login
       assert_equal 'admin', basket.moderators_or_next_in_line.last.login
     end
-
   end
-
 end

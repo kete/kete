@@ -1,11 +1,8 @@
 require File.dirname(__FILE__) + '/integration_test_helper'
 
 class HistoryTest < ActionController::IntegrationTest
-
   ITEM_CLASSES.each do |item_class|
-
     context "The history page for a #{item_class}" do
-
       setup do
         add_admin_as_super_user
         add_dean_as_regular_user
@@ -43,13 +40,12 @@ class HistoryTest < ActionController::IntegrationTest
         body_should_contain 'duplicate', :number_of_times => 1
         body_should_contain 'inaccurate', :number_of_times => 1
       end
-
     end
-
   end
 
   private
-  def old_login_as(username, password = 'test', options = {})
+
+  def old_login_as(username, password='test', options = {})
     options = { :navigate_to_login => true,
                 :should_fail_login => false }.merge(options)
     if options[:navigate_to_login]

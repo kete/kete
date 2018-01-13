@@ -22,10 +22,8 @@ module ExtendedFieldsHelper
 
     # Containing DIV for theme
     '<div class="yui-skin-sam" style="float: left" id="hidden_choices_select_' + record.id.to_s + '">' +
-
       # Expand all and collapse all links
       content_tag('p', link_to_function(t('extended_fields_helper.pseudo_choices_form_column.expand_all'), '', id: "#{id}_expand") + ' | ' + link_to_function(t('extended_fields_helper.pseudo_choices_form_column.collapse_all'), '', id: "#{id}_collapse")) +
-
       # Actual XHTML list that is shown in the case JS fails or is not supported
       '<div id="choice_selection_' + record.id.to_s + '"><ul>' +
       top_level.inject('') do |m, choice|
@@ -275,7 +273,6 @@ module ExtendedFieldsHelper
       options: options,
       extended_field: extended_field,
       choices: choices,
-
       # The default level is 1.. is this increased by subsequent renderings in ExtendedFieldsController.
       level: 1
     }
@@ -332,10 +329,8 @@ module ExtendedFieldsHelper
                   class: 'extended_field_autocomplete',
                   id: id_for_extended_field(extended_field) + "_autocomplete_#{level}",
                   style: 'display: none') +
-
       # We need to let our controller know that we're using autocomplete for this field.
       # We know the field we expect should be something like topic[extended_content][someonething]..
-
       hidden_field_tag("#{name.split(/\[/).first}[extended_content][#{name.scan(/\[([a-z_]*)\]/).flatten.at(1)}_from_autocomplete]", 'true', id: id_for_extended_field(extended_field) + '_from_autocomplete')
   end
 
@@ -458,7 +453,6 @@ module ExtendedFieldsHelper
   def extended_field_choices_unordered_list
     if top_level = Choice.find_top_level
       content_tag('ul',
-
                   top_level.inject('') { |memo, choice|
                     memo + list_item_for_choice(choice)
                   })

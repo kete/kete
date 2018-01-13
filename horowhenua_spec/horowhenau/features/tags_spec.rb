@@ -37,7 +37,6 @@ feature "Home Tag list" do
   end
 end
 
-
 feature "Content-Item list" do
   it "viewing tagged items by type" do
     visit "/en/site/topics/2453-te-takere-begins-with-an-open-day-in-the-old-countdown-building"

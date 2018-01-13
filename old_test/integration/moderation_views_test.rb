@@ -1,11 +1,8 @@
 require File.dirname(__FILE__) + '/integration_test_helper'
 
 class ModerationViewsTest < ActionController::IntegrationTest
-
   context "Topic with multiple versions as a regular user" do
-
     setup do
-
       # Ensure a user account to log in with is present
       add_grant_as_regular_user
       login_as('grant')
@@ -44,7 +41,6 @@ class ModerationViewsTest < ActionController::IntegrationTest
     end
 
     context "as a super user" do
-
       setup do
         add_mac_as_super_user
         login_as("mac")
@@ -63,15 +59,11 @@ class ModerationViewsTest < ActionController::IntegrationTest
           body_should_contain I18n.t('topics.preview_actions.reject')
         end
       end
-
     end
-
   end
 
   context "Topic with multiple versions as a super user" do
-
     setup do
-
       # Ensure a user account to log in with is present
       add_grant_as_super_user
       login_as('grant')
@@ -96,13 +88,10 @@ class ModerationViewsTest < ActionController::IntegrationTest
         body_should_contain "# #{i}"
       end
     end
-
   end
 
   context "Image with multiple versions" do
-
     setup do
-
       # Ensure a user account to log in with is present
       add_grant_as_regular_user
       login_as('grant')
@@ -118,13 +107,10 @@ class ModerationViewsTest < ActionController::IntegrationTest
     should "have functioning moderation pages" do
       should_have_functioning_moderation_pages(@image, 'images', 'StillImage')
     end
-
   end
 
   context "Video with multiple versions" do
-
     setup do
-
       # Ensure a user account to log in with is present
       add_grant_as_regular_user
       login_as('grant')
@@ -140,13 +126,10 @@ class ModerationViewsTest < ActionController::IntegrationTest
     should "have functioning moderation pages" do
       should_have_functioning_moderation_pages(@video, 'video', 'Video')
     end
-
   end
 
   context "Audio with multiple versions" do
-
     setup do
-
       # Ensure a user account to log in with is present
       add_grant_as_regular_user
       login_as('grant')
@@ -162,13 +145,10 @@ class ModerationViewsTest < ActionController::IntegrationTest
     should "have functioning moderation pages" do
       should_have_functioning_moderation_pages(@audio, 'audio', 'AudioRecording')
     end
-
   end
 
   context "Document with multiple versions" do
-
     setup do
-
       # Ensure a user account to log in with is present
       add_grant_as_regular_user
       login_as('grant')
@@ -184,13 +164,10 @@ class ModerationViewsTest < ActionController::IntegrationTest
     should "have functioning moderation pages" do
       should_have_functioning_moderation_pages(@document, 'documents', 'Document')
     end
-
   end
 
   context "Weblink with multiple versions" do
-
     setup do
-
       # Ensure a user account to log in with is present
       add_grant_as_regular_user
       login_as('grant')
@@ -210,11 +187,9 @@ class ModerationViewsTest < ActionController::IntegrationTest
     teardown do
       @weblink.destroy unless @weblink.new_record?
     end
-
   end
 
   context "The ability to restrict revisions upon moderation" do
-
     setup do
       login_as(:admin)
       add_sally_as_moderator_to @@site_basket
@@ -248,11 +223,9 @@ class ModerationViewsTest < ActionController::IntegrationTest
       # should get redirected, as this is permission denied since it is restricted
       assert !response.ok?
     end
-
   end
 
   context "The ability to review revisions" do
-
     setup do
       login_as(:admin)
       add_grant_as_regular_user
@@ -283,13 +256,11 @@ class ModerationViewsTest < ActionController::IntegrationTest
       visit "/site/topics/preview/#{@topic.id}?version=1"
       body_should_contain 'Version 1'
     end
-
   end
 
   private
 
     def should_have_functioning_moderation_pages(item, controller_name, zoom_class_name, super_user = false)
-
       visit "/site/#{controller_name}/show/#{item.id}"
 
       body_should_contain "New #{controller_name.singularize} updated again"
@@ -313,7 +284,5 @@ class ModerationViewsTest < ActionController::IntegrationTest
           body_should_contain I18n.t('topics.preview_actions.reject')
         end
       end
-
     end
-
 end

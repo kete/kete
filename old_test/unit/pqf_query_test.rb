@@ -1,7 +1,6 @@
 require File.dirname(__FILE__) + '/../test_helper'
 
 class PqfQueryTest < ActiveSupport::TestCase
-
   def setup
     @pqf_query = PqfQuery.new
 

@@ -71,7 +71,6 @@ class HasValue
         super
       end
     end
-
   end
 end
 

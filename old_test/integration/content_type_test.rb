@@ -1,11 +1,8 @@
 require File.dirname(__FILE__) + '/integration_test_helper'
 
 class ContentTypeTest < ActionController::IntegrationTest
-
   (ITEM_CLASSES - ['Topic', 'Comment']).each do |zoom_class|
-
     context "When the #{zoom_class} content type exists with two extended field mappings (one single value/optional, one multiple/required)" do
-
       setup do
         add_admin_as_super_user
         login_as('admin')
@@ -27,7 +24,6 @@ class ContentTypeTest < ActionController::IntegrationTest
       end
 
       context "and each mapping isn't being used or it's blank, it" do
-
         setup do
           @mappings.each { |m| m.update_attribute(:required, false) }
           @mappings.each do |mapping|
@@ -44,11 +40,9 @@ class ContentTypeTest < ActionController::IntegrationTest
             body_should_not_contain "mapping_#{mapping.id}_delete"
           end
         end
-
       end
 
       context "and each mapping is being used, it" do
-
         setup do
           @mappings.each { |m| m.update_attribute(:required, false) }
           @mappings.each do |mapping|
@@ -64,11 +58,7 @@ class ContentTypeTest < ActionController::IntegrationTest
             body_should_contain "The #{mapping.extended_field.label} mapping is in use by this Content type or its descendants and cannot be deleted."
           end
         end
-
       end
-
     end
-
   end
-
 end

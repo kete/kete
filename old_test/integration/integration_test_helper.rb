@@ -45,7 +45,6 @@ end
 
 # Overload the IntegrationTest class to ensure tear down occurs OK.
 class ActionController::IntegrationTest
-
   include ZoomControllerHelpers
 
   # setup basket variables for use later
@@ -757,5 +756,4 @@ class ActionController::IntegrationTest
     assert_response :redirect
     # body_should_contain "Successfully removed item relationships."
   end
-
 end

@@ -66,6 +66,7 @@ module ImageSlideshowTestHelper
             end
           end
         end
+
         private
 
         def run_through_selected_images(options = {})

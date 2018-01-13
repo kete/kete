@@ -43,6 +43,5 @@ class WebLinkTest < ActiveSupport::TestCase
       @@incremental_id = @@incremental_id + 1
       @new_model.merge(:url => 'http://www.google.co.nz/search?q=' + @@incremental_id.to_s)
     end
-
 end
 

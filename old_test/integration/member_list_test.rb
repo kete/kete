@@ -1,9 +1,7 @@
 require File.dirname(__FILE__) + '/integration_test_helper'
 
 class MemberListTest < ActionController::IntegrationTest
-
   context 'A Baskets Member List' do
-
     setup do
       add_admin_as_super_user
       add_bob_as_moderator_to(@@site_basket)
@@ -31,7 +29,6 @@ class MemberListTest < ActionController::IntegrationTest
     end
 
     context 'when a basket admin or site admin views it' do
-
       should 'have links to various role types' do
         visit '/site/members/list'
         body_should_contain 'Site Members'
@@ -41,11 +38,9 @@ class MemberListTest < ActionController::IntegrationTest
         body_should_contain '1 technical administrator'
         body_should_not_contain 'Currently no Members'
       end
-
     end
 
     context 'when there is one basket admin for the site basket, a site admin' do
-
       setup do
         add_jane_as_admin_to(@@site_basket)
       end
@@ -104,7 +99,6 @@ class MemberListTest < ActionController::IntegrationTest
     end
 
     context "when being sorted" do
-
       setup do
         @@sorting_basket = create_new_basket({ :name => 'Sorting Basket' })
         add_user1_as_member_to(@@sorting_basket, { :display_name => 'Brian' })
@@ -123,13 +117,10 @@ class MemberListTest < ActionController::IntegrationTest
         # Surounding the names with () is a quick way to check it's not part of a link
         body_should_contain_in_order(['(user1)', '(user2)', '(user3)'], '<td class="member_avatar">', :offset => 1)
       end
-
     end
-
   end
 
   context "A non-site basket memberlist" do
-
     setup do
       add_admin_as_super_user
       login_as(:admin)
@@ -137,7 +128,6 @@ class MemberListTest < ActionController::IntegrationTest
     end
 
     context "when there is only one admin in the basket" do
-
       setup do
         add_lily_as_admin_to @@non_site_basket
         add_gary_as_member_to @@non_site_basket
@@ -153,11 +143,9 @@ class MemberListTest < ActionController::IntegrationTest
         visit "/#{@@non_site_basket.urlified_name}/members/list?type=admin"
         body_should_not_contain 'Remove from basket'
       end
-
     end
 
     context "when there is two admins in the basket" do
-
       setup do
         add_lily_as_admin_to @@non_site_basket
         add_jim_as_admin_to @@non_site_basket
@@ -177,9 +165,6 @@ class MemberListTest < ActionController::IntegrationTest
         visit "/#{@@non_site_basket.urlified_name}/members/list?type=admin"
         body_should_not_contain 'Remove from basket'
       end
-
     end
-
   end
-
 end

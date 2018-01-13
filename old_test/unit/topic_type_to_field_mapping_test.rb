@@ -41,13 +41,11 @@ class TopicTypeToFieldMappingTest < ActiveSupport::TestCase
   end
 
   context "When the Person topic type has two extended field mappings (one single value, one multiple)" do
-
     setup do
       @topic_type, @mappings = setup_mappings_of_class('TopicType', 'Person')
     end
 
     context "and each mapping isn't being used or it's blank, it" do
-
       setup do
         @mappings.each do |mapping|
           populate_empty_extended_field_data_for('Topic', mapping, :topic_type_id => @topic_type.id)
@@ -59,11 +57,9 @@ class TopicTypeToFieldMappingTest < ActiveSupport::TestCase
           assert !mapping.used_by_items?
         end
       end
-
     end
 
     context "and each mapping is being used, it" do
-
       setup do
         @mappings.each do |mapping|
           populate_filled_in_extended_field_data_for('Topic', mapping, :topic_type_id => @topic_type.id)
@@ -75,13 +71,10 @@ class TopicTypeToFieldMappingTest < ActiveSupport::TestCase
           assert mapping.used_by_items?
         end
       end
-
     end
-
   end
 
   context "When dealing with required and private_only fields, you" do
-
     setup do
       @topic_type, @mappings = setup_mappings_of_class('TopicType', 'Person')
     end
@@ -93,7 +86,5 @@ class TopicTypeToFieldMappingTest < ActiveSupport::TestCase
       assert !mapping.valid?
       assert_equal 'Mapping cannot be required and private only.', mapping.errors['base']
     end
-
   end
-
 end

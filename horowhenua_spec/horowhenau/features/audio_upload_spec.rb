@@ -1,7 +1,6 @@
 require 'spec_helper'
 
 feature "Users can CRUD audio recordings" do
-
   def create_audio_recording(attrs = nil)
     if attrs.nil?
       attrs = {

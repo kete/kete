@@ -1,7 +1,6 @@
 require 'spec_helper'
 
 feature 'User sign-up' do
-
   it 'A user can sign-up' do
     user_attrs = {
       login: 'tester',
@@ -25,5 +24,4 @@ feature 'User sign-up' do
     click_button 'Sign up'
     expect(page).to have_text('Thanks for signing up!')
   end
-
 end

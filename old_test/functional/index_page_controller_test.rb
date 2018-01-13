@@ -1,7 +1,6 @@
 require File.dirname(__FILE__) + '/../test_helper'
 
 class IndexPageControllerTest < ActionController::TestCase
-
   include KeteTestFunctionalHelper
 
   include ImageSlideshowTestHelper
@@ -10,5 +9,4 @@ class IndexPageControllerTest < ActionController::TestCase
     @base_class = "IndexPage"
     load_test_environment
   end
-
 end

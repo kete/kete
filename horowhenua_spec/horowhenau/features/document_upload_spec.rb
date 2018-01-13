@@ -1,7 +1,6 @@
 require 'spec_helper'
 
 feature "Users can CRUD documents" do
-
   def create_document(doc_path, attrs = nil)
     if attrs.nil?
       attrs = {

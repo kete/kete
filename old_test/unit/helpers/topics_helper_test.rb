@@ -4,14 +4,12 @@ class TopicsHelperTest < ActionView::TestCase
   include ApplicationHelper
 
   context "The topic_types_counts_for" do
-
     setup do
       @site_basket = Basket.site_basket
       @current_basket = @site_basket
     end
 
     should "correctly return a display of topic types and counts" do
-
       topic_types = TopicType.all[0..2]
 
       parent_topic = Factory(:topic, :title => 'Parent Topic', :topic_type_id => topic_types[0].id, :basket_id => @site_basket.id)
@@ -34,9 +32,7 @@ class TopicsHelperTest < ActionView::TestCase
              "</ul>"
 
       assert_equal data, topic_types_counts_for(parent_topic)
-
     end
-
   end
 
   context "A topic" do

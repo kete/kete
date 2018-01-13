@@ -1,7 +1,6 @@
 require 'spec_helper'
 
 feature 'Users can CRUD web links' do
-
   def create_web_link(attrs = nil)
     attrs = {
       title: 'some title',

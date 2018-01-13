@@ -1,6 +1,5 @@
 require 'spec_helper'
 
-
 def update_timestamp(item)
   title = item.title
 

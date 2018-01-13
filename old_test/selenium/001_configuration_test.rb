@@ -1,9 +1,7 @@
 require File.dirname(__FILE__) + '/selenium_test_helper'
 
 class ConfigurationTest < ActionController::IntegrationTest
-
   context "An unconfigured Kete instance" do
-
     should "allow successful installation from start to finish" do
       visit "/"
       body_should_contain "Please enter the default administrator account login and password
@@ -51,7 +49,5 @@ class ConfigurationTest < ActionController::IntegrationTest
       click_button 'Reload Site'
       body_should_contain 'Introduction'
     end
-
   end
-
 end

@@ -150,6 +150,7 @@ module ExtendedContentTestUnitHelper
       end
 
       private
+
       include ExtendedContentHelpersForTestSetUp
     end
   end

@@ -1,7 +1,6 @@
 require File.dirname(__FILE__) + '/../test_helper'
 
 class TagsControllerTest < ActionController::TestCase
-
   include KeteTestFunctionalHelper
 
   def setup
@@ -22,5 +21,4 @@ class TagsControllerTest < ActionController::TestCase
     assert_response :success
     assert_not_nil(:tags)
   end
-
 end
