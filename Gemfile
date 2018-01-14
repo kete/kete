@@ -79,7 +79,7 @@ gem 'railroady'
 gem 'rake', '< 11.0' # Remove this pin when you go to rails 4
 
 # gem "rdoc"
-gem 'nokogiri', '~> 1.7.1'
+gem 'nokogiri', '>= 1.8.1'
 
 # Officially sanctioned Rails way to add Rails 2 stuff like #error_messages_for
 # to Rails 3 projects
