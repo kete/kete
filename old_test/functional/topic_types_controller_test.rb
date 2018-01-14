@@ -50,27 +50,27 @@ class TopicTypesControllerTest < ActionController::TestCase
     update_record
     assert_var_assigned
     assert_attributes_same_as @updated_model
-    assert_redirect_to( edit_path({ :id => assigns(:topic_type).id }) )
+    assert_redirect_to(edit_path({ :id => assigns(:topic_type).id }))
     assert_equal 'Topic type was successfully updated.', flash[:notice]
   end
 
   def test_destroy
     destroy_record({ :id => 4 })
-    assert_redirect_to( index_path({ :action => 'list' }) )
+    assert_redirect_to(index_path({ :action => 'list' }))
     assert_equal 'Topic type was successfully deleted.', flash[:notice]
   end
 
   def test_add_to_topic_type
     @place_type = TopicType.find_by_name('Place')
     # create a hash in the format we need
-    extended_fields_hash = { }
-    temp_hash = { }
+    extended_fields_hash = {}
+    temp_hash = {}
 
     @place_type.available_fields.each do |field|
       if field.id.odd?
-        temp_hash = { field.id => {:add_checkbox => '0', :required_checkbox => '1'} }
+        temp_hash = { field.id => { :add_checkbox => '0', :required_checkbox => '1' } }
       else
-        temp_hash = { field.id => {:add_checkbox => '1', :required_checkbox => '0'} }
+        temp_hash = { field.id => { :add_checkbox => '1', :required_checkbox => '0' } }
       end
       extended_fields_hash.merge!(temp_hash)
     end
@@ -79,7 +79,7 @@ class TopicTypesControllerTest < ActionController::TestCase
 
     # a simple test to make sure this worked... there should no longer be any available fields
     assert_equal @place_type.available_fields.size, 0
-    assert_redirect_to( edit_path({ :id => @place_type.id }) )
+    assert_redirect_to(edit_path({ :id => @place_type.id }))
   end
 
   # this test reordering without using acts_as_tree functionality
@@ -92,16 +92,16 @@ class TopicTypesControllerTest < ActionController::TestCase
     org_last_mapping_id = @person_type.topic_type_to_field_mappings.last.id
 
     # create a hash in the format we need with first and last mappings positions' swapped
-    mappings_hash = { }
-    temp_hash = { }
+    mappings_hash = {}
+    temp_hash = {}
 
     @person_type.topic_type_to_field_mappings.each do |mapping|
       if mapping.id == org_first_mapping_id
-        temp_hash = { mapping.id => {:position => num_fields} }
+        temp_hash = { mapping.id => { :position => num_fields } }
       elsif mapping.id == org_last_mapping_id
-        temp_hash = { mapping.id => {:position => '1'} }
+        temp_hash = { mapping.id => { :position => '1' } }
       else
-        temp_hash = { mapping.id => {:position => mapping.position} }
+        temp_hash = { mapping.id => { :position => mapping.position } }
       end
       mappings_hash.merge!(temp_hash)
     end
@@ -115,6 +115,6 @@ class TopicTypesControllerTest < ActionController::TestCase
     assert_equal @person_type.topic_type_to_field_mappings.first.id, org_last_mapping_id, "The reorder_fields_for_topic_type action didn't swap first and last positions as expected."
     assert_equal @person_type.topic_type_to_field_mappings.last.id, org_first_mapping_id, "The reorder_fields_for_topic_type action didn't swap first and last positions as expected."
     # this will need to change to edit, possibly
-    assert_redirect_to( edit_path({ :id => @person_type.id }) )
+    assert_redirect_to(edit_path({ :id => @person_type.id }))
   end
 end
