@@ -178,11 +178,11 @@ GEM
     method_source (0.8.2)
     mime-types (1.25.1)
     mini_exiftool (1.7.0)
-    mini_portile2 (2.1.0)
+    mini_portile2 (2.3.0)
     multi_json (1.12.1)
     multipart-post (2.0.0)
-    nokogiri (1.7.2)
-      mini_portile2 (~> 2.1.0)
+    nokogiri (1.8.1)
+      mini_portile2 (~> 2.3.0)
     oai (0.3.1)
       builder (>= 2.0.0)
       faraday
@@ -383,7 +383,7 @@ DEPENDENCIES
   libxml-ruby
   mime-types
   mini_exiftool (< 2.0.0)
-  nokogiri (~> 1.7.1)
+  nokogiri (>= 1.8.1)
   oai (~> 0.3.1)
   oembed_provider_engine
   packet
@@ -419,9 +419,7 @@ DEPENDENCIES
   xml-simple
   ya2yaml
 
-
 RUBY VERSION
    ruby 2.3.3p222
-
 BUNDLED WITH
    1.15.1
