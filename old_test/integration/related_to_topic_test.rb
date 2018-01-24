@@ -470,4 +470,3 @@ class RelatedToTopicTest < ActionController::IntegrationTest
     body_should_not_contain "/site/topics/show/#{@topic2.id}?private=true"
   end
 end
-

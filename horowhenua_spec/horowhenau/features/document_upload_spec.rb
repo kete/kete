@@ -55,6 +55,3 @@ feature "Users can CRUD documents" do
     expect(page).to have_text(new_attrs[:title])
   end
 end
-
-
-

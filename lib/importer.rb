@@ -450,11 +450,11 @@ module Importer
       # make a copy of any files that have spaces in their name
       # a better formed name
       # to avoid problems later
-      if !the_file_name.scan(' ').blank? and File.exists?(path_to_file_to_grab)
+      if !the_file_name.scan(' ').blank? and File.exist?(path_to_file_to_grab)
         the_new_file_name = the_file_name.gsub(' ', "\.")
         new_file_path = directories_up_to + the_new_file_name
 
-        if !File.exists?(new_file_path)
+        if !File.exist?(new_file_path)
           FileUtils.copy_file path_to_file_to_grab, new_file_path
         end
         path_to_file_to_grab = new_file_path

@@ -387,9 +387,9 @@ class ActionController::IntegrationTest
     body_should_contain "Refine your results"
     # we actually want this to fail and return nil, it means the item was deleted properly
     begin
-      return item.reload  # if this works, its bad
+      return item.reload # if this works, its bad
     rescue
-      return nil  # if this gets called, thats good
+      return nil # if this gets called, thats good
     end
   end
 
