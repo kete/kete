@@ -34,7 +34,7 @@ class Feed < ActiveRecord::Base
   def clear_caches
     I18n.available_locales_with_labels.keys.each do |locale|
       file_path = "#{Rails.root}/tmp/cache/views/feeds/#{locale}/#{basket.urlified_name}/feed_#{id}.cache"
-      File.delete(file_path) if File.exists?(file_path)
+      File.delete(file_path) if File.exist?(file_path)
     end
   end
 

@@ -8,7 +8,7 @@ end
 shared_examples 'a working factory' do |name|
   describe "The #{name} factory" do
     it ":#{name} lints" do
-      expect { lint(name) }.to_not raise_error
+      expect { lint(name) }.not_to raise_error
     end
     it ":#{name} is valid" do
       expect(FactoryGirl.build(name)).to be_valid

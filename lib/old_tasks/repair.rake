@@ -155,11 +155,11 @@ namespace :kete do
           to    = File.join(RAILS_ROOT, privacy_folder, dest)
 
           # Skip if the wrongly named folder doesn't exist
-          next unless File.exists?(from)
+          next unless File.exist?(from)
 
           # Make the destination folder if it does not exist
           # Also detects symlinks, so should be Capistrano safe.
-          FileUtils.mkdir(to) unless File.exists?(to)
+          FileUtils.mkdir(to) unless File.exist?(to)
 
           # Copy and report what's going on
           print "Copying #{from.gsub(RAILS_ROOT, "")} to #{to.gsub(RAILS_ROOT, "")}.."
@@ -177,7 +177,7 @@ namespace :kete do
 
       inaccessible_files = [AudioRecording, Document, ImageFile, Video].collect do |item_type|
         item_type.find(:all).collect do |instance|
-          instance unless File.exists?(instance.full_filename)
+          instance unless File.exist?(instance.full_filename)
         end
       end.flatten.compact
 

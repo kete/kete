@@ -371,9 +371,9 @@ module ItemPrivacy
     # * Renames the given file before saving
     def rename_file
       return unless @old_filename && @old_filename != full_filename
-      if save_attachment? && File.exists?(@old_filename)
+      if save_attachment? && File.exist?(@old_filename)
         FileUtils.rm @old_filename
-      elsif File.exists?(@old_filename)
+      elsif File.exist?(@old_filename)
 
         # Ensure there a folder to move the file into
         FileUtils.mkdir_p(File.dirname(full_filename))

@@ -6,7 +6,7 @@ class Search < ActiveRecord::Base
     types = Array.new
     types << ['', I18n.t('search_model.browse_default')]
     types << ['choice_hierarchy', I18n.t('search_model.choice_hierarchy')] if ExtendedField.find_by_label('categories')
-    types << ['map', I18n.t('search_model.map')] if File.exists?(File.join(RAILS_ROOT, 'config/gmaps_api_key.yml'))
+    types << ['map', I18n.t('search_model.map')] if File.exist?(File.join(RAILS_ROOT, 'config/gmaps_api_key.yml'))
     types
   end
 

@@ -14,12 +14,12 @@ end
 feature "RSS Feeds" do
   scenario "RSS links in footer are disabled" do
     visit "/"
-    expect(page).to_not have_css("#linkToRSS")
+    expect(page).not_to have_css("#linkToRSS")
   end
 
   scenario "RSS links in <head> are disabled" do
     visit "/"
-    expect(page).to_not have_css("link[type='application/rss+xml']", visible: false)
+    expect(page).not_to have_css("link[type='application/rss+xml']", visible: false)
   end
 
   it "for audio_recordings are available" do
