@@ -240,7 +240,7 @@ class ApplicationController < ActionController::Base
     update_zoom_and_related_caches_for(topic, zoom_class_controller(related.class.name))
     update_zoom_and_related_caches_for(related, ('topics' if related.is_a?(Topic)))
 
-    return successful
+    successful
   end
 
   def remove_relation_between(related_item: item1, topic: item2)
@@ -698,23 +698,23 @@ class ApplicationController < ActionController::Base
 
   def render_full_width_content_wrapper?
     if @displaying_error
-      return false
+      false
     elsif params[:controller] == 'baskets' and ['edit', 'update', 'homepage_options', 'appearance'].include?(params[:action])
-      return false
+      false
     elsif ['moderate', 'members', 'importers'].include?(params[:controller]) && ['list', 'create', 'new', 'new_related_set_from_archive_file', 'potential_new_members'].include?(params[:action])
-      return false
+      false
     elsif params[:controller] == 'index_page' and params[:action] == 'index'
-      return false
+      false
     elsif %w(tags search).include?(params[:controller])
-      return false
+      false
     elsif add_ons_full_width_content_wrapper_controllers.include?(params[:controller])
-      return true
+      true
     elsif params[:controller] == 'account' and params[:action] == 'show'
-      return true
+      true
     elsif !['show', 'preview', 'show_private'].include?(params[:action])
-      return true
+      true
     else
-      return false
+      false
     end
   end
 

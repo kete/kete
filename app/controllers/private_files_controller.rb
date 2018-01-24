@@ -14,7 +14,7 @@ class PrivateFilesController < ApplicationController
 
     # Instantiate an object instance based on the request parameters
     id = (params[:a] + params[:b] + params[:c]).to_i
-    @record = eval("#{type.classify}").find(id)
+    @record = eval((type.classify).to_s).find(id)
 
     # images are a special case. We have to fetch
     # the still image from the image file to check

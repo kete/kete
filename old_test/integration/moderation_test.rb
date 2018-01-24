@@ -253,6 +253,6 @@ class ModerationTest < ActionController::IntegrationTest
       assert_equal options[:topic_type_name], TopicType.last.name
       @@topic_types << TopicType.last
 
-      return TopicType.last
+      TopicType.last
     end
 end

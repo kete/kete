@@ -103,7 +103,7 @@ class TaggingTest < ActionController::IntegrationTest
     item_type = item_class.underscore
 
     visit "/#{item.basket.urlified_name}/#{controller}/show/#{item.id}"
-    fill_in "#{item_type}_tag_list", :with => "#{tags.join(', ')}"
+    fill_in "#{item_type}_tag_list", :with => (tags.join(', ')).to_s
     click_button 'add tag'
     if check_successful
       body_should_contain "The new tag(s) have been added to #{item.title}"

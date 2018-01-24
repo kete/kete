@@ -11,7 +11,7 @@ class Object
       attr_accessor *args
       args.each do |attr|
         define_method("set_#{attr}") do |b_value|
-          self.send("#{attr}=", b_value)
+          send("#{attr}=", b_value)
         end
       end
     end

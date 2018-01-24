@@ -44,7 +44,7 @@ module Importer
         logger.info('what is params[:image_file]: ' + params[:image_file].to_s)
         new_image_file = ImageFile.new(params[:image_file])
         new_image_file.save
-        return new_image_file
+        new_image_file
       end
     end
 
@@ -327,7 +327,7 @@ module Importer
         end
       end
 
-      return params
+      params
     end
 
     # populate extended_fields param with xml
@@ -371,7 +371,7 @@ module Importer
       end
 
       params[item_key][:extended_content] = builder.to_stripped_xml
-      return params
+      params
     end
 
     # strip out raw extended_fields and create a valid params hash for new/create/update
@@ -398,7 +398,7 @@ module Importer
       # imports aren't moderated, at least not for the time being
       replacement_hash[:do_not_moderate] = true
 
-      return replacement_hash
+      replacement_hash
     end
 
     def importer_prepare_short_summary(source_string, length = 25, end_string = '')
@@ -460,7 +460,7 @@ module Importer
         path_to_file_to_grab = new_file_path
       end
 
-      return path_to_file_to_grab
+      path_to_file_to_grab
     end
 
     def importer_update_records_processed_vars
@@ -645,7 +645,7 @@ module Importer
       # give zebra and our server a small break
       sleep(@record_interval) if @record_interval > 0
 
-      return existing_item || new_record
+      existing_item || new_record
     end
 
     # XPATH was proving too unreliable
@@ -764,7 +764,7 @@ module Importer
       fat_free_file << ''
       fat_free_file.close
 
-      return path_to_output
+      path_to_output
     end
 
     def assign_value_to_appropriate_fields(record_field, record_value, params, zoom_class)
@@ -1042,7 +1042,7 @@ module Importer
         logger.info('what are errors on save of new record: ' + new_record.errors.inspect)
       end
 
-      return new_record
+      new_record
     end
 
     def importer_build_relations_to(new_record, record_hash, params)

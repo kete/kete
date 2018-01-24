@@ -174,7 +174,7 @@ class PqfQueryTest < ActiveSupport::TestCase
 
   def test_title_or_any_text_includes
     # Check we get the right result for searchin for a string in title or any_text
-    assert_equal "#{@qas['relevance']}", @pqf_query.title_or_any_text_includes("")
+    assert_equal (@qas['relevance']).to_s, @pqf_query.title_or_any_text_includes("")
     assert_equal "#{@qas['relevance']}@or #{@as['title']}  \"One\"  #{@as['any_text']}  \"One\"  ", @pqf_query.title_or_any_text_includes("One")
     assert_equal "#{@qas['relevance']}@or #{@as['title']} @and  \"One\" \"Two\" #{@as['any_text']} @and  \"One\" \"Two\" ", @pqf_query.title_or_any_text_includes("One Two")
   end

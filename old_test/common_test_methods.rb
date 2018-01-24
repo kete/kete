@@ -85,13 +85,13 @@ end
 # currently running. If a query succeeds then its running and we return true,
 # else we capture the exception when it fails, and return false
 def zebra_running?(zebra_db)
-  begin
+  
     zoom_db = ZoomDb.find_by_database_name(zebra_db)
     Topic.process_query(:zoom_db => zoom_db, :query => "@attr 1=_ALLRECORDS @attr 2=103 ''")
     return true
   rescue
     return false
-  end
+  
 end
 
 # To change a constant, use this method. It removes any existing constant and
