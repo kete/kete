@@ -36,7 +36,7 @@ class HomepageTest < ActionController::IntegrationTest
         should "order by recently added topics" do
           body_should_not_contain "Topic 1"
           body_should_contain_in_order ['Topic 6', 'Topic 5', 'Topic Updated 4', 'Topic 3', 'Topic Updated 2'],
-                                        '<div class="recent-topic-divider"></div>'
+                                       '<div class="recent-topic-divider"></div>'
         end
       end
 

@@ -20,13 +20,13 @@ class ApplicationHelperTest < ActionView::TestCase
       jill = create_new_user :login => 'jill'
 
       item = Topic.create!({
-        :title => 'Welcome',
-        :short_summary => 'Information About the Site',
-        :description => '<h2>What we do</h2>',
-        :tag_list => 'about us, guide',
-        :topic_type_id => TopicType.first,
-        :basket_id => Basket.first
-      })
+                             :title => 'Welcome',
+                             :short_summary => 'Information About the Site',
+                             :description => '<h2>What we do</h2>',
+                             :tag_list => 'about us, guide',
+                             :topic_type_id => TopicType.first,
+                             :basket_id => Basket.first
+                           })
       item.creator = bob
 
       data = <<-DATA
@@ -44,8 +44,8 @@ class ApplicationHelperTest < ActionView::TestCase
       assert_equal data.squish, dc_metadata_for(item).squish
 
       item.update_attributes!({
-        :title => 'About Us'
-      })
+                                :title => 'About Us'
+                              })
       item.add_as_contributor(jill)
 
       data = <<-DATA

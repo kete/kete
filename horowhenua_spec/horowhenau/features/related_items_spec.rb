@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 def exec_with_horowhenua_attachments
-   old_overide_url = Rails.configuration.attachments_overide_url
+  old_overide_url = Rails.configuration.attachments_overide_url
     Rails.configuration.attachments_overide_url = 'http://horowhenua.kete.net.nz'
     yield
     Rails.configuration.attachments_overide_url = old_overide_url

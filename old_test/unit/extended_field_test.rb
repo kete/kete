@@ -30,7 +30,7 @@ class ExtendedFieldTest < ActiveSupport::TestCase
 
   # format of label - don't allow labels that are the same as defined columns for topic_type or content_type
   def test_format_of_label_no_reserved_labels
-  invalid_label_names = TopicType.column_names + ContentType.column_names
+    invalid_label_names = TopicType.column_names + ContentType.column_names
 
     invalid_label_names.uniq.each do |invalid_label|
       extended_field = ExtendedField.new(:label => invalid_label,
@@ -51,7 +51,7 @@ class ExtendedFieldTest < ActiveSupport::TestCase
 
   def test_label_does_not_begin_or_end_with_spaces
     extended_field = ExtendedField.create!(:label => ' ends and begins with spaces ',
-                                       :description => "yyy")
+                                           :description => "yyy")
 
     assert_equal "ends and begins with spaces", extended_field.label
   end

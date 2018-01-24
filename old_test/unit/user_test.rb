@@ -13,13 +13,13 @@ class UserTest < ActiveSupport::TestCase
 
     # hash of params to create new instance of model, e.g. {:name => 'Test Model', :description => 'Dummy'}
     @new_model = { :login => 'quire',
-      :email => 'quire@example.com',
-      :password => 'quire',
-      :password_confirmation => 'quire',
-      :agree_to_terms => '1',
-      :security_code => 'test',
-      :security_code_confirmation => 'test',
-      :locale => 'en' }
+                   :email => 'quire@example.com',
+                   :password => 'quire',
+                   :password_confirmation => 'quire',
+                   :agree_to_terms => '1',
+                   :security_code => 'test',
+                   :security_code_confirmation => 'test',
+                   :locale => 'en' }
 
     # name of fields that must be present, e.g. %(name description)
     @req_attr_names = %w(login email agree_to_terms security_code password password_confirmation locale)

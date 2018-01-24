@@ -143,7 +143,7 @@ class TopicTypeTest < ActiveSupport::TestCase
   def test_available_fields_not_already_mapped
     @organization_type.available_fields.each do |field|
       fcount = TopicTypeToFieldMapping.count :conditions => ["extended_field_id = :extended_field_id and topic_type_id = :topic_type_id",
-                                              { :extended_field_id => field.id, :topic_type_id => @organization_type.id }]
+                                                             { :extended_field_id => field.id, :topic_type_id => @organization_type.id }]
       assert_equal fcount, 0, "There is a field listed in available_fields that has already been mapped to this topic_type."
     end
   end

@@ -210,7 +210,7 @@ end
 # passed to the factory on item creation.
 def populate_extended_field_data_for(zoom_class, ef_data, options = {})
   [true, false].each do |is_private|
-     Factory(zoom_class.tableize.singularize.to_sym, { :extended_content => ef_data.join, :private => is_private }.merge(options))
+    Factory(zoom_class.tableize.singularize.to_sym, { :extended_content => ef_data.join, :private => is_private }.merge(options))
   end
 end
 

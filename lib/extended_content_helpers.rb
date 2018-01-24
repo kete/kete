@@ -15,7 +15,7 @@ module ExtendedContentHelpers
       fields_in_sorted_array.each do |field_hash|
         field_hash.each_pair do |field_key, field_data|
         # If this is google map contents, and no_map is '1', then do not use this data
-        next if field_data.is_a?(Hash) && field_data['no_map'] && field_data['no_map'] == '1'
+          next if field_data.is_a?(Hash) && field_data['no_map'] && field_data['no_map'] == '1'
 
         if field_key =~ /_multiple$/
           # We are dealing with multiple instances of an attribute
@@ -25,7 +25,7 @@ module ExtendedContentHelpers
         else
           oai_dc_xml_for_field_dataset(field_key, field_data)
         end
-      end
+        end
       end
 
       # Build the anonymous fields that have no dc:* attributes.
