@@ -85,7 +85,7 @@ class TopicTest < ActiveSupport::TestCase
                        "2" => { "address" => { "xml_element_name" => "dc:description", "value" => "Island Bay" } }
                      },
                      "place_of_birth" => { "xml_element_name" => "dc:subject" },
-                     "last_name" => "Bloggs" 
+                     "last_name" => "Bloggs"
                    }, t.xml_attributes_without_position)
     end
   end

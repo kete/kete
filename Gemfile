@@ -68,7 +68,7 @@ gem 'routing-filter', '~> 0.3.1'
 gem 'oembed_provider_engine'
 
 # gem "mysql"
-gem 'pg'
+gem 'pg', '< 1.0.0'
 
 gem 'awesome_nested_set', '~> 2.1.6'
 gem 'railroady'

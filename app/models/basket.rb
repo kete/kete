@@ -519,7 +519,7 @@ class Basket < ActiveRecord::Base
       if File.directory?(path_to_theme_dir) and !['.', '..', '.svn'].include?(listing)
         # needs to have at least a stylesheets directory
         # and an images directory with a sample in it under it
-        @possible_themes << listing if File.exists?(path_to_theme_dir + '/stylesheets') and File.exists?(path_to_theme_dir + '/images/sample.jpg')
+        @possible_themes << listing if File.exist?(path_to_theme_dir + '/stylesheets') and File.exist?(path_to_theme_dir + '/images/sample.jpg')
       end
     end
     @possible_themes
