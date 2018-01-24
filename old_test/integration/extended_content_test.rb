@@ -222,7 +222,7 @@ class ExtendedContentTest < ActionController::IntegrationTest
       @topic.attributes = {
         :title => 'Choice Linking Test',
         :topic_type_id => @topic_type.id,
-        :basket_id => @@site_basket.id 
+        :basket_id => @@site_basket.id
       }
       @topic.home_town = "Somewhere way out there"
       @topic.save
