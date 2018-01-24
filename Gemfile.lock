@@ -389,7 +389,7 @@ DEPENDENCIES
   oai (~> 0.3.1)
   oembed_provider_engine
   packet
-  pg
+  pg (< 1.0.0)
   pg_search (~> 0.7.2)
   poltergeist
   pothoven-attachment_fu!
@@ -426,4 +426,4 @@ RUBY VERSION
    ruby 2.3.3p222
 
 BUNDLED WITH
-   1.15.1
+   1.16.1
