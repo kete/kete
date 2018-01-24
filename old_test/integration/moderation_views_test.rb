@@ -260,29 +260,29 @@ class ModerationViewsTest < ActionController::IntegrationTest
 
   private
 
-    def should_have_functioning_moderation_pages(item, controller_name, zoom_class_name, super_user = false)
-      visit "/site/#{controller_name}/show/#{item.id}"
+  def should_have_functioning_moderation_pages(item, controller_name, zoom_class_name, super_user = false)
+    visit "/site/#{controller_name}/show/#{item.id}"
 
-      body_should_contain "New #{controller_name.singularize} updated again"
-      body_should_contain "History"
+    body_should_contain "New #{controller_name.singularize} updated again"
+    body_should_contain "History"
 
-      visit "/site/#{controller_name}/history/#{item.id}"
-      body_should_contain "Revision History: New #{controller_name.singularize} updated again"
-      body_should_contain "Back to live"
-      1.upto(3) do |i|
-        body_should_contain "# #{i}"
-      end
+    visit "/site/#{controller_name}/history/#{item.id}"
+    body_should_contain "Revision History: New #{controller_name.singularize} updated again"
+    body_should_contain "Back to live"
+    1.upto(3) do |i|
+      body_should_contain "# #{i}"
+    end
 
-      1.upto(2) do |i|
-        visit "/site/#{controller_name}/preview/#{item.id}?version=#{i}"
-        body_should_contain "Preview revision ##{i}: view live"
-        body_should_contain "#{zoom_class_humanize(zoom_class_name)}: #{item.versions.find_by_version(i).title}"
-        body_should_contain item.versions.find_by_version(i).description
-        body_should_contain "Actions"
-        if super_user
-          body_should_contain I18n.t('topics.preview_actions.make_live')
-          body_should_contain I18n.t('topics.preview_actions.reject')
-        end
+    1.upto(2) do |i|
+      visit "/site/#{controller_name}/preview/#{item.id}?version=#{i}"
+      body_should_contain "Preview revision ##{i}: view live"
+      body_should_contain "#{zoom_class_humanize(zoom_class_name)}: #{item.versions.find_by_version(i).title}"
+      body_should_contain item.versions.find_by_version(i).description
+      body_should_contain "Actions"
+      if super_user
+        body_should_contain I18n.t('topics.preview_actions.make_live')
+        body_should_contain I18n.t('topics.preview_actions.reject')
       end
     end
+  end
 end

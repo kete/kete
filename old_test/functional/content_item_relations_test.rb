@@ -206,11 +206,11 @@ class ContentItemRelationsTest < ActionController::TestCase
 
   protected
 
-    def add_relationship_between(topic, item)
-      ContentItemRelation.create(
-        :topic_id => topic.id,
-        :related_item_type => item.class.name,
-        :related_item_id => item.id
-      )
-    end
+  def add_relationship_between(topic, item)
+    ContentItemRelation.create(
+      :topic_id => topic.id,
+      :related_item_type => item.class.name,
+      :related_item_id => item.id
+    )
+  end
 end

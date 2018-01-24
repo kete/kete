@@ -172,87 +172,87 @@ class ModerationTest < ActionController::IntegrationTest
 
     # Some macros
 
-    def create_a_new_pending_topic_and_accept_it
-      # Create a new topic, which should be moderated since Paul is only a normal basket member.
-      @topic = new_topic({ :title => "Test moderated topic" }, @basket)
-      latest_version_should_be_pending(@topic)
-      should_not_appear_in_search_results(@topic)
+  def create_a_new_pending_topic_and_accept_it
+    # Create a new topic, which should be moderated since Paul is only a normal basket member.
+    @topic = new_topic({ :title => "Test moderated topic" }, @basket)
+    latest_version_should_be_pending(@topic)
+    should_not_appear_in_search_results(@topic)
 
-      # Login as a super-user and moderate (accept) the version.
-      login_as('sarah', 'test', { :logout_first => true })
-      moderate_restore(@topic, :version => 1)
+    # Login as a super-user and moderate (accept) the version.
+    login_as('sarah', 'test', { :logout_first => true })
+    moderate_restore(@topic, :version => 1)
 
-      @topic.reload
-      latest_version_should_be_live(@topic)
-      should_appear_once_in_search_results(@topic, :title => @topic.title)
-    end
+    @topic.reload
+    latest_version_should_be_live(@topic)
+    should_appear_once_in_search_results(@topic, :title => @topic.title)
+  end
 
-    def create_a_new_topic_with_several_approved_versions
-      create_a_new_pending_topic_and_accept_it
+  def create_a_new_topic_with_several_approved_versions
+    create_a_new_pending_topic_and_accept_it
 
-      login_as('paul', 'test', { :logout_first => true })
+    login_as('paul', 'test', { :logout_first => true })
 
-      update_item(@topic, :title => "Title has been changed.")
-      assert_equal @topic.versions.find_by_version(1).title, @topic.title
-      should_appear_once_in_search_results(@topic, :title => @topic.versions.find_by_version(1).title)
+    update_item(@topic, :title => "Title has been changed.")
+    assert_equal @topic.versions.find_by_version(1).title, @topic.title
+    should_appear_once_in_search_results(@topic, :title => @topic.versions.find_by_version(1).title)
 
-      login_as('sarah', 'test', { :logout_first => true })
-      moderate_restore(@topic, :version => 4)
+    login_as('sarah', 'test', { :logout_first => true })
+    moderate_restore(@topic, :version => 4)
 
-      @topic.reload
-      latest_version_should_be_live(@topic)
-      should_appear_once_in_search_results(@topic, :title => @topic.title)
-    end
+    @topic.reload
+    latest_version_should_be_live(@topic)
+    should_appear_once_in_search_results(@topic, :title => @topic.title)
+  end
 
     # Some helpers below
 
-    def latest_version_should_be_pending(item)
-      assert item.versions.last.version != item.version || \
-             item.title == BLANK_TITLE, "Current version should not be latest or be pending, but is not. #{item.inspect}"
-    end
+  def latest_version_should_be_pending(item)
+    assert item.versions.last.version != item.version || \
+           item.title == BLANK_TITLE, "Current version should not be latest or be pending, but is not. #{item.inspect}"
+  end
 
-    def latest_version_should_be_live(item)
-      assert_equal item.versions.last.title, item.title, "Current version should be the same as the latest, but is not."
-      assert_not_equal item.title, BLANK_TITLE, "Current version should not have pending title, but does. #{item.inspect}"
-    end
+  def latest_version_should_be_live(item)
+    assert_equal item.versions.last.title, item.title, "Current version should be the same as the latest, but is not."
+    assert_not_equal item.title, BLANK_TITLE, "Current version should not have pending title, but does. #{item.inspect}"
+  end
 
-    def configure_new_topic_type_with_extended_field(options = {})
-      options = {
-        :extended_field_value_required => false,
-        :extended_field_label => "Extended data",
-        :extended_field_multiple => false,
-        :extended_field_ftype => "Text",
-        :topic_type_name => "Test topic type",
-        :topic_type_description => "Topic type description"
-      }.merge(options)
+  def configure_new_topic_type_with_extended_field(options = {})
+    options = {
+      :extended_field_value_required => false,
+      :extended_field_label => "Extended data",
+      :extended_field_multiple => false,
+      :extended_field_ftype => "Text",
+      :topic_type_name => "Test topic type",
+      :topic_type_description => "Topic type description"
+    }.merge(options)
 
-      # Add a new extended field
-      click_link "extended fields"
-      click_link "Create New"
+    # Add a new extended field
+    click_link "extended fields"
+    click_link "Create New"
 
-      fill_in "record_label_", :with => options[:extended_field_label]
-      select options[:extended_field_ftype], :from => "record_ftype"
-      select options[:extended_field_multiple].to_s.capitalize, :from => "record_multiple"
-      click_button "Create"
+    fill_in "record_label_", :with => options[:extended_field_label]
+    select options[:extended_field_ftype], :from => "record_ftype"
+    select options[:extended_field_multiple].to_s.capitalize, :from => "record_multiple"
+    click_button "Create"
 
-      assert_equal options[:extended_field_label], ExtendedField.last.label
-      @@extended_fields << ExtendedField.last
+    assert_equal options[:extended_field_label], ExtendedField.last.label
+    @@extended_fields << ExtendedField.last
 
-      visit "/site/topic_types/new?parent_id=1"
-      fill_in "Name", :with => options[:topic_type_name]
-      fill_in "Description", :with => options[:topic_type_description]
-      click_button "Create"
+    visit "/site/topic_types/new?parent_id=1"
+    fill_in "Name", :with => options[:topic_type_name]
+    fill_in "Description", :with => options[:topic_type_description]
+    click_button "Create"
 
-      verb = options[:extended_field_value_required] ? "required" : "add"
-      check "extended_field_#{ExtendedField.last.to_param.to_s}_#{verb}_checkbox"
-      click_button "Add to Topic Type"
+    verb = options[:extended_field_value_required] ? "required" : "add"
+    check "extended_field_#{ExtendedField.last.to_param.to_s}_#{verb}_checkbox"
+    click_button "Add to Topic Type"
 
-      text_verb = options[:extended_field_value_required] ? "required" : "optional"
-      body_should_contain "#{options[:extended_field_label]} (#{text_verb})"
+    text_verb = options[:extended_field_value_required] ? "required" : "optional"
+    body_should_contain "#{options[:extended_field_label]} (#{text_verb})"
 
-      assert_equal options[:topic_type_name], TopicType.last.name
-      @@topic_types << TopicType.last
+    assert_equal options[:topic_type_name], TopicType.last.name
+    @@topic_types << TopicType.last
 
-      return TopicType.last
-    end
+    return TopicType.last
+  end
 end

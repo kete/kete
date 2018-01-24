@@ -737,127 +737,127 @@ class TopicTest < ActiveSupport::TestCase
 
     # Some helpers for extended field tests
     # Returns instance of TopicType.
-    def add_field_to(topic_type, field_attribute_hash = {}, mapping_options = {})
-      default_field_attributes = {
-        :label => "Test",
-        :xml_element_name => "dc:description",
-        :multiple => false,
-        :ftype => "text"
-      }
+  def add_field_to(topic_type, field_attribute_hash = {}, mapping_options = {})
+    default_field_attributes = {
+      :label => "Test",
+      :xml_element_name => "dc:description",
+      :multiple => false,
+      :ftype => "text"
+    }
 
-      mapping_attributes = {
-        :extended_field => ExtendedField.create!(default_field_attributes.merge(field_attribute_hash)),
-        :required => false
-      }
+    mapping_attributes = {
+      :extended_field => ExtendedField.create!(default_field_attributes.merge(field_attribute_hash)),
+      :required => false
+    }
 
-      topic_type.topic_type_to_field_mappings.create(mapping_attributes.merge(mapping_options))
+    topic_type.topic_type_to_field_mappings.create(mapping_attributes.merge(mapping_options))
 
-      topic_type
+    topic_type
+  end
+
+  def for_topic_with(topic_type, field_attribute_hash = {}, mapping_options = {})
+    tt = add_field_to(topic_type, field_attribute_hash, mapping_options)
+    model = Topic.new(@new_model.merge(:topic_type => tt))
+    yield(model)
+    drop_last_field!
+  end
+
+  def drop_last_field!
+    ExtendedField.last.destroy
+    TopicTypeToFieldMapping.last.destroy
+  end
+
+  def create_person(options = {})
+    do_not_save = options.delete(:do_not_save)
+
+    values = standard_names
+    values['place_of_birth'] = nil
+    values = values.merge(options)
+
+    person = Topic.new(@new_model.merge(:topic_type => TopicType.find_by_name("Person")))
+    person.extended_content_values = values
+    person.save! unless do_not_save
+    person
+  end
+
+  def set_up_father_for_father_field
+    # set which topic type (Person) for the father field
+    ef = ExtendedField.find_by_label('Father')
+    ef.settings[:topic_type] = 2
+
+    # create a potential father record
+    father = create_person('first_names' => 'Papa')
+  end
+
+  def set_up_relatives_for_relatives_field
+    # set which topic type (Person) for the father field
+    ef = ExtendedField.find_by_label('Relatives')
+    ef.settings[:topic_type] = 2
+
+    # create and return our relatives
+    [create_person('first_names' => 'Papa'), create_person('first_names' => 'Mama')]
+  end
+
+  def standard_names
+    { "first_names" => "Joe", "last_name" => "Bloggs" }
+  end
+
+  def default_extended_values_plus(options = {})
+    standard_names.merge(options)
+  end
+
+  def set_up_choices
+    choice_content = [
+      ["Married", "Married"],
+      ["Defacto relationship", "Defacto Relationship"],
+      ["Dating", "Dating"],
+      ["Single", "Single"]
+    ]
+
+    choice_content.each do |l, v|
+      c = Choice.create!(:label => l, :value => v)
+      ExtendedField.last.choices << c
     end
+  end
 
-    def for_topic_with(topic_type, field_attribute_hash = {}, mapping_options = {})
-      tt = add_field_to(topic_type, field_attribute_hash, mapping_options)
-      model = Topic.new(@new_model.merge(:topic_type => tt))
-      yield(model)
-      drop_last_field!
+  def married_dating_array
+    %w(Married Dating)
+  end
+
+  def married_dating_as_hashes(in_array = true)
+    values = married_dating_array.collect { |s| { 'label' => s, 'value' => s } }
+    if in_array
+      [values]
+    else
+      values
     end
+  end
 
-    def drop_last_field!
-      ExtendedField.last.destroy
-      TopicTypeToFieldMapping.last.destroy
+  def single_array
+    ['Single']
+  end
+
+  def single_hash(in_array = true)
+    single = single_array[0]
+    hash = { 'label' => single, 'value' => single }
+    if in_array
+      [hash]
+    else
+      hash
     end
+  end
 
-    def create_person(options = {})
-      do_not_save = options.delete(:do_not_save)
+  def married_dating_and_single_array
+    [married_dating_array, single_array]
+  end
 
-      values = standard_names
-      values['place_of_birth'] = nil
-      values = values.merge(options)
+  def married_dating_and_single_as_hashes
+    [married_dating_as_hashes(false), single_hash]
+  end
 
-      person = Topic.new(@new_model.merge(:topic_type => TopicType.find_by_name("Person")))
-      person.extended_content_values = values
-      person.save! unless do_not_save
-      person
-    end
-
-    def set_up_father_for_father_field
-      # set which topic type (Person) for the father field
-      ef = ExtendedField.find_by_label('Father')
-      ef.settings[:topic_type] = 2
-
-      # create a potential father record
-      father = create_person('first_names' => 'Papa')
-    end
-
-    def set_up_relatives_for_relatives_field
-      # set which topic type (Person) for the father field
-      ef = ExtendedField.find_by_label('Relatives')
-      ef.settings[:topic_type] = 2
-
-      # create and return our relatives
-      [create_person('first_names' => 'Papa'), create_person('first_names' => 'Mama')]
-    end
-
-    def standard_names
-      { "first_names" => "Joe", "last_name" => "Bloggs" }
-    end
-
-    def default_extended_values_plus(options = {})
-      standard_names.merge(options)
-    end
-
-    def set_up_choices
-      choice_content = [
-        ["Married", "Married"],
-        ["Defacto relationship", "Defacto Relationship"],
-        ["Dating", "Dating"],
-        ["Single", "Single"]
-      ]
-
-      choice_content.each do |l, v|
-        c = Choice.create!(:label => l, :value => v)
-        ExtendedField.last.choices << c
-      end
-    end
-
-    def married_dating_array
-      %w(Married Dating)
-    end
-
-    def married_dating_as_hashes(in_array = true)
-      values = married_dating_array.collect { |s| { 'label' => s, 'value' => s } }
-      if in_array
-        [values]
-      else
-        values
-      end
-    end
-
-    def single_array
-      ['Single']
-    end
-
-    def single_hash(in_array = true)
-      single = single_array[0]
-      hash = { 'label' => single, 'value' => single }
-      if in_array
-        [hash]
-      else
-        hash
-      end
-    end
-
-    def married_dating_and_single_array
-      [married_dating_array, single_array]
-    end
-
-    def married_dating_and_single_as_hashes
-      [married_dating_as_hashes(false), single_hash]
-    end
-
-    def default_expected_hash_plus(options = {})
-      { "first_names" => [["Joe"]],
-        "last_name" => [["Bloggs"]],
-        "place_of_birth" => [[nil]] }.merge(options)
-    end
+  def default_expected_hash_plus(options = {})
+    { "first_names" => [["Joe"]],
+      "last_name" => [["Bloggs"]],
+      "place_of_birth" => [[nil]] }.merge(options)
+  end
 end

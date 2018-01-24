@@ -275,18 +275,18 @@ class AccountControllerTest < ActionController::TestCase
   protected
 
     # James is working on this..
-    def create_user(options = {})
-      post :signup, { :user => { :login => 'quire', :email => 'quire@changme.com',
-                                 :password => 'quire', :password_confirmation => 'quire', :captcha_type => 'image',
-                                 :agree_to_terms => '1', :security_code => 'test', :locale => 'en' }.merge(options), :urlified_name => @urlified_name },
-           { :captcha_id => 1 }
-    end
+  def create_user(options = {})
+    post :signup, { :user => { :login => 'quire', :email => 'quire@changme.com',
+                               :password => 'quire', :password_confirmation => 'quire', :captcha_type => 'image',
+                               :agree_to_terms => '1', :security_code => 'test', :locale => 'en' }.merge(options), :urlified_name => @urlified_name },
+         { :captcha_id => 1 }
+  end
 
-    def auth_token(token)
-      CGI::Cookie.new('name' => 'auth_token', 'value' => token)
-    end
+  def auth_token(token)
+    CGI::Cookie.new('name' => 'auth_token', 'value' => token)
+  end
 
-    def cookie_for(user)
-      auth_token User.find_by_login(user.to_s).remember_token
-    end
+  def cookie_for(user)
+    auth_token User.find_by_login(user.to_s).remember_token
+  end
 end
