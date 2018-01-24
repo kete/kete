@@ -24,7 +24,7 @@ module OaiZoom
     def oai_record_xml(options = {})
       item = options[:item] || self
       request = @import_request || simulated_request
-      record = Nokogiri::XML::Builder.new(encoding: 'UTF-8') { |xml|
+      record = Nokogiri::XML::Builder.new(encoding: 'UTF-8') do |xml|
         xml.send('OAI-PMH',
                  'xmlns:xsi' => 'http://www.w3.org/2001/XMLSchema-instance',
                  'xsi:schemaLocation' => 'http://www.openarchives.org/OAI/2.0/ http://www.openarchives.org/OAI/2.0/OAI-PMH.xsd',
@@ -51,9 +51,9 @@ module OaiZoom
                   # since we call it without specifying
                   oai_dc_xml_dc_description(xml)
 
-                  xml.send('dc:subject') {
+                  xml.send('dc:subject') do
                     xml.cdata item.url
-                  } if item.is_a?(WebLink)
+                  end if item.is_a?(WebLink)
 
                   # we do a dc:source element for the original binary file
                   oai_dc_xml_dc_source_for_file(xml, request)
@@ -95,7 +95,7 @@ module OaiZoom
             end
           end
         end
-      }
+      end
       record = record.to_xml
       logger.info('after record to_xml')
       record
@@ -180,24 +180,24 @@ module OaiZoom
             related_items = item.send(zoom_class.tableize)
           end
           related_items.each do |related|
-            xml.send('dc:subject') {
+            xml.send('dc:subject') do
               xml.cdata related.title
-            } unless [SystemSetting.blank_title, SystemSetting.no_public_version_title].include?(related.title)
+            end unless [SystemSetting.blank_title, SystemSetting.no_public_version_title].include?(related.title)
             xml.send('dc:relation', importer_item_url({ host: host, controller: zoom_class_controller(zoom_class), item: related, urlified_name: related.basket.urlified_name, locale: false }, true))
           end
         end
       when 'Comment'
         # comments always point back to the thing they are commenting on
         commented_on_item = item.commentable
-        xml.send('dc:subject') {
+        xml.send('dc:subject') do
           xml.cdata commented_on_item.title
-        } unless [SystemSetting.blank_title, SystemSetting.no_public_version_title].include?(commented_on_item.title)
+        end unless [SystemSetting.blank_title, SystemSetting.no_public_version_title].include?(commented_on_item.title)
         xml.send('dc:relation', importer_item_url({ host: host, controller: zoom_class_controller(commented_on_item.class.name), item: commented_on_item, urlified_name: commented_on_item.basket.urlified_name, locale: false }, true))
       else
         item.topics.each do |related|
-          xml.send('dc:subject') {
+          xml.send('dc:subject') do
             xml.cdata related.title
-          } unless [SystemSetting.blank_title, SystemSetting.no_public_version_title].include?(related.title)
+          end unless [SystemSetting.blank_title, SystemSetting.no_public_version_title].include?(related.title)
           xml.send('dc:relation', importer_item_url({ host: host, controller: :topics, item: related, urlified_name: related.basket.urlified_name, locale: false }, true))
         end
       end

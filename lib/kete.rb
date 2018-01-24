@@ -61,17 +61,17 @@ class Kete
     def reader_proc_for(setting)
       method_name = setting.constant_name.downcase
 
-      Proc.new {
+      Proc.new do
         method_name = method_name.sub('?', '') if method_name.include?('?')
         class_variable_get('@@' + method_name)
-      }
+      end
     end
 
     def define_reader_method_as(method_name, value)
       # create the template code
-      code = Proc.new {
+      code = Proc.new do
         value
-      }
+      end
 
       metaclass.instance_eval { define_method(method_name, &code) }
 
