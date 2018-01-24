@@ -50,7 +50,7 @@ class BasketTest < ActiveSupport::TestCase
     assert_not_nil RedirectRegistration.find(:first,
                                              :conditions => {
                                                :source_url_pattern => '/foo/',
-                                               :target_url_pattern => '/bar/' 
+                                               :target_url_pattern => '/bar/'
                                              })
   end
 
