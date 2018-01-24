@@ -214,13 +214,13 @@ class ContentRelationTest < ActiveSupport::TestCase
 
   private
 
-    def create_topic_set(number_of_topics)
-      array = []
-      number_of_topics.times do
-        array.push Topic.create!(@new_topic_model)
-      end
-      array
+  def create_topic_set(number_of_topics)
+    array = []
+    number_of_topics.times do
+      array.push Topic.create!(@new_topic_model)
     end
+    array
+  end
 
   # James - 2008-06-13
   # Does not pass, unsure why right now; model attributes are identical.

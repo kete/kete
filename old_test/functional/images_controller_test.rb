@@ -113,12 +113,12 @@ class ImagesControllerTest < ActionController::TestCase
 
   private
 
-    def thumbnails_of(still_image)
-      original = still_image.original_file
-      still_image.image_files.reject { |i| i.id == original.id }
-    end
+  def thumbnails_of(still_image)
+    original = still_image.original_file
+    still_image.image_files.reject { |i| i.id == original.id }
+  end
 
-    def original_of(still_image)
-      still_image.original_file
-    end
+  def original_of(still_image)
+    still_image.original_file
+  end
 end

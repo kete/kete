@@ -186,59 +186,59 @@ class DuplicateSearchRecordTest < ActionController::IntegrationTest
 
   private
 
-    def create_a_topic_with_a_related_topic(basket = @@site_basket, options = {})
-      options = {
-        :member => 'paul',
-        :moderator => 'sarah'
-      }.merge!(options)
+  def create_a_topic_with_a_related_topic(basket = @@site_basket, options = {})
+    options = {
+      :member => 'paul',
+      :moderator => 'sarah'
+    }.merge!(options)
 
-      login_as(options[:member], 'test', { :logout_first => true }) if is_fully_moderated?(basket)
+    login_as(options[:member], 'test', { :logout_first => true }) if is_fully_moderated?(basket)
 
-      @topic = new_topic({ :title => "A topic" }, basket)
+    @topic = new_topic({ :title => "A topic" }, basket)
 
-      # Ensure that the topic has been moderated correctly.
-      assert_equal(BLANK_TITLE, @topic.title, "Basket fully_moderated setting: " + basket.settings[:full_moderated].inspect) if is_fully_moderated?(basket)
+    # Ensure that the topic has been moderated correctly.
+    assert_equal(BLANK_TITLE, @topic.title, "Basket fully_moderated setting: " + basket.settings[:full_moderated].inspect) if is_fully_moderated?(basket)
 
-      should_not_appear_in_search_results(@topic) if is_fully_moderated?(basket)
+    should_not_appear_in_search_results(@topic) if is_fully_moderated?(basket)
 
-      if is_fully_moderated?(basket)
-        login_as(options[:moderator], 'test', { :logout_first => true })
-        moderate_restore(@topic, :version => 1)
-      end
-
-      @topic.reload
-      should_appear_once_in_search_results(@topic)
-
-      # Emulate clicking the "Create" link for related topics
-      login_as(options[:member], 'test', { :logout_first => true }) if is_fully_moderated?(basket)
-
-      @related_topic = new_item({ :new_path => "/#{basket.urlified_name}/topics/new?relate_to_item=#{@topic.id}&relate_to_type=Topic", :title => "A topic related to 'A topic'", :success_message => "Related Topic was successfully created." }, basket)
-
-      should_not_appear_in_search_results(@related_topic) if is_fully_moderated?(basket)
-
-      if is_fully_moderated?(basket)
-        login_as(options[:moderator], 'test', { :logout_first => true })
-
-        moderate_restore(@related_topic, :version => 1)
-        @related_topic.reload
-        assert_equal @related_topic.versions.find_by_version(1).title, @related_topic.title
-      end
-
-      visit "/#{basket.urlified_name}/topics/show/#{@topic.id}/"
-
-      url = "http://www.example.com/#{basket.urlified_name}/topics/show/#{@related_topic.id}"
-      body_should_contain "<a href=\"#{url}"
-
-      should_appear_once_in_search_results(@topic)
-      should_appear_once_in_search_results(@related_topic)
+    if is_fully_moderated?(basket)
+      login_as(options[:moderator], 'test', { :logout_first => true })
+      moderate_restore(@topic, :version => 1)
     end
 
-    def update_and_check_search_results(item, title = "Changed items")
-      update_item(item, :title => title)
-      should_appear_once_in_search_results(item)
+    @topic.reload
+    should_appear_once_in_search_results(@topic)
+
+    # Emulate clicking the "Create" link for related topics
+    login_as(options[:member], 'test', { :logout_first => true }) if is_fully_moderated?(basket)
+
+    @related_topic = new_item({ :new_path => "/#{basket.urlified_name}/topics/new?relate_to_item=#{@topic.id}&relate_to_type=Topic", :title => "A topic related to 'A topic'", :success_message => "Related Topic was successfully created." }, basket)
+
+    should_not_appear_in_search_results(@related_topic) if is_fully_moderated?(basket)
+
+    if is_fully_moderated?(basket)
+      login_as(options[:moderator], 'test', { :logout_first => true })
+
+      moderate_restore(@related_topic, :version => 1)
+      @related_topic.reload
+      assert_equal @related_topic.versions.find_by_version(1).title, @related_topic.title
     end
 
-    def is_fully_moderated?(basket)
-      basket.settings[:fully_moderated].to_s == "true"
-    end
+    visit "/#{basket.urlified_name}/topics/show/#{@topic.id}/"
+
+    url = "http://www.example.com/#{basket.urlified_name}/topics/show/#{@related_topic.id}"
+    body_should_contain "<a href=\"#{url}"
+
+    should_appear_once_in_search_results(@topic)
+    should_appear_once_in_search_results(@related_topic)
+  end
+
+  def update_and_check_search_results(item, title = "Changed items")
+    update_item(item, :title => title)
+    should_appear_once_in_search_results(item)
+  end
+
+  def is_fully_moderated?(basket)
+    basket.settings[:fully_moderated].to_s == "true"
+  end
 end
