@@ -266,10 +266,10 @@ class AccountController < ApplicationController
   # if REQUIRE_ACTIVATION is false, this isn't used
   def activate
     flash.clear
-    return if params[:id].nil? and params[:activation_code].nil?
+    return if params[:id].nil? && params[:activation_code].nil?
     activator = params[:id] || params[:activation_code]
     @user = User.find_by_activation_code(activator)
-    if @user and @user.activate
+    if @user && @user.activate
       if SystemSetting.administrator_activates?
         flash[:notice] = t('account_controller.activate.admin_activated', new_user: @user.resolved_name)
         redirect_back_or_default(controller: '/account',

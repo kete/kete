@@ -198,7 +198,7 @@ class Basket < ActiveRecord::Base
   before_destroy :clear_item_version_foreign_keys
 
   def update_index_topic(index_topic)
-    if !index_topic.nil? and index_topic.is_a?(Topic)
+    if !index_topic.nil? && index_topic.is_a?(Topic)
       self.index_topic = index_topic
     elsif index_topic == 'destroy'
       self.index_topic = nil
@@ -516,10 +516,10 @@ class Basket < ActiveRecord::Base
     themes_dir = Dir.new(THEMES_ROOT)
     themes_dir.each do |listing|
       path_to_theme_dir = THEMES_ROOT + '/' + listing
-      if File.directory?(path_to_theme_dir) and !['.', '..', '.svn'].include?(listing)
+      if File.directory?(path_to_theme_dir) && !['.', '..', '.svn'].include?(listing)
         # needs to have at least a stylesheets directory
         # and an images directory with a sample in it under it
-        @possible_themes << listing if File.exists?(path_to_theme_dir + '/stylesheets') and File.exists?(path_to_theme_dir + '/images/sample.jpg')
+        @possible_themes << listing if File.exists?(path_to_theme_dir + '/stylesheets') && File.exists?(path_to_theme_dir + '/images/sample.jpg')
       end
     end
     @possible_themes

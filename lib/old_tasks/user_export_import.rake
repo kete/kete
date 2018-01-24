@@ -14,7 +14,7 @@ namespace :kete do
         yaml += "#{user.login}:\n"
         yaml += "  fields:\n"
         user.attributes.each do |field, value|
-          next if field == 'id' or field.empty?
+          next if (field == 'id') || field.empty?
           if field == 'extended_content'
             yaml += "    #{field}: |\n      #{value}\n"
           else

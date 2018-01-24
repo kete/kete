@@ -752,7 +752,7 @@ class SearchController < ApplicationController
   def zoom_update_and_test(item, zoom_db)
     item_class = item.class.name
 
-    if !session[:skip_existing].nil? and session[:skip_existing] == true
+    if !session[:skip_existing].nil? && (session[:skip_existing] == true)
       # test if it's in there first
       if item.has_appropriate_zoom_records?
         return "skipping existing: search record exists: #{item_class} : #{item.id}"
@@ -831,7 +831,7 @@ class SearchController < ApplicationController
     # Allow all public searches
     return true unless is_a_private_search?
 
-    if @current_basket == @site_basket and !authorised_basket_names.empty?
+    if (@current_basket == @site_basket) && !authorised_basket_names.empty?
 
       # In the case of the site basket, the only baskets that are searched privately are those
       # which the user is a member of (using the same logic as above).

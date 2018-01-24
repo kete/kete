@@ -126,7 +126,7 @@ class PastPerfect4ImporterWorker < BackgrounDRb::MetaWorker
 
     logger.info("record #{current_record} : path_to_file_to_grab : " + path_to_file_to_grab)
 
-    if image_file.blank? or !File.exists?(path_to_file_to_grab)
+    if image_file.blank? || !File.exists?(path_to_file_to_grab)
       # TODO: add check to see if image_file has a, b, c, versions associated with it
       # and add them is if they exist
       # change record imagefile accordingly for each and call importer_process on each
@@ -159,7 +159,7 @@ class PastPerfect4ImporterWorker < BackgrounDRb::MetaWorker
       if related_topic_pp4_objectid != 0
         # this item has the same related_topic as the last
         # don't bother looking it up again
-        if !@last_related_topic_pp4_objectid.nil? and related_topic_pp4_objectid == @last_related_topic_pp4_objectid
+        if !@last_related_topic_pp4_objectid.nil? && (related_topic_pp4_objectid == @last_related_topic_pp4_objectid)
           related_topic = @last_related_topic
         else
           related_topic = Topic.find(:first,
@@ -195,7 +195,7 @@ class PastPerfect4ImporterWorker < BackgrounDRb::MetaWorker
 
               logger.info('looking for cleaned up accession: ' + cleaned_up_accessno)
 
-              if !@last_related_topic_pp4_objectid.nil? and  cleaned_up_accessno == @last_related_topic_pp4_objectid
+              if !@last_related_topic_pp4_objectid.nil? &&  (cleaned_up_accessno == @last_related_topic_pp4_objectid)
                 logger.info('looking for cleaned up accession: last accessno match')
                 related_topic = @last_related_topic
               else
@@ -211,7 +211,7 @@ class PastPerfect4ImporterWorker < BackgrounDRb::MetaWorker
               related_topic_pp4_objectid = cleaned_up_accessno
             end
 
-            if !related_accession_record.blank? and related_topic.nil?
+            if !related_accession_record.blank? && related_topic.nil?
               accession_record_hash = importer_xml_record_to_hash(related_accession_record, true)
 
               # create a new topic from related_accession_record
@@ -267,11 +267,11 @@ class PastPerfect4ImporterWorker < BackgrounDRb::MetaWorker
         reason_skipped = 'kete already has a copy of this record'
       end
 
-      if !new_record.nil? and !new_record.id.nil?
+      if !new_record.nil? && !new_record.id.nil?
         # we may not have a related topic, only add the relation if we do
-        if !related_topic.nil? and related_topic != 0
+        if !related_topic.nil? && (related_topic != 0)
           ContentItemRelation.new_relation_to_topic(related_topic.id, new_record)
-          if @last_related_topic.nil? or related_topic.id != @last_related_topic.id
+          if @last_related_topic.nil? || (related_topic.id != @last_related_topic.id)
             # update the last topic, since we are done adding things to it for now
             related_topic.prepare_and_save_to_zoom
           end
@@ -371,7 +371,7 @@ class PastPerfect4ImporterWorker < BackgrounDRb::MetaWorker
             tag_list_array << value.gsub("\n", ' ')
           end
         when 'ADMIN'
-          if zoom_class == 'Topic' or zoom_class == 'Document'
+          if (zoom_class == 'Topic') || (zoom_class == 'Document')
             params[zoom_class_for_params][:short_summary] = value
           else
             if params[zoom_class_for_params][:description].nil?
@@ -435,7 +435,7 @@ class PastPerfect4ImporterWorker < BackgrounDRb::MetaWorker
 
     logger.info('after redcloth')
 
-    if zoom_class == 'Topic' or zoom_class == 'Document' && params[zoom_class_for_params][:short_summary].nil?
+    if (zoom_class == 'Topic') || zoom_class == 'Document' && params[zoom_class_for_params][:short_summary].nil?
       if !description.blank?
         params[zoom_class_for_params][:short_summary] = importer_prepare_short_summary(description)
       end

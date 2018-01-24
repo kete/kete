@@ -300,7 +300,7 @@ class PqfQuery
               # @and at the front of the whole query
               # and this is the second term
               # skip adding a boolean operator
-              if query_starts_with_not == true and term_count == 2
+              if (query_starts_with_not == true) && (term_count == 2)
                 # this just treats even terms found in
                 # Search.boolean_operators as regular words
                 # since their placement makes them meaningless as boolean operators

@@ -135,7 +135,7 @@ module AuthenticatedSystem
       accepts.xml do
         if user = authenticate_or_request_with_http_basic { |u, p| User.authenticate(u, p) }
           self.current_user = user
-          if logged_in? and authorized?
+          if logged_in? && authorized?
             return true
           end
         end

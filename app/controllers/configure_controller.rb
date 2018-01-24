@@ -123,7 +123,7 @@ class ConfigureController < ApplicationController
     @zoom_dbs.each(&:valid?)
 
     @has_errors = false
-    if @zoom_dbs.all? { |zoom_db| zoom_db.errors.empty? and !@kete_password.blank? }
+    if @zoom_dbs.all? { |zoom_db| zoom_db.errors.empty? && !@kete_password.blank? }
 
       ENV['ZEBRA_PASSWORD'] = @kete_password
       Rails.logger.info Rake::Task['zebra:set_keteaccess'].execute(ENV)
@@ -287,7 +287,7 @@ class ConfigureController < ApplicationController
     @is_configured_setting = SystemSetting.find_by_name('Is Configured')
     @is_configured_setting.value = 'true'
     @success = @is_configured_setting.save
-    if @success and !request.xhr?
+    if @success && !request.xhr?
       redirect_to action: 'index', ready_to_restart: :true
     end
   end
