@@ -210,45 +210,45 @@ class StillImageTest < ActiveSupport::TestCase
 
   private
 
-    def new_still_image(still_image_options, image_file_options)
-      still_image = StillImage.create(@new_model.merge(still_image_options))
-      still_image.image_files.create(@new_image_file.merge(image_file_options))
-      still_image.image_files.first.thumbnails.each do |thumb|
-        thumb.still_image_id = still_image.id
-        thumb.save!
-      end
-      still_image.reload
-      assert_valid_still_image(still_image)
-      still_image
+  def new_still_image(still_image_options, image_file_options)
+    still_image = StillImage.create(@new_model.merge(still_image_options))
+    still_image.image_files.create(@new_image_file.merge(image_file_options))
+    still_image.image_files.first.thumbnails.each do |thumb|
+      thumb.still_image_id = still_image.id
+      thumb.save!
     end
+    still_image.reload
+    assert_valid_still_image(still_image)
+    still_image
+  end
 
-    def assert_valid_still_image(still_image)
-      assert_valid still_image
-      still_image.image_files.each { |i| assert_valid i }
-      assert_equal 5, still_image.image_files.size
-      assert_kind_of ImageFile, original_of(still_image)
-      assert_equal 4, thumbnails_of(still_image).size
-    end
+  def assert_valid_still_image(still_image)
+    assert_valid still_image
+    still_image.image_files.each { |i| assert_valid i }
+    assert_equal 5, still_image.image_files.size
+    assert_kind_of ImageFile, original_of(still_image)
+    assert_equal 4, thumbnails_of(still_image).size
+  end
 
-    def thumbnails_of(still_image)
-      original = still_image.original_file
-      still_image.image_files.reject { |i| i.id == original.id }
-    end
+  def thumbnails_of(still_image)
+    original = still_image.original_file
+    still_image.image_files.reject { |i| i.id == original.id }
+  end
 
-    def original_of(still_image)
-      still_image.original_file
-    end
+  def original_of(still_image)
+    still_image.original_file
+  end
 
-    def file_private_should_be(boolean, still_image)
-      assert_equal boolean, still_image.file_private?
-      assert_equal boolean, original_of(still_image).file_private?
-    end
+  def file_private_should_be(boolean, still_image)
+    assert_equal boolean, still_image.file_private?
+    assert_equal boolean, original_of(still_image).file_private?
+  end
 
-    def new_image_with_creator(user = nil)
-      @still_image = StillImage.create(@new_model)
-      @still_image.creator = user || User.first
-      @creator = @still_image.creator
-      @still_image.save
-      @still_image
-    end
+  def new_image_with_creator(user = nil)
+    @still_image = StillImage.create(@new_model)
+    @still_image.creator = user || User.first
+    @creator = @still_image.creator
+    @still_image.save
+    @still_image
+  end
 end
