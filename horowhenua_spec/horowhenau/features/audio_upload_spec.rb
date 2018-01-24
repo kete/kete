@@ -67,5 +67,3 @@ feature "Users can CRUD audio recordings" do
     expect(page).to have_text(new_attrs[:description])
   end
 end
-
-

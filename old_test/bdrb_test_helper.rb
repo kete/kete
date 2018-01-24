@@ -62,4 +62,3 @@ module BackgrounDRb
     end
   end
 end
-

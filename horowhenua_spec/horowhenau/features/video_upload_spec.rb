@@ -67,6 +67,3 @@ feature "Users can CRUD videos" do
     expect(page).to have_text(new_attrs[:description])
   end
 end
-
-
-
