@@ -19,16 +19,16 @@ class TopicsHelperTest < ActionView::TestCase
       ContentItemRelation.new_relation_to_topic(parent_topic, child_topic_2)
 
       data = "<ul>" +
-               "<li>" +
-                 "<a href=\"/en/#{@site_basket.urlified_name}/all/topics/related_to/topic/#{parent_topic.to_param}?topic_type=person\" class=\"small\">" +
-                   "#{topic_types[1].name.pluralize} (1)" +
-                 "</a>" +
-               "</li>" +
-               "<li>" +
-                 "<a href=\"/en/#{@site_basket.urlified_name}/all/topics/related_to/topic/#{parent_topic.to_param}?topic_type=place\" class=\"small\">" +
-                   "#{topic_types[2].name.pluralize} (1)" +
-                 "</a>" +
-               "</li>" +
+             "<li>" +
+             "<a href=\"/en/#{@site_basket.urlified_name}/all/topics/related_to/topic/#{parent_topic.to_param}?topic_type=person\" class=\"small\">" +
+             "#{topic_types[1].name.pluralize} (1)" +
+             "</a>" +
+             "</li>" +
+             "<li>" +
+             "<a href=\"/en/#{@site_basket.urlified_name}/all/topics/related_to/topic/#{parent_topic.to_param}?topic_type=place\" class=\"small\">" +
+             "#{topic_types[2].name.pluralize} (1)" +
+             "</a>" +
+             "</li>" +
              "</ul>"
 
       assert_equal data, topic_types_counts_for(parent_topic)
@@ -38,9 +38,9 @@ class TopicsHelperTest < ActionView::TestCase
   context "A topic" do
     setup do
       @topic_type_list_to_first_item = "<ul class=\"breadcrumb\">" +
-        "<li class=\"first selected-topic-type\">" +
-        "<a href=\"/en/site/all/topics/of/topic\">Topic</a>" +
-        "</li>"
+                                       "<li class=\"first selected-topic-type\">" +
+                                       "<a href=\"/en/site/all/topics/of/topic\">Topic</a>" +
+                                       "</li>"
 
       # define method and basket var that some of our dependent helpers expect
       def params
@@ -59,9 +59,9 @@ class TopicsHelperTest < ActionView::TestCase
 
     should "return list of hierarchy of topic types if it is of topic type that is a sub topic" do
       topic_type_list_sans_end_tag = @topic_type_list_to_first_item.sub("selected", "ancestor") +
-        "<li class=\"selected-topic-type\">" +
-        "<span class=\"breadcrumb-delimiter\"> &raquo; </span>" +
-        "<a href=\"/en/site/all/topics/of/person\">Person</a></li>"
+                                     "<li class=\"selected-topic-type\">" +
+                                     "<span class=\"breadcrumb-delimiter\"> &raquo; </span>" +
+                                     "<a href=\"/en/site/all/topics/of/person\">Person</a></li>"
 
       parent_id = 2
       assert_equal topic_type_list_sans_end_tag + "</ul>", topic_type_breadcrumb_for(Factory(:topic, :topic_type_id => parent_id))
@@ -71,11 +71,11 @@ class TopicsHelperTest < ActionView::TestCase
       added_topic_type.move_to_child_of TopicType.find(parent_id)
 
       topic_type_list_sans_end_tag = topic_type_list_sans_end_tag.sub("selected", "ancestor") +
-        "<li class=\"selected-topic-type\">" +
-        "<span class=\"breadcrumb-delimiter\"> &raquo; </span>" +
-        "<a href=\"/en/site/all/topics/of/subsubtype\">Subsubtype</a>" +
-        "</li>" +
-        "</ul>"
+                                     "<li class=\"selected-topic-type\">" +
+                                     "<span class=\"breadcrumb-delimiter\"> &raquo; </span>" +
+                                     "<a href=\"/en/site/all/topics/of/subsubtype\">Subsubtype</a>" +
+                                     "</li>" +
+                                     "</ul>"
 
       assert_equal topic_type_list_sans_end_tag, topic_type_breadcrumb_for(Factory(:topic, :topic_type_id => added_topic_type.id))
     end

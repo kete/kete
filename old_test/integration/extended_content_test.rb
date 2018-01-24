@@ -222,7 +222,8 @@ class ExtendedContentTest < ActionController::IntegrationTest
       @topic.attributes = {
         :title => 'Choice Linking Test',
         :topic_type_id => @topic_type.id,
-        :basket_id => @@site_basket.id }
+        :basket_id => @@site_basket.id 
+      }
       @topic.home_town = "Somewhere way out there"
       @topic.save
       @topic.creator = @james
@@ -344,14 +345,14 @@ class ExtendedContentTest < ActionController::IntegrationTest
       if ATTACHABLE_CLASSES.include?(zoom_class_name)
         # put in a case statement
         case zoom_class_name
-          when 'StillImage'
-            attach_file "image_file_uploaded_data", "white.jpg"
-          when 'Video'
-            attach_file "video[uploaded_data]", "teststrip.mpg", "video/mpeg"
-          when 'AudioRecording'
-            attach_file "audio_recording[uploaded_data]", "Sin1000Hz.mp3"
-          when 'Document'
-            attach_file "document[uploaded_data]", "test.pdf"
+        when 'StillImage'
+          attach_file "image_file_uploaded_data", "white.jpg"
+        when 'Video'
+          attach_file "video[uploaded_data]", "teststrip.mpg", "video/mpeg"
+        when 'AudioRecording'
+          attach_file "audio_recording[uploaded_data]", "Sin1000Hz.mp3"
+        when 'Document'
+          attach_file "document[uploaded_data]", "test.pdf"
         end
       elsif zoom_class_name == 'WebLink'
         # this will only work if you have internet connection

@@ -164,7 +164,7 @@ class CachingTest < ActionController::IntegrationTest
           check_viewing_public_version_of(@topic, { :check_all_links => false })
           login_as('joe')
           check_viewing_private_version_of(@topic, { :check_all_links => false,
-                                             :check_show_link => true })
+                                                     :check_show_link => true })
         end
 
         should "default to public version when non member tries to access private version" do
@@ -179,8 +179,8 @@ class CachingTest < ActionController::IntegrationTest
           login_as('joe')
           visit "/#{@topic.basket.urlified_name}/index_page?private=true"
           check_viewing_private_version_of(@topic, { :on_topic_already => true,
-                                             :check_all_links => false,
-                                             :check_show_link => true })
+                                                     :check_all_links => false,
+                                                     :check_show_link => true })
         end
 
         context "and when basket has private as default privacy" do
@@ -204,8 +204,8 @@ class CachingTest < ActionController::IntegrationTest
             login_as('joe')
             visit "/#{@topic.basket.urlified_name}"
             check_viewing_private_version_of(@topic, { :on_topic_already => true,
-                                               :check_all_links => false,
-                                               :check_show_link => true })
+                                                       :check_all_links => false,
+                                                       :check_show_link => true })
           end
         end
       end

@@ -494,7 +494,7 @@ class ActionController::IntegrationTest
     click_button "Update"
     body_should_contain "Basket was successfully updated."
     assert_equal "true", basket.settings[:fully_moderated].to_s,
-                         "Basket fully_moderated setting should be true, but is not."
+                 "Basket fully_moderated setting should be true, but is not."
   end
 
   # Turn off full moderation on a basket
@@ -504,7 +504,7 @@ class ActionController::IntegrationTest
     click_button "Update"
     body_should_contain "Basket was successfully updated."
     assert_equal "false", basket.settings[:fully_moderated].to_s,
-                          "Basket fully_moderated setting should be false, but is not."
+                 "Basket fully_moderated setting should be false, but is not."
   end
 
   # Check that an item occurs in search results only once

@@ -208,7 +208,7 @@ class ModerationTest < ActionController::IntegrationTest
 
     def latest_version_should_be_pending(item)
       assert item.versions.last.version != item.version || \
-        item.title == BLANK_TITLE, "Current version should not be latest or be pending, but is not. #{item.inspect}"
+             item.title == BLANK_TITLE, "Current version should not be latest or be pending, but is not. #{item.inspect}"
     end
 
     def latest_version_should_be_live(item)

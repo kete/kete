@@ -8,22 +8,22 @@ class AccountTest < ActionController::IntegrationTest
 
     should "be able to login" do
       login_as('paul', 'test', { :navigate_to_login => true,
-                 :by_form => true })
+                                 :by_form => true })
       body_should_contain "Logged in successfully"
       should_be_on_site_homepage
     end
 
     should "should have details displayed on the menu" do
       login_as('paul', 'test', { :navigate_to_login => true,
-                 :by_form => true })
+                                 :by_form => true })
       body_should_contain "paul"
       body_should_contain "Logout"
     end
 
     should "fail login with incorrect credentials" do
       login_as('incorrect', 'login', { :navigate_to_login => true,
-                 :by_form => true,
-                 :should_fail_login => true })
+                                       :by_form => true,
+                                       :should_fail_login => true })
       body_should_contain "Your password or login do not match our records. Please try again."
     end
 
@@ -59,7 +59,7 @@ class AccountTest < ActionController::IntegrationTest
         visit "/"
         visit "/site/account/login"
         login_as('paul', 'test', { :navigate_to_login => false,
-                   :by_form => true })
+                                   :by_form => true })
         url_should_contain Regexp.new("/$")
       end
     end
