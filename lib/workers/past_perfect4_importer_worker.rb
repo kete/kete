@@ -126,7 +126,7 @@ class PastPerfect4ImporterWorker < BackgrounDRb::MetaWorker
 
     logger.info("record #{current_record} : path_to_file_to_grab : " + path_to_file_to_grab)
 
-    if image_file.blank? or !File.exists?(path_to_file_to_grab)
+    if image_file.blank? or !File.exist?(path_to_file_to_grab)
       # TODO: add check to see if image_file has a, b, c, versions associated with it
       # and add them is if they exist
       # change record imagefile accordingly for each and call importer_process on each
