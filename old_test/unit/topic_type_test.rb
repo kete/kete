@@ -31,7 +31,7 @@ class TopicTypeTest < ActiveSupport::TestCase
     topic_type = TopicType.new(NEW_TOPIC_TYPE)
     assert topic_type.valid?, "TopicType should be valid"
     NEW_TOPIC_TYPE.each do |attr_name|
-      assert_equal NEW_TOPIC_TYPE[attr_name], topic_type.attributes[attr_name], "TopicType.@#{attr_name.to_s} incorrect"
+      assert_equal NEW_TOPIC_TYPE[attr_name], topic_type.attributes[attr_name], "TopicType.@#{attr_name} incorrect"
     end
   end
 

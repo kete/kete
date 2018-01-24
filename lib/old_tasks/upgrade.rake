@@ -271,7 +271,7 @@ namespace :kete do
         content_mapping = ContentTypeToFieldMapping.find_by_content_type_id_and_extended_field_id(content_type_id, extended_field_id)
         content_mapping.destroy unless content_mapping.nil?
       end
-      p "#{user_count.to_s} users user_name moved to resolved_name" if user_count > 0
+      p "#{user_count} users user_name moved to resolved_name" if user_count > 0
     end
 
     desc 'Give existing users a default locale if they don\'t already have one.'

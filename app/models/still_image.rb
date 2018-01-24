@@ -16,7 +16,7 @@ class StillImage < ActiveRecord::Base
 
   # these correspond to sizes in image_file.rb
   SystemSetting.image_sizes.keys.each do |size|
-    has_one "#{size.to_s}_file".to_sym, conditions: ['parent_id is not null and thumbnail = ?', size.to_s], class_name: 'ImageFile'
+    has_one "#{size}_file".to_sym, conditions: ['parent_id is not null and thumbnail = ?', size.to_s], class_name: 'ImageFile'
   end
 
   has_many :resized_image_files, conditions: 'parent_id is not null', class_name: 'ImageFile'

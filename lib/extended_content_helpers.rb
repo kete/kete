@@ -234,7 +234,7 @@ module ExtendedContentHelpers
           xml.safe_send(field, value, options)
         end
       rescue
-        logger.error("failed to format xml: #{$!.to_s}")
+        logger.error("failed to format xml: #{$!}")
       end
     end
 

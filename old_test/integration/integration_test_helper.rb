@@ -444,7 +444,7 @@ class ActionController::IntegrationTest
   # Takes item object and flag string/symbol
   def flag_item_with(item, flag, version = nil)
     version ||= item.version
-    visit "/#{item.basket.urlified_name}/#{zoom_class_controller(item.class.name)}/flag_form/#{item.id}?flag=#{flag.to_s}&version=#{version}"
+    visit "/#{item.basket.urlified_name}/#{zoom_class_controller(item.class.name)}/flag_form/#{item.id}?flag=#{flag}&version=#{version}"
     fill_in 'message_', :with => 'Testing'
     click_button 'Flag'
     body_should_contain 'Thank you for your input. A moderator has been notified and will review the item in question. The item has been reverted to a non-contested version for the time being'
@@ -711,9 +711,9 @@ class ActionController::IntegrationTest
   def get_webrat_actions_from(hash, field_prefix)
     hash.each do |key, value|
       if value.kind_of?(String)
-        fill_in "#{field_prefix}_#{key.to_s}", :with => value.to_s
+        fill_in "#{field_prefix}_#{key}", :with => value.to_s
       elsif value.is_a?(TrueClass)
-        choose "#{field_prefix}_#{key.to_s}"
+        choose "#{field_prefix}_#{key}"
       else
         raise "Don't know what to do with #{key} and value #{value}"
       end

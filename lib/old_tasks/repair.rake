@@ -186,7 +186,7 @@ namespace :kete do
       else
         puts "WARNING: Some files could not be found. See below for details:\n\n"
         inaccessible_files.each do |instance|
-          puts "- Missing uploaded file for #{instance.class.name} with ID #{instance.id.to_s}."
+          puts "- Missing uploaded file for #{instance.class.name} with ID #{instance.id}."
         end
         puts "\nRun rake kete:repair:correct_upload_locations to relocate files to the correct "
         puts "location.\n\n"
