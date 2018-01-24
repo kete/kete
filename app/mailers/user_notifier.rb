@@ -1,5 +1,5 @@
 class UserNotifier < ActionMailer::Base
-  default from: "#{SystemSetting.notifier_email}"
+  default from: (SystemSetting.notifier_email).to_s
 
   # kludge for A_S and rails 2.0
   def generic_view_paths
@@ -41,7 +41,7 @@ class UserNotifier < ActionMailer::Base
   def activation(user)
     setup_email(user)
     @subject += I18n.t('user_notifier_model.account_activated')
-    @url = "#{SystemSetting.site_url}"
+    @url = (SystemSetting.site_url).to_s
 
     mail(to: @recipients, subject: @subject)
   end
@@ -49,7 +49,7 @@ class UserNotifier < ActionMailer::Base
   def banned(user)
     setup_email(user)
     @subject += I18n.t('user_notifier_model.account_banned')
-    @url = "#{SystemSetting.site_url}"
+    @url = (SystemSetting.site_url).to_s
 
     mail(to: @recipients, subject: @subject)
   end
@@ -219,7 +219,7 @@ class UserNotifier < ActionMailer::Base
   protected
 
   def setup_email(user)
-    @recipients  = "#{user.email}"
+    @recipients  = (user.email).to_s
     @subject     = "#{SystemSetting.site_name} "
 
     @user = user

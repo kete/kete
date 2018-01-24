@@ -71,7 +71,7 @@ class MemberListTest < ActionController::IntegrationTest
       title, at_least, user = role[0], role[1], role[2]
       context "when view policy is set to #{at_least}" do
         setup do
-          @@site_basket.settings[:memberlist_policy] = "#{at_least}"
+          @@site_basket.settings[:memberlist_policy] = at_least.to_s
         end
         should "allow #{title} access" do
           !user.nil? ? login_as(user, 'test', { :logout_first => true }) : logout
