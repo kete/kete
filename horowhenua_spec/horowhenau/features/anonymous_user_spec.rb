@@ -8,6 +8,6 @@ feature 'Anonymous users' do
 
   it 'cannot see a link to the list of members on the homepage' do
     visit '/'
-    expect(page).to_not have_link('Members')
+    expect(page).not_to have_link('Members')
   end
 end

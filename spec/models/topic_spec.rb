@@ -2,7 +2,7 @@ require 'spec_helper'
 
 describe Topic do
   it 'does not blow up when you initialize it' do
-    expect { Topic.new }.to_not raise_error
+    expect { Topic.new }.not_to raise_error
   end
 
   it 'allows setting of a custom title' do
