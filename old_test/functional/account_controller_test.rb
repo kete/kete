@@ -196,7 +196,7 @@ class AccountControllerTest < ActionController::TestCase
 
   ### changing password tests
   def test_should_allow_password_change
-    post :change_password, { :old_password => 'test', :password => 'newpassword', :password_confirmation => 'newpassword', :urlified_name => @urlified_name }, {  :user => 2 }
+    post :change_password, { :old_password => 'test', :password => 'newpassword', :password_confirmation => 'newpassword', :urlified_name => @urlified_name }, { :user => 2 }
     assert_equal 'newpassword', assigns(:current_user).password
     assert_equal "Password changed", flash[:notice]
     post :logout, :urlified_name => @urlified_name
@@ -210,7 +210,7 @@ class AccountControllerTest < ActionController::TestCase
   def test_non_matching_passwords_should_not_change
     post :login, :login => 'bryan', :password => 'test', :urlified_name => @urlified_name
     assert session[:user]
-    post :change_password, {  :old_password => 'test', :password => 'newpassword', :password_confirmation => 'test', :urlified_name => @urlified_name }
+    post :change_password, { :old_password => 'test', :password => 'newpassword', :password_confirmation => 'test', :urlified_name => @urlified_name }
     assert_not_equal 'newpassword', assigns(:current_user).password
     assert_equal "Password mismatch", flash[:notice]
   end
