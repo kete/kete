@@ -76,7 +76,7 @@ class PqfQuery
   # dynamically define query methods for our attribute specs
   def self.define_query_method_for(method_name, attribute_spec)
     # create the template code
-    code = Proc.new { |term_or_terms, *options|
+    code = Proc.new do |term_or_terms, *options|
       options = options.first || Hash.new
       terms = terms_as_array(term_or_terms)
 
@@ -87,7 +87,7 @@ class PqfQuery
 
       query_part = create_query_part(options.merge({ attribute_spec: attribute_spec,
                                                      term_or_terms: terms }))
-    }
+    end
 
     define_method(method_name, &code)
   end

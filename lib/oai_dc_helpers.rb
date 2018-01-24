@@ -142,9 +142,9 @@ module OaiDcHelpers
         # strip out embedded html
         # it only adds clutter at this point and fails oai_dc validation, too
         # also pulling out some entities that sneak in
-        xml.send('dc:description', options) {
+        xml.send('dc:description', options) do
           xml.cdata passed_description.strip_tags
-        }
+        end
       else
         # if description is blank, we should do all descriptions for this zoom_class
 
@@ -202,9 +202,9 @@ module OaiDcHelpers
       when 'Comment'
         # comments always point back to the thing they are commenting on
         commented_on_item = commentable
-        xml.send('dc:subject') {
+        xml.send('dc:subject') do
           xml.cdata commented_on_item.title
-        } unless [SystemSetting.blank_title, SystemSetting.no_public_version_title].include?(commented_on_item.title)
+        end unless [SystemSetting.blank_title, SystemSetting.no_public_version_title].include?(commented_on_item.title)
         xml.send('dc:relation', url_for_dc_identifier(commented_on_item, { force_http: true, minimal: true }.merge(passed_request)))
       else
         related_count = related_items.count
@@ -212,9 +212,9 @@ module OaiDcHelpers
           # we skip subject if there are a large amount of related items
           # as zebra has a maximum record size
           if related_count < 500
-            xml.send('dc:subject') {
+            xml.send('dc:subject') do
               xml.cdata related.title
-            } unless [SystemSetting.blank_title, SystemSetting.no_public_version_title].include?(related.title)
+            end unless [SystemSetting.blank_title, SystemSetting.no_public_version_title].include?(related.title)
           end
           xml.send('dc:relation', url_for_dc_identifier(related, { force_http: true, minimal: true }.merge(passed_request)))
         end
@@ -223,9 +223,9 @@ module OaiDcHelpers
 
     def oai_dc_xml_tags_to_dc_subjects(xml)
       tags.each do |tag|
-        xml.send('dc:subject') {
+        xml.send('dc:subject') do
           xml.cdata tag.name
-        }
+        end
       end
     end
 
