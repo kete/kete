@@ -60,9 +60,9 @@ class SearchResultPresenter
   end
 
   def related_items_summary
-    related.map { |content_type, models|
+    related.map do |content_type, models|
       models.count > 0 ? "#{models.count} #{content_type.to_s.humanize}" : nil
-    }.compact.to_sentence
+    end.compact.to_sentence
   end
 
   def locally_hosted

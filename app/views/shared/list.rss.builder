@@ -40,9 +40,9 @@ xml.rss('version' => '2.0', 'xmlns:dc' => 'http://purl.org/dc/elements/1.1/') do
         end
 
         if item.is_a?(WebLink)
-          xml.dc(:subject) {
+          xml.dc(:subject) do
             xml.cdata! item.url
-          }
+          end
         end
 
         # we do a dc:source element for the original binary file
