@@ -200,6 +200,7 @@ feature 'Topic comments', js: true do
 
   describe 'Deleting comments' do
     let(:site_admin) { FactoryGirl.create(:user, :activated, :with_default_baskets, :with_site_admin_role) }
+
     it 'deleting a parent comment attaches children to the grandparent comment' do
       # given ...
       grandparent_attrs = FactoryGirl.attributes_for(:comment)
