@@ -124,11 +124,11 @@ class TopicPrivacyTest < ActionController::IntegrationTest
 
   private
 
-    def should_be_private(item)
-      assert item.private?, "#{item.class.name} instance expected to be private, but was not:  #{item.inspect}."
-    end
+  def should_be_private(item)
+    assert item.private?, "#{item.class.name} instance expected to be private, but was not:  #{item.inspect}."
+  end
 
-    def should_not_be_private(item)
-      assert !item.private?, "#{item.class.name} instance expected not to be private, but it was:  #{item.inspect}."
-    end
+  def should_not_be_private(item)
+    assert !item.private?, "#{item.class.name} instance expected not to be private, but it was:  #{item.inspect}."
+  end
 end

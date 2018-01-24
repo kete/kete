@@ -17,14 +17,14 @@ module ExtendedContentHelpers
         # If this is google map contents, and no_map is '1', then do not use this data
           next if field_data.is_a?(Hash) && field_data['no_map'] && field_data['no_map'] == '1'
 
-        if field_key =~ /_multiple$/
-          # We are dealing with multiple instances of an attribute
-          field_data.each_pair do |index, data|
-            oai_dc_xml_for_field_dataset(field_key, data.values.first)
+          if field_key =~ /_multiple$/
+            # We are dealing with multiple instances of an attribute
+            field_data.each_pair do |index, data|
+              oai_dc_xml_for_field_dataset(field_key, data.values.first)
+            end
+          else
+            oai_dc_xml_for_field_dataset(field_key, field_data)
           end
-        else
-          oai_dc_xml_for_field_dataset(field_key, field_data)
-        end
         end
       end
 

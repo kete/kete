@@ -50,19 +50,19 @@ class UserPortraitRelationTest < ActiveSupport::TestCase
 
   private
 
-    def new_image_with_creator(make_relation = true)
-      @user = User.first
-      @still_image = StillImage.create(:title => 'test item',
-                                       :basket_id => Basket.find(:first))
-      @still_image.creator = @user
-      @still_image.save
-      creation_relation_between_user_and_still_image if make_relation
-    end
+  def new_image_with_creator(make_relation = true)
+    @user = User.first
+    @still_image = StillImage.create(:title => 'test item',
+                                     :basket_id => Basket.find(:first))
+    @still_image.creator = @user
+    @still_image.save
+    creation_relation_between_user_and_still_image if make_relation
+  end
 
-    def creation_relation_between_user_and_still_image
-      UserPortraitRelation.new_portrait_for(@user, @still_image)
-      @relation = UserPortraitRelation.last
-      @user.reload
-      @still_image.reload
-    end
+  def creation_relation_between_user_and_still_image
+    UserPortraitRelation.new_portrait_for(@user, @still_image)
+    @relation = UserPortraitRelation.last
+    @user.reload
+    @still_image.reload
+  end
 end

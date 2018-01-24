@@ -296,68 +296,68 @@ class ExtendedContentTest < ActionController::IntegrationTest
 
   private
 
-    def configure_new_topic_type_with_extended_field(options = {})
-      options = {
-        :extended_field_value_required => false,
-        :extended_field_label => "Extended data",
-        :extended_field_multiple => false,
-        :extended_field_ftype => "Text",
-        :topic_type_name => "Test topic type #{(rand * 100000).floor}",
-        :topic_type_description => "Topic type description"
-      }.merge(options)
+  def configure_new_topic_type_with_extended_field(options = {})
+    options = {
+      :extended_field_value_required => false,
+      :extended_field_label => "Extended data",
+      :extended_field_multiple => false,
+      :extended_field_ftype => "Text",
+      :topic_type_name => "Test topic type #{(rand * 100000).floor}",
+      :topic_type_description => "Topic type description"
+    }.merge(options)
 
-      # Add a new extended field
-      click_link "extended fields"
-      click_link "Create New"
+    # Add a new extended field
+    click_link "extended fields"
+    click_link "Create New"
 
-      fill_in "record_label_", :with => options[:extended_field_label]
-      select options[:extended_field_ftype], :from => "record_ftype"
-      select options[:extended_field_multiple].to_s.capitalize, :from => "record_multiple"
-      click_button "Create"
+    fill_in "record_label_", :with => options[:extended_field_label]
+    select options[:extended_field_ftype], :from => "record_ftype"
+    select options[:extended_field_multiple].to_s.capitalize, :from => "record_multiple"
+    click_button "Create"
 
-      assert_equal options[:extended_field_label], ExtendedField.last.label
-      @@extended_fields << ExtendedField.last
+    assert_equal options[:extended_field_label], ExtendedField.last.label
+    @@extended_fields << ExtendedField.last
 
-      visit "/site/topic_types/new?parent_id=1"
-      fill_in "Name", :with => options[:topic_type_name]
-      fill_in "Description", :with => options[:topic_type_description]
-      click_button "Create"
+    visit "/site/topic_types/new?parent_id=1"
+    fill_in "Name", :with => options[:topic_type_name]
+    fill_in "Description", :with => options[:topic_type_description]
+    click_button "Create"
 
-      verb = options[:extended_field_value_required] ? "required" : "add"
-      check "extended_field_#{ExtendedField.last.to_param.to_s}_#{verb}_checkbox"
-      click_button "Add to Topic Type"
+    verb = options[:extended_field_value_required] ? "required" : "add"
+    check "extended_field_#{ExtendedField.last.to_param.to_s}_#{verb}_checkbox"
+    click_button "Add to Topic Type"
 
-      body_should_contain "#{options[:extended_field_label]}"
-      if options[:extended_field_value_required]
-        assert field_with_id("mapping_#{TopicTypeToFieldMapping.last.id}_required").checked?
-      else
-        assert !field_with_id("mapping_#{TopicTypeToFieldMapping.last.id}_required").checked?
-      end
-
-      assert_equal options[:topic_type_name], TopicType.last.name
-      @@topic_types << TopicType.last
-
-      return TopicType.last
+    body_should_contain "#{options[:extended_field_label]}"
+    if options[:extended_field_value_required]
+      assert field_with_id("mapping_#{TopicTypeToFieldMapping.last.id}_required").checked?
+    else
+      assert !field_with_id("mapping_#{TopicTypeToFieldMapping.last.id}_required").checked?
     end
 
-    def attach_file_for(zoom_class_name)
-      # get the attribute that defines each class
-      if ATTACHABLE_CLASSES.include?(zoom_class_name)
-        # put in a case statement
-        case zoom_class_name
-        when 'StillImage'
-          attach_file "image_file_uploaded_data", "white.jpg"
-        when 'Video'
-          attach_file "video[uploaded_data]", "teststrip.mpg", "video/mpeg"
-        when 'AudioRecording'
-          attach_file "audio_recording[uploaded_data]", "Sin1000Hz.mp3"
-        when 'Document'
-          attach_file "document[uploaded_data]", "test.pdf"
-        end
-      elsif zoom_class_name == 'WebLink'
-        # this will only work if you have internet connection
-        WebLink.find_by_url("http://google.co.nz/").destroy rescue true
-        fill_in "web_link[url]", :with => "http://google.co.nz/"
+    assert_equal options[:topic_type_name], TopicType.last.name
+    @@topic_types << TopicType.last
+
+    return TopicType.last
+  end
+
+  def attach_file_for(zoom_class_name)
+    # get the attribute that defines each class
+    if ATTACHABLE_CLASSES.include?(zoom_class_name)
+      # put in a case statement
+      case zoom_class_name
+      when 'StillImage'
+        attach_file "image_file_uploaded_data", "white.jpg"
+      when 'Video'
+        attach_file "video[uploaded_data]", "teststrip.mpg", "video/mpeg"
+      when 'AudioRecording'
+        attach_file "audio_recording[uploaded_data]", "Sin1000Hz.mp3"
+      when 'Document'
+        attach_file "document[uploaded_data]", "test.pdf"
       end
+    elsif zoom_class_name == 'WebLink'
+      # this will only work if you have internet connection
+      WebLink.find_by_url("http://google.co.nz/").destroy rescue true
+      fill_in "web_link[url]", :with => "http://google.co.nz/"
     end
+  end
 end
