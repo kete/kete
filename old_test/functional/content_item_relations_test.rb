@@ -214,4 +214,3 @@ class ContentItemRelationsTest < ActionController::TestCase
     )
   end
 end
-
