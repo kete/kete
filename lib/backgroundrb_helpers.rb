@@ -17,11 +17,11 @@ module BackgroundrbHelpers
       is_running = false
       MiddleMan.all_worker_info.each do |server|
         if !server[1].nil?
-          server[1].each { |workers|
+          server[1].each do |workers|
             is_running = true if worker_type.to_sym == workers[:worker] &&
                                  (workers[:worker_key].blank? ||
                                   worker_key.to_s == workers[:worker_key])
-          }
+          end
         end
         break if is_running
       end

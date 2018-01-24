@@ -453,9 +453,9 @@ module ExtendedFieldsHelper
   def extended_field_choices_unordered_list
     if top_level = Choice.find_top_level
       content_tag('ul',
-                  top_level.inject('') { |memo, choice|
+                  top_level.inject('') do |memo, choice|
                     memo + list_item_for_choice(choice)
-                  })
+                  end)
     else
       ''
     end
