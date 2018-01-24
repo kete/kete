@@ -48,21 +48,21 @@ module ItemPrivacyTestHelper
       def test_attachment_fu_uses_correct_path_prefix
         item = eval(@base_class).create(@new_model.merge({ file_private: false }))
         assert_match(attachment_fu_test_path('public', @uploads_folder), item.full_filename)
-        assert File.exists?(item.full_filename)
+        assert File.exist?(item.full_filename)
         assert item.valid?
       end
 
       def test_attachment_fu_uses_correct_path_prefix2
         item2 = eval(@base_class).create(@new_model.merge({ file_private: true }))
         assert_match(attachment_fu_test_path('private', @uploads_folder), item2.full_filename)
-        assert File.exists?(item2.full_filename)
+        assert File.exist?(item2.full_filename)
         assert item2.valid?
       end
 
       def test_attachment_fu_does_not_move_files_when_going_from_public_to_private
         item = eval(@base_class).create(@new_model.merge({ file_private: false }))
         assert_match(attachment_fu_test_path('public', @uploads_folder), item.full_filename)
-        assert File.exists?(item.full_filename)
+        assert File.exist?(item.full_filename)
         assert item.valid?
         old_filename = item.full_filename
         id = item.id
@@ -70,7 +70,7 @@ module ItemPrivacyTestHelper
         item = eval(@base_class).find(id)
         item.update_attributes({ file_private: true })
         assert_match(attachment_fu_test_path('public', @uploads_folder), item.full_filename)
-        assert File.exists?(item.full_filename), "File is not where we expected. Should be at #{item.full_filename} but is not present."
+        assert File.exist?(item.full_filename), "File is not where we expected. Should be at #{item.full_filename} but is not present."
         assert_equal old_filename, item.full_filename
         assert item.valid?
       end
@@ -78,7 +78,7 @@ module ItemPrivacyTestHelper
       def test_attachment_fu_moves_files_to_correct_path_when_going_from_private_to_public
         item = eval(@base_class).create(@new_model.merge({ file_private: true }))
         assert_match(attachment_fu_test_path('private', @uploads_folder), item.full_filename)
-        assert File.exists?(item.full_filename)
+        assert File.exist?(item.full_filename)
         assert item.valid?
         old_filename = item.full_filename
         id = item.id
@@ -86,8 +86,8 @@ module ItemPrivacyTestHelper
         item = eval(@base_class).find(id)
         item.update_attributes({ file_private: false })
         assert_match(attachment_fu_test_path('public', @uploads_folder), item.full_filename)
-        assert File.exists?(item.full_filename), "File is not where we expected. Should be at #{item.full_filename} but is not present."
-        assert !File.exists?(old_filename), "File is not where we expected. Should NOT be at #{old_filename} but IS present."
+        assert File.exist?(item.full_filename), "File is not where we expected. Should be at #{item.full_filename} but is not present."
+        assert !File.exist?(old_filename), "File is not where we expected. Should NOT be at #{old_filename} but IS present."
         assert item.valid?
       end
 

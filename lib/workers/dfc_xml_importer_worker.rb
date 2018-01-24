@@ -49,7 +49,7 @@ class DfcXmlImporterWorker < BackgrounDRb::MetaWorker
             unless fields['Filename'].blank?
               # we use "path_to_file" internally, but "Filename" is the column name we get
               file_path = @import_dir_path + '/files/' + fields['Filename']
-              fields['path_to_file'] = file_path if File.exists?(file_path)
+              fields['path_to_file'] = file_path if File.exist?(file_path)
             end
 
             if @zoom_class == 'StillImage' && !fields['path_to_file']

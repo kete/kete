@@ -61,7 +61,7 @@ namespace :kete do
   private
 
   def read_from_file(filename)
-    if !File.exists?("#{RAILS_ROOT}/tmp/#{filename}")
+    if !File.exist?("#{RAILS_ROOT}/tmp/#{filename}")
       p "ERROR: Could not find RAILS_ROOT/tmp/#{filename}"; exit
     end
     YAML.load_file("#{RAILS_ROOT}/tmp/#{filename}")
