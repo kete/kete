@@ -39,7 +39,7 @@ module KeteUrlFor
         if item.should_save_to_private_zoom?
           url += "#{commented_on_item.id.to_s}?private=true"
         else
-          url += "#{commented_on_item.to_param}"
+          url += (commented_on_item.to_param).to_s
         end
         url += "#comment-#{item.id}"
       elsif is_relation

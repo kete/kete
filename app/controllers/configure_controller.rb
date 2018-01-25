@@ -20,7 +20,7 @@ class ConfigureController < ApplicationController
     if @advanced
       SystemSetting.select(:section).distinct.where('technically_advanced = ? and section not in (?)', true, @sections).each { |advanced_section| @sections << advanced_section.section }
     end
-    @admin_password_changed = User.find(1).crypted_password != '00742970dc9e6319f8019fd54864d3ea740f04b1' ? true : false
+    @admin_password_changed = User.find(1).crypted_password != '00742970dc9e6319f8019fd54864d3ea740f04b1'
 
     @ready_to_restart = params[:ready_to_restart] || false
     @finished = params[:finished] || false

@@ -105,7 +105,7 @@ module ZoomControllerHelpers
     end
 
     def zoom_class_humanize(zoom_class)
-      return I18n.t("zoom_controller_helpers_lib.zoom_class_humanize.#{zoom_class.underscore}")
+      I18n.t("zoom_controller_helpers_lib.zoom_class_humanize.#{zoom_class.underscore}")
     end
 
     def zoom_class_params_key_from_controller(controller)
@@ -113,7 +113,7 @@ module ZoomControllerHelpers
     end
 
     def zoom_class_plural_humanize(zoom_class)
-      return I18n.t("zoom_controller_helpers_lib.zoom_class_plural_humanize.#{zoom_class.underscore}")
+      I18n.t("zoom_controller_helpers_lib.zoom_class_plural_humanize.#{zoom_class.underscore}")
     end
 
     def zoom_class_humanize_after(count, zoom_class)

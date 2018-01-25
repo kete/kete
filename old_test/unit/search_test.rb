@@ -100,7 +100,7 @@ class SearchTest < ActiveSupport::TestCase
     end
   end
 
-  self.define_tests_of_sort_direction_value
+  define_tests_of_sort_direction_value
 
   # rss action should always be last_modified
   def test_add_sort_to_query_if_needed_should_always_be_last_modified_for_rss

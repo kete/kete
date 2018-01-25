@@ -34,19 +34,19 @@ module ProfilesHelper
   # Get any submitted rule types for form_type incase of failed validations
   # TODO Convert this to use Rails 2.3 try() method when available
   def current_rule_for(form_type)
-    begin; params[:record][:rules][form_type.to_sym][:rule_type]; rescue; ''; end
+    ; params[:record][:rules][form_type.to_sym][:rule_type]; rescue; ''; 
   end
 
   # Check whether this field was allowed during the submitted form incase of fails validations
   # TODO Convert this to use Rails 2.3 try() method when available
   def allowed_value?(field)
-    begin; params[:record][:rules][@rule_locals[:form_type].to_sym][:allowed].include?(field); rescue; false; end
+    ; params[:record][:rules][@rule_locals[:form_type].to_sym][:allowed].include?(field); rescue; false; 
   end
 
   # Get the current value for a field incase of failed validations
   # TODO Convert this to use Rails 2.3 try() method when available
   def current_value_for(field)
-    begin; params[:record][:rules][@rule_locals[:form_type].to_sym][:values][field.to_sym]; rescue; ''; end
+    ; params[:record][:rules][@rule_locals[:form_type].to_sym][:values][field.to_sym]; rescue; ''; 
   end
 
   # Get the form for the rules column override method above
