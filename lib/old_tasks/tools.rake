@@ -151,7 +151,7 @@ namespace :kete do
           @logger.info "    Creating image for thumbnail size #{size}"
 
           # get the parent filename and attach the size to it for the new filename
-          filename = parent_image_file.filename.gsub('.', "_#{size.to_s}.")
+          filename = parent_image_file.filename.gsub('.', "_#{size}.")
 
           # create a new image file based on the parent (details will be updated later)
           image_file = ImageFile.create!(
@@ -234,7 +234,7 @@ namespace :kete do
         end
         output_file.close
 
-        puts "#{changed_lines_count.to_s} lines changed."
+        puts "#{changed_lines_count} lines changed."
       end
     end
 
@@ -460,19 +460,19 @@ namespace :kete do
             topics_moved_count += 1
 
           else
-            raise "Topic #{topic.id.to_s} failed to be moved. Stopping. You may need to rebuild that topic's search record."
+            raise "Topic #{topic.id} failed to be moved. Stopping. You may need to rebuild that topic's search record."
           end
         end
 
         # rebuild search records for queued topics
 
-        @logger.info("#{topics_moved_count.to_s} topics moved.")
-        @logger.info("#{relationships_no_change_count.to_s} relationships no change necessary.")
-        @logger.info("#{relationships_changed_count.to_s} relationships updated.")
+        @logger.info("#{topics_moved_count} topics moved.")
+        @logger.info("#{relationships_no_change_count} relationships no change necessary.")
+        @logger.info("#{relationships_changed_count} relationships updated.")
 
-        puts "#{topics_moved_count.to_s} topics moved."
-        puts "#{relationships_changed_count.to_s} relationships updated."
-        puts "#{relationships_no_change_count.to_s} relationships no change necessary."
+        puts "#{topics_moved_count} topics moved."
+        puts "#{relationships_changed_count} relationships updated."
+        puts "#{relationships_no_change_count} relationships no change necessary."
       end
     end
 

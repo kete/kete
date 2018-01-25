@@ -181,6 +181,6 @@ class SearchSource < ActiveRecord::Base
   end
 
   def parse_limit_param(options = {})
-    @limit_string = !limit_param.blank? ? "&#{limit_param}=#{(options[:limit] || limit).to_s}" : ''
+    @limit_string = !limit_param.blank? ? "&#{limit_param}=#{(options[:limit] || limit)}" : ''
   end
 end

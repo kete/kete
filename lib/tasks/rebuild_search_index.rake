@@ -5,7 +5,7 @@ namespace :kete do
     searchable_models = [Topic, AudioRecording, StillImage, Document, Comment, WebLink, Video]
 
     searchable_models.each do |model|
-      puts "  rebuilding #{model.to_s}"
+      puts "  rebuilding #{model}"
       PgSearch::Multisearch.rebuild(model)
     end
 

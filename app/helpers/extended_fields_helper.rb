@@ -6,12 +6,12 @@ module ExtendedFieldsHelper
     topic_types = TopicType.find(1).full_set
     select = topic_type_select_with_indent('record', 'topic_type', topic_types, :id, :name, nil,
                                            { class: 'select', tabindex: '1' })
-    content_tag('div', select, { id: "hidden_choices_topic_type_select_#{record.id.to_s}", style: 'display:none;' })
+    content_tag('div', select, { id: "hidden_choices_topic_type_select_#{record.id}", style: 'display:none;' })
   end
 
   def circa_form_column(record, input_name)
     checkbox = check_box('record', 'circa', { checked: (!record.new_record? && record.circa?) })
-    content_tag('div', checkbox, id: "hidden_choices_circa_#{record.id.to_s}",
+    content_tag('div', checkbox, id: "hidden_choices_circa_#{record.id}",
                                  style: record.new_record? || record.ftype != 'year' ? 'display:none;' : '')
   end
 
