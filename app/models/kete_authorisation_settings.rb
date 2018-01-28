@@ -227,28 +227,28 @@ module KeteAuthorisationSettings
   def current_user_is?(at_least_setting, basket = @current_basket)
     
       # everyone can see, just return true
-      return true if at_least_setting == 'all users' || at_least_setting.blank?
+    return true if at_least_setting == 'all users' || at_least_setting.blank?
 
-      # all other settings, you must be at least logged in
-      return false unless logged_in?
+    # all other settings, you must be at least logged in
+    return false unless logged_in?
 
-      # do we just want people logged in?
-      return true if at_least_setting == 'logged in'
+    # do we just want people logged in?
+    return true if at_least_setting == 'logged in'
 
-      # finally, if they are logged in
-      # we evaluate matching instance variable if they have the role that matches
-      # our basket setting
+    # finally, if they are logged in
+    # we evaluate matching instance variable if they have the role that matches
+    # our basket setting
 
-      # if we are checking at least settings on a different basket, we have to
-      # populate new ones with the context of that basket, not the current basket
-      if basket != @current_basket
-        load_at_least(basket)
-        instance_variable_get("@#{at_least_setting.gsub(" ", "_")}_of_specified_basket")
-      else
-        instance_variable_get("@#{at_least_setting.gsub(" ", "_")}")
-      end
-    rescue
-      raise "Unknown authentication type: #{$!}"
+    # if we are checking at least settings on a different basket, we have to
+    # populate new ones with the context of that basket, not the current basket
+    if basket != @current_basket
+      load_at_least(basket)
+      instance_variable_get("@#{at_least_setting.gsub(" ", "_")}_of_specified_basket")
+    else
+      instance_variable_get("@#{at_least_setting.gsub(" ", "_")}")
+    end
+  rescue
+    raise "Unknown authentication type: #{$!}"
     
   end
 end

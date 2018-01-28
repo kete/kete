@@ -65,6 +65,6 @@ module AccountHelper
 
   def captcha_url(id)
     url_for(controller: 'account', action: 'show_captcha',
-                   id: id, time: Time.now)
+            id: id, time: Time.now)
   end
 end
