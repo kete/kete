@@ -76,7 +76,7 @@ class Choice < ActiveRecord::Base
   end
 
   # An alias so we dont have to run checks between ExtendedFields and choices
-  alias :choices :children
+  alias choices children
 
   def children=(array_of_choice_ids)
     # Remove existing children
@@ -138,5 +138,5 @@ class Choice < ActiveRecord::Base
 
   # turn pretty urls on or off here
   include FriendlyUrls
-  alias :to_param :format_for_friendly_unicode_urls
+  alias to_param format_for_friendly_unicode_urls
 end

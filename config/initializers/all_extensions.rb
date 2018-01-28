@@ -118,7 +118,7 @@ module I18n
         # Kieran Pilkington, 2009-07-09
         # Adding very simple translation fallback support to I18n module
         # Calls the original lookup method. If the value is empty, call it again with default locale
-        alias :lookup_orig :lookup
+        alias lookup_orig lookup
         def lookup(locale, key, scope = [], options = {})
           return unless key
           entry = lookup_orig(locale, key, scope, options)

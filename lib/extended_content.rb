@@ -193,7 +193,7 @@ module ExtendedContent
     end
 
     # Refer to #xml_attributes.
-    alias_method :extended_content_ordered_hash, :xml_attributes
+    alias extended_content_ordered_hash xml_attributes
 
     # Pulls a hash of values from XML without position references (i.e. contrary to #xml_attributes).
     # Example output:

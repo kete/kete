@@ -190,7 +190,7 @@ class ExtendedField < ActiveRecord::Base
 
   # turn pretty urls on or off here
   include FriendlyUrls
-  alias :to_param :format_for_friendly_unicode_urls
+  alias to_param format_for_friendly_unicode_urls
 
   protected
 
