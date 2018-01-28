@@ -365,9 +365,9 @@ class PqfQuery
   end
 
   # aliases for readability's sake
-  alias :oai_datestamp_include :last_modified_include
-  alias :kind_is :exact_match_for_part_of_oai_identifier
-  alias :within :exact_match_for_part_of_oai_identifier
+  alias oai_datestamp_include last_modified_include
+  alias kind_is exact_match_for_part_of_oai_identifier
+  alias within exact_match_for_part_of_oai_identifier
 
   private
 

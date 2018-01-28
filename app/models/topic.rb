@@ -254,7 +254,7 @@ class Topic < ActiveRecord::Base
 
   # turn pretty urls on or off here
   include FriendlyUrls
-  alias :to_param :format_for_friendly_urls
+  alias to_param format_for_friendly_urls
 
   def to_i
     id
