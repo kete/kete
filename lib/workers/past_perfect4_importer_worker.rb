@@ -195,7 +195,7 @@ class PastPerfect4ImporterWorker < BackgrounDRb::MetaWorker
 
               logger.info('looking for cleaned up accession: ' + cleaned_up_accessno)
 
-              if !@last_related_topic_pp4_objectid.nil? &&  (cleaned_up_accessno == @last_related_topic_pp4_objectid)
+              if !@last_related_topic_pp4_objectid.nil? && (cleaned_up_accessno == @last_related_topic_pp4_objectid)
                 logger.info('looking for cleaned up accession: last accessno match')
                 related_topic = @last_related_topic
               else
