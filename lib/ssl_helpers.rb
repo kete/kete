@@ -74,7 +74,7 @@ module SslHelpers
 
         # There is potential for issues with this when the only the path is expected as
         # this is normally default behaviour, and we are modifying it here.
-        if options[:protocol] =~(/^https/) && !request.ssl? && !options[:only_path]
+        if options[:protocol] =~ (/^https/) && !request.ssl? && !options[:only_path]
           options.merge!(only_path: false)
         end
       end
