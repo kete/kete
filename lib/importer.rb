@@ -245,7 +245,7 @@ module Importer
           end
         end
 
-        if extended_field.present? and extended_field != I18n.t('importer_lib.importer_prepare_extended_field.not_available')
+        if extended_field.present? && (extended_field != I18n.t('importer_lib.importer_prepare_extended_field.not_available'))
           # add some smarts for handling fields that are multiple
           # assumes comma separated values
 
@@ -450,7 +450,7 @@ module Importer
       # make a copy of any files that have spaces in their name
       # a better formed name
       # to avoid problems later
-      if !the_file_name.scan(' ').blank? and File.exist?(path_to_file_to_grab)
+      if !the_file_name.scan(' ').blank? && File.exist?(path_to_file_to_grab)
         the_new_file_name = the_file_name.gsub(' ', "\.")
         new_file_path = directories_up_to + the_new_file_name
 
@@ -630,7 +630,7 @@ module Importer
         reason_skipped = I18n.t('importer_lib.importer_process.already_have_record')
       end
 
-      if !new_record.nil? and !new_record.id.nil?
+      if !new_record.nil? && !new_record.id.nil?
         logger.info('new record succeeded for insert')
         new_record.prepare_and_save_to_zoom
         importer_update_records_processed_vars

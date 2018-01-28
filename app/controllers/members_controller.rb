@@ -63,7 +63,7 @@ class MembersController < ApplicationController
 
     @admin_actions = Hash.new
 
-    if @current_basket == @site_basket and site_admin?
+    if (@current_basket == @site_basket) && site_admin?
       @possible_roles['tech_admin'] = t('members_controller.list_members_in.tech_admin')
       @possible_roles['site_admin'] = t('members_controller.list_members_in.site_admin')
       @admin_actions['become_user'] = t('members_controller.list_members_in.login_as')
@@ -166,7 +166,7 @@ class MembersController < ApplicationController
       # in the normal way
       clear_roles = true
       if membership_type == 'tech_admin'
-        if @current_basket == @site_basket and @user.has_role?('site_admin')
+        if (@current_basket == @site_basket) && @user.has_role?('site_admin')
           clear_roles = false
           flash[:notice] = t('members_controller.change_membership_type.made_tech_admin')
         else

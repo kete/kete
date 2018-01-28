@@ -274,7 +274,7 @@ module FlaggingController
       @flag = !params[:flag].blank? ? params[:flag] : nil
       @version = !params[:version].blank? ? params[:version] : @item.version
       @version_after_update = @item.max_version + 1
-      if !params[:message].blank? and !params[:message][0].blank?
+      if !params[:message].blank? && !params[:message][0].blank?
         @message = params[:message][0]
       else
         @message = String.new

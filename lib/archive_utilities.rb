@@ -9,7 +9,7 @@ module ArchiveUtilities
       when 'application/x-gtar', 'application/x-tar'
         `tar xf #{full_filename} #{target_directory}`
       when 'application/x-gzip', 'application/x-compressed-tar'
-        if !filename.scan('tgz').blank? or !filename.scan("tar\.gz").blank?
+        if !filename.scan('tgz').blank? || !filename.scan("tar\.gz").blank?
           `tar xfz #{full_filename} -C #{target_directory}`
         else
           `cp #{full_filename} #{target_directory}; cd #{target_directory}; gunzip #{filename}`

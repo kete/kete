@@ -50,7 +50,7 @@ class TopicsController < ApplicationController
 
     # logic to prevent plain old members from editing
     # site basket homepage
-    if @topic != @site_basket.index_topic or permit? 'site_admin of :site_basket or admin of :site_basket'
+    if (@topic != @site_basket.index_topic) || permit?('site_admin of :site_basket or admin of :site_basket')
       @topic_types = @topic.topic_type.full_set
     else
       # this is the site's index page, but they don't have permission to edit
@@ -85,13 +85,13 @@ class TopicsController < ApplicationController
     end
 
     where_to_redirect = 'show_self'
-    if !params[:relate_to_item].blank? and @successful
+    if !params[:relate_to_item].blank? && @successful
       @relate_to_item = params[:relate_to_type].constantize.find(params[:relate_to_item])
       add_relation_and_update_zoom_and_related_caches_for(@relate_to_item, @topic)
       where_to_redirect = 'show_related'
     end
 
-    if params[:index_for_basket] and @successful
+    if params[:index_for_basket] && @successful
       where_to_redirect = 'basket'
     end
 
@@ -178,7 +178,7 @@ class TopicsController < ApplicationController
 
       redirect_to_show_for @topic, private: (params[:topic][:private] == 'true')
     else
-      if @topic != @site_basket.index_topic or permit?('site_admin of :site_basket or admin of :site_basket')
+      if (@topic != @site_basket.index_topic) || permit?('site_admin of :site_basket or admin of :site_basket')
         @topic_types = @topic.topic_type.full_set
       end
       render action: 'edit'
