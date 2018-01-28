@@ -88,7 +88,7 @@ class AccountController < ApplicationController
             error_msgs << t('account_controller.login.failed_security_answer')
           end
 
-          flash[:notice] = error_msgs.join((t('account_controller.login.or')).to_s)
+          flash[:notice] = error_msgs.join(t('account_controller.login.or').to_s)
         end
       end
     end

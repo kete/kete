@@ -53,7 +53,7 @@ class TopicPrivacyTest < ActionController::IntegrationTest
 
         click_link "Public version (live)"
 
-        body_should_contain (NO_PUBLIC_VERSION_TITLE).to_s
+        body_should_contain NO_PUBLIC_VERSION_TITLE.to_s
         body_should_contain NO_PUBLIC_VERSION_DESCRIPTION
         body_should_contain "Private version"
 

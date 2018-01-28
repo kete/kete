@@ -297,13 +297,13 @@ class ActionController::IntegrationTest
       body_should_not_contain 'No Public Version Available'
       if item.latest_version_is_private?
         item.private_version!
-        body_should_contain (item.title).to_s
+        body_should_contain item.title.to_s
         body_should_contain "/#{basket.urlified_name}/#{controller}/show/#{item.id}?private=true"
       else
-        body_should_contain (item.title).to_s
+        body_should_contain item.title.to_s
         body_should_contain "/#{basket.urlified_name}/#{controller}/show/#{item.id}"
       end
-      click_link (item.title).to_s if go_to_related.nil? || go_to_related
+      click_link item.title.to_s if go_to_related.nil? || go_to_related
     else
       if should_fail_create
         body_should_not_contain success_message

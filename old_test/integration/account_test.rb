@@ -80,7 +80,7 @@ class AccountTest < ActionController::IntegrationTest
         logout
         visit "/site/images/show/#{@item.to_param}"
         body_should_contain 'No Public Version Available'
-        visit (@item.original_file.public_filename).to_s
+        visit @item.original_file.public_filename.to_s
         body_should_contain 'Error 401: Unauthorized'
         visit "/site/account/login"
         login_as('paul', 'test', { :navigate_to_login => false, :by_form => true })
