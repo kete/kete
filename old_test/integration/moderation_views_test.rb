@@ -154,7 +154,7 @@ class ModerationViewsTest < ActionController::IntegrationTest
       login_as('grant')
 
       @document = new_document do
-        attach_file "document[uploaded_data]", "test.pdf" # , "application/pdf"
+        attach_file "document[uploaded_data]", "test.pdf"
       end
 
       update_item(@document, :title => "New document updated")
