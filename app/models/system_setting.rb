@@ -432,16 +432,16 @@ class SystemSetting
   extend SystemSetting::Defaults
 
   class << self
-    alias_method :is_configured?, :is_configured
-    alias_method :require_activation?, :require_activation
-    alias_method :show_powered_by_kete?, :show_powered_by_kete
-    alias_method :dc_date_display_on_search_results?, :dc_date_display_on_search_results
-    alias_method :enable_maps?, :enable_maps
-    alias_method :administrator_activates?, :administrator_activates
-    alias_method :uses_basket_list_navigation_menu_on_every_page?, :uses_basket_list_navigation_menu_on_every_page
-    alias_method :enable_user_portraits?, :enable_user_portraits
-    alias_method :enable_gravatar_support?, :enable_gravatar_support
-    alias_method :add_date_created_to_item_search_record?, :add_date_created_to_item_search_record
+    alias is_configured? is_configured
+    alias require_activation? require_activation
+    alias show_powered_by_kete? show_powered_by_kete
+    alias dc_date_display_on_search_results? dc_date_display_on_search_results
+    alias enable_maps? enable_maps
+    alias administrator_activates? administrator_activates
+    alias uses_basket_list_navigation_menu_on_every_page? uses_basket_list_navigation_menu_on_every_page
+    alias enable_user_portraits? enable_user_portraits
+    alias enable_gravatar_support? enable_gravatar_support
+    alias add_date_created_to_item_search_record? add_date_created_to_item_search_record
   end
 
   def self.uses_basket_list_navigation_menu_on_every_page?

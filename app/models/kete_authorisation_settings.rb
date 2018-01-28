@@ -96,7 +96,7 @@ module KeteAuthorisationSettings
   def current_user_can_import_archive_sets_for?(basket = @current_basket)
     current_user_is?(basket.import_archive_set_policy_with_inheritance, basket)
   end
-  alias :current_user_can_import_archive_sets? :current_user_can_import_archive_sets_for?
+  alias current_user_can_import_archive_sets? current_user_can_import_archive_sets_for?
 
   def current_user_can_see_contributors?
     # ROB:  Was previously current_user_can_see_flagging?(). Hiding the contributors
