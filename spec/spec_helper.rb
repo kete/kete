@@ -24,7 +24,7 @@ RSpec.configure do |config|
     Rails.application.load_seed
   end
 
-  config.around(:each) do |example|
+  config.around do |example|
     if example.metadata[:type] == :feature
       DatabaseCleaner.strategy = :truncation
     else
