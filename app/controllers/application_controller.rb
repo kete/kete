@@ -200,7 +200,7 @@ class ApplicationController < ActionController::Base
   # so we can transfer an item from one basket to another
   def load_array_of_baskets
     zoom_class = zoom_class_from_controller(params[:controller])
-    if ZOOM_CLASSES.include?(zoom_class) and zoom_class != 'Comment'
+    if ZOOM_CLASSES.include?(zoom_class) && (zoom_class != 'Comment')
       @baskets = Basket.all(order: 'name').map { |basket| [basket.name, basket.id] }
     end
   end
@@ -251,10 +251,10 @@ class ApplicationController < ActionController::Base
 
   def setup_related_topic_and_zoom_and_redirect(item, commented_item = nil, options = {})
     where_to_redirect = 'show_self'
-    if !commented_item.nil? and @successful
+    if !commented_item.nil? && @successful
       update_zoom_and_related_caches_for(commented_item)
       where_to_redirect = 'commentable'
-    elsif !params[:relate_to_item].blank? and @successful
+    elsif !params[:relate_to_item].blank? && @successful
       @relate_to_item = params[:relate_to_type].constantize.find(params[:relate_to_item])
       add_relation_and_update_zoom_and_related_caches_for(@relate_to_item, item)
 
@@ -262,10 +262,10 @@ class ApplicationController < ActionController::Base
       session[:image_slideshow] = nil if item.is_a?(StillImage)
 
       where_to_redirect = 'show_related'
-    elsif params[:is_theme] and item.class.name == 'Document' and @successful
+    elsif params[:is_theme] && (item.class.name == 'Document') && @successful
       item.decompress_as_theme
       where_to_redirect = 'appearance'
-    elsif params[:portrait] and item.class.name == 'StillImage' and @successful
+    elsif params[:portrait] && (item.class.name == 'StillImage') && @successful
       where_to_redirect = 'user_account'
     elsif params[:as_service].present? &&
           params[:as_service] == 'true' &&
@@ -465,7 +465,7 @@ class ApplicationController < ActionController::Base
     options[:private] = params[:private]
 
     item_url = nil
-    if item.class.name == 'Comment' and correct_action != 'preview'
+    if (item.class.name == 'Comment') && (correct_action != 'preview')
       commented_item = item.commentable
       item_url = url_for(controller: zoom_class_controller(commented_item.class.name),
                          action: correct_action,
@@ -699,17 +699,17 @@ class ApplicationController < ActionController::Base
   def render_full_width_content_wrapper?
     if @displaying_error
       return false
-    elsif params[:controller] == 'baskets' and ['edit', 'update', 'homepage_options', 'appearance'].include?(params[:action])
+    elsif (params[:controller] == 'baskets') && ['edit', 'update', 'homepage_options', 'appearance'].include?(params[:action])
       return false
     elsif ['moderate', 'members', 'importers'].include?(params[:controller]) && ['list', 'create', 'new', 'new_related_set_from_archive_file', 'potential_new_members'].include?(params[:action])
       return false
-    elsif params[:controller] == 'index_page' and params[:action] == 'index'
+    elsif (params[:controller] == 'index_page') && (params[:action] == 'index')
       return false
     elsif %w(tags search).include?(params[:controller])
       return false
     elsif add_ons_full_width_content_wrapper_controllers.include?(params[:controller])
       return true
-    elsif params[:controller] == 'account' and params[:action] == 'show'
+    elsif (params[:controller] == 'account') && (params[:action] == 'show')
       return true
     elsif !['show', 'preview', 'show_private'].include?(params[:action])
       return true
@@ -729,7 +729,7 @@ class ApplicationController < ActionController::Base
   # Check whether the attached files for a given item should be displayed
   # Note this is independent of file privacy.
   def show_attached_files_for?(item)
-    if item.respond_to?(:private) and item.private?
+    if item.respond_to?(:private) && item.private?
 
       # If viewing the private version of an item, then the user already has permission to
       # see any attached files.
