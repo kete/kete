@@ -29,7 +29,7 @@ end
 feature "Browse search results" do
   include SearchResultsHelpers
 
-  before(:each) do
+  before do
     visit "/"
     within("#main-nav") do
       click_link('Browse')
