@@ -71,7 +71,7 @@ feature "Related Items" do
     end
   end
 
-  it "it searching by related items" do
+  it "searching by related items" do
     visit "/en/site/search/related_to/Topic?related_item_id=2453&related_item_type=Topic"
 
     click_on "Images (6)"
