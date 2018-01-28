@@ -18,7 +18,7 @@ class Captcha
 
   class << self
     def find(*args)
-      return self.new
+      new
     end
   end
 end

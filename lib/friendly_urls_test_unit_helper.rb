@@ -41,7 +41,7 @@ module FriendlyUrlsTestUnitHelper
     # test both types of selections:
     #   :select => 'name'
     #   :select => 'basket.name'
-    ["#{title_or_name_attr}", "#{@base_class.tableize}.#{title_or_name_attr}"].each do |select_type|
+    [title_or_name_attr.to_s, "#{@base_class.tableize}.#{title_or_name_attr}"].each do |select_type|
       selected_model = @base_class.constantize.find(:all, select: "#{select_type}, created_at").last
       assert_equal selected_model.id.to_s + '-something-else', selected_model.format_for_friendly_urls, "#{@base_class}.format_for_friendly_urls didn't format the #{title_or_name_attr} correctly"
     end
