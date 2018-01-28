@@ -419,7 +419,7 @@ module Flagging
         # otherwise all taggings that are flags are disputed
         if already_moderated_flag_ids.size > 0
           # have to do a more complex set of conditions to get "tag_id not in" into the where clause
-          conditions_sql_array = conditions.keys.collect { |k| "#{k.to_s} = :#{k.to_s}" }
+          conditions_sql_array = conditions.keys.collect { |k| "#{k} = :#{k}" }
           conditions_sql = conditions_sql_array.join(' AND ')
           conditions_sql += " AND tag_id not in (#{already_moderated_flag_ids.join(',')})"
           conditions = [conditions_sql, conditions]

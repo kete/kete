@@ -120,7 +120,7 @@ class ExtendedContentTest < ActionController::IntegrationTest
         visit "/site/content_types/edit/#{content_type_ids[class_name]}"
 
         verb = options[:extended_field_value_required] ? "required" : "add"
-        check "extended_field_#{ExtendedField.last.to_param.to_s}_#{verb}_checkbox"
+        check "extended_field_#{ExtendedField.last.to_param}_#{verb}_checkbox"
 
         click_button "Add to Content Type"
 
@@ -324,7 +324,7 @@ class ExtendedContentTest < ActionController::IntegrationTest
     click_button "Create"
 
     verb = options[:extended_field_value_required] ? "required" : "add"
-    check "extended_field_#{ExtendedField.last.to_param.to_s}_#{verb}_checkbox"
+    check "extended_field_#{ExtendedField.last.to_param}_#{verb}_checkbox"
     click_button "Add to Topic Type"
 
     body_should_contain (options[:extended_field_label]).to_s

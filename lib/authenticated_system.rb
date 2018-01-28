@@ -171,7 +171,7 @@ module AuthenticatedSystem
   def redirect_back_or_default(default, lang = nil)
     if session[:return_to]
       return_to = strip_locale(session[:return_to])
-      return_to = "/#{lang.to_s}" + return_to if lang
+      return_to = "/#{lang}" + return_to if lang
       redirect_to(return_to)
     else
       redirect_to(default)

@@ -9,8 +9,8 @@ namespace :deploy do
 
       argv = []
       argv << 'mongrel_rails cluster::configure'
-      argv << "-N #{mongrel_servers.to_s}"
-      argv << "-p #{mongrel_port.to_s}"
+      argv << "-N #{mongrel_servers}"
+      argv << "-p #{mongrel_port}"
       argv << "-e #{mongrel_environment}"
       argv << "-a #{mongrel_address}"
       argv << "-c #{current_path}"

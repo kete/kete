@@ -37,7 +37,7 @@ module KeteUrlFor
         commented_on_item = item.commentable
         url += zoom_class_controller(commented_on_item.class.name) + '/show/'
         if item.should_save_to_private_zoom?
-          url += "#{commented_on_item.id.to_s}?private=true"
+          url += "#{commented_on_item.id}?private=true"
         else
           url += (commented_on_item.to_param).to_s
         end
@@ -49,7 +49,7 @@ module KeteUrlFor
         url += "#{controller}/show/#{options[:id]}"
       else
         if item.respond_to?(:private) && item.private?
-          url += "#{controller}/show/#{item.id.to_s}?private=true"
+          url += "#{controller}/show/#{item.id}?private=true"
         else
           url += "#{controller}/show/#{item.to_param}"
         end
