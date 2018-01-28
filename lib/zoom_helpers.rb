@@ -13,7 +13,7 @@ module ZoomHelpers
       ZOOM_CLASSES.each do |zoom_class|
         options << [I18n.t('zoom_helpers_lib.zoom_controllers_as_options.all', zoom_class: zoom_class_plural_humanize(zoom_class)), zoom_class_controller(zoom_class)]
       end
-      return options
+      options
     end
   end
 end

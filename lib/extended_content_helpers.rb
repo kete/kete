@@ -106,7 +106,7 @@ module ExtendedContentHelpers
     # extended_field.method because it will fail (example, lib/importer.rb)
     # Pass any extended field values you need through options
     def extended_content_field_xml_tag(options = {})
-      begin
+      
         xml = options[:xml]
         field = options[:field]
         value = options[:value] || nil
@@ -235,7 +235,7 @@ module ExtendedContentHelpers
         end
       rescue
         logger.error("failed to format xml: #{$!.to_s}")
-      end
+      
     end
 
     def value_label_hash?(value)

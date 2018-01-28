@@ -305,7 +305,7 @@ class SearchController < ApplicationController
     @search.pqf_query.relations_include(url_for_dc_identifier(@source_item, { force_http: true, minimal: true }), should_be_exact: true) if !@source_item.nil?
 
     # this looks in the dc_subject index in the z30.50 server
-    @search.pqf_query.subjects_equals_completely("#{@tag.name}") if !@tag.nil?
+    @search.pqf_query.subjects_equals_completely((@tag.name).to_s) if !@tag.nil?
 
     # this should go last because of "or contributor"
     # this looks in the dc_creator and dc_contributors indexes in the z30.50 server
@@ -338,7 +338,7 @@ class SearchController < ApplicationController
       @search.pqf_query.any_text_include("':#{@limit_to_choice.value}:'") unless @limit_to_choice.blank?
     end
 
-    @search.pqf_query.coverage_equals_completely("#{@topic_type.name}") if !@topic_type.nil?
+    @search.pqf_query.coverage_equals_completely((@topic_type.name).to_s) if !@topic_type.nil?
 
     @search.pqf_query.date_on_or_after(parse_date_into_zoom_compatible_format(@date_since, :beginning)) if !@date_since.nil?
     # until means "up to this date" so beginning of year or month is what we want
@@ -623,7 +623,7 @@ class SearchController < ApplicationController
     @relate_to_item = params[:relate_to_type].constantize.find(params[:relate_to_item])
     @related_class = (params[:related_class] || 'Topic')
 
-    related_class_is_topic = @related_class == 'Topic' ? true : false
+    related_class_is_topic = @related_class == 'Topic'
     # this will throw exception if passed in related_class isn't valid
     related_class = only_valid_zoom_class(@related_class)
     related_class_name = related_class.name
@@ -821,7 +821,7 @@ class SearchController < ApplicationController
       login_required
     else
       # this is a public search, no login required
-      return true
+      true
     end
   end
 

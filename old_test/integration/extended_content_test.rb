@@ -124,7 +124,7 @@ class ExtendedContentTest < ActionController::IntegrationTest
 
         click_button "Add to Content Type"
 
-        body_should_contain "#{options[:extended_field_label]}"
+        body_should_contain (options[:extended_field_label]).to_s
         if options[:extended_field_value_required]
           assert field_with_id("mapping_#{ContentTypeToFieldMapping.last.id}_required").checked?
         else
@@ -327,7 +327,7 @@ class ExtendedContentTest < ActionController::IntegrationTest
     check "extended_field_#{ExtendedField.last.to_param.to_s}_#{verb}_checkbox"
     click_button "Add to Topic Type"
 
-    body_should_contain "#{options[:extended_field_label]}"
+    body_should_contain (options[:extended_field_label]).to_s
     if options[:extended_field_value_required]
       assert field_with_id("mapping_#{TopicTypeToFieldMapping.last.id}_required").checked?
     else
@@ -337,7 +337,7 @@ class ExtendedContentTest < ActionController::IntegrationTest
     assert_equal options[:topic_type_name], TopicType.last.name
     @@topic_types << TopicType.last
 
-    return TopicType.last
+    TopicType.last
   end
 
   def attach_file_for(zoom_class_name)

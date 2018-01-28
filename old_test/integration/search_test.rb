@@ -172,7 +172,7 @@ class SearchTest < ActionController::IntegrationTest
     visit url
     fields.each do |field, value|
       # test unquoted
-      fill_in 'search_terms', :with => "#{value}"
+      fill_in 'search_terms', :with => value.to_s
       click_button "Search"
       body_should_contain should_have, :number_of_times => 1
       # test quoted

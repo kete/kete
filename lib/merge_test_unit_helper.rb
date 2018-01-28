@@ -6,7 +6,7 @@ module MergeTestUnitHelper
     base.class_eval do
       context "A #{@base_class}" do
         setup do
-          should_create_extended_item = @base_class == 'WebLink' ? false : true
+          should_create_extended_item = !(@base_class == 'WebLink')
           create_and_map_extended_field_to_type(label: 'First',
                                                 should_create_extended_item: should_create_extended_item)
           create_and_map_extended_field_to_type(label: 'Second',
