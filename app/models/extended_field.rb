@@ -122,7 +122,7 @@ class ExtendedField < ActiveRecord::Base
 
   def add_checkbox
     # used by a form of available fields where 0 is always going to be the starting value
-    return 0
+    0
   end
 
   alias required_checkbox add_checkbox

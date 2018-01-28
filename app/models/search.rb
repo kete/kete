@@ -60,7 +60,7 @@ class Search < ActiveRecord::Base
   end
 
   def sort_type_options_for(sort_type, action, with_relevance = false)
-    with_relevance = with_relevance || (action == 'for' ? true : false)
+    with_relevance = with_relevance || (action == 'for')
 
     sort_type = sort_type(action: action, user_specified: sort_type, default: 'none')
 

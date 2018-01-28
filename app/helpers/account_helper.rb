@@ -60,11 +60,11 @@ module AccountHelper
     # EOIN:
     # * this method seems to crash somewhere in ImageMagick - this might take a while to track down so
     #   I commented this method out until we can figure out a better way of making captchas (if they are required at all)
-    return 1
+    1
   end
 
   def captcha_url(id)
-    return url_for(controller: 'account', action: 'show_captcha',
+    url_for(controller: 'account', action: 'show_captcha',
                    id: id, time: Time.now)
   end
 end

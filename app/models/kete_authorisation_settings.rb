@@ -56,7 +56,7 @@ module KeteAuthorisationSettings
 
     session[:moderation_exempt_item] = nil
 
-    return result
+    result
   end
 
   def security_check_of_do_not_moderate
@@ -225,7 +225,7 @@ module KeteAuthorisationSettings
   end
 
   def current_user_is?(at_least_setting, basket = @current_basket)
-    begin
+    
       # everyone can see, just return true
       return true if at_least_setting == 'all users' || at_least_setting.blank?
 
@@ -249,6 +249,6 @@ module KeteAuthorisationSettings
       end
     rescue
       raise "Unknown authentication type: #{$!}"
-    end
+    
   end
 end
