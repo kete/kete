@@ -135,7 +135,7 @@ class ModerationViewsTest < ActionController::IntegrationTest
       login_as('grant')
 
       @audio = new_audio_recording do
-        attach_file "audio_recording[uploaded_data]", "Sin1000Hz.mp3" #, "audio/mpeg"
+        attach_file "audio_recording[uploaded_data]", "Sin1000Hz.mp3" # , "audio/mpeg"
       end
 
       update_item(@audio, :title => "New audio updated")
@@ -154,7 +154,7 @@ class ModerationViewsTest < ActionController::IntegrationTest
       login_as('grant')
 
       @document = new_document do
-        attach_file "document[uploaded_data]", "test.pdf" #, "application/pdf"
+        attach_file "document[uploaded_data]", "test.pdf" # , "application/pdf"
       end
 
       update_item(@document, :title => "New document updated")

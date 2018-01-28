@@ -39,11 +39,11 @@ class LicensesControllerTest < ActionController::TestCase
 
   # Kieran Pilkington, 2008/08/11
   # This will fail because we currently have no validations in place to make sure something is entered
-  #def test_shouldnt_create_license
+  # def test_shouldnt_create_license
   #  assert_no_difference('License.count') do
   #    post :create, {:urlified_name => 'site', :record => {}}
   #  end
-  #end
+  # end
 
   def test_new
     get :new, new_path
