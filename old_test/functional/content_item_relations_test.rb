@@ -25,19 +25,6 @@ class ContentItemRelationsTest < ActionController::TestCase
     end
   end
 
-  # Zebra is blank at this stage, so checking for existing topics won't work
-  # We could rebuild zebra but it would take a while.
-  #def test_find_related_add_with_terms
-  #  get :find_related, :urlified_name => "about", :relate_to_type => 'Topic', :relate_to_item => "1-about-kete", :function => "add", :related_class => "Topic", :search_terms => "register"
-  #
-  #  assert_not_nil assigns(:results)
-  #  assert_equal 4, assigns(:results).size
-  #  assert_equal "link", assigns(:next_action)
-  #
-  #  assert_response :success
-  #  assert_template 'search/related_form'
-  #end
-
   def test_find_related_add_with_terms_no_results
     get :find_related, :urlified_name => "about", :relate_to_type => 'Topic', :relate_to_item => "1-about-kete", :function => "add", :related_class => "Topic", :search_terms => "The Art Of Computer Programming"
 

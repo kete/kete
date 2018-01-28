@@ -171,9 +171,9 @@ class TopicTest < ActiveSupport::TestCase
   end
 
   # TODO: We do not have a plan for how radio fields are to be used in Kete.
-  #def test_extended_field_radio_fields_are_validated
+  # def test_extended_field_radio_fields_are_validated
   #  print "Skipped"
-  #end
+  # end
 
   def test_extended_field_date_fields_are_validated
     for_topic_with(TopicType.find_by_name("Person"), { :label => "Birthdate", :ftype => "date" }) do |t|

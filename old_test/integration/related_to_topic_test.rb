@@ -107,7 +107,7 @@ class RelatedToTopicTest < ActionController::IntegrationTest
                                          :action => 'Add')
               body_should_contain @item_for_relating.title
 
-              check "item_#{@item_for_relating.id.to_s}"
+              check "item_#{@item_for_relating.id}"
               click_button "Add"
 
               body_should_contain I18n.t('application_controller.link_related.added_relation')
@@ -157,7 +157,7 @@ class RelatedToTopicTest < ActionController::IntegrationTest
                                          :zoom_class_plural => lower_case_name)
               body_should_contain @item_for_relating.title
 
-              check "item_#{@item_for_relating.id.to_s}"
+              check "item_#{@item_for_relating.id}"
               click_button "Remove"
 
               body_should_contain I18n.t('application_controller.unlink_related.unlinked_relation')
@@ -189,7 +189,7 @@ class RelatedToTopicTest < ActionController::IntegrationTest
                 body_should_contain "Restore related #{lower_case_name}"
                 body_should_contain @item_for_relating.title
 
-                check "item_#{@item_for_relating.id.to_s}"
+                check "item_#{@item_for_relating.id}"
                 click_button "Restore"
 
                 body_should_contain 'Successfully added item relationships'

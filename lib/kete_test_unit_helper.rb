@@ -17,7 +17,7 @@ module KeteTestUnitHelper
     model = Module.class_eval(@base_class).new @new_model
     assert model.valid?, "#{@base_class} should be valid"
     @new_model.each do |attr_name|
-      assert_equal @new_model[attr_name], model.attributes[attr_name], "#{@base_class}.@#{attr_name.to_s} incorrect"
+      assert_equal @new_model[attr_name], model.attributes[attr_name], "#{@base_class}.@#{attr_name} incorrect"
     end
   end
 
