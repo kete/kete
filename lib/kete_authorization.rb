@@ -36,7 +36,7 @@ module KeteAuthorization
       @basket_admin || (logged_in? && permit?('moderator on :basket'))
     end
 
-    alias_method :at_least_a_moderator?, :basket_moderator?
+    alias at_least_a_moderator? basket_moderator?
 
     def basket_member?(basket = nil)
       @basket = basket || @current_basket

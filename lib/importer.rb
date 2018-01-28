@@ -31,7 +31,7 @@ module Importer
       returning Tempfile.new(filename) do |tmp|
         FileUtils.copy_file file, tmp.path
         (class << tmp; self; end;).class_eval do
-          alias local_path path
+          alias_method :local_path, :path
           define_method(:original_filename) { filename }
           define_method(:content_type) { content_type }
         end
