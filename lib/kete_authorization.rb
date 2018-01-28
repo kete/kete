@@ -45,7 +45,7 @@ module KeteAuthorization
 
     def load_site_admin
       @site_admin = site_admin?
-      return true
+      true
     end
 
     def load_at_least(basket = nil)
@@ -62,27 +62,27 @@ module KeteAuthorization
         @at_least_a_moderator ||= @at_least_moderator
         @at_least_member ||= basket_member?
       end
-      return true
+      true
     end
 
     def load_basket_admin
       @basket_admin ||= basket_admin?
-      return true
+      true
     end
 
     def load_basket_moderator
       @basket_moderator ||= basket_moderator?
-      return true
+      true
     end
 
     def load_basket_member
       @basket_member ||= basket_member?
-      return true
+      true
     end
 
     def load_tech_admin
       @tech_admin ||= tech_admin?
-      return true
+      true
     end
   end
 end

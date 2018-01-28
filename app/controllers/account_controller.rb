@@ -88,7 +88,7 @@ class AccountController < ApplicationController
             error_msgs << t('account_controller.login.failed_security_answer')
           end
 
-          flash[:notice] = error_msgs.join("#{t('account_controller.login.or')}")
+          flash[:notice] = error_msgs.join((t('account_controller.login.or')).to_s)
         end
       end
     end
@@ -209,7 +209,7 @@ class AccountController < ApplicationController
       else
         @user = current_user
       end
-      @viewer_is_user = @user == @current_user ? true : false
+      @viewer_is_user = @user == @current_user
       @viewer_portraits = !@user.portraits.empty? ? @user.portraits.all(conditions: ['position != 1']) : nil
     else
       flash[:notice] = t('account_controller.show.please_login')
