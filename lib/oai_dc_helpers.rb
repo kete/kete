@@ -248,12 +248,12 @@ module OaiDcHelpers
       format = String.new
       html_classes = %w(Topic Comment WebLink)
       case self.class.name
-      when *html_classes
-        format = 'text/html'
       when 'StillImage'
         if !original_file.nil?
           format = original_file.content_type
         end
+      when *html_classes
+        format = 'text/html'
       else
         format = content_type
       end

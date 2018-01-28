@@ -345,6 +345,27 @@ class PastPerfect4ImporterWorker < BackgrounDRb::MetaWorker
         case record_field
         when 'TITLE'
           params[zoom_class_for_params][:title] = value
+        when 'ADMIN'
+          if zoom_class == 'Topic' or zoom_class == 'Document'
+            params[zoom_class_for_params][:short_summary] = value
+          else
+            if params[zoom_class_for_params][:description].nil?
+              params[zoom_class_for_params][:description] = value
+            else
+              params[zoom_class_for_params][:description] += "\n" + value
+            end
+          end
+        when 'IMAGEFILE'
+          if zoom_class == 'StillImage'
+            # we do a check earlier in the script for imagefile
+            # so we should have something to work with here
+            params[:image_file] = { uploaded_data: copy_and_load_to_temp_file(importer_prepare_path_to_image_file(value)) }
+          end
+        when 'OBJECTID'
+          if zoom_class == 'Topic'
+            value = record_hash['ACCESSNO']
+          end
+          params = importer_prepare_extended_field(value: value, field: record_field, zoom_class_for_params: zoom_class_for_params, params: params)
         when *SystemSetting.description_synonyms
           if params[zoom_class_for_params][:description].nil?
             params[zoom_class_for_params][:description] = value
@@ -370,27 +391,6 @@ class PastPerfect4ImporterWorker < BackgrounDRb::MetaWorker
           else
             tag_list_array << value.gsub("\n", ' ')
           end
-        when 'ADMIN'
-          if zoom_class == 'Topic' or zoom_class == 'Document'
-            params[zoom_class_for_params][:short_summary] = value
-          else
-            if params[zoom_class_for_params][:description].nil?
-              params[zoom_class_for_params][:description] = value
-            else
-              params[zoom_class_for_params][:description] += "\n" + value
-            end
-          end
-        when 'IMAGEFILE'
-          if zoom_class == 'StillImage'
-            # we do a check earlier in the script for imagefile
-            # so we should have something to work with here
-            params[:image_file] = { uploaded_data: copy_and_load_to_temp_file(importer_prepare_path_to_image_file(value)) }
-          end
-        when 'OBJECTID'
-          if zoom_class == 'Topic'
-            value = record_hash['ACCESSNO']
-          end
-          params = importer_prepare_extended_field(value: value, field: record_field, zoom_class_for_params: zoom_class_for_params, params: params)
         else
           params = importer_prepare_extended_field(value: value, field: record_field, zoom_class_for_params: zoom_class_for_params, params: params)
         end
