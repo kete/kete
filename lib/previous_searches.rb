@@ -78,7 +78,7 @@ module PreviousSearches
 
     # libt cuts down repeated translation logic
     def libt(key, *args)
-      I18n.t("previous_searches_lib.short_search_title_from_params.#{key.to_s}", *args)
+      I18n.t("previous_searches_lib.short_search_title_from_params.#{key}", *args)
     end
 
     # A slimmed down version of the last_part_of_title_if_refinement_of method in SearchHelper

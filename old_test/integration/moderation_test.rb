@@ -79,9 +79,9 @@ class ModerationTest < ActionController::IntegrationTest
         assert_equal "Required field", ExtendedField.last.label
         @extended_field = ExtendedField.last
 
-        visit "/site/topic_types/edit/#{@topic_type.id.to_s}"
+        visit "/site/topic_types/edit/#{@topic_type.id}"
 
-        check "extended_field_#{@extended_field.to_param.to_s}_required_checkbox"
+        check "extended_field_#{@extended_field.to_param}_required_checkbox"
         click_button "Add to Topic Type"
 
         update_item @topic do
@@ -244,7 +244,7 @@ class ModerationTest < ActionController::IntegrationTest
     click_button "Create"
 
     verb = options[:extended_field_value_required] ? "required" : "add"
-    check "extended_field_#{ExtendedField.last.to_param.to_s}_#{verb}_checkbox"
+    check "extended_field_#{ExtendedField.last.to_param}_#{verb}_checkbox"
     click_button "Add to Topic Type"
 
     text_verb = options[:extended_field_value_required] ? "required" : "optional"
