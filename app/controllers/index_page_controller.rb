@@ -18,7 +18,7 @@ class IndexPageController < ApplicationController
         @title = @topic.title
       end
 
-      if @current_basket != @site_basket or @topic.nil?
+      if (@current_basket != @site_basket) || @topic.nil?
         @title = @current_basket.name
       end
 

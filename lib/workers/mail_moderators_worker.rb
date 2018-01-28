@@ -3,7 +3,7 @@ class MailModeratorsWorker < BackgrounDRb::MetaWorker
   def create(args = nil)
     # this method is called, when worker is loaded for the first time
     frequency_of_moderation_email = SystemSetting.frequency_of_moderation_email
-    if (frequency_of_moderation_email.is_a?(Integer) or frequency_of_moderation_email.is_a?(Float)) and frequency_of_moderation_email > 0
+    if (frequency_of_moderation_email.is_a?(Integer) || frequency_of_moderation_email.is_a?(Float)) && (frequency_of_moderation_email > 0)
       # frequency_of_moderation_email is in hours (we allow decimals)
       # so multiply it by 60 * 60 to get our seconds arg value
       frequency_in_seconds = frequency_of_moderation_email * 60 * 60

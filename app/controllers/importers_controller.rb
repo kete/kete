@@ -138,7 +138,7 @@ class ImportersController < ApplicationController
                                                               records_processed: records_processed)
             end
 
-            if status[:done_with_do_work] == true or !status[:error].blank?
+            if (status[:done_with_do_work] == true) || !status[:error].blank?
               done_message = t('importers_controller.get_progress.all_processed')
 
               if !status[:error].blank?
