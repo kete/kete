@@ -196,7 +196,7 @@ class AccountControllerTest < ActionController::TestCase
 
   ### changing password tests
   def test_should_allow_password_change
-    post :change_password, { :old_password => 'test', :password => 'newpassword', :password_confirmation => 'newpassword', :urlified_name => @urlified_name }, { :user => 2 }
+    post :change_password, { :old_password => 'test', :password => 'newpassword', :password_confirmation => 'newpassword', :urlified_name => @urlified_name }, :user => 2
     assert_equal 'newpassword', assigns(:current_user).password
     assert_equal "Password changed", flash[:notice]
     post :logout, :urlified_name => @urlified_name
@@ -210,7 +210,7 @@ class AccountControllerTest < ActionController::TestCase
   def test_non_matching_passwords_should_not_change
     post :login, :login => 'bryan', :password => 'test', :urlified_name => @urlified_name
     assert session[:user]
-    post :change_password, { :old_password => 'test', :password => 'newpassword', :password_confirmation => 'test', :urlified_name => @urlified_name }
+    post :change_password, :old_password => 'test', :password => 'newpassword', :password_confirmation => 'test', :urlified_name => @urlified_name
     assert_not_equal 'newpassword', assigns(:current_user).password
     assert_equal "Password mismatch", flash[:notice]
   end
@@ -218,7 +218,7 @@ class AccountControllerTest < ActionController::TestCase
   def test_incorrect_old_password_does_not_change
     post :login, :login => 'bryan', :password => 'test', :urlified_name => @urlified_name
     assert session[:user]
-    post :change_password, { :old_password => 'wrongpassword', :password => 'newpassword', :password_confirmation => 'newpassword', :urlified_name => @urlified_name }
+    post :change_password, :old_password => 'wrongpassword', :password => 'newpassword', :password_confirmation => 'newpassword', :urlified_name => @urlified_name
     assert_not_equal 'newpassword', assigns(:current_user).password, "#{assigns(:current_user).password} expected to be 'newpassword'"
     assert_equal "Wrong password", flash[:notice]
   end
@@ -248,7 +248,7 @@ class AccountControllerTest < ActionController::TestCase
 
   def test_add_portrait
     login_as :admin
-    still_image = StillImage.create({ :title => 'test still image', :basket_id => Basket.find(:first) })
+    still_image = StillImage.create(:title => 'test still image', :basket_id => Basket.find(:first))
     get :add_portrait, :urlified_name => 'site', :id => still_image.id
     assert_response :redirect
     assert_redirected_to :urlified_name => 'site', :controller => 'images', :action => 'show', :id => assigns(:still_image), :locale => false
@@ -256,7 +256,7 @@ class AccountControllerTest < ActionController::TestCase
 
   def test_remove_portrait
     login_as :admin
-    still_image = StillImage.create({ :title => 'test still image', :basket_id => Basket.find(:first) })
+    still_image = StillImage.create(:title => 'test still image', :basket_id => Basket.find(:first))
     get :add_portrait, :urlified_name => 'site', :id => still_image.id
     get :remove_portrait, :urlified_name => 'site', :id => still_image.id
     assert_response :redirect
@@ -265,7 +265,7 @@ class AccountControllerTest < ActionController::TestCase
 
   def test_make_selected_portrait
     login_as :admin
-    still_image = StillImage.create({ :title => 'test still image', :basket_id => Basket.find(:first) })
+    still_image = StillImage.create(:title => 'test still image', :basket_id => Basket.find(:first))
     get :add_portrait, :urlified_name => 'site', :id => still_image.id
     get :make_selected_portrait, :urlified_name => 'site', :id => still_image.id
     assert_response :redirect
@@ -279,7 +279,7 @@ class AccountControllerTest < ActionController::TestCase
     post :signup, { :user => { :login => 'quire', :email => 'quire@changme.com',
                                :password => 'quire', :password_confirmation => 'quire', :captcha_type => 'image',
                                :agree_to_terms => '1', :security_code => 'test', :locale => 'en' }.merge(options), :urlified_name => @urlified_name },
-         { :captcha_id => 1 }
+         :captcha_id => 1
   end
 
   def auth_token(token)

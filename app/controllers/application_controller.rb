@@ -284,7 +284,7 @@ class ApplicationController < ActionController::Base
       when 'show_related'
         # TODO: replace with translation stuff when we get globalize going
         flash[:notice] = t('application_controller.setup_related_topic_and_zoom_and_redirect.related_item', zoom_class: zoom_class_humanize(item.class.name))
-        redirect_to_related_item(@relate_to_item, { private: (params[:related_item_private] && params[:related_item_private] == 'true' && permitted_to_view_private_items?) })
+        redirect_to_related_item(@relate_to_item, private: (params[:related_item_private] && params[:related_item_private] == 'true' && permitted_to_view_private_items?))
       when 'commentable'
         redirect_to_show_for(commented_item, options)
       when 'appearance'
@@ -418,12 +418,12 @@ class ApplicationController < ActionController::Base
 
     # Redirect to private version if item is private.
     if options[:private]
-      path_hash.merge!({ private: 'true' })
+      path_hash.merge!(private: 'true')
     end
 
     # Add the anchor if one is passed in
     if options[:anchor]
-      path_hash.merge!({ anchor: options[:anchor] })
+      path_hash.merge!(anchor: options[:anchor])
     end
 
     url_for(path_hash)

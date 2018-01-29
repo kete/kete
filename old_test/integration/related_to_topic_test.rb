@@ -244,13 +244,13 @@ class RelatedToTopicTest < ActionController::IntegrationTest
 
     context "when a private related topic is added" do
       setup do
-        @@site_basket.update_attributes({ :show_privacy_controls => true })
-        @topic1 = new_topic({ :title => 'Parent Topic' })
-        @topic2 = new_topic({ :title => 'Child Topic 1', :private_true => true, :relate_to => @topic1, :go_to_related => false })
+        @@site_basket.update_attributes(:show_privacy_controls => true)
+        @topic1 = new_topic(:title => 'Parent Topic')
+        @topic2 = new_topic(:title => 'Child Topic 1', :private_true => true, :relate_to => @topic1, :go_to_related => false)
       end
 
       teardown do
-        @@site_basket.update_attributes({ :show_privacy_controls => false })
+        @@site_basket.update_attributes(:show_privacy_controls => false)
       end
 
       should "show up for members or higher" do
@@ -283,7 +283,7 @@ class RelatedToTopicTest < ActionController::IntegrationTest
       context "when a #{zoom_class} is added" do
         setup do
           @related_item = send("new_#{zoom_class.tableize.singularize}",
-                               { :title => 'Child Item 1', :relate_to => @parent_topic }) do |field_prefix|
+                               :title => 'Child Item 1', :relate_to => @parent_topic) do |field_prefix|
             fill_in_needed_information_for(zoom_class)
           end
         end
@@ -320,7 +320,7 @@ class RelatedToTopicTest < ActionController::IntegrationTest
 
         should "not show up if a different related item is deleted" do
           @related_item2 = send("new_#{zoom_class.tableize.singularize}",
-                                { :title => 'Child Item 2', :relate_to => @parent_topic }) do |field_prefix|
+                                :title => 'Child Item 2', :relate_to => @parent_topic) do |field_prefix|
             fill_in_needed_information_for(zoom_class)
           end
 

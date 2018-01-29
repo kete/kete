@@ -7,7 +7,7 @@ module TaggingController
       if controller == 'Baskets'
         ZOOM_CLASSES.each do |zoom_class|
           item_key = zoom_class.underscore.downcase.to_sym
-          klass.send :auto_complete_for, item_key, :tag_list, {}, { through: { object: 'tag', method: 'name' } }
+          klass.send :auto_complete_for, item_key, :tag_list, {}, through: { object: 'tag', method: 'name' }
           auto_complete_methods << "auto_complete_for_#{item_key}_tag_list".to_sym
         end
       else

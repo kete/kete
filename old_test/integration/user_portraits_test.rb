@@ -60,16 +60,16 @@ class AccountTest < ActionController::IntegrationTest
       end
 
       should "be able to add an image as default portrait automatically on item creation" do
-        @item1 = new_still_image({ :selected_portrait => true }) { attach_file "image_file_uploaded_data", "white.jpg" }
+        @item1 = new_still_image(:selected_portrait => true) { attach_file "image_file_uploaded_data", "white.jpg" }
         portrait_are_in_order_for(@joe, [@item1])
-        @item2 = new_still_image({ :selected_portrait => true }) { attach_file "image_file_uploaded_data", "white.jpg" }
+        @item2 = new_still_image(:selected_portrait => true) { attach_file "image_file_uploaded_data", "white.jpg" }
         portrait_are_in_order_for(@joe, [@item2, @item1])
       end
 
       should "be able to add an image as non default portrait automatically on item creation" do
-        @item1 = new_still_image({ :portrait => true }) { attach_file "image_file_uploaded_data", "white.jpg" }
+        @item1 = new_still_image(:portrait => true) { attach_file "image_file_uploaded_data", "white.jpg" }
         portrait_are_in_order_for(@joe, [@item1])
-        @item2 = new_still_image({ :portrait => true }) { attach_file "image_file_uploaded_data", "white.jpg" }
+        @item2 = new_still_image(:portrait => true) { attach_file "image_file_uploaded_data", "white.jpg" }
         portrait_are_in_order_for(@joe, [@item1, @item2])
       end
     end
@@ -92,9 +92,9 @@ class AccountTest < ActionController::IntegrationTest
 
     context "with multiple portraits" do
       setup do
-        @item1 = new_still_image({ :portrait => true }) { attach_file "image_file_uploaded_data", "white.jpg" }
-        @item2 = new_still_image({ :portrait => true }) { attach_file "image_file_uploaded_data", "white.jpg" }
-        @item3 = new_still_image({ :portrait => true }) { attach_file "image_file_uploaded_data", "white.jpg" }
+        @item1 = new_still_image(:portrait => true) { attach_file "image_file_uploaded_data", "white.jpg" }
+        @item2 = new_still_image(:portrait => true) { attach_file "image_file_uploaded_data", "white.jpg" }
+        @item3 = new_still_image(:portrait => true) { attach_file "image_file_uploaded_data", "white.jpg" }
         @item4 = new_still_image { attach_file "image_file_uploaded_data", "white.jpg" }
       end
 
@@ -148,10 +148,10 @@ class AccountTest < ActionController::IntegrationTest
 
     context "with a selected portrait" do
       setup do
-        @item = new_still_image({ :selected_portrait => true }) { attach_file "image_file_uploaded_data", "white.jpg" }
+        @item = new_still_image(:selected_portrait => true) { attach_file "image_file_uploaded_data", "white.jpg" }
         add_paul_as_regular_user
         login_as('paul')
-        @item2 = new_still_image({ :selected_portrait => true }) { attach_file "image_file_uploaded_data", "white.jpg" }
+        @item2 = new_still_image(:selected_portrait => true) { attach_file "image_file_uploaded_data", "white.jpg" }
         @item = update_item(@item)
       end
 

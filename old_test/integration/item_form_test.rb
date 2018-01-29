@@ -38,7 +38,7 @@ class ItemFormTest < ActionController::IntegrationTest
       add_paul_as_super_user
       add_jane_as_super_user
       login_as(:paul)
-      @topic = new_topic({ :title => 'Delete link test' })
+      @topic = new_topic(:title => 'Delete link test')
     end
 
     teardown do

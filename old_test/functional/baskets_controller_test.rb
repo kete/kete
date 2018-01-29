@@ -34,14 +34,14 @@ class BasketsControllerTest < ActionController::TestCase
 
   def test_redirect_to_basket_all
     get :show, :urlified_name => 'site'
-    assert_redirect_to({ :urlified_name => 'site', :controller => 'search', :action => 'all', :controller_name_for_zoom_class => 'topics' })
+    assert_redirect_to(:urlified_name => 'site', :controller => 'search', :action => 'all', :controller_name_for_zoom_class => 'topics')
   end
 
   def test_index_and_list
     get :index, index_path
     assert_redirect_to(:action => 'list')
 
-    get :list, index_path({ :action => 'list' })
+    get :list, index_path(:action => 'list')
     assert_viewing_template 'baskets/list'
     assert_var_assigned true
     assert_equal 4, assigns(:baskets).size
@@ -58,7 +58,7 @@ class BasketsControllerTest < ActionController::TestCase
     create_record
     assert_var_assigned
     assert_attributes_same_as @new_model
-    assert_redirect_to(edit_path({ :urlified_name => assigns(:basket).urlified_name, :id => assigns(:basket).id }))
+    assert_redirect_to(edit_path(:urlified_name => assigns(:basket).urlified_name, :id => assigns(:basket).id))
     assert_equal 'Basket was successfully created.', flash[:notice]
   end
 
@@ -67,7 +67,7 @@ class BasketsControllerTest < ActionController::TestCase
     assert_viewing_template 'baskets/edit'
     assert_var_assigned
 
-    get :homepage_options, edit_path({ :action => 'homepage_options' })
+    get :homepage_options, edit_path(:action => 'homepage_options')
     assert_viewing_template 'baskets/homepage_options'
     assert_var_assigned
   end
@@ -81,7 +81,7 @@ class BasketsControllerTest < ActionController::TestCase
   end
 
   def test_destroy
-    destroy_record({ :id => 4 }) # documentation basket
+    destroy_record( :id => 4 ) # documentation basket
     assert_redirect_to '/'
     assert_equal 'Basket was successfully deleted.', flash[:notice]
   end
@@ -122,14 +122,14 @@ class BasketsControllerTest < ActionController::TestCase
   end
 
   def test_basket_accessable_by_site_admin_when_status_not_approved
-    basket = Basket.create(@new_model.merge({ :name => 'Test' }))
+    basket = Basket.create(@new_model.merge(:name => 'Test'))
     get :list, :urlified_name => 'test', :controller => 'index_page', :action => 'index'
     assert_response :success
   end
 
   def test_basket_not_accessable_by_non_site_admin_when_status_not_approved
     logout
-    basket = Basket.create(@new_model.merge({ :name => 'Test' }))
+    basket = Basket.create(@new_model.merge(:name => 'Test'))
     get :list, :urlified_name => 'test', :controller => 'index_page', :action => 'index'
     assert_response :redirect
     assert_redirected_to "/site"
@@ -137,14 +137,14 @@ class BasketsControllerTest < ActionController::TestCase
   end
 
   def test_basket_accessable_by_site_admin_when_approved
-    basket = Basket.create(@new_model.merge({ :name => 'Test', :status => 'approved' }))
+    basket = Basket.create(@new_model.merge(:name => 'Test', :status => 'approved'))
     get :list, :urlified_name => 'test', :controller => 'index_page', :action => 'index'
     assert_response :success
   end
 
   def test_basket_accessable_by_non_site_admin_when_approved
     logout
-    basket = Basket.create(@new_model.merge({ :name => 'Test', :status => 'approved' }))
+    basket = Basket.create(@new_model.merge(:name => 'Test', :status => 'approved'))
     get :list, :urlified_name => 'test', :controller => 'index_page', :action => 'index'
     assert_response :success
   end
@@ -205,7 +205,7 @@ class BasketsControllerTest < ActionController::TestCase
     login_as(:joe)
     set_constant("BASKET_CREATION_POLICY", 'request')
     assert_equal 'request', BASKET_CREATION_POLICY
-    post :create, :basket => @new_model.merge({ :name => 'testing' }), :urlified_name => 'site'
+    post :create, :basket => @new_model.merge(:name => 'testing'), :urlified_name => 'site'
     assert_response :redirect
     assert_redirected_to "/site"
     assert_equal 'Basket will now be reviewed, and you\'ll be notified of the outcome.', flash[:notice]

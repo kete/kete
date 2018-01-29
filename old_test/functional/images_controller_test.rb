@@ -30,7 +30,7 @@ class ImagesControllerTest < ActionController::TestCase
 
   def test_create_populates_file_privacy_correctly_with_public
     login_as :admin
-    post :create, :still_image => @new_still_image.merge({ :file_private => false }), :image_file => @new_image_file, :urlified_name => 'site'
+    post :create, :still_image => @new_still_image.merge(:file_private => false), :image_file => @new_image_file, :urlified_name => 'site'
     assert_not_nil assigns(:still_image)
     assert_not_nil assigns(:image_file)
     assert_equal 5, assigns(:still_image).image_files.size
@@ -45,7 +45,7 @@ class ImagesControllerTest < ActionController::TestCase
 
   def test_create_populates_file_privacy_correctly_with_private
     login_as :admin
-    post :create, :still_image => @new_still_image.merge({ :file_private => true }), :image_file => @new_image_file, :urlified_name => 'site'
+    post :create, :still_image => @new_still_image.merge(:file_private => true), :image_file => @new_image_file, :urlified_name => 'site'
     assert_not_nil assigns(:still_image)
     assert_not_nil assigns(:image_file)
     assert_equal 5, assigns(:still_image).image_files.size
@@ -63,7 +63,7 @@ class ImagesControllerTest < ActionController::TestCase
 
   def test_update_populates_file_privacy_correctly_from_public_to_private
     # Create some fixtures to test
-    still_image = StillImage.create(@new_still_image.merge({ :file_private => false }))
+    still_image = StillImage.create(@new_still_image.merge(:file_private => false))
     still_image.image_files.create(@new_image_file)
     still_image.image_files.first.thumbnails.each do |thumb|
       thumb.still_image_id = still_image.id
@@ -88,7 +88,7 @@ class ImagesControllerTest < ActionController::TestCase
 
   def test_update_populates_file_privacy_correctly_from_private_to_public
     # Create some fixtures to test
-    still_image = StillImage.create(@new_still_image.merge({ :file_private => true }))
+    still_image = StillImage.create(@new_still_image.merge(:file_private => true))
     still_image.image_files.create(@new_image_file)
     still_image.image_files.first.thumbnails.each do |thumb|
       thumb.still_image_id = still_image.id

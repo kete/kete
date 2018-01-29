@@ -6,7 +6,7 @@ class ThemeSupportTest < ActionController::IntegrationTest
   context "When there are more than 3 baskets on a site" do
     setup do
       @baskets = Array.new
-      4.times { |i| @baskets << create_new_basket({ :name => "basket #{i}" }) }
+      4.times { |i| @baskets << create_new_basket(:name => "basket #{i}") }
     end
 
     should "have more-baskets class for the more link to the baskets index page" do

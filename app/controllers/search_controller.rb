@@ -302,7 +302,7 @@ class SearchController < ApplicationController
     # get the item
     # we use should_be_exact rather than _equals_completely method here
     # because relations have a key index on them and should be exact uses that
-    @search.pqf_query.relations_include(url_for_dc_identifier(@source_item, { force_http: true, minimal: true }), should_be_exact: true) if !@source_item.nil?
+    @search.pqf_query.relations_include(url_for_dc_identifier(@source_item, force_http: true, minimal: true), should_be_exact: true) if !@source_item.nil?
 
     # this looks in the dc_subject index in the z30.50 server
     @search.pqf_query.subjects_equals_completely(@tag.name.to_s) if !@tag.nil?
@@ -431,55 +431,55 @@ class SearchController < ApplicationController
                       authenticity_token: nil }
 
     if is_a_private_search?
-      location_hash.merge!({ privacy_type: params[:privacy_type] })
+      location_hash.merge!(privacy_type: params[:privacy_type])
     end
 
     if !params[:search_terms].blank?
       # we are searching
-      location_hash.merge!({ search_terms_slug: to_search_terms_slug(params[:search_terms]),
+      location_hash.merge!( search_terms_slug: to_search_terms_slug(params[:search_terms]),
                              search_terms: params[:search_terms],
-                             action: 'for' })
+                             action: 'for' )
     else
       # we are viewing all
-      location_hash.merge!({ action: 'all' })
+      location_hash.merge!(action: 'all')
     end
 
     # If we're searching by tag, this will be set
     if !params[:tag].blank?
-      location_hash.merge!({ tag: params[:tag] })
+      location_hash.merge!(tag: params[:tag])
     end
 
     # If we're searching by contributor, this will be set
     if !params[:contributor].blank?
-      location_hash.merge!({ contributor: params[:contributor] })
+      location_hash.merge!(contributor: params[:contributor])
     end
 
     # If we're searching by relation, these will be set
     if !params[:source_controller_singular].blank?
-      location_hash.merge!({ source_controller_singular: params[:source_controller_singular] })
+      location_hash.merge!(source_controller_singular: params[:source_controller_singular])
     end
     if !params[:source_item].blank?
-      location_hash.merge!({ source_item: params[:source_item] })
+      location_hash.merge!(source_item: params[:source_item])
     end
 
     # James
     # Handle choice specific searching.
     if !params[:limit_to_choice].blank?
-      location_hash.merge!({ limit_to_choice: params[:limit_to_choice] })
+      location_hash.merge!(limit_to_choice: params[:limit_to_choice])
     end
     if !params[:extended_field].blank?
-      location_hash.merge({ extended_field: params[:extended_field] })
+      location_hash.merge(extended_field: params[:extended_field])
     end
 
     if !params[:topic_type].blank?
-      location_hash.merge!({ topic_type: params[:topic_type] })
+      location_hash.merge!(topic_type: params[:topic_type])
     end
 
     if !params[:date_since].blank?
-      location_hash.merge!({ date_since: params[:date_since] })
+      location_hash.merge!(date_since: params[:date_since])
     end
     if !params[:date_until].blank?
-      location_hash.merge!({ date_until: params[:date_until] })
+      location_hash.merge!(date_until: params[:date_until])
     end
 
     logger.debug('terms_to_page_url_redirect hash: ' + location_hash.inspect)

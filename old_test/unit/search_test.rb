@@ -52,29 +52,29 @@ class SearchTest < ActiveSupport::TestCase
   end
 
   def test_sort_type_default_for_should_be_none
-    options = @options.merge({ :search_terms => 'bob dobbs', :action => 'for' })
+    options = @options.merge(:search_terms => 'bob dobbs', :action => 'for')
     assert_equal 'none', Search.new.sort_type(options)
   end
 
   def test_sort_type_default_rss_should_be_last_modified
-    options = @options.merge({ :action => 'rss' })
+    options = @options.merge(:action => 'rss')
     assert_equal 'last_modified', Search.new.sort_type(options)
   end
 
   def test_sort_type_rss_with_search_terms_should_be_last_modified
-    options = @options.merge({ :search_terms => 'bob dobbs', :action => 'rss' })
+    options = @options.merge(:search_terms => 'bob dobbs', :action => 'rss')
     assert_equal 'last_modified', Search.new.sort_type(options)
   end
 
   def test_sort_type_all_with_user_specified
     Search.sort_types.each do |type|
-      options = @options.merge({ :user_specified => type, :action => 'all' })
+      options = @options.merge(:user_specified => type, :action => 'all')
       assert_equal type, Search.new.sort_type(options)
     end
   end
 
   def test_sort_type_rss_always_last_modified
-    options = @options.merge({ :user_specified => 'title', :action => 'rss' })
+    options = @options.merge(:user_specified => 'title', :action => 'rss')
     assert_equal 'last_modified', Search.new.sort_type(options)
   end
 
@@ -105,14 +105,14 @@ class SearchTest < ActiveSupport::TestCase
   # rss action should always be last_modified
   def test_add_sort_to_query_if_needed_should_always_be_last_modified_for_rss
     Search.sort_types.each do |type|
-      options = @options.merge({ :user_specified => type, :action => 'rss' })
+      options = @options.merge(:user_specified => type, :action => 'rss')
       assert_equal "last_modified", Search.new.add_sort_to_query_if_needed(options)
     end
   end
 
   def test_add_sort_to_query_if_needed_should_always_be_last_modified_for_rss_reverse
     Search.sort_types.each do |type|
-      options = @options.merge({ :user_specified => type, :action => 'rss', :direction => 'reverse' })
+      options = @options.merge(:user_specified => type, :action => 'rss', :direction => 'reverse')
       assert_equal "last_modified", Search.new.add_sort_to_query_if_needed(options)
     end
   end
@@ -131,7 +131,7 @@ class SearchTest < ActiveSupport::TestCase
       end
 
       method_name += '_reverse'
-      local_options = local_options.merge({ :direction => 'reverse' })
+      local_options = local_options.merge(:direction => 'reverse')
       correct_reverse_sort_direction_value = Search.date_types.include?(sort_type) ? 1 : 2
 
       define_method(method_name) do

@@ -260,7 +260,7 @@ class PastPerfect4ImporterWorker < BackgrounDRb::MetaWorker
           end
         end
 
-        new_record = create_new_item_from_record(record, @zoom_class, { params: params, record_hash: record_hash, description_end_template: description_end_template })
+        new_record = create_new_item_from_record(record, @zoom_class, params: params, record_hash: record_hash, description_end_template: description_end_template)
       else
         logger.info('what is existing item: ' + existing_item.id.to_s)
         # record exists in kete already

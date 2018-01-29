@@ -85,8 +85,8 @@ class PqfQuery
       # pass nil operator, if 'none' is specified
       options[:operator] = nil if options[:operator] == 'none'
 
-      query_part = create_query_part(options.merge({ attribute_spec: attribute_spec,
-                                                     term_or_terms: terms }))
+      query_part = create_query_part(options.merge( attribute_spec: attribute_spec,
+                                                     term_or_terms: terms ))
     end
 
     define_method(method_name, &code)
@@ -206,11 +206,11 @@ class PqfQuery
     ending = options[:ending]
 
     query_part = '@and ' + oai_datestamp_on_or_after(beginning,
-                                                     options.merge({ only_return_as_string: true,
-                                                                     operator: 'none' }))
+                                                     options.merge( only_return_as_string: true,
+                                                                     operator: 'none' ))
     query_part += ' ' + oai_datestamp_on_or_before(ending,
-                                                   options.merge({ only_return_as_string: true,
-                                                                   operator: 'none' }))
+                                                   options.merge( only_return_as_string: true,
+                                                                   operator: 'none' ))
 
     push_to_appropriate_variables(options.merge(query_part: query_part)) unless options[:only_return_as_string]
     query_part
@@ -235,11 +235,11 @@ class PqfQuery
 
   def creators_or_contributors_include(term_or_terms, options = {})
     query_part = '@or ' + creators_include(term_or_terms,
-                                           options.merge({ only_return_as_string: true,
-                                                           operator: 'none' }))
+                                           options.merge( only_return_as_string: true,
+                                                           operator: 'none' ))
     query_part += ' ' + contributors_include(term_or_terms,
-                                             options.merge({ only_return_as_string: true,
-                                                             operator: 'none' }))
+                                             options.merge( only_return_as_string: true,
+                                                             operator: 'none' ))
 
     push_to_appropriate_variables(options.merge(query_part: query_part, operator: '@and')) unless options[:only_return_as_string]
     query_part
@@ -247,11 +247,11 @@ class PqfQuery
 
   def creators_or_contributors_equals_completely(term_or_terms, options = {})
     query_part = '@or ' + creators_equals_completely(term_or_terms,
-                                                     options.merge({ only_return_as_string: true,
-                                                                     operator: 'none' }))
+                                                     options.merge( only_return_as_string: true,
+                                                                     operator: 'none' ))
     query_part += ' ' + contributors_equals_completely(term_or_terms,
-                                                       options.merge({ only_return_as_string: true,
-                                                                       operator: 'none' }))
+                                                       options.merge( only_return_as_string: true,
+                                                                       operator: 'none' ))
 
     push_to_appropriate_variables(options.merge(query_part: query_part, operator: '@and')) unless options[:only_return_as_string]
     query_part
@@ -356,7 +356,7 @@ class PqfQuery
         query_part += "#{title_query} #{@title_or_any_text_query_string} #{all_content_query} #{@title_or_any_text_query_string} "
       end
     end
-    push_to_appropriate_variables({ query_part: query_part, operator: operator })
+    push_to_appropriate_variables(query_part: query_part, operator: operator)
     query_part
   end
 
