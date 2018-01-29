@@ -5,12 +5,12 @@ module ExtendedFieldsHelper
   def topic_type_form_column(record, input_name)
     topic_types = TopicType.find(1).full_set
     select = topic_type_select_with_indent('record', 'topic_type', topic_types, :id, :name, nil,
-                                           { class: 'select', tabindex: '1' })
-    content_tag('div', select, { id: "hidden_choices_topic_type_select_#{record.id}", style: 'display:none;' })
+                                           class: 'select', tabindex: '1')
+    content_tag('div', select, id: "hidden_choices_topic_type_select_#{record.id}", style: 'display:none;')
   end
 
   def circa_form_column(record, input_name)
-    checkbox = check_box('record', 'circa', { checked: (!record.new_record? && record.circa?) })
+    checkbox = check_box('record', 'circa', checked: (!record.new_record? && record.circa?))
     content_tag('div', checkbox, id: "hidden_choices_circa_#{record.id}",
                                  style: record.new_record? || record.ftype != 'year' ? 'display:none;' : '')
   end
@@ -344,7 +344,7 @@ module ExtendedFieldsHelper
     spinner_id = "#{id}_spinner"
     html = text_field_with_auto_complete(name.split(/\[/)[0], '',
                                          { id: id, value: value, tabindex: '1', size: 50, name: name },
-                                         { indicator: spinner_id,
+                                          indicator: spinner_id,
                                            update: "#{id}_results",
                                            url: {
                                              controller: 'extended_fields',
@@ -352,7 +352,7 @@ module ExtendedFieldsHelper
                                              extended_field_id: extended_field.id,
                                              extended_field_for: name.split(/\[/)[0],
                                              multiple_id: (extended_field.multiple? ? @field_multiple_id : nil)
-                                           } })
+                                           } )
     html += "<img src='#{image_path('indicator.gif')}' width='16' height='16' alt='#{t('extended_fields_helper.extended_field_topic_type_editor.getting_topics')}' id='#{spinner_id}' style='display:none;' />"
 
     # Add some images and text to indicate whether the value entered is valid or invalid
@@ -403,7 +403,7 @@ module ExtendedFieldsHelper
             action: 'add_field_to_multiples',
             extended_field_id: extended_field.id,
             n: n, item_key: @item_type_for_params }
-    link_to(text, url, { id: id, remote: true })
+    link_to(text, url, id: id, remote: true)
   end
 
   def qualified_name_for_field(extended_field)
@@ -480,8 +480,8 @@ module ExtendedFieldsHelper
     end
 
     base = content_tag('li', link_to(choice.label, send(method, url_hash.merge(limit_to_choice: choice)),
-                                     { title: choice.value }),
-                       { class: (options[:current] ? 'current' : '') })
+                                     title: choice.value),
+                       class: (options[:current] ? 'current' : ''))
 
     children = ''
     if options[:include_children]

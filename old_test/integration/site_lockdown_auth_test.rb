@@ -16,7 +16,7 @@ class SiteLockdownAuthTest < ActionController::IntegrationTest
     context "when a site has http credentials, it" do
       setup do
         configure_environment do
-          set_constant :SITE_LOCKDOWN, { :username => 'test', :password => 'test' }
+          set_constant :SITE_LOCKDOWN, :username => 'test', :password => 'test'
         end
       end
 

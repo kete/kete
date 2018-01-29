@@ -17,7 +17,7 @@ module GenericMutedWorkerCallingHelpers
       class_key = options.delete(:class_key)
       the_object = options.delete(:object)
 
-      options = options.merge({ class_key => the_object }) if class_key
+      options = options.merge(class_key => the_object) if class_key
 
       logger.debug('what are worker options ' + options.inspect)
 

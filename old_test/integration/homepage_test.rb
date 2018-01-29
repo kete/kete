@@ -9,13 +9,13 @@ class HomepageTest < ActionController::IntegrationTest
 
     context "when recent topics is enabled" do
       setup do
-        @@site_basket.update_attributes({ :index_page_number_of_recent_topics => 5,
-                                          :index_page_recent_topics_as => 'headlines' })
+        @@site_basket.update_attributes( :index_page_number_of_recent_topics => 5,
+                                          :index_page_recent_topics_as => 'headlines' )
       end
 
       teardown do
-        @@site_basket.update_attributes({ :index_page_number_of_recent_topics => 0,
-                                          :index_page_recent_topics_as => nil })
+        @@site_basket.update_attributes( :index_page_number_of_recent_topics => 0,
+                                          :index_page_recent_topics_as => nil )
       end
 
       context "and topics are added and edited, it" do
@@ -42,9 +42,9 @@ class HomepageTest < ActionController::IntegrationTest
 
       context "and in a new basket" do
         setup do
-          @@recent_basket = create_new_basket({ :name => 'Recent Basket' })
-          @@recent_basket.update_attributes({ :index_page_number_of_recent_topics => 5,
-                                              :index_page_recent_topics_as => 'headlines' })
+          @@recent_basket = create_new_basket(:name => 'Recent Basket')
+          @@recent_basket.update_attributes( :index_page_number_of_recent_topics => 5,
+                                              :index_page_recent_topics_as => 'headlines' )
         end
 
         context "a new homepage topic is added" do
@@ -83,13 +83,13 @@ class HomepageTest < ActionController::IntegrationTest
 
     context "when archive by types is enabled" do
       setup do
-        @@homepage_basket = create_new_basket({ :name => 'Homepage Basket' })
-        @@homepage_basket.update_attributes({ :show_privacy_controls => true, :index_page_archives_as => 'by type' })
+        @@homepage_basket = create_new_basket(:name => 'Homepage Basket')
+        @@homepage_basket.update_attributes(:show_privacy_controls => true, :index_page_archives_as => 'by type')
         add_admin_as_member_to(@@homepage_basket)
       end
 
       teardown do
-        @@homepage_basket.update_attributes({ :show_privacy_controls => false, :index_page_archives_as => nil })
+        @@homepage_basket.update_attributes(:show_privacy_controls => false, :index_page_archives_as => nil)
       end
 
       context "and a public topic has been added, archive by type" do
@@ -205,7 +205,7 @@ class HomepageTest < ActionController::IntegrationTest
 
     context "when no homepage topic exists" do
       setup do
-        @@homepage_basket = create_new_basket({ :name => 'No Homepage Topic' })
+        @@homepage_basket = create_new_basket(:name => 'No Homepage Topic')
       end
 
       should "be able to create a homepage topic from the blank basket index" do

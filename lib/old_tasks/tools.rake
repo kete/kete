@@ -507,7 +507,7 @@ namespace :kete do
         # dump the changed data into a YAML representation
         private_data = YAML.dump(changed_data)
         # and update the private version serialized field (update_all means we avoid annoying validations)
-        item_class.constantize.update_all({ private_version_serialized: private_data }, { id: item.id })
+        item_class.constantize.update_all({ private_version_serialized: private_data }, id: item.id)
       end
     end
 

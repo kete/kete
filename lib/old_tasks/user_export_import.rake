@@ -40,7 +40,7 @@ namespace :kete do
     task users: :environment do
       users = read_from_file('users.yml')
       users.each do |user|
-        user_data = user.last['fields'].merge({ 'agree_to_terms' => '1', 'security_code' => 'bleh' })
+        user_data = user.last['fields'].merge('agree_to_terms' => '1', 'security_code' => 'bleh')
         if User.count(conditions: ['login = ?', user_data['login']]) > 0
           p "#{user_data['login']} already exists"
           next

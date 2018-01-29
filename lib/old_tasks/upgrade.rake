@@ -220,8 +220,8 @@ namespace :kete do
     desc 'Make all baskets with the status of NULL set to approved'
     task make_baskets_approved_if_status_null: :environment do
       Basket.all.each do |basket|
-        basket.update_attributes!({ status: 'approved',
-                                    creator_id: 1 }) if basket.status.blank?
+        basket.update_attributes!( status: 'approved',
+                                    creator_id: 1 ) if basket.status.blank?
       end
     end
 
@@ -238,7 +238,7 @@ namespace :kete do
     task ensure_logins_all_valid: :environment do
       users = User.all.collect { |user| user.login =~ /\s/ ? user : nil }.compact.flatten
       users.each do |user|
-        user.update_attributes!({ login: user.login.gsub(/\s/, '_') })
+        user.update_attributes!(login: user.login.gsub(/\s/, '_'))
         UserNotifier.deliver_login_changed(user)
         p "Altered login of #{user.user_name}#{" (#{user.login})" if user.login != user.user_name}."
         # we should clear the contribution caches but we don't have access to this method here
@@ -276,7 +276,7 @@ namespace :kete do
 
     desc 'Give existing users a default locale if they don\'t already have one.'
     task set_default_locale_for_existing_users: :environment do
-      User.update_all({ locale: 'en' }, { locale: nil })
+      User.update_all({ locale: 'en' }, locale: nil)
     end
 
     desc 'Expire old style page caching for RSS feeds, otherwise they will conflict with new RSS caching system.'
@@ -366,14 +366,14 @@ namespace :kete do
       topics.each do |topic|
         Topic::Version.update_all({
                                     related_items_position: (topic.related_items_position.to_i == 1 ? 'inset' : 'below')
-                                  }, { id: topic.id })
+                                  }, id: topic.id)
       end
 
       topics = Topic.all(conditions: conditions)
       topics.each do |topic|
         Topic.update_all({
                            related_items_position: (topic.related_items_position.to_i == 1 ? 'inset' : 'below')
-                         }, { id: topic.id })
+                         }, id: topic.id)
       end
 
       topics = Topic.all(conditions: "private_version_serialized LIKE '%related_items_inset%'")
@@ -385,7 +385,7 @@ namespace :kete do
           private_data << ['related_items_position', (value && value.to_i == 1 ? 'inset' : 'below')]
         end
         private_data = YAML.dump(private_data)
-        Topic.update_all({ private_version_serialized: private_data }, { id: topic.id })
+        Topic.update_all({ private_version_serialized: private_data }, id: topic.id)
       end
 
       inset_default = SystemSetting.find_by_name('Related Items Inset Default')

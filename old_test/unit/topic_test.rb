@@ -74,7 +74,7 @@ class TopicTest < ActiveSupport::TestCase
   end
 
   def test_xml_attributes_without_position_with_multiple_field_values
-    for_topic_with(TopicType.find_by_name("Person"), { :label => "Address", :multiple => true }) do |t|
+    for_topic_with(TopicType.find_by_name("Person"), :label => "Address", :multiple => true) do |t|
       t.extended_content_values = default_extended_values_plus("address" => { "1" => "The Parade",
                                                                               "2" => "Island Bay" })
       assert t.valid?
@@ -134,7 +134,7 @@ class TopicTest < ActiveSupport::TestCase
   end
 
   def test_extended_field_required_fields_are_validated_with_multiples
-    topic_type = add_field_to(TopicType.find_by_name("Person"), { :label => "Address", :multiple => true }, { :required => true })
+    topic_type = add_field_to(TopicType.find_by_name("Person"), { :label => "Address", :multiple => true }, :required => true)
 
     model = create_person("address" => { "1" => "Wollaston St.", "2" => "" })
 
@@ -150,7 +150,7 @@ class TopicTest < ActiveSupport::TestCase
   end
 
   def test_helpers_work
-    for_topic_with(TopicType.find_by_name("Person"), { :label => "Address", :ftype => "textarea" }) do |t|
+    for_topic_with(TopicType.find_by_name("Person"), :label => "Address", :ftype => "textarea") do |t|
       t.extended_content_values = standard_names
       assert t.valid?
       assert_kind_of Topic, t
@@ -164,7 +164,7 @@ class TopicTest < ActiveSupport::TestCase
   end
 
   def test_extended_field_textarea_fields_are_validated
-    for_topic_with(TopicType.find_by_name("Person"), { :label => "Address", :ftype => "textarea" }) do |t|
+    for_topic_with(TopicType.find_by_name("Person"), :label => "Address", :ftype => "textarea") do |t|
       t.extended_content_values = default_extended_values_plus("address" => "New\n Line")
       assert t.valid?
     end
@@ -176,7 +176,7 @@ class TopicTest < ActiveSupport::TestCase
   # end
 
   def test_extended_field_date_fields_are_validated
-    for_topic_with(TopicType.find_by_name("Person"), { :label => "Birthdate", :ftype => "date" }) do |t|
+    for_topic_with(TopicType.find_by_name("Person"), :label => "Birthdate", :ftype => "date") do |t|
       t.extended_content_values = default_extended_values_plus("birthdate" => "1960-01-01")
       assert t.valid?
 
@@ -196,7 +196,7 @@ class TopicTest < ActiveSupport::TestCase
   # TODO: seems we are missing choices tests that have a value that is different than label
 
   def test_extended_field_checkbox_fields_are_validated
-    for_topic_with(TopicType.find_by_name("Person"), { :label => "Deceased", :ftype => "checkbox" }) do |t|
+    for_topic_with(TopicType.find_by_name("Person"), :label => "Deceased", :ftype => "checkbox") do |t|
       ["Yes", "No", "yes", "no", ""].each do |value|
         t.extended_content_values = default_extended_values_plus("deceased" => value)
         assert t.valid?
@@ -212,7 +212,7 @@ class TopicTest < ActiveSupport::TestCase
   end
 
   def test_extended_field_choice_fields_are_validated
-    for_topic_with(TopicType.find_by_name("Person"), { :label => "Marital status", :ftype => "choice" }) do |t|
+    for_topic_with(TopicType.find_by_name("Person"), :label => "Marital status", :ftype => "choice") do |t|
       set_up_choices
 
       assert_equal 4, t.all_field_mappings.last.extended_field.choices.size
@@ -237,7 +237,7 @@ class TopicTest < ActiveSupport::TestCase
   end
 
   def test_extended_field_topic_type_fields_are_validated
-    for_topic_with(TopicType.find_by_name("Person"), { :label => "Father", :ftype => "topic_type" }) do |t|
+    for_topic_with(TopicType.find_by_name("Person"), :label => "Father", :ftype => "topic_type") do |t|
       father = set_up_father_for_father_field
 
       t.extended_content_values = default_extended_values_plus("father" => "#{father.title} (#{url_for_dc_identifier(father)})")
@@ -346,19 +346,19 @@ class TopicTest < ActiveSupport::TestCase
   end
 
   def test_structured_extended_content_getter
-    for_topic_with(TopicType.find_by_name("Person"), { :label => "Address", :multiple => true }) do |t|
+    for_topic_with(TopicType.find_by_name("Person"), :label => "Address", :multiple => true) do |t|
       t.extended_content_values = default_extended_values_plus("address" => { "1" => "The Parade",
                                                                               "2" => "Island Bay" })
 
       assert t.valid?
 
-      expected_hash = default_expected_hash_plus({ "address" => [["The Parade"], ["Island Bay"]] })
+      expected_hash = default_expected_hash_plus("address" => [["The Parade"], ["Island Bay"]])
       assert_equal expected_hash, t.structured_extended_content
     end
   end
 
   def test_structured_extended_content_getter_with_ftype_topic_type
-    for_topic_with(TopicType.find_by_name("Person"), { :label => "Father", :ftype => 'topic_type' }) do |t|
+    for_topic_with(TopicType.find_by_name("Person"), :label => "Father", :ftype => 'topic_type') do |t|
       father = set_up_father_for_father_field
 
       title, url = father.title, url_for_dc_identifier(father)
@@ -367,16 +367,16 @@ class TopicTest < ActiveSupport::TestCase
 
       assert t.valid?
 
-      expected_hash = default_expected_hash_plus({ "father" => [{ "label" => title,
-                                                                  "value" => url }] })
+      expected_hash = default_expected_hash_plus( "father" => [{ "label" => title,
+                                                                  "value" => url }] )
       assert_equal expected_hash, t.structured_extended_content
     end
   end
 
   def test_structured_extended_content_getter_with_multiple_ftype_topic_type
-    for_topic_with(TopicType.find_by_name("Person"), { :label => "Relatives",
+    for_topic_with(TopicType.find_by_name("Person"),  :label => "Relatives",
                                                        :ftype => 'topic_type',
-                                                       :multiple => true }) do |t|
+                                                       :multiple => true ) do |t|
       father, mother = set_up_relatives_for_relatives_field
 
       f_title, f_url, m_title, m_url = [father.title,
@@ -389,18 +389,18 @@ class TopicTest < ActiveSupport::TestCase
 
       assert t.valid?
 
-      expected_hash = default_expected_hash_plus({ "relatives" => [[{ "xml_element_name" => "dc:description",
+      expected_hash = default_expected_hash_plus( "relatives" => [[{ "xml_element_name" => "dc:description",
                                                                       "label" => f_title,
                                                                       "value" => f_url }],
                                                                    [{ "xml_element_name" => "dc:description",
                                                                       "label" => m_title,
-                                                                      "value" => m_url }]] })
+                                                                      "value" => m_url }]] )
       assert_equal expected_hash, t.structured_extended_content
     end
   end
 
   def test_structured_extended_content_getter_with_choices
-    for_topic_with(TopicType.find_by_name("Person"), { :label => "Marital status", :ftype => "choice", :multiple => false }) do |t|
+    for_topic_with(TopicType.find_by_name("Person"), :label => "Marital status", :ftype => "choice", :multiple => false) do |t|
       set_up_choices
 
       t.extended_content_values = default_extended_values_plus("marital_status" => { "1" => "Married",
@@ -412,7 +412,7 @@ class TopicTest < ActiveSupport::TestCase
   end
 
   def test_structured_extended_content_getter_with_multiple_choices
-    for_topic_with(TopicType.find_by_name("Person"), { :label => "Marital status", :ftype => "choice", :multiple => true }) do |t|
+    for_topic_with(TopicType.find_by_name("Person"), :label => "Marital status", :ftype => "choice", :multiple => true) do |t|
       set_up_choices
 
       t.extended_content_values = default_extended_values_plus("marital_status" => { "1" => { "1" => "Married", "2" => "Dating" }, "2" => { "1" => "Single" } })
@@ -423,7 +423,7 @@ class TopicTest < ActiveSupport::TestCase
   end
 
   def test_structured_extended_content_getter_with_no_values
-    for_topic_with(TopicType.find_by_name("Person"), { :label => "Address", :multiple => true }) do |t|
+    for_topic_with(TopicType.find_by_name("Person"), :label => "Address", :multiple => true) do |t|
       t.extended_content = nil
 
       assert_equal({}, t.structured_extended_content)
@@ -431,7 +431,7 @@ class TopicTest < ActiveSupport::TestCase
   end
 
   def test_structured_extended_content_setter
-    for_topic_with(TopicType.find_by_name("Person"), { :label => "Address", :multiple => true }) do |t|
+    for_topic_with(TopicType.find_by_name("Person"), :label => "Address", :multiple => true) do |t|
       t.structured_extended_content = default_expected_hash_plus("address" => [["The Parade"],
                                                                                ["Island Bay"]])
 
@@ -443,7 +443,7 @@ class TopicTest < ActiveSupport::TestCase
   end
 
   def test_structured_extended_content_setter_with_choices
-    for_topic_with(TopicType.find_by_name("Person"), { :label => "Marital status", :ftype => "choice", :multiple => false }) do |t|
+    for_topic_with(TopicType.find_by_name("Person"), :label => "Marital status", :ftype => "choice", :multiple => false) do |t|
       set_up_choices
 
       t.structured_extended_content = default_expected_hash_plus("marital_status" => [married_dating_array])
@@ -459,7 +459,7 @@ class TopicTest < ActiveSupport::TestCase
   end
 
   def test_structured_extended_content_setter_with_multiple_choices
-    for_topic_with(TopicType.find_by_name("Person"), { :label => "Marital status", :ftype => "choice", :multiple => true }) do |t|
+    for_topic_with(TopicType.find_by_name("Person"), :label => "Marital status", :ftype => "choice", :multiple => true) do |t|
       set_up_choices
 
       t.structured_extended_content = default_expected_hash_plus("marital_status" => married_dating_and_single_array)
@@ -475,7 +475,7 @@ class TopicTest < ActiveSupport::TestCase
   end
 
   def test_structured_extended_content_setter_with_ftype_topic_type
-    for_topic_with(TopicType.find_by_name("Person"), { :label => "Father", :ftype => "topic_type" }) do |t|
+    for_topic_with(TopicType.find_by_name("Person"), :label => "Father", :ftype => "topic_type") do |t|
       father = set_up_father_for_father_field
 
       title, url = father.title, url_for_dc_identifier(father)
@@ -491,9 +491,9 @@ class TopicTest < ActiveSupport::TestCase
 
   def test_structured_extended_content_setter_with_ftype_topic_type_multiple
     for_topic_with(TopicType.find_by_name("Person"),
-                   { :label => "Relatives",
+                    :label => "Relatives",
                      :ftype => "topic_type",
-                     :multiple => true }) do |t|
+                     :multiple => true ) do |t|
 
       father, mother = set_up_relatives_for_relatives_field
 
@@ -516,8 +516,8 @@ class TopicTest < ActiveSupport::TestCase
   # TODO: need accessor tests for date, year (including circa), map ftypes, etc.
 
   def test_extended_content_accessors_with_text
-    for_topic_with(TopicType.find_by_name("Person"), { :label => "Job",
-                                                       :ftype => "text" }) do |t|
+    for_topic_with(TopicType.find_by_name("Person"),  :label => "Job",
+                                                       :ftype => "text" ) do |t|
       t.structured_extended_content = default_expected_hash_plus("job" => [["tester"]])
 
       assert_equal "Joe", t.first_names
@@ -540,9 +540,9 @@ class TopicTest < ActiveSupport::TestCase
   # return an array of string values
   p "needs enhancement to have test pass"
   def test_extended_content_accessors_with_multiple_text
-    for_topic_with(TopicType.find_by_name("Person"), { :label => "Past Jobs",
+    for_topic_with(TopicType.find_by_name("Person"),  :label => "Past Jobs",
                                                        :ftype => "text",
-                                                       :multiple => true }) do |t|
+                                                       :multiple => true ) do |t|
       t.extended_content_values = default_extended_values_plus("past_jobs" => { "1" => "Janitor",
                                                                                 "2" => "Garbageman" })
 
@@ -589,7 +589,7 @@ class TopicTest < ActiveSupport::TestCase
 #   end
 
   def test_extended_content_accessors_with_choices
-    for_topic_with(TopicType.find_by_name("Person"), { :label => "Marital status", :ftype => "choice", :multiple => false }) do |t|
+    for_topic_with(TopicType.find_by_name("Person"), :label => "Marital status", :ftype => "choice", :multiple => false) do |t|
       set_up_choices
 
       t.structured_extended_content = default_expected_hash_plus("marital_status" => [married_dating_array])
@@ -606,7 +606,7 @@ class TopicTest < ActiveSupport::TestCase
   end
 
   def test_extended_content_accessors_with_multiple_choices
-    for_topic_with(TopicType.find_by_name("Person"), { :label => "Marital status", :ftype => "choice", :multiple => true }) do |t|
+    for_topic_with(TopicType.find_by_name("Person"), :label => "Marital status", :ftype => "choice", :multiple => true) do |t|
       set_up_choices
 
       t.structured_extended_content = default_expected_hash_plus("marital_status" => married_dating_and_single_array)
@@ -629,8 +629,8 @@ class TopicTest < ActiveSupport::TestCase
 
   def test_extended_content_accessors_with_ftype_topic_type
     for_topic_with(TopicType.find_by_name("Person"),
-                   { :label => "Father",
-                     :ftype => "topic_type" }) do |t|
+                    :label => "Father",
+                     :ftype => "topic_type" ) do |t|
       father = set_up_father_for_father_field
 
       title, url = father.title, url_for_dc_identifier(father)
@@ -655,9 +655,9 @@ class TopicTest < ActiveSupport::TestCase
 
   def test_extended_content_accessors_with_ftype_topic_type_multiple
     for_topic_with(TopicType.find_by_name("Person"),
-                   { :label => "Relatives",
+                    :label => "Relatives",
                      :ftype => "topic_type",
-                     :multiple => true }) do |t|
+                     :multiple => true ) do |t|
       father, mother = set_up_relatives_for_relatives_field
 
       f_title, f_url, m_title, m_url = [father.title,
