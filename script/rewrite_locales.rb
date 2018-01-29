@@ -43,7 +43,7 @@ class LocaleFileNormaliser
   def process_gsub_function(pair)
     ['pluralize', 'capitalize', 'downcase', 'upcase'].each do |function|
       search_key = "{{t.#{pair[0]}.#{function}}}"
-      replace_value = (pair[1].send(function)).to_s
+      replace_value = pair[1].send(function).to_s
       # puts search_key +"  --  "+ replace_value
 
       @yaml_text.gsub!(search_key, replace_value)
@@ -53,13 +53,13 @@ class LocaleFileNormaliser
 
   def process_gsub_pluralize_capitalize(pair)
     search_key = "{{t.#{pair[0]}.pluralize.capitalize}}"
-    replace_value = (pair[1].pluralize.capitalize).to_s
+    replace_value = pair[1].pluralize.capitalize.to_s
     @yaml_text.gsub!(search_key, replace_value)
   end
 
   def process_gsub_capitalize_pluralize(pair)
     search_key = "{{t.#{pair[0]}.capitalize.pluralize}}"
-    replace_value = (pair[1].capitalize.pluralize).to_s
+    replace_value = pair[1].capitalize.pluralize.to_s
     @yaml_text.gsub!(search_key, replace_value)
   end
 

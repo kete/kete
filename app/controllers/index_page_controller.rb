@@ -197,7 +197,7 @@ class IndexPageController < ApplicationController
   end
 
   def validate_kete_net_link
-    render(xml: { url: '/', datetime: (Time.new.utc.xmlschema).to_s })
+    render(xml: { url: '/', datetime: Time.new.utc.xmlschema.to_s })
   end
 
   # page that tells search engines where not to go
