@@ -86,11 +86,11 @@ end
 # else we capture the exception when it fails, and return false
 def zebra_running?(zebra_db)
   
-    zoom_db = ZoomDb.find_by_database_name(zebra_db)
-    Topic.process_query(:zoom_db => zoom_db, :query => "@attr 1=_ALLRECORDS @attr 2=103 ''")
-    return true
-  rescue
-    return false
+  zoom_db = ZoomDb.find_by_database_name(zebra_db)
+  Topic.process_query(:zoom_db => zoom_db, :query => "@attr 1=_ALLRECORDS @attr 2=103 ''")
+  return true
+rescue
+  return false
   
 end
 
