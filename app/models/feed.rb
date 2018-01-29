@@ -43,7 +43,6 @@ class Feed < ActiveRecord::Base
   end
 
   def update_feed
-
       entries = Feed.fetch(url)
       if serialized_feed != entries # is there something different
         update_attributes({ serialized_feed: entries,
@@ -52,7 +51,6 @@ class Feed < ActiveRecord::Base
       end
     rescue
       # fail silently - make sure nothing causes errors to output
-
   end
 
   # for backgroundrb feeds_worker support
