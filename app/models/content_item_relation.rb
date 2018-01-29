@@ -59,6 +59,6 @@ class ContentItemRelation < ActiveRecord::Base
     end
 
     # If no relationship has been found above, check the correct way around.
-    relation ||= find_class.where(topic_id: topic_id).where(related_item_id: related_item.id).where(related_item_type: (related_item.class.name).to_s).first
+    relation ||= find_class.where(topic_id: topic_id).where(related_item_id: related_item.id).where(related_item_type: related_item.class.name.to_s).first
   end
 end
