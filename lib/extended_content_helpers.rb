@@ -107,134 +107,134 @@ module ExtendedContentHelpers
     # Pass any extended field values you need through options
     def extended_content_field_xml_tag(options = {})
 
-        xml = options[:xml]
-        field = options[:field]
-        value = options[:value] || nil
-        xml_element_name = options[:xml_element_name] || nil
-        xsi_type = options[:xsi_type] || nil
-        extended_field = options[:extended_field] || nil
-        if extended_field
-          ftype = extended_field.ftype
-          user_choice_addition = extended_field.user_choice_addition?
-        else
-          ftype = options[:ftype] || nil
-          user_choice_addition = options[:user_choice_addition] || nil
+      xml = options[:xml]
+      field = options[:field]
+      value = options[:value] || nil
+      xml_element_name = options[:xml_element_name] || nil
+      xsi_type = options[:xsi_type] || nil
+      extended_field = options[:extended_field] || nil
+      if extended_field
+        ftype = extended_field.ftype
+        user_choice_addition = extended_field.user_choice_addition?
+      else
+        ftype = options[:ftype] || nil
+        user_choice_addition = options[:user_choice_addition] || nil
+      end
+
+      # With choices from a dropdown, we can have preset dropdown and custom text field
+      # So before we go any further, make sure we convert the values from Hash to either
+      # the preset or custom value depending on which one is filled in
+      if ftype == 'choice'
+        value.each do |key, choice_value|
+          next unless choice_value.is_a?(Hash)
+          choice = choice_value['preset'] # Preset values come from the dropdown
+          choice = choice_value['custom'] unless choice_value['custom'].blank? # Custom values come from a text field
+          value[key] = choice
         end
+      end
 
-        # With choices from a dropdown, we can have preset dropdown and custom text field
-        # So before we go any further, make sure we convert the values from Hash to either
-        # the preset or custom value depending on which one is filled in
-        if ftype == 'choice'
-          value.each do |key, choice_value|
-            next unless choice_value.is_a?(Hash)
-            choice = choice_value['preset'] # Preset values come from the dropdown
-            choice = choice_value['custom'] unless choice_value['custom'].blank? # Custom values come from a text field
-            value[key] = choice
-          end
-        end
+      options = {}
+      options.merge!(xml_element_name: xml_element_name) unless xml_element_name.blank?
+      options.merge!(xsi_type: xsi_type) unless xsi_type.blank?
 
-        options = {}
-        options.merge!(xml_element_name: xml_element_name) unless xml_element_name.blank?
-        options.merge!(xsi_type: xsi_type) unless xsi_type.blank?
+      if value.is_a?(Hash)
+        xml.safe_send(field, options) do |tag|
+          value.each_pair do |k, v|
+            # convert to string so we don't get errors when running match later
+            v = v.to_s
 
-        if value.is_a?(Hash)
-          xml.safe_send(field, options) do |tag|
-            value.each_pair do |k, v|
-              # convert to string so we don't get errors when running match later
-              v = v.to_s
+            next if v.blank?
 
-              next if v.blank?
-
-              # splits a value into label and value
-              # if it has a pattern of "label (value)"
-              # useful for auto populated pseudo choices (all topic types available as choices)
-              # where label may not be unique
-              # and case where user may contribute a new choice
-              parts = v.match(/(.+)\(([^\(\)]+)\)\Z/).to_a
-              # l is label for this particular value
-              l = nil
-              unless parts.blank?
-                l = parts[1].chomp(' ')
-                v = parts[2]
-              end
-
-              # this will handle a number of cases, see comment in app/models/choice.rb
-              # for details
-              matching_choice = Choice.matching(l, v)
-              matching_choice_mapped = extended_field.choices.matching(l, v)
-
-              # Handle the creation of new choices where the choice is not recognised.
-              if !matching_choice_mapped && %w(autocomplete choice).include?(ftype) && user_choice_addition
-                sorted_values = value.dup.sort
-                index = sorted_values.index([k, v])
-
-                to_check = v
-                if index && index >= 1
-                  to_check = sorted_values.at(index - 1).last
-                end
-
-                parent = Choice.find_by_value(to_check) || Choice.find(1)
-
-                begin
-                  if matching_choice
-                    choice = matching_choice
-                  else
-                    choice = Choice.create!(value: v, label: l)
-                    choice.move_to_child_of(parent)
-                    choice.save!
-                  end
-                  extended_field.choices << choice
-                  extended_field.save!
-
-                  # for possible translation purposes, we always specify label now
-                  tag.safe_send(k, choice.value, label: choice.label)
-                rescue
-                  next
-                end
-
-              # Handle the normal case
-              else
-                if matching_choice
-                  tag.safe_send(k, matching_choice.value, label: matching_choice.label)
-                else
-                  # otherwise leave value to handled by validation
-                  # will likely fail, but they will get error feedback and can modify
-                  tag.safe_send(k, v)
-                end
-              end
-            end
-          end
-        else
-          # text and textarea, we intepret their values as not having
-          # the special case where value and label are passed together
-          unless %w(text textarea).include?(ftype)
-            # handle special case where we have a label embedded in the value
-            # if our value looks like this
-            # a label string (value)
-            # then we reassign value to what is between the ()
-            # and push the beginning string to a label attribute
-            parts = Array.new
-
-            # in case we are given something like this [ { 'value' => 'this', :label => 'that' } ]
-            # This happens in the case of using replace_value_for method (field=) on a different field
-            parts = if value.is_a?(Array) && value_label_hash?(value.first)
-                      [nil, value.first['label'], value.first['value']]
-                    elsif value.is_a?(String)
-                      value.match(/(.+)\(([^\(\)]+)\)\Z/).to_a
-                    else
-                      Array.new
-                    end
-
+            # splits a value into label and value
+            # if it has a pattern of "label (value)"
+            # useful for auto populated pseudo choices (all topic types available as choices)
+            # where label may not be unique
+            # and case where user may contribute a new choice
+            parts = v.match(/(.+)\(([^\(\)]+)\)\Z/).to_a
+            # l is label for this particular value
+            l = nil
             unless parts.blank?
-              options.merge!(label: parts[1].chomp(' '))
-              value = parts[2]
+              l = parts[1].chomp(' ')
+              v = parts[2]
+            end
+
+            # this will handle a number of cases, see comment in app/models/choice.rb
+            # for details
+            matching_choice = Choice.matching(l, v)
+            matching_choice_mapped = extended_field.choices.matching(l, v)
+
+            # Handle the creation of new choices where the choice is not recognised.
+            if !matching_choice_mapped && %w(autocomplete choice).include?(ftype) && user_choice_addition
+              sorted_values = value.dup.sort
+              index = sorted_values.index([k, v])
+
+              to_check = v
+              if index && index >= 1
+                to_check = sorted_values.at(index - 1).last
+              end
+
+              parent = Choice.find_by_value(to_check) || Choice.find(1)
+
+              begin
+                if matching_choice
+                  choice = matching_choice
+                else
+                  choice = Choice.create!(value: v, label: l)
+                  choice.move_to_child_of(parent)
+                  choice.save!
+                end
+                extended_field.choices << choice
+                extended_field.save!
+
+                # for possible translation purposes, we always specify label now
+                tag.safe_send(k, choice.value, label: choice.label)
+              rescue
+                next
+              end
+
+            # Handle the normal case
+            else
+              if matching_choice
+                tag.safe_send(k, matching_choice.value, label: matching_choice.label)
+              else
+                # otherwise leave value to handled by validation
+                # will likely fail, but they will get error feedback and can modify
+                tag.safe_send(k, v)
+              end
             end
           end
-
-          xml.safe_send(field, value, options)
         end
-      rescue
-        logger.error("failed to format xml: #{$!}")
+      else
+        # text and textarea, we intepret their values as not having
+        # the special case where value and label are passed together
+        unless %w(text textarea).include?(ftype)
+          # handle special case where we have a label embedded in the value
+          # if our value looks like this
+          # a label string (value)
+          # then we reassign value to what is between the ()
+          # and push the beginning string to a label attribute
+          parts = Array.new
+
+          # in case we are given something like this [ { 'value' => 'this', :label => 'that' } ]
+          # This happens in the case of using replace_value_for method (field=) on a different field
+          parts = if value.is_a?(Array) && value_label_hash?(value.first)
+                    [nil, value.first['label'], value.first['value']]
+                  elsif value.is_a?(String)
+                    value.match(/(.+)\(([^\(\)]+)\)\Z/).to_a
+                  else
+                    Array.new
+                  end
+
+          unless parts.blank?
+            options.merge!(label: parts[1].chomp(' '))
+            value = parts[2]
+          end
+        end
+
+        xml.safe_send(field, value, options)
+      end
+    rescue
+      logger.error("failed to format xml: #{$!}")
 
     end
 
