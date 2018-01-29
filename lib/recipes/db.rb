@@ -9,7 +9,7 @@ namespace :deploy do
     end
 
     def set_app_environment
-      ; app_environment; rescue; set(:app_environment, 'production'); 
+      ; app_environment; rescue; set(:app_environment, 'production');
     end
   end
 end
