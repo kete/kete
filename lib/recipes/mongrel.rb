@@ -44,7 +44,7 @@ namespace :deploy do
     end
 
     def set_mongrel_conf
-      ; mongrel_conf; rescue; set(:mongrel_conf, "/etc/mongrel_cluster/#{application}.yml"); 
+      ; mongrel_conf; rescue; set(:mongrel_conf, "/etc/mongrel_cluster/#{application}.yml");
     end
   end
 end
