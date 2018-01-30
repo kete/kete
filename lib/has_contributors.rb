@@ -12,10 +12,10 @@ module HasContributors
                                        order: 'contributions.created_at' do
         def <<(user)
 
-            user.version = 1
-            Contribution.add_as_to(user, 'creator', self)
-          rescue
-            logger.debug('what is contrib error: ' + $!.to_s)
+          user.version = 1
+          Contribution.add_as_to(user, 'creator', self)
+        rescue
+          logger.debug('what is contrib error: ' + $!.to_s)
 
         end
       end
@@ -27,9 +27,9 @@ module HasContributors
         def <<(user)
           # TODO: assumes user has a version method (virtual attribute on user set before this is called)
 
-            Contribution.add_as_to(user, 'contributor', self)
-          rescue
-            logger.debug('what is contrib error: ' + $!.to_s)
+          Contribution.add_as_to(user, 'contributor', self)
+        rescue
+          logger.debug('what is contrib error: ' + $!.to_s)
 
         end
       end
