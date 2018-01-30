@@ -895,7 +895,7 @@ class ApplicationController < ActionController::Base
         format.js { render file: File.join(Rails.root, 'app/views/errors/invalid_authenticity_token.js.rjs') }
       end
     else
-      if exception.to_s.match(/Connect\ failed/)
+      if exception.to_s =~ /Connect\ failed/
         rescue_500('zebra_connection_failed')
       else
         respond_to do |format|
