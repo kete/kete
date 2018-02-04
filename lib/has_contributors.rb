@@ -11,12 +11,10 @@ module HasContributors
                                        conditions: "contributions.contributor_role = 'creator'",
                                        order: 'contributions.created_at' do
         def <<(user)
-
           user.version = 1
           Contribution.add_as_to(user, 'creator', self)
         rescue
           logger.debug('what is contrib error: ' + $!.to_s)
-
         end
       end
       klass.send :has_many, :contributors, through: :contributions,
@@ -30,7 +28,6 @@ module HasContributors
           Contribution.add_as_to(user, 'contributor', self)
         rescue
           logger.debug('what is contrib error: ' + $!.to_s)
-
         end
       end
     end
