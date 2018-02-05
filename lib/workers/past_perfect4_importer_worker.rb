@@ -337,7 +337,7 @@ class PastPerfect4ImporterWorker < BackgrounDRb::MetaWorker
       if !value.nil?
         value = value.strip
         # replace \r with \n
-        value.gsub(/\r/, "\n")
+        value.tr("\r", "\n")
       end
 
       if !value.blank?
@@ -389,7 +389,7 @@ class PastPerfect4ImporterWorker < BackgrounDRb::MetaWorker
               tag_list_array << name.strip
             end
           else
-            tag_list_array << value.gsub("\n", ' ')
+            tag_list_array << value.tr("\n", ' ')
           end
         else
           params = importer_prepare_extended_field(value: value, field: record_field, zoom_class_for_params: zoom_class_for_params, params: params)

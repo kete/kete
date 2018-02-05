@@ -7,7 +7,7 @@ class ExtendedField < ActiveRecord::Base
 
   # find an extended field based on params[:extended_field]
   def self.from_id_or_label(id_or_label)
-    where('UPPER(label) = ?', id_or_label.upcase.gsub('_', ' ')).first || find_by_id(id_or_label)
+    where('UPPER(label) = ?', id_or_label.upcase.tr('_', ' ')).first || find_by_id(id_or_label)
   end
 
   # James - 2008-12-05
@@ -128,11 +128,11 @@ class ExtendedField < ActiveRecord::Base
   alias required_checkbox add_checkbox
 
   def label_for_params
-    label.downcase.gsub(/ /, '_')
+    label.downcase.tr(' ', '_')
   end
 
   def self.clauses_for_has_label_that_matches(params_key)
-    params_key_words = params_key.to_s.gsub('_', ' ').split(' ')
+    params_key_words = params_key.to_s.tr('_', ' ').split(' ')
 
     match_keyword = 'LIKE'
     label_sql = 'LOWER(label)'

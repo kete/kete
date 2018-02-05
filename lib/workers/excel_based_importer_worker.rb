@@ -101,7 +101,7 @@ class ExcelPreProcessor < Nokogiri::XML::SAX::Document
       return if value.strip.empty?
       element_name = column_headers[self.current_cell - 1]
       return unless element_name
-      element_name = element_name.gsub(' ', '_').strip
+      element_name = element_name.tr(' ', '_').strip
 
       unless has_path_to_file
         case element_name.downcase
