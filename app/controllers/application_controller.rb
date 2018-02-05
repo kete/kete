@@ -418,12 +418,12 @@ class ApplicationController < ActionController::Base
 
     # Redirect to private version if item is private.
     if options[:private]
-      path_hash.merge!({ private: 'true' })
+      path_hash[:private] = 'true'
     end
 
     # Add the anchor if one is passed in
     if options[:anchor]
-      path_hash.merge!({ anchor: options[:anchor] })
+      path_hash[:anchor] = options[:anchor]
     end
 
     url_for(path_hash)

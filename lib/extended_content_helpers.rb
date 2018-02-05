@@ -133,8 +133,8 @@ module ExtendedContentHelpers
       end
 
       options = {}
-      options.merge!(xml_element_name: xml_element_name) unless xml_element_name.blank?
-      options.merge!(xsi_type: xsi_type) unless xsi_type.blank?
+      options[:xml_element_name] = xml_element_name unless xml_element_name.blank?
+      options[:xsi_type] = xsi_type unless xsi_type.blank?
 
       if value.is_a?(Hash)
         xml.safe_send(field, options) do |tag|
@@ -225,7 +225,7 @@ module ExtendedContentHelpers
                   end
 
           unless parts.blank?
-            options.merge!(label: parts[1].chomp(' '))
+            options[:label] = parts[1].chomp(' ')
             value = parts[2]
           end
         end

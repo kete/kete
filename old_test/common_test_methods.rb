@@ -230,7 +230,8 @@ def item_for(zoom_class, options = {})
   options[:uploaded_data] = file_data if (ATTACHABLE_CLASSES - ['StillImage']).include?(zoom_class)
   if zoom_class == 'Comment' && options[:commentable_type].blank? && options[:commentable_id].blank?
     commentable_topic = Topic.create(:title => 'Commented Topic', :topic_type_id => 1, :basket_id => 1)
-    options.merge!(:commentable_type => 'Topic', :commentable_id => commentable_topic.id)
+    options[:commentable_type] = 'Topic'
+    options[:commentable_id] = commentable_topic.id
   end
 
   @item = zoom_class.constantize.create! options

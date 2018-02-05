@@ -50,8 +50,8 @@ module SslHelpers
     # ActionView::Helpers::PrototypeHelper#remote_form_for
 
     def form_remote_tag(options = {}, &block)
-      options[:url].merge!(protocol: 'https://') if options[:url].kind_of?(Hash)
-      options[:html].merge!(protocol: 'https://') if !options[:html].nil? && options[:html].kind_of?(Hash)
+      options[:url][:protocol] = 'https://' if options[:url].kind_of?(Hash)
+      options[:html][:protocol] = 'https://' if !options[:html].nil? && options[:html].kind_of?(Hash)
 
       super(options, &block)
     end
@@ -67,7 +67,7 @@ module SslHelpers
   module Base
     def url_for(options = nil)
       if options.kind_of?(Hash)
-        options.merge!(protocol: 'https://') if options[:private] == 'true'
+        options[:protocol] = 'https://' if options[:private] == 'true'
 
         # If the protocol is HTTPS and we're not already there, and we haven't explicitly
         # asked for the path only, send the whole address so we're forced to HTTPS
@@ -75,7 +75,7 @@ module SslHelpers
         # There is potential for issues with this when the only the path is expected as
         # this is normally default behaviour, and we are modifying it here.
         if options[:protocol] =~ /^https/ && !request.ssl? && !options[:only_path]
-          options.merge!(only_path: false)
+          options[:only_path] = false
         end
       end
 
@@ -84,7 +84,7 @@ module SslHelpers
 
     def polymorphic_url(record_or_hash_or_array, options = {})
       raise 'called polymorphic_url'
-      options.merge!(protocol: 'https://') if options.kind_of?(Hash)
+      options[:protocol] = 'https://' if options.kind_of?(Hash)
       super(record_or_hash_or_array, options)
     end
   end
@@ -94,7 +94,7 @@ module SslHelpers
     # Used in contexts other than ActionController and ActionView
     def url_for(options)
       if options.kind_of?(Hash) && options[:private] == 'true'
-        options.merge!(protocol: 'https://')
+        options[:protocol] = 'https://'
       end
 
       super(options)
