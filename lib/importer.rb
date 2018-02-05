@@ -604,9 +604,9 @@ module Importer
 
       if record_hash[@record_identifier_xml_field].present? && @extended_field_that_contains_record_identifier.present?
         options[:extended_field_data] = {
-                         label: @extended_field_that_contains_record_identifier.label_for_params,
-                         value: record_hash[@record_identifier_xml_field]
-                       }
+          label: @extended_field_that_contains_record_identifier.label_for_params,
+          value: record_hash[@record_identifier_xml_field]
+        }
       end
 
       # attachable classes may have an upload file specified in file xml element
