@@ -59,7 +59,7 @@ module Embedded
         # TODO: wrap this handling of name variants
         # being added to import synonyms up for reuse in importers
         raw_attribute_name = setting.name.gsub(' Synonyms', '')
-        attribute_name = raw_attribute_name.downcase.gsub(' ', '_')
+        attribute_name = raw_attribute_name.downcase.tr(' ', '_')
 
         name_variants = [attribute_name.upcase,
                          attribute_name.humanize,

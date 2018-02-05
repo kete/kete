@@ -376,7 +376,7 @@ class PqfQuery
     # handles case were someone is searching for a url
     # there may be other special characters to handle
     # but this seems to do the trick
-    terms = terms.gsub('/', "\/")
+    terms = terms.tr('/', "\/")
 
     # this is sort of cheating
     # we know that Topic class has the acts_as_zoom instance methods...
