@@ -3,7 +3,7 @@ require 'spec_helper'
 describe User do
   let(:default_password) { 'quirk' }
   let(:user) do
-    User.create(login: 'user_2',
+    described_class.create(login: 'user_2',
                 email: 'user_2@example.com',
                 password: default_password,
                 password_confirmation: default_password,
@@ -19,7 +19,7 @@ describe User do
   end
 
   it 'can be authenticated with valid data' do
-    expect(User.authenticate(activated_user.login, default_password)).to eq(activated_user)
+    expect(described_class.authenticate(activated_user.login, default_password)).to eq(activated_user)
   end
 
   it 'can reset password' do
@@ -28,7 +28,7 @@ describe User do
     activated_user.password_confirmation = newpass
     activated_user.save!
 
-    expect(User.authenticate(activated_user.login, newpass)).to eq(activated_user)
+    expect(described_class.authenticate(activated_user.login, newpass)).to eq(activated_user)
   end
 
   it 'can have roles added' do

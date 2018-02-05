@@ -5,6 +5,6 @@ describe UserObserver do
     # Observers are singletons so we cannot use #new
     # * Observers provide the #instance method that instantiates & registers it
     # * See http://api.rubyonrails.org/v3.2.13/classes/ActiveRecord/Observer.html
-    foo = UserObserver.instance
+    foo = described_class.instance
   end
 end

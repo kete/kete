@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 describe Video do
-  let(:video) { Video.new }
+  let(:video) { described_class.new }
 
   it 'does not blow up when you initialize it' do
     video
@@ -24,7 +24,7 @@ describe Video do
 
       describe 'instance methods (added to instance of this model class' do
         it 'class methods' do
-          expect(Video).to respond_to(:without_saving_private)
+          expect(described_class).to respond_to(:without_saving_private)
         end
       end
     end

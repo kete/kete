@@ -2,6 +2,6 @@ require 'spec_helper'
 
 describe RolesUser do
   it 'does not blow up when you initialize it' do
-    foo = RolesUser.new
+    foo = described_class.new
   end
 end
