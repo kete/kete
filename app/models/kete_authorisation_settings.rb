@@ -201,7 +201,7 @@ module KeteAuthorisationSettings
 
     if item.is_a?(Comment)
       email_type = 'comment'
-      url_options.merge!(anchor: item.to_anchor)
+      url_options[:anchor] = item.to_anchor
     else
       email_type = 'item'
     end

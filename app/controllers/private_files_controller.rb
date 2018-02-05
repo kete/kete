@@ -43,7 +43,7 @@ class PrivateFilesController < ApplicationController
 
         # Use Apache's X-SendFile if appropriate.
         if SENDFILE_METHOD == 'apache'
-          send_file_options.merge!(x_sendfile: true)
+          send_file_options[:x_sendfile] = true
         end
 
         # Use the normal send_file method if we're not working with Nginx.

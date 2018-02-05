@@ -73,7 +73,7 @@ module ImageSlideshow
         'order' => @current_basket.index_page_image_as,
         'zoom_class' => 'StillImage'
       }
-      key.merge!('slideshow_topic_id' => params[:topic_id].to_i) if topic_slideshow?
+      key['slideshow_topic_id'] = params[:topic_id].to_i if topic_slideshow?
       key
     end
 
