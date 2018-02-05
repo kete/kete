@@ -78,7 +78,7 @@ module FieldMappings
                           end
                         end
 
-      ef_label = Regexp.escape(extended_field_label.downcase.gsub(/ /, '_'))
+      ef_label = Regexp.escape(extended_field_label.downcase.tr(' ', '_'))
       element_label = extended_field_multiple ? "#{ef_label}_multiple" : ef_label
       @all_versions.any? do |version|
         version.extended_content =~ /<#{element_label}/ &&

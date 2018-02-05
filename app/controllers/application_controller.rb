@@ -644,7 +644,7 @@ class ApplicationController < ActionController::Base
     query_parameters.delete('page') unless path_elements.include?('rss.xml')
 
     # escape spaces in search terms
-    query_parameters['search_terms'] = query_parameters['search_terms'].gsub(' ', '+') if query_parameters['search_terms']
+    query_parameters['search_terms'] = query_parameters['search_terms'].tr(' ', '+') if query_parameters['search_terms']
 
     # if we need to take off index/list actions, do that here
     path_elements.pop if replace_page_with_rss
