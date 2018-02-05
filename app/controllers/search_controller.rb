@@ -431,7 +431,7 @@ class SearchController < ApplicationController
                       authenticity_token: nil }
 
     if is_a_private_search?
-      location_hash.merge!({ privacy_type: params[:privacy_type] })
+      location_hash[:privacy_type] = params[:privacy_type]
     end
 
     if !params[:search_terms].blank?
@@ -441,45 +441,45 @@ class SearchController < ApplicationController
                              action: 'for' })
     else
       # we are viewing all
-      location_hash.merge!({ action: 'all' })
+      location_hash[:action] = 'all'
     end
 
     # If we're searching by tag, this will be set
     if !params[:tag].blank?
-      location_hash.merge!({ tag: params[:tag] })
+      location_hash[:tag] = params[:tag]
     end
 
     # If we're searching by contributor, this will be set
     if !params[:contributor].blank?
-      location_hash.merge!({ contributor: params[:contributor] })
+      location_hash[:contributor] = params[:contributor]
     end
 
     # If we're searching by relation, these will be set
     if !params[:source_controller_singular].blank?
-      location_hash.merge!({ source_controller_singular: params[:source_controller_singular] })
+      location_hash[:source_controller_singular] = params[:source_controller_singular]
     end
     if !params[:source_item].blank?
-      location_hash.merge!({ source_item: params[:source_item] })
+      location_hash[:source_item] = params[:source_item]
     end
 
     # James
     # Handle choice specific searching.
     if !params[:limit_to_choice].blank?
-      location_hash.merge!({ limit_to_choice: params[:limit_to_choice] })
+      location_hash[:limit_to_choice] = params[:limit_to_choice]
     end
     if !params[:extended_field].blank?
       location_hash.merge({ extended_field: params[:extended_field] })
     end
 
     if !params[:topic_type].blank?
-      location_hash.merge!({ topic_type: params[:topic_type] })
+      location_hash[:topic_type] = params[:topic_type]
     end
 
     if !params[:date_since].blank?
-      location_hash.merge!({ date_since: params[:date_since] })
+      location_hash[:date_since] = params[:date_since]
     end
     if !params[:date_until].blank?
-      location_hash.merge!({ date_until: params[:date_until] })
+      location_hash[:date_until] = params[:date_until]
     end
 
     logger.debug('terms_to_page_url_redirect hash: ' + location_hash.inspect)
@@ -792,7 +792,7 @@ class SearchController < ApplicationController
 
     # We want to retain the original search action name for future use
     altered_params = params
-    altered_params.merge!(search_action: params[:action]) unless params[:action] == 'slideshow_page_load'
+    altered_params[:search_action] = params[:action] unless params[:action] == 'slideshow_page_load'
 
     if slideshow.results.nil?
       slideshow.search_params = { 'page' => '1' }

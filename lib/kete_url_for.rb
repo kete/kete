@@ -19,7 +19,10 @@ module KeteUrlFor
 
       location[:host] = options[:host] || SystemSetting.site_url
 
-      location.merge!({ id: item.id, private: nil }) if options[:minimal]
+      if options[:minimal]
+        location[:id] = item.id
+        location[:private] = nil
+      end
 
       utf8_url_for(location)
     end

@@ -111,7 +111,8 @@ module OaiDcHelpers
         # Link to private version if generating OAI record for it..
         if respond_to?(:private) && private?
           # don't put title in url for private items
-          uri_attrs.merge!({ private: 'true', id: id.to_s })
+          uri_attrs[:private] = 'true'
+          uri_attrs[:id] = id.to_s
         end
       end
 

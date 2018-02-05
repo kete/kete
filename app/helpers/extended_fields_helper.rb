@@ -476,7 +476,7 @@ module ExtendedFieldsHelper
       method = 'basket_all_of_category_url'
     else
       method = 'basket_all_private_of_category_url'
-      url_hash.merge!(privacy_type: params[:privacy_type])
+      url_hash[:privacy_type] = params[:privacy_type]
     end
 
     base = content_tag('li', link_to(choice.label, send(method, url_hash.merge(limit_to_choice: choice)),
