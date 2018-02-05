@@ -105,7 +105,7 @@ class OaiPmhRepositorySet < ActiveRecord::Base
 
   def full_spec(for_value)
     return set_spec unless dynamic?
-    set_spec + '--' + for_value.gsub(':', '_colon_').gsub('_', '-underscore-').gsub(' ', '_')
+    set_spec + '--' + for_value.gsub(':', '_colon_').gsub('_', '-underscore-').tr(' ', '_')
   end
 
   private

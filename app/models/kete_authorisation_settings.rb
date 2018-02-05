@@ -242,9 +242,9 @@ module KeteAuthorisationSettings
     # populate new ones with the context of that basket, not the current basket
     if basket != @current_basket
       load_at_least(basket)
-      instance_variable_get("@#{at_least_setting.gsub(" ", "_")}_of_specified_basket")
+      instance_variable_get("@#{at_least_setting.tr(" ", "_")}_of_specified_basket")
     else
-      instance_variable_get("@#{at_least_setting.gsub(" ", "_")}")
+      instance_variable_get("@#{at_least_setting.tr(" ", "_")}")
     end
   rescue
     raise "Unknown authentication type: #{$!}"

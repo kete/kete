@@ -32,7 +32,7 @@ module ResizeAsJpegWhenNecessary
 
       # Not in attachment_fu
       def should_be_converted?(name)
-        ext = File.extname(name).gsub('.', '')
+        ext = File.extname(name).delete('.')
         # we leave along formats that make thumbnails fine themselves
         !%w(gif jpg jpeg png).include?(ext.downcase) && rmagick_can_read_extension?(ext)
       end

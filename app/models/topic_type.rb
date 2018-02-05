@@ -24,7 +24,7 @@ class TopicType < ActiveRecord::Base
   # that they are importing
   has_many :imports, dependent: :destroy
 
-  scope :from_urlified_name, lambda { |urlified_name| where('LOWER(name) = ?', urlified_name.downcase.gsub('_', ' ')) }
+  scope :from_urlified_name, lambda { |urlified_name| where('LOWER(name) = ?', urlified_name.downcase.tr('_', ' ')) }
 
   validates_presence_of :name, :description
   validates_uniqueness_of :name, case_sensitive: false

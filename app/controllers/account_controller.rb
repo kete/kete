@@ -372,7 +372,7 @@ class AccountController < ApplicationController
 
   def update_portraits
     begin
-      portrait_ids = params[:portraits].gsub('&', '').split('portrait_images[]=')
+      portrait_ids = params[:portraits].delete('&').split('portrait_images[]=')
       # portrait_ids will now contain two blank spaces at the front, then the order of other portraits
       # we could strip these, but they actually work well here. One of then aligns positions with array indexs
       # The other fills in for the selected portrait not in this list.

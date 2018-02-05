@@ -507,6 +507,6 @@ module ExtendedFieldsHelper
   end
 
   def create_safe_extended_field_string(string)
-    string.gsub(/\]/, '').gsub(/\[/, '_')
+    string.delete(']').tr('[', '_')
   end
 end

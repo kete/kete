@@ -339,7 +339,7 @@ module Importer
       builder = Nokogiri::XML::Builder.new
       builder.root do |xml|
         @fields.each do |field_to_xml|
-          field_name = field_to_xml.extended_field_label.downcase.gsub(/ /, '_')
+          field_name = field_to_xml.extended_field_label.downcase.tr(' ', '_')
           if field_to_xml.extended_field_multiple
             hash_of_values = params[item_key]['extended_content_values'][field_name] rescue nil
             if !hash_of_values.nil?
@@ -451,7 +451,7 @@ module Importer
       # a better formed name
       # to avoid problems later
       if !the_file_name.scan(' ').blank? && File.exist?(path_to_file_to_grab)
-        the_new_file_name = the_file_name.gsub(' ', "\.")
+        the_new_file_name = the_file_name.tr(' ', "\.")
         new_file_path = directories_up_to + the_new_file_name
 
         if !File.exist?(new_file_path)
@@ -572,7 +572,7 @@ module Importer
       # will be what we derive our hash values from
       # otherwise, we expect xml to derive hash values from
       if File.exist?(record)
-        record_hash['placeholder_title'] = File.basename(record, File.extname(record)).gsub('_', ' ')
+        record_hash['placeholder_title'] = File.basename(record, File.extname(record)).tr('_', ' ')
         record_hash['path_to_file'] = record
       else
         record_hash = importer_xml_record_to_hash(record)
@@ -773,7 +773,7 @@ module Importer
 
       zoom_class_for_params = zoom_class.tableize.singularize
 
-      record_value = record_value.strip.gsub(/\r/, "\n") if record_value.present?
+      record_value = record_value.strip.tr("\r", "\n") if record_value.present?
 
       if record_value.present?
         # if it's mapped to an extended field, params are updated
