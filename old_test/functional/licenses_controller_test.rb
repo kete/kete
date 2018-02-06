@@ -12,7 +12,7 @@ class LicensesControllerTest < ActionController::TestCase
     login_as(:admin)
 
     # hash of params to create new instance of model, e.g. {:name => 'Test Model', :description => 'Dummy'}
-    @new_model =     { 
+    @new_model = { 
       :name => 'License1',
       :description => 'License1',
       :url => 'http://www.licenses.com/license1.html',
