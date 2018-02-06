@@ -77,9 +77,11 @@ class CommentsController < ApplicationController
       # although we shouldn't be using the related_topic aspect here
       # i.e. there is never going to be params[:related_topic_id]
       # this method is smart enough to do the right thing when that is the case
-      setup_related_topic_and_zoom_and_redirect(@comment, commented_item,
-                                                private: @comment.commentable_private,
-                                                anchor: @comment.to_anchor)
+      setup_related_topic_and_zoom_and_redirect(
+        @comment, commented_item,
+        private: @comment.commentable_private,
+        anchor: @comment.to_anchor
+      )
     else
       render action: 'new'
     end
@@ -105,12 +107,14 @@ class CommentsController < ApplicationController
       commented_item = @comment.commentable
 
       flash[:notice] = t('comments_controller.update.updated')
-      redirect_to url_for(controller: zoom_class_controller(commented_item.class.name),
-                          action: 'show',
-                          id: commented_item,
-                          anchor: @comment.to_anchor,
-                          urlified_name: commented_item.basket.urlified_name,
-                          private: @comment.commentable_private.to_s)
+      redirect_to url_for(
+        controller: zoom_class_controller(commented_item.class.name),
+        action: 'show',
+        id: commented_item,
+        anchor: @comment.to_anchor,
+        urlified_name: commented_item.basket.urlified_name,
+        private: @comment.commentable_private.to_s
+      )
     else
       render action: 'edit'
     end
@@ -123,11 +127,13 @@ class CommentsController < ApplicationController
 
     flash[:notice] = t('comments_controller.destroy.destroyed')
 
-    redirect_to url_for(controller: zoom_class_controller(commented_item.class.name),
-                        action: 'show',
-                        id: commented_item,
-                        urlified_name: commented_item.basket.urlified_name,
-                        private: @comment.commentable_private.to_s)
+    redirect_to url_for(
+      controller: zoom_class_controller(commented_item.class.name),
+      action: 'show',
+      id: commented_item,
+      urlified_name: commented_item.basket.urlified_name,
+      private: @comment.commentable_private.to_s
+    )
   end
 
   private

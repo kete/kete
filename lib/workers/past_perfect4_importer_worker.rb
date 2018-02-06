@@ -162,8 +162,10 @@ class PastPerfect4ImporterWorker < BackgrounDRb::MetaWorker
         if !@last_related_topic_pp4_objectid.nil? && (related_topic_pp4_objectid == @last_related_topic_pp4_objectid)
           related_topic = @last_related_topic
         else
-          related_topic = Topic.find(:first,
-                                     conditions: "extended_content like \'%<user_reference xml_element_name=\"dc:identifier\">#{related_topic_pp4_objectid}</user_reference>%\' AND topic_type_id = #{@related_topic_type.id}")
+          related_topic = Topic.find(
+            :first,
+            conditions: "extended_content like \'%<user_reference xml_element_name=\"dc:identifier\">#{related_topic_pp4_objectid}</user_reference>%\' AND topic_type_id = #{@related_topic_type.id}"
+          )
 
         end
 
@@ -200,8 +202,10 @@ class PastPerfect4ImporterWorker < BackgrounDRb::MetaWorker
                 related_topic = @last_related_topic
               else
                 logger.info('looking for cleaned up accession: looking for existing topic')
-                related_topic = Topic.find(:first,
-                                           conditions: "extended_content like \'%<user_reference xml_element_name=\"dc:identifier\">#{cleaned_up_accessno}</user_reference>%\' AND topic_type_id = #{@related_topic_type.id}")
+                related_topic = Topic.find(
+                  :first,
+                  conditions: "extended_content like \'%<user_reference xml_element_name=\"dc:identifier\">#{cleaned_up_accessno}</user_reference>%\' AND topic_type_id = #{@related_topic_type.id}"
+                )
 
               end
 
@@ -216,8 +220,10 @@ class PastPerfect4ImporterWorker < BackgrounDRb::MetaWorker
 
               # create a new topic from related_accession_record
               # prepare user_reference for extended_content
-              accession_topic = { 'topic' => { topic_type_id: @related_topic_type.id,
-                                               title: record_hash['COLLECTION'] } }
+              accession_topic = { 'topic' => { 
+                topic_type_id: @related_topic_type.id,
+                title: record_hash['COLLECTION'] 
+              } }
 
               descrip = RedCloth.new accession_record_hash['DESCRIP']
               accession_topic['topic'][:description] = descrip.to_html
@@ -247,8 +253,10 @@ class PastPerfect4ImporterWorker < BackgrounDRb::MetaWorker
       # User Reference may be used by multiple images (all under same parent record)
       # they will have different filenames, but same user reference...
       # so adding filename check as criteria
-      existing_item = StillImage.find(:first, joins: 'join image_files on still_images.id = image_files.still_image_id',
-                                              conditions: "filename = \'#{File.basename(path_to_file_to_grab)}\' and extended_content like \'%<user_reference xml_element_name=\"dc:identifier\">#{objectid}</user_reference>%\'")
+      existing_item = StillImage.find(
+        :first, joins: 'join image_files on still_images.id = image_files.still_image_id',
+                conditions: "filename = \'#{File.basename(path_to_file_to_grab)}\' and extended_content like \'%<user_reference xml_element_name=\"dc:identifier\">#{objectid}</user_reference>%\'"
+      )
 
       new_record = nil
       if existing_item.nil?

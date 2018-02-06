@@ -7,31 +7,32 @@
 #
 namespace :kete do
   desc 'Do everything that we need done, like adding data to the db, for an upgrade.'
-  task upgrade: ['kete:upgrade:add_new_baskets',
-                 'kete:upgrade:add_tech_admin',
-                 'kete:upgrade:add_new_system_settings',
-                 'kete:upgrade:add_new_default_topics',
-                 'kete:upgrade:change_zebra_password',
-                 'kete:upgrade:check_required_software',
-                 'kete:upgrade:add_missing_mime_types',
-                 'kete:upgrade:correct_basket_defaults',
-                 'kete:upgrade:expire_depreciated_rss_cache',
-                 'kete:upgrade:set_default_join_and_memberlist_policies',
-                 'kete:upgrade:make_baskets_approved_if_status_null',
-                 'kete:upgrade:ignore_default_baskets_if_setting_not_set',
-                 'zebra:load_initial_records',
-                 'kete:upgrade:update_existing_comments_commentable_private',
-                 'kete:tools:remove_robots_txt',
-                 'kete:upgrade:set_default_locale_for_existing_users',
-                 'kete:upgrade:ensure_logins_all_valid',
-                 'kete:upgrade:move_user_name_to_display_and_resolved_name',
-                 'kete:upgrade:add_basket_id_to_taggings',
-                 'kete:upgrade:make_baskets_private_notification_do_not_email',
-                 'kete:upgrade:add_nested_values_to_comments',
-                 'kete:upgrade:change_inset_to_position',
-                 'kete:upgrade:set_null_private_only_mappings_to_false',
-                 'kete:upgrade:set_default_import_archive_set_policy',
-                 'kete:upgrade:add_missing_users']
+  task upgrade: [
+    'kete:upgrade:add_new_baskets',
+    'kete:upgrade:add_tech_admin',
+    'kete:upgrade:add_new_system_settings',
+    'kete:upgrade:add_new_default_topics',
+    'kete:upgrade:change_zebra_password',
+    'kete:upgrade:check_required_software',
+    'kete:upgrade:add_missing_mime_types',
+    'kete:upgrade:correct_basket_defaults',
+    'kete:upgrade:expire_depreciated_rss_cache',
+    'kete:upgrade:set_default_join_and_memberlist_policies',
+    'kete:upgrade:make_baskets_approved_if_status_null',
+    'kete:upgrade:ignore_default_baskets_if_setting_not_set',
+    'zebra:load_initial_records',
+    'kete:upgrade:update_existing_comments_commentable_private',
+    'kete:tools:remove_robots_txt',
+    'kete:upgrade:set_default_locale_for_existing_users',
+    'kete:upgrade:ensure_logins_all_valid',
+    'kete:upgrade:move_user_name_to_display_and_resolved_name',
+    'kete:upgrade:add_basket_id_to_taggings',
+    'kete:upgrade:make_baskets_private_notification_do_not_email',
+    'kete:upgrade:add_nested_values_to_comments',
+    'kete:upgrade:change_inset_to_position',
+    'kete:upgrade:set_null_private_only_mappings_to_false',
+    'kete:upgrade:set_default_import_archive_set_policy',
+    'kete:upgrade:add_missing_users']
   namespace :upgrade do
     desc 'Privacy Controls require that Comment#commentable_private be set.  Update existing comments to have this data.'
     task update_existing_comments_commentable_private: :environment do
@@ -98,10 +99,12 @@ namespace :kete do
       # support for legacy kete installations where basket ids
       # are different from those in topics.yml
       # NOTE: if this gets uses again in another task, move this to a reusable method of its own
-      basket_ids = { '1' => 1,
-                     '2' => Basket::HELP_BASKET_ID,
-                     '3' => Basket::ABOUT_BASKET_ID,
-                     '4' => Basket::DOCUMENTATION_BASKET_ID, }
+      basket_ids = { 
+        '1' => 1,
+        '2' => Basket::HELP_BASKET_ID,
+        '3' => Basket::ABOUT_BASKET_ID,
+        '4' => Basket::DOCUMENTATION_BASKET_ID, 
+      }
 
       # for each topic from yml
       topics_from_yml.each do |topic_array|
@@ -220,8 +223,10 @@ namespace :kete do
     desc 'Make all baskets with the status of NULL set to approved'
     task make_baskets_approved_if_status_null: :environment do
       Basket.all.each do |basket|
-        basket.update_attributes!({ status: 'approved',
-                                    creator_id: 1 }) if basket.status.blank?
+        basket.update_attributes!({ 
+                                    status: 'approved',
+                                    creator_id: 1 
+                                  }) if basket.status.blank?
       end
     end
 
@@ -364,16 +369,20 @@ namespace :kete do
       conditions = ['related_items_position IS NULL OR related_items_position IN (?)', ['', '0', '1']]
       topics = Topic::Version.all(conditions: conditions)
       topics.each do |topic|
-        Topic::Version.update_all({
-                                    related_items_position: (topic.related_items_position.to_i == 1 ? 'inset' : 'below')
-                                  }, { id: topic.id })
+        Topic::Version.update_all(
+          {
+            related_items_position: (topic.related_items_position.to_i == 1 ? 'inset' : 'below')
+          }, { id: topic.id }
+        )
       end
 
       topics = Topic.all(conditions: conditions)
       topics.each do |topic|
-        Topic.update_all({
-                           related_items_position: (topic.related_items_position.to_i == 1 ? 'inset' : 'below')
-                         }, { id: topic.id })
+        Topic.update_all(
+          {
+            related_items_position: (topic.related_items_position.to_i == 1 ? 'inset' : 'below')
+          }, { id: topic.id }
+        )
       end
 
       topics = Topic.all(conditions: "private_version_serialized LIKE '%related_items_inset%'")
@@ -455,16 +464,17 @@ namespace :kete do
     end
 
     desc 'Checks for mimetypes an adds them if needed.'
-    task add_missing_mime_types: ['kete:upgrade:add_octet_stream_and_word_types',
-                                  'kete:upgrade:add_excel_variants_to_documents',
-                                  'kete:upgrade:add_aiff_to_audio_recordings',
-                                  'kete:upgrade:add_tar_to_documents',
-                                  'kete:upgrade:add_open_office_document_types',
-                                  'kete:upgrade:add_jpegs_to_documents',
-                                  'kete:upgrade:add_bmp_to_images',
-                                  'kete:upgrade:add_eps_to_images',
-                                  'kete:upgrade:add_psd_and_gimp_to_images_and_documents',
-                                  'kete:upgrade:add_file_mime_type_variants']
+    task add_missing_mime_types: [
+      'kete:upgrade:add_octet_stream_and_word_types',
+      'kete:upgrade:add_excel_variants_to_documents',
+      'kete:upgrade:add_aiff_to_audio_recordings',
+      'kete:upgrade:add_tar_to_documents',
+      'kete:upgrade:add_open_office_document_types',
+      'kete:upgrade:add_jpegs_to_documents',
+      'kete:upgrade:add_bmp_to_images',
+      'kete:upgrade:add_eps_to_images',
+      'kete:upgrade:add_psd_and_gimp_to_images_and_documents',
+      'kete:upgrade:add_file_mime_type_variants']
 
     desc 'Adds psd variants if needed to images and documents'
     task add_psd_and_gimp_to_images_and_documents: :environment do
@@ -547,16 +557,17 @@ namespace :kete do
 
     desc 'Adds OpenOffice document types if needed'
     task add_open_office_document_types: :environment do
-      oo_types = ['application/vnd.oasis.opendocument.chart',
-                  'application/vnd.oasis.opendocument.database',
-                  'application/vnd.oasis.opendocument.formula',
-                  'application/vnd.oasis.opendocument.drawing',
-                  'application/vnd.oasis.opendocument.image',
-                  'application/vnd.oasis.opendocument.text-master',
-                  'application/vnd.oasis.opendocument.presentation',
-                  'application/vnd.oasis.opendocument.spreadsheet',
-                  'application/vnd.oasis.opendocument.text',
-                  'application/vnd.oasis.opendocument.text-web']
+      oo_types = [
+        'application/vnd.oasis.opendocument.chart',
+        'application/vnd.oasis.opendocument.database',
+        'application/vnd.oasis.opendocument.formula',
+        'application/vnd.oasis.opendocument.drawing',
+        'application/vnd.oasis.opendocument.image',
+        'application/vnd.oasis.opendocument.text-master',
+        'application/vnd.oasis.opendocument.presentation',
+        'application/vnd.oasis.opendocument.spreadsheet',
+        'application/vnd.oasis.opendocument.text',
+        'application/vnd.oasis.opendocument.text-web']
 
       setting = SystemSetting.find_by_name('Document Content Types')
       oo_types.each do |type|

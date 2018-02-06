@@ -71,10 +71,12 @@ module HasContributors
           submitter = contribution.user
         rescue
           # catch the ugly error message and display something nicer
-          message = I18n.t('has_contributors_lib.submitter_of.no_contributor',
-                           version: version.to_s,
-                           item_class: self.class.name,
-                           item_id: id) + "\n"
+          message = I18n.t(
+            'has_contributors_lib.submitter_of.no_contributor',
+            version: version.to_s,
+            item_class: self.class.name,
+            item_id: id
+          ) + "\n"
           message += I18n.t('has_contributors_lib.submitter_of.data_corruption')
           raise message
         end

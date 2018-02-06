@@ -96,9 +96,10 @@ class ModerationViewsTest < ActionController::IntegrationTest
       add_grant_as_regular_user
       login_as('grant')
 
-      @image = new_still_image do
-        attach_file "image_file_uploaded_data", "white.jpg"
-      end
+      @image =
+        new_still_image do
+          attach_file "image_file_uploaded_data", "white.jpg"
+        end
 
       update_item(@image, :title => "New image updated")
       update_item(@image, :title => "New image updated again")
@@ -115,9 +116,10 @@ class ModerationViewsTest < ActionController::IntegrationTest
       add_grant_as_regular_user
       login_as('grant')
 
-      @video = new_video do
-        attach_file "video[uploaded_data]", "teststrip.mpg", "video/mpeg"
-      end
+      @video =
+        new_video do
+          attach_file "video[uploaded_data]", "teststrip.mpg", "video/mpeg"
+        end
 
       update_item(@video, :title => "New video updated")
       update_item(@video, :title => "New video updated again")
@@ -134,9 +136,10 @@ class ModerationViewsTest < ActionController::IntegrationTest
       add_grant_as_regular_user
       login_as('grant')
 
-      @audio = new_audio_recording do
-        attach_file "audio_recording[uploaded_data]", "Sin1000Hz.mp3" # , "audio/mpeg"
-      end
+      @audio =
+        new_audio_recording do
+          attach_file "audio_recording[uploaded_data]", "Sin1000Hz.mp3" # , "audio/mpeg"
+        end
 
       update_item(@audio, :title => "New audio updated")
       update_item(@audio, :title => "New audio updated again")
@@ -153,9 +156,10 @@ class ModerationViewsTest < ActionController::IntegrationTest
       add_grant_as_regular_user
       login_as('grant')
 
-      @document = new_document do
-        attach_file "document[uploaded_data]", "test.pdf"
-      end
+      @document =
+        new_document do
+          attach_file "document[uploaded_data]", "test.pdf"
+        end
 
       update_item(@document, :title => "New document updated")
       update_item(@document, :title => "New document updated again")
@@ -172,9 +176,10 @@ class ModerationViewsTest < ActionController::IntegrationTest
       add_grant_as_regular_user
       login_as('grant')
 
-      @weblink = new_web_link do
-        fill_in "web_link[url]", :with => "http://www.google.com/"
-      end
+      @weblink =
+        new_web_link do
+          fill_in "web_link[url]", :with => "http://www.google.com/"
+        end
 
       update_item(@weblink, :title => "New web_link updated")
       update_item(@weblink, :title => "New web_link updated again")

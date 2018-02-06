@@ -251,10 +251,12 @@ module Flagging
       else
         # we leave required fields alone
         # and let the view handle whether they should be shown
-        update_hash = { title: SystemSetting.blank_title,
-                        description: nil,
-                        extended_content: nil,
-                        tag_list: nil }
+        update_hash = { 
+          title: SystemSetting.blank_title,
+          description: nil,
+          extended_content: nil,
+          tag_list: nil 
+        }
 
         update_hash[:private] = private? if respond_to?(:private)
         update_hash[:description] = SystemSetting.pending_flag if self.class.name == 'Comment'
@@ -325,14 +327,17 @@ module Flagging
     def notify_moderators_immediatelly_if_necessary(options = {})
       if SystemSetting.frequency_of_moderation_email.is_a?(String) && (SystemSetting.frequency_of_moderation_email == 'instant')
         # if histor_url is blank it will be figured out in view
-        history_url = if !options[:history_url].blank?
-                        options[:history_url]
-                      else
-                        url_for(host: SystemSetting.site_name,
-                                urlified_name: basket.urlified_name,
-                                controller: zoom_class_controller(self.class.name),
-                                action: 'history', id: self, locale: false)
-                      end
+        history_url =
+          if !options[:history_url].blank?
+            options[:history_url]
+          else
+            url_for(
+              host: SystemSetting.site_name,
+              urlified_name: basket.urlified_name,
+              controller: zoom_class_controller(self.class.name),
+              action: 'history', id: self, locale: false
+            )
+                               end
 
         message = !options[:message].blank? ? options[:message] : nil
 
@@ -341,13 +346,15 @@ module Flagging
 
         basket.moderators_or_next_in_line.each do |moderator|
           # url is handled in the view if blank
-          UserNotifier.deliver_item_flagged_for(moderator,
-                                                history_url,
-                                                options[:flag],
-                                                flagging_user,
-                                                options[:submitter],
-                                                options[:version],
-                                                message)
+          UserNotifier.deliver_item_flagged_for(
+            moderator,
+            history_url,
+            options[:flag],
+            flagging_user,
+            options[:submitter],
+            options[:version],
+            message
+          )
         end
       end
     end
@@ -361,9 +368,11 @@ module Flagging
         UserNotifier.deliver_pending_review_for(version.version, submitter)
 
         # if instant moderator notifcation
-        notify_moderators_immediatelly_if_necessary(flag: SystemSetting.pending_flag,
-                                                    version: version.version,
-                                                    submitter: submitter)
+        notify_moderators_immediatelly_if_necessary(
+          flag: SystemSetting.pending_flag,
+          version: version.version,
+          submitter: submitter
+        )
       end
     end
 

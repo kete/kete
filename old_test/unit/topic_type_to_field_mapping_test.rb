@@ -13,8 +13,10 @@ class TopicTypeToFieldMappingTest < ActiveSupport::TestCase
 
   # test it shouldn't be possible to have a null position
   def test_null_position
-    topic_type_to_field_mapping = TopicTypeToFieldMapping.new(:topic_type_id => @place_type.id,
-                                                              :extended_field_id => @city_field.id)
+    topic_type_to_field_mapping = TopicTypeToFieldMapping.new(
+      :topic_type_id => @place_type.id,
+      :extended_field_id => @city_field.id
+    )
     assert topic_type_to_field_mapping.save
     assert topic_type_to_field_mapping.position
   end

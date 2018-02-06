@@ -47,8 +47,9 @@ module EmailController
     def prepare_basket_contact_form
       @contact_form_enabled = @current_basket.allows_contact_with_inheritance?
       @recipient = @current_basket.administrators
-      @recipient_name = @current_basket == @site_basket ||
-        @current_basket == @about_basket ? SystemSetting.pretty_site_name : @current_basket.name
+      @recipient_name =
+        @current_basket == @site_basket ||
+          @current_basket == @about_basket ? SystemSetting.pretty_site_name : @current_basket.name
       @from_basket = @current_basket
       @redirect_to = (session[:return_to] || '/')
     end

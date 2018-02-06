@@ -4,10 +4,11 @@ require 'rake'
 
 class ConfigureController < ApplicationController
   # everything else is handled by application.rb
-  before_filter :login_required, only: %i[section finish
-                                          done_with_settings zoom_dbs_edit
-                                          zoom_dbs_update start_zebra
-                                          index]
+  before_filter :login_required, only: %i[
+    section finish
+    done_with_settings zoom_dbs_edit
+    zoom_dbs_update start_zebra
+    index]
 
   permit 'tech_admin of :site'
   permit 'site_admin of :site', only: %i[add_link_to_kete_net send_information get_site_linking_progress]
@@ -114,10 +115,11 @@ class ConfigureController < ApplicationController
     # so killing that pid is usually not enough
 
     @kete_password = params[:kete_password]
-    @zoom_dbs = ZoomDb.all.each do |zoom_db|
-      zoom_db.zoom_password = @kete_password
-      zoom_db.port = params[:zoom_db][zoom_db.id.to_s][:port]
-    end
+    @zoom_dbs =
+      ZoomDb.all.each do |zoom_db|
+        zoom_db.zoom_password = @kete_password
+           zoom_db.port = params[:zoom_db][zoom_db.id.to_s][:port]
+      end
 
     # run validations
     @zoom_dbs.each(&:valid?)
@@ -246,8 +248,10 @@ class ConfigureController < ApplicationController
           MiddleMan.worker(@worker_type, @worker_key).delete
 
           if status[:linking_success] == true
-            top_message = t('configure_controller.get_site_linking_progress.site_registered',
-                            kete_sites_link: @kete_sites)
+            top_message = t(
+              'configure_controller.get_site_linking_progress.site_registered',
+              kete_sites_link: @kete_sites
+            )
             render :update do |page|
               page.hide('spinner')
               page.replace_html('updater', '')

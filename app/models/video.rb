@@ -86,8 +86,10 @@ class Video < ActiveRecord::Base
     %i[size content_type].each do |attr_name|
       enum = attachment_options[attr_name]
       unless enum.nil? || enum.include?(send(attr_name))
-        errors.add attr_name, I18n.t("video_model.not_acceptable_#{attr_name}",
-                                     max_size: (SystemSetting.maximum_uploaded_file_size / 1.megabyte))
+        errors.add attr_name, I18n.t(
+          "video_model.not_acceptable_#{attr_name}",
+          max_size: (SystemSetting.maximum_uploaded_file_size / 1.megabyte)
+        )
       end
     end
   end

@@ -9,13 +9,17 @@ class HomepageTest < ActionController::IntegrationTest
 
     context "when recent topics is enabled" do
       setup do
-        @@site_basket.update_attributes({ :index_page_number_of_recent_topics => 5,
-                                          :index_page_recent_topics_as => 'headlines' })
+        @@site_basket.update_attributes({ 
+                                          :index_page_number_of_recent_topics => 5,
+                                          :index_page_recent_topics_as => 'headlines' 
+                                        })
       end
 
       teardown do
-        @@site_basket.update_attributes({ :index_page_number_of_recent_topics => 0,
-                                          :index_page_recent_topics_as => nil })
+        @@site_basket.update_attributes({ 
+                                          :index_page_number_of_recent_topics => 0,
+                                          :index_page_recent_topics_as => nil 
+                                        })
       end
 
       context "and topics are added and edited, it" do
@@ -43,14 +47,20 @@ class HomepageTest < ActionController::IntegrationTest
       context "and in a new basket" do
         setup do
           @@recent_basket = create_new_basket({ :name => 'Recent Basket' })
-          @@recent_basket.update_attributes({ :index_page_number_of_recent_topics => 5,
-                                              :index_page_recent_topics_as => 'headlines' })
+          @@recent_basket.update_attributes({ 
+                                              :index_page_number_of_recent_topics => 5,
+                                              :index_page_recent_topics_as => 'headlines' 
+                                            })
         end
 
         context "a new homepage topic is added" do
           setup do
-            @topic = new_homepage_topic({ :title => 'Homepage Topic Title',
-                                          :description => 'Homepage Topic Description' }, @@recent_basket)
+            @topic = new_homepage_topic(
+              { 
+                :title => 'Homepage Topic Title',
+                :description => 'Homepage Topic Description' 
+              }, @@recent_basket
+            )
           end
 
           should "not show homepage topic in recent basket recent results" do
@@ -65,8 +75,12 @@ class HomepageTest < ActionController::IntegrationTest
 
         context "a new topic is added" do
           setup do
-            @topic = new_topic({ :title => 'Topic Title',
-                                 :description => 'Topic Description' }, @@recent_basket)
+            @topic = new_topic(
+              { 
+                :title => 'Topic Title',
+                :description => 'Topic Description' 
+              }, @@recent_basket
+            )
           end
 
           should "show topic in recent basket recent results" do

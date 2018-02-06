@@ -15,9 +15,11 @@ module ZoomControllerActions
       @worker_type = 'zoom_index_rebuild_worker'
       @worker_key ||= worker_key_for(@worker_type)
 
-      import_request = { host: request.host,
-                         protocol: request.protocol,
-                         request_uri: request.original_url }
+      import_request = { 
+        host: request.host,
+        protocol: request.protocol,
+        request_uri: request.original_url 
+      }
 
       @worker_running = false
       # only one rebuild should be running at a time

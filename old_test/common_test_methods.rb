@@ -214,14 +214,15 @@ end
 
 def item_for(zoom_class, options = {})
   if ATTACHABLE_CLASSES.include?(zoom_class)
-    file_data = case zoom_class
-                when 'AudioRecording'
-                  fixture_file_upload('/files/Sin1000Hz.mp3', 'audio/mpeg')
-                when 'Document'
-                  fixture_file_upload('/files/test.pdf', 'application/pdf')
-                when 'Video'
-                  fixture_file_upload('/files/teststrip.mpg', 'video/mpeg')
-                end
+    file_data =
+      case zoom_class
+      when 'AudioRecording'
+        fixture_file_upload('/files/Sin1000Hz.mp3', 'audio/mpeg')
+      when 'Document'
+        fixture_file_upload('/files/test.pdf', 'application/pdf')
+      when 'Video'
+        fixture_file_upload('/files/teststrip.mpg', 'video/mpeg')
+                     end
   end
 
   options = { :title => 'Item', :description => 'Description', :basket_id => 1 }.merge(options)

@@ -26,9 +26,10 @@ class ExtendedContentTest < ActionController::IntegrationTest
     end
 
     should "be able to create a record with optional extended content" do
-      topic = new_topic :title => "Topic with optional extended content", :topic_type => @with_optional_field.name do
-        fill_in "Extended data", :with => "Test value"
-      end
+      topic =
+        new_topic :title => "Topic with optional extended content", :topic_type => @with_optional_field.name do
+          fill_in "Extended data", :with => "Test value"
+        end
 
       body_should_contain "Extended data"
       body_should_contain "Test value"
@@ -44,9 +45,10 @@ class ExtendedContentTest < ActionController::IntegrationTest
     end
 
     should "be able to create a record with required extended content" do
-      topic = new_topic :title => "Topic with required extended content", :topic_type => @with_required_field.name do
-        fill_in "Required extended data", :with => "Test value"
-      end
+      topic =
+        new_topic :title => "Topic with required extended content", :topic_type => @with_required_field.name do
+          fill_in "Required extended data", :with => "Test value"
+        end
 
       body_should_contain "Required extended data"
       body_should_contain "Test value"

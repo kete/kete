@@ -79,9 +79,11 @@ module ItemPrivacy
         # EOIN: "find the most recently created row in the versions table where the title is not 'no public version'"
         # EOIN: there seems to be something special about the "no public version" title ???
         # EOIN: this seems to rely on id's sequentially increasing as new rows are added to the table. Is that wise?
-        last_version = versions.find(:first,
-                                     conditions: "title != \'#{SystemSetting.no_public_version_title}\'",
-                                     order: 'id DESC')
+        last_version = versions.find(
+          :first,
+          conditions: "title != \'#{SystemSetting.no_public_version_title}\'",
+          order: 'id DESC'
+        )
 
         # EOIN: if the last version has a boolean attribute named 'private' and that attribute is set to true, then return true. Otherwise return false
         last_version.respond_to?(:private?) && last_version.private?
@@ -114,9 +116,10 @@ module ItemPrivacy
       protected
 
       def latest_public_version
-        version = latest_unflagged_version_with_condition do |v|
-          !v.private?
-        end
+        version =
+          latest_unflagged_version_with_condition do |v|
+            !v.private?
+          end
       end
 
       # ROB:  From what I can see this function:
@@ -165,9 +168,10 @@ module ItemPrivacy
       #       of name-value tuples. These are converted to YAML and stashed in the a variable
       #       which is STORED ON THE IN-MEMORY MODEL (ie not in the database).
       def store_private!(save_after_serialization = false)
-        prepared_array = self.class.versioned_columns.inject(Array.new) do |memo, k|
-          memo << [k.name, send(k.name.to_sym)]
-        end
+        prepared_array =
+          self.class.versioned_columns.inject(Array.new) do |memo, k|
+            memo << [k.name, send(k.name.to_sym)]
+          end
 
         # Also save the current version into the private version column
         prepared_array << ['version', version]

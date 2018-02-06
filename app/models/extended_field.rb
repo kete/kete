@@ -149,9 +149,10 @@ class ExtendedField < ActiveRecord::Base
       # could make this sensitive to first and last
       # and adjust use of % accordingly
       # but "and" seems sufficient
-      clauses = params_key_words.collect do |w|
-        "#{label_sql} #{match_keyword} '%#{w}%'"
-      end
+      clauses =
+        params_key_words.collect do |w|
+          "#{label_sql} #{match_keyword} '%#{w}%'"
+        end
     end
 
     clauses.join(' AND ')

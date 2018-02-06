@@ -12,14 +12,16 @@ class UserTest < ActiveSupport::TestCase
     @base_class = "User"
 
     # hash of params to create new instance of model, e.g. {:name => 'Test Model', :description => 'Dummy'}
-    @new_model = { :login => 'quire',
-                   :email => 'quire@example.com',
-                   :password => 'quire',
-                   :password_confirmation => 'quire',
-                   :agree_to_terms => '1',
-                   :security_code => 'test',
-                   :security_code_confirmation => 'test',
-                   :locale => 'en' }
+    @new_model = { 
+      :login => 'quire',
+      :email => 'quire@example.com',
+      :password => 'quire',
+      :password_confirmation => 'quire',
+      :agree_to_terms => '1',
+      :security_code => 'test',
+      :security_code_confirmation => 'test',
+      :locale => 'en' 
+    }
 
     # name of fields that must be present, e.g. %(name description)
     @req_attr_names = %w(login email agree_to_terms security_code password password_confirmation locale)
@@ -203,8 +205,10 @@ class UserTest < ActiveSupport::TestCase
   end
 
   def new_image_with_creator(user)
-    @still_image = StillImage.create(:title => 'test item',
-                                     :basket_id => Basket.find(:first))
+    @still_image = StillImage.create(
+      :title => 'test item',
+      :basket_id => Basket.find(:first)
+    )
     @still_image.creator = user
     @still_image.save
   end

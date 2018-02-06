@@ -10,16 +10,20 @@ module ImageSlideshowTestHelper
               @different_basket = create_new_basket({ name: 'different basket' })
 
               3.times do |i|
-                create_new_still_image_with(title: "different basket image #{i + 1}",
-                                            basket_id: @different_basket.id)
+                create_new_still_image_with(
+                  title: "different basket image #{i + 1}",
+                  basket_id: @different_basket.id
+                )
               end
             end
 
             should 'have slideshow be populated in the session on selected image visit when it is for the site basket with all images in both site and other basket' do
-              run_through_selected_images(selected_image_params: {
-                                            urlified_name: Basket.first.urlified_name
-                                          },
-                                          total: 6)
+              run_through_selected_images(
+                selected_image_params: {
+                  urlified_name: Basket.first.urlified_name
+                },
+                total: 6
+              )
             end
 
             should 'have slideshow be populated in the session on selected image visit when it is not for the site basket, but another basket limited to just the basket images' do
@@ -53,9 +57,11 @@ module ImageSlideshowTestHelper
               context 'and the images are in a different basket from topic' do
                 setup do
                   3.times do |i|
-                    create_new_image_relation_to(@topic,
-                                                 basket_id: create_new_basket({ name: "basket #{i + 1}" }).id,
-                                                 title: "Child Image in Another Basket #{i + 1}")
+                    create_new_image_relation_to(
+                      @topic,
+                      basket_id: create_new_basket({ name: "basket #{i + 1}" }).id,
+                      title: "Child Image in Another Basket #{i + 1}"
+                    )
                   end
                 end
 
@@ -75,8 +81,10 @@ module ImageSlideshowTestHelper
 
           if @topic
             options[:topic_id] = @topic.id
-            selected_image_params = { urlified_name: @topic.basket.urlified_name,
-                                      topic_id: @topic.id }
+            selected_image_params = { 
+              urlified_name: @topic.basket.urlified_name,
+              topic_id: @topic.id 
+            }
           end
 
           # initial population and correct values (clicking play button)

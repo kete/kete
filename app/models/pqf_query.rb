@@ -54,15 +54,19 @@ class PqfQuery
   } unless defined?(ATTRIBUTE_SPECS)
 
   # TODO: my hash_fu is failing me, DRY this up
-  DATETIME_SPECS = { 'oai_datestamp' => ATTRIBUTE_SPECS['last_modified'],
-                     'last_modified' => ATTRIBUTE_SPECS['last_modified'],
-                     'date' => ATTRIBUTE_SPECS['date'] } unless defined?(DATETIME_SPECS)
+  DATETIME_SPECS = { 
+    'oai_datestamp' => ATTRIBUTE_SPECS['last_modified'],
+    'last_modified' => ATTRIBUTE_SPECS['last_modified'],
+    'date' => ATTRIBUTE_SPECS['date'] 
+  } unless defined?(DATETIME_SPECS)
 
-  DATETIME_COMPARISON_SPECS = { 'before' => QUALIFYING_ATTRIBUTE_SPECS['lt'],
-                                'after' => QUALIFYING_ATTRIBUTE_SPECS['gt'],
-                                'on' => QUALIFYING_ATTRIBUTE_SPECS['eq'],
-                                'on_or_before' => QUALIFYING_ATTRIBUTE_SPECS['le'],
-                                'on_or_after' => QUALIFYING_ATTRIBUTE_SPECS['ge'] } unless defined?(DATETIME_COMPARISON_SPECS)
+  DATETIME_COMPARISON_SPECS = { 
+    'before' => QUALIFYING_ATTRIBUTE_SPECS['lt'],
+    'after' => QUALIFYING_ATTRIBUTE_SPECS['gt'],
+    'on' => QUALIFYING_ATTRIBUTE_SPECS['eq'],
+    'on_or_before' => QUALIFYING_ATTRIBUTE_SPECS['le'],
+    'on_or_after' => QUALIFYING_ATTRIBUTE_SPECS['ge'] 
+  } unless defined?(DATETIME_COMPARISON_SPECS)
 
   # all ATTRIBUTE_SPECS wll have ..._include method created for them
   # except what is specified here
@@ -76,18 +80,21 @@ class PqfQuery
   # dynamically define query methods for our attribute specs
   def self.define_query_method_for(method_name, attribute_spec)
     # create the template code
-    code = Proc.new do |term_or_terms, *options|
-      options = options.first || Hash.new
-      terms = terms_as_array(term_or_terms)
-
-      # make default operator @and, if unspecified
-      options[:operator] = options[:operator].nil? ? '@and' : options[:operator]
-      # pass nil operator, if 'none' is specified
-      options[:operator] = nil if options[:operator] == 'none'
-
-      query_part = create_query_part(options.merge({ attribute_spec: attribute_spec,
-                                                     term_or_terms: terms }))
-    end
+    code =
+      Proc.new do |term_or_terms, *options|
+        options = options.first || Hash.new
+           terms = terms_as_array(term_or_terms)
+     
+           # make default operator @and, if unspecified
+           options[:operator] = options[:operator].nil? ? '@and' : options[:operator]
+           # pass nil operator, if 'none' is specified
+           options[:operator] = nil if options[:operator] == 'none'
+     
+           query_part = create_query_part(options.merge({ 
+                                                          attribute_spec: attribute_spec,
+                                                          term_or_terms: terms 
+                                                        }))
+      end
 
     define_method(method_name, &code)
   end
@@ -205,12 +212,20 @@ class PqfQuery
     beginning = options[:beginning]
     ending = options[:ending]
 
-    query_part = '@and ' + oai_datestamp_on_or_after(beginning,
-                                                     options.merge({ only_return_as_string: true,
-                                                                     operator: 'none' }))
-    query_part += ' ' + oai_datestamp_on_or_before(ending,
-                                                   options.merge({ only_return_as_string: true,
-                                                                   operator: 'none' }))
+    query_part = '@and ' + oai_datestamp_on_or_after(
+      beginning,
+      options.merge({ 
+                      only_return_as_string: true,
+                      operator: 'none' 
+                    })
+    )
+    query_part += ' ' + oai_datestamp_on_or_before(
+      ending,
+      options.merge({ 
+                      only_return_as_string: true,
+                      operator: 'none' 
+                    })
+    )
 
     push_to_appropriate_variables(options.merge(query_part: query_part)) unless options[:only_return_as_string]
     query_part
@@ -234,24 +249,40 @@ class PqfQuery
   end
 
   def creators_or_contributors_include(term_or_terms, options = {})
-    query_part = '@or ' + creators_include(term_or_terms,
-                                           options.merge({ only_return_as_string: true,
-                                                           operator: 'none' }))
-    query_part += ' ' + contributors_include(term_or_terms,
-                                             options.merge({ only_return_as_string: true,
-                                                             operator: 'none' }))
+    query_part = '@or ' + creators_include(
+      term_or_terms,
+      options.merge({ 
+                      only_return_as_string: true,
+                      operator: 'none' 
+                    })
+    )
+    query_part += ' ' + contributors_include(
+      term_or_terms,
+      options.merge({ 
+                      only_return_as_string: true,
+                      operator: 'none' 
+                    })
+    )
 
     push_to_appropriate_variables(options.merge(query_part: query_part, operator: '@and')) unless options[:only_return_as_string]
     query_part
   end
 
   def creators_or_contributors_equals_completely(term_or_terms, options = {})
-    query_part = '@or ' + creators_equals_completely(term_or_terms,
-                                                     options.merge({ only_return_as_string: true,
-                                                                     operator: 'none' }))
-    query_part += ' ' + contributors_equals_completely(term_or_terms,
-                                                       options.merge({ only_return_as_string: true,
-                                                                       operator: 'none' }))
+    query_part = '@or ' + creators_equals_completely(
+      term_or_terms,
+      options.merge({ 
+                      only_return_as_string: true,
+                      operator: 'none' 
+                    })
+    )
+    query_part += ' ' + contributors_equals_completely(
+      term_or_terms,
+      options.merge({ 
+                      only_return_as_string: true,
+                      operator: 'none' 
+                    })
+    )
 
     push_to_appropriate_variables(options.merge(query_part: query_part, operator: '@and')) unless options[:only_return_as_string]
     query_part

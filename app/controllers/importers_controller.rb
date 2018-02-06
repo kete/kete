@@ -27,9 +27,11 @@ class ImportersController < ApplicationController
   end
 
   def list
-    @imports = @current_basket.imports.paginate(page: params[:page],
-                                                per_page: 10,
-                                                order: 'updated_at desc')
+    @imports = @current_basket.imports.paginate(
+      page: params[:page],
+      per_page: 10,
+      order: 'updated_at desc'
+    )
   end
 
   def choose_contributing_user
@@ -84,21 +86,24 @@ class ImportersController < ApplicationController
       @worker_type = "#{@import.xml_type}_importer_worker".to_sym
       @worker_key = worker_key_for(@worker_type)
 
-      @zoom_class = case @import.xml_type
-                    when 'past_perfect4'          then 'StillImage'
-                    when 'fmpdsoresult_no_images' then 'Topic'
-                    else
-                      (only_valid_zoom_class(params[:zoom_class]).name || 'StillImage')
-                    end
+      @zoom_class =
+        case @import.xml_type
+        when 'past_perfect4'          then 'StillImage'
+        when 'fmpdsoresult_no_images' then 'Topic'
+        else
+          (only_valid_zoom_class(params[:zoom_class]).name || 'StillImage')
+                           end
 
       # only run one import at a time for the moment
       unless backgroundrb_is_running?(@worker_type)
         MiddleMan.new_worker(worker: @worker_type, worker_key: @worker_key)
         import_request = { host: request.host, protocol: request.protocol, request_uri: request.original_url }
-        MiddleMan.worker(@worker_type, @worker_key).async_do_work(arg: { zoom_class: @zoom_class,
-                                                                         import: @import.id,
-                                                                         params: params,
-                                                                         import_request: import_request })
+        MiddleMan.worker(@worker_type, @worker_key).async_do_work(arg: { 
+                                                                    zoom_class: @zoom_class,
+                                                                    import: @import.id,
+                                                                    params: params,
+                                                                    import_request: import_request 
+                                                                  })
 
         # fixing failure due to unnecessary loading of tiny_mce
         @do_not_use_tiny_mce = true
@@ -134,8 +139,10 @@ class ImportersController < ApplicationController
 
           render :update do |page|
             if records_processed > 0
-              page.replace_html 'report_records_processed', t('importers_controller.get_progress.amount_processed',
-                                                              records_processed: records_processed)
+              page.replace_html 'report_records_processed', t(
+                'importers_controller.get_progress.amount_processed',
+                records_processed: records_processed
+              )
             end
 
             if (status[:done_with_do_work] == true) || !status[:error].blank?
@@ -147,10 +154,14 @@ class ImportersController < ApplicationController
               page.hide('spinner')
               page.replace_html 'done', done_message
               unless params[:related_topic].blank?
-                page.replace_html('exit', '<p>' + link_to(t('importers_controller.get_progress.back_to', item_title: related_topic.title),
-                                                          action: 'show',
-                                                          controller: 'topics',
-                                                          id: related_topic) + '</p>')
+                page.replace_html(
+                  'exit', '<p>' + link_to(
+                    t('importers_controller.get_progress.back_to', item_title: related_topic.title),
+                    action: 'show',
+                    controller: 'topics',
+                    id: related_topic
+                  ) + '</p>'
+                )
               else
                 page.replace_html 'exit', '<p>' + link_to(t('importers_controller.get_progress.to_imports'), action: 'list') + '</p>'
               end
@@ -162,10 +173,12 @@ class ImportersController < ApplicationController
           render :update do |page|
             page.hide('spinner')
             unless params[:related_topic].blank?
-              page.replace_html 'done', '<p>' + message + ' ' + link_to(t('importers_controller.get_progress.to_related_topics'),
-                                                                        action: 'show',
-                                                                        controller: 'topics',
-                                                                        id: params[:related_topic]) + '</p>'
+              page.replace_html 'done', '<p>' + message + ' ' + link_to(
+                t('importers_controller.get_progress.to_related_topics'),
+                action: 'show',
+                controller: 'topics',
+                id: params[:related_topic]
+              ) + '</p>'
             else
               page.replace_html 'done', '<p>' + message + ' ' + link_to(t('importers_controller.get_progress.to_imports'), action: 'list') + '</p>'
             end
@@ -182,10 +195,12 @@ class ImportersController < ApplicationController
         render :update do |page|
           page.hide('spinner')
           unless params[:related_topic].blank?
-            page.replace_html 'done', '<p>' + message + ' ' + link_to(t('importers_controller.get_progress.to_related_topics'),
-                                                                      action: 'show',
-                                                                      controller: 'topics',
-                                                                      id: params[:related_topic]) + '</p>'
+            page.replace_html 'done', '<p>' + message + ' ' + link_to(
+              t('importers_controller.get_progress.to_related_topics'),
+              action: 'show',
+              controller: 'topics',
+              id: params[:related_topic]
+            ) + '</p>'
           else
             page.replace_html 'done', '<p>' + message + ' ' + link_to(t('importers_controller.get_progress.to_imports'), action: 'list') + '</p>'
           end

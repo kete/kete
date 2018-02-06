@@ -9,11 +9,15 @@ class TopicTypesControllerTest < ActionController::TestCase
     login_as(:admin)
 
     # hash of params to create new instance of model, e.g. {:name => 'Test Model', :description => 'Dummy'}
-    @new_model =     { :parent_id => 1,
-                       :name => 'TopicType1',
-                       :description => 'TopicType1' }
-    @updated_model = { :name => 'TopicType2',
-                       :description => 'TopicType2' }
+    @new_model =     { 
+      :parent_id => 1,
+      :name => 'TopicType1',
+      :description => 'TopicType1' 
+    }
+    @updated_model = { 
+      :name => 'TopicType2',
+      :description => 'TopicType2' 
+    }
   end
 
   def test_index_and_list

@@ -7,10 +7,12 @@ module KeteCommonOembedSupport
     end
 
     def author_url
-      url_for(host: SystemSetting.site_name,
-              controller: 'account',
-              urlified_name: Basket.site_basket.urlified_name,
-              action: :show, id: creator, only_path: false)
+      url_for(
+        host: SystemSetting.site_name,
+        controller: 'account',
+        urlified_name: Basket.site_basket.urlified_name,
+        action: :show, id: creator, only_path: false
+      )
     end
   end
 end

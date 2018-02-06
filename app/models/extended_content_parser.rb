@@ -106,23 +106,26 @@ class ExtendedContentParser
     attribute_pairs = []
 
     fields_in_sorted_array.each do |field_hash|
-      field_hash = field_hash.reject do |field_key, field_data|
-        # If this is google map contents, and no_map is '1', then do not use this data
-        field_data.is_a?(Hash) && field_data['no_map'] && field_data['no_map'] == '1'
-      end
+      field_hash =
+        field_hash.reject do |field_key, field_data|
+          # If this is google map contents, and no_map is '1', then do not use this data
+          field_data.is_a?(Hash) && field_data['no_map'] && field_data['no_map'] == '1'
+        end
 
       multi_instance_attributes = field_hash.select { |field_key, field_data| field_key =~ /_multiple$/  }
       regular_attributes =        field_hash.reject { |field_key, field_data| field_key =~ /_multiple$/  }
 
-      multi_instance_attribute_pairs = multi_instance_attributes.flat_map do |field_key, field_data|
-        field_data.map do |index, data|
-          [field_key, data.values.first]
+      multi_instance_attribute_pairs =
+        multi_instance_attributes.flat_map do |field_key, field_data|
+          field_data.map do |index, data|
+            [field_key, data.values.first]
+          end
         end
-      end
 
-      regular_attribute_pairs = regular_attributes.map do |field_key, field_data|
-        [field_key, field_data]
-      end
+      regular_attribute_pairs =
+        regular_attributes.map do |field_key, field_data|
+          [field_key, field_data]
+        end
 
       attribute_pairs = attribute_pairs + multi_instance_attribute_pairs + regular_attribute_pairs
     end

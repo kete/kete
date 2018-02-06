@@ -103,11 +103,15 @@ class User < ActiveRecord::Base
   validates :login, format: { with: /^[^\s]+$/ }
   validates :login, uniqueness: { case_sensitive: false }
   validates :locale,
-            inclusion: { in: I18n.available_locales_with_labels.keys,
-                         message: lambda do
-                                    I18n.t('user_model.locale_incorrect',
-                                           locales: I18n.available_locales_with_labels.keys.join(', '))
-                                  end }
+            inclusion: { 
+              in: I18n.available_locales_with_labels.keys,
+              message: lambda do
+                         I18n.t(
+                           'user_model.locale_incorrect',
+                           locales: I18n.available_locales_with_labels.keys.join(', ')
+                         )
+                       end 
+            }
 
   before_save :encrypt_password
 

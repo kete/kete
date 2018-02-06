@@ -23,12 +23,16 @@ module ImageSlideshow
     # have direct access to view helpers in this scope
     def slideshow_updater
       update_id = (topic_slideshow? ? 'related_items_slideshow' : 'selected-image-display')
-      @template.periodically_call_remote(update: update_id,
-                                         url: { action: 'selected_image',
-                                                topic_id: topic_slideshow? ? params[:id] : nil },
-                                         frequency: 15,
-                                         method: 'get',
-                                         before: "if (!$('selected-image-display') || $('selected-image-display-paused')) { return false; }")
+      @template.periodically_call_remote(
+        update: update_id,
+        url: { 
+          action: 'selected_image',
+          topic_id: topic_slideshow? ? params[:id] : nil 
+        },
+        frequency: 15,
+        method: 'get',
+        before: "if (!$('selected-image-display') || $('selected-image-display-paused')) { return false; }"
+      )
     end
 
     # The action slideshow_updater requests. Returns either the next image display,
@@ -171,8 +175,9 @@ module ImageSlideshow
     # We have to make sure the images we get are either in baskets we have access to, or publicly viewable images
     def public_conditions
       prefix = topic_slideshow? ? 'still_images.' : ''
-      { conditions: ["((#{prefix}basket_id IN (:basket_ids)) OR ((#{PUBLIC_CONDITIONS}) AND (#{prefix}file_private = :file_private OR #{prefix}file_private is null)))",
-                     { basket_ids: @basket_access_hash.collect { |b| b[1][:id] }, file_private: false }] }
+      { conditions: [
+        "((#{prefix}basket_id IN (:basket_ids)) OR ((#{PUBLIC_CONDITIONS}) AND (#{prefix}file_private = :file_private OR #{prefix}file_private is null)))",
+        { basket_ids: @basket_access_hash.collect { |b| b[1][:id] }, file_private: false }] }
     end
 
     # Finds all basket images scoped to the correct still image collection

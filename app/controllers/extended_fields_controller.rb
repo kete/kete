@@ -110,13 +110,18 @@ class ExtendedFieldsController < ApplicationController
     topics = Topic.where('title LIKE ? AND topic_type_id IN (?)', "%#{search_term}%", topic_type_ids).order('title ASC').limit(10)
     logger.debug("Topics are: #{topics.inspect}")
 
-    topics = topics.map do |entry|
-      @template.content_tag('li', "#{entry.title.sanitize} (#{@template.url_for(urlified_name: entry.basket.urlified_name,
-                                                                                controller: 'topics',
-                                                                                action: 'show',
-                                                                                id: entry,
-                                                                                only_path: false).sub("/#{I18n.locale}/", '/')})")
-    end
+    topics =
+      topics.map do |entry|
+        @template.content_tag(
+          'li', "#{entry.title.sanitize} (#{@template.url_for(
+            urlified_name: entry.basket.urlified_name,
+            controller: 'topics',
+            action: 'show',
+            id: entry,
+            only_path: false
+          ).sub("/#{I18n.locale}/", '/')})"
+        )
+      end
     render inline: @template.content_tag('ul', topics.uniq)
   end
 

@@ -104,11 +104,12 @@ module I18n
   # called in a number of places in the code but it's not clear what benefit it
   # gives us.
   def self.available_locales_with_labels
-    @@available_locales_with_labels ||= begin
-      locales_file = File.join(Rails.root.to_s, 'config', 'locales', 'en.yml')
-      return Hash.new unless File.exist?(locales_file)
-      YAML.load(IO.read(locales_file)).stringify_keys
-    end
+    @@available_locales_with_labels ||=
+      begin
+           locales_file = File.join(Rails.root.to_s, 'config', 'locales', 'en.yml')
+           return Hash.new unless File.exist?(locales_file)
+           YAML.load(IO.read(locales_file)).stringify_keys
+         end
   end
 
   module Backend

@@ -43,9 +43,11 @@ namespace :tools do
     task :setup do
       sudo 'test -d ~/.ssh || mkdir ~/.ssh'
       sudo 'chmod 0700 ~/.ssh'
-      put(ssh_options[:keys].collect { |key| File.read(key + '.pub') }.join("\n"),
-          File.join('/home', user, '.ssh/authorized_keys'),
-          mode: 0600)
+      put(
+        ssh_options[:keys].collect { |key| File.read(key + '.pub') }.join("\n"),
+        File.join('/home', user, '.ssh/authorized_keys'),
+        mode: 0600
+      )
     end
   end
 

@@ -1,9 +1,10 @@
 # frozen_string_literal: true
 
 class BasketsController < ApplicationController
-  permit 'site_admin or admin of :current_basket', only: %i[edit update homepage_options destroy
-                                                            add_index_topic appearance update_appearance
-                                                            set_settings]
+  permit 'site_admin or admin of :current_basket', only: %i[
+    edit update homepage_options destroy
+    add_index_topic appearance update_appearance
+    set_settings]
 
   before_filter :redirect_if_current_user_cant_add_or_request_basket, only: %i[new create]
 
@@ -74,11 +75,12 @@ class BasketsController < ApplicationController
     convert_text_fields_to_boolean
 
     # if an site admin makes a basket, make sure the basket is instantly approved
-    params[:basket][:status] = if basket_policy_request_with_permissions?
-                                 'requested'
-                               else
-                                 'approved'
-                               end
+    params[:basket][:status] =
+      if basket_policy_request_with_permissions?
+        'requested'
+      else
+        'approved'
+                                    end
 
     params[:basket][:creator_id] = current_user.id
 
@@ -318,8 +320,9 @@ class BasketsController < ApplicationController
     @item_types = []
     ZOOM_CLASSES.each do |zoom_class|
       if zoom_class != 'Comment'
-        @item_types << [zoom_class_humanize(zoom_class),
-                        zoom_class_controller(zoom_class)]
+        @item_types << [
+          zoom_class_humanize(zoom_class),
+          zoom_class_controller(zoom_class)]
       end
     end
 
@@ -455,14 +458,15 @@ class BasketsController < ApplicationController
   # from the associations. In either case, if a profile doesn't exist or can't be found,
   # return nil.
   def profile_rules
-    @profile_rules ||= begin
-      if !@basket || @basket.new_record?
-        profile = Profile.find_by_id(params[:basket_profile])
-        profile ? profile.rules(true) : nil
-      else
-        !@basket.profiles.blank? ? @basket.profiles.first.rules(true) : nil
-      end
-    end
+    @profile_rules ||=
+      begin
+           if !@basket || @basket.new_record?
+             profile = Profile.find_by_id(params[:basket_profile])
+             profile ? profile.rules(true) : nil
+           else
+             !@basket.profiles.blank? ? @basket.profiles.first.rules(true) : nil
+           end
+         end
   end
 
   # Check whether a field is allowed to be shown to a user
@@ -502,16 +506,17 @@ class BasketsController < ApplicationController
     end
 
     if value.nil? && @basket && !@basket.new_record?
-      value = if @basket.respond_to?(name)
-                # if the basket responds to a value method
-                @basket.send(name)
-              elsif @basket.respond_to?("#{name}?")
-                # if the basket respond to a boolean method
-                @basket.send("#{name}?")
-              else
-                # else, see if it has a setting (which will returns nil if not)
-                @basket.settings[name.to_sym]
-              end
+      value =
+        if @basket.respond_to?(name)
+          # if the basket responds to a value method
+          @basket.send(name)
+        elsif @basket.respond_to?("#{name}?")
+          # if the basket respond to a boolean method
+          @basket.send("#{name}?")
+        else
+          # else, see if it has a setting (which will returns nil if not)
+          @basket.settings[name.to_sym]
+                     end
     end
 
     # if by this point we still have nothing/nil
@@ -551,11 +556,12 @@ class BasketsController < ApplicationController
   #
 
   def list_baskets(per_page = 10)
-    @listing_type = if !params[:type].blank? && @site_admin
-                      params[:type]
-                    else
-                      'approved'
-                    end
+    @listing_type =
+      if !params[:type].blank? && @site_admin
+        params[:type]
+      else
+        'approved'
+                         end
 
     @default_sorting = { order: 'created_at', direction: 'desc' }
     paginate_order = current_sorting_options(
@@ -563,9 +569,11 @@ class BasketsController < ApplicationController
       @default_sorting[:direction], %w(name created_at)
     )
 
-    options = { page: params[:page],
-                per_page: per_page,
-                order: paginate_order }
+    options = { 
+      page: params[:page],
+      per_page: per_page,
+      order: paginate_order 
+    }
     options[:conditions] = ['status = ?', @listing_type]
 
     @baskets = Basket.paginate(options)
@@ -578,12 +586,13 @@ class BasketsController < ApplicationController
   def convert_text_fields_to_boolean
     boolean_fields = %i[show_privacy_controls private_default file_private_default allow_non_member_comments]
     boolean_fields.each do |field|
-      params[:basket][field] = case params[:basket][field]
-                               when 'true', true
-                                 true
-                               when 'false', false
-                                 false
-                               end
+      params[:basket][field] =
+        case params[:basket][field]
+        when 'true', true
+          true
+        when 'false', false
+          false
+                                      end
     end
   end
 

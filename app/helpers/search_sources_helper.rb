@@ -17,10 +17,12 @@ module SearchSourcesHelper
       # ROB:  this was previously: htmp += @template.render(...)
       #       @template was probably supplied by one of the plugin that
       #       was removed
-      html += render('search_sources/search_source',
-                     search_text: search_text,
-                     source: source,
-                     options: options)
+      html += render(
+        'search_sources/search_source',
+        search_text: search_text,
+        source: source,
+        options: options
+      )
     end
     return html if html.blank?
     "<div id='search_sources'>" +
@@ -59,13 +61,14 @@ module SearchSourcesHelper
 
   %i[or_syntax and_syntax not_syntax].each do |syntax|
     define_method "#{syntax}_form_column" do |record, input_name|
-      value = if params[:record] && params[:record][syntax]
-                params[:record][syntax]
-              elsif !record.new_record?
-                record.send(syntax)
-              else
-                nil
-              end
+      value =
+        if params[:record] && params[:record][syntax]
+          params[:record][syntax]
+        elsif !record.new_record?
+          record.send(syntax)
+        else
+          nil
+                     end
 
       value = Hash.new if value.blank?
       html = String.new
@@ -85,8 +88,10 @@ module SearchSourcesHelper
       html = content_tag('div', html, id: "#{syntax}_form_div")
 
       if syntax != :or_syntax
-        html += content_tag('div', t("search_sources_helper.#{syntax}_form_column.not_available"),
-                            id: "#{syntax}_not_available", style: 'font-size: 80%; display:none;')
+        html += content_tag(
+          'div', t("search_sources_helper.#{syntax}_form_column.not_available"),
+          id: "#{syntax}_not_available", style: 'font-size: 80%; display:none;'
+        )
         html += javascript_tag("function hide_or_show_and_not_syntax() {
           if ($('record_or_syntax_position').value == 'none') {
             $('#{syntax}_not_available').hide();

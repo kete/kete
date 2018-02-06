@@ -25,9 +25,10 @@ class BasketTest < ActiveSupport::TestCase
 
   context "The Basket class" do
     should "have valid an array of relevant forms with human readable labels" do
-      options_spec = [['Basket New or Edit', 'edit'],
-                      ['Basket Appearance', 'appearance'],
-                      ['Basket Homepage Options', 'homepage_options']]
+      options_spec = [
+        ['Basket New or Edit', 'edit'],
+        ['Basket Appearance', 'appearance'],
+        ['Basket Homepage Options', 'homepage_options']]
       assert_equal Basket.forms_options, options_spec
     end
   end
@@ -47,11 +48,13 @@ class BasketTest < ActiveSupport::TestCase
 
     basket.save!
 
-    assert_not_nil RedirectRegistration.find(:first,
-                                             :conditions => {
-                                               :source_url_pattern => '/foo/',
-                                               :target_url_pattern => '/bar/'
-                                             })
+    assert_not_nil RedirectRegistration.find(
+      :first,
+      :conditions => {
+        :source_url_pattern => '/foo/',
+        :target_url_pattern => '/bar/'
+      }
+    )
   end
 
   def test_update_index_topic

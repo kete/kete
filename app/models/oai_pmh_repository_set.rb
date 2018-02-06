@@ -33,9 +33,11 @@ class OaiPmhRepositorySet < ActiveRecord::Base
   end
 
   def create_set(options = {})
-    this_set = { name: options[:name] || name,
-                 description: options[:description] || description || nil,
-                 spec: options[:set_spec] || set_spec }
+    this_set = { 
+      name: options[:name] || name,
+      description: options[:description] || description || nil,
+      spec: options[:set_spec] || set_spec 
+    }
     set = GeneratedSet.new(this_set)
   end
 
@@ -131,9 +133,11 @@ class OaiPmhRepositorySet < ActiveRecord::Base
     # but that should be a collecition strings (what we search for)
     # append dynamic stuff to base set attributes
     eval(value).each do |string|
-      options = { name: "#{name} - #{string}",
-                  description: string + ' - ' + description,
-                  set_spec: full_spec(string) }
+      options = { 
+        name: "#{name} - #{string}",
+        description: string + ' - ' + description,
+        set_spec: full_spec(string) 
+      }
 
       @options_for_generated_sets << options
     end

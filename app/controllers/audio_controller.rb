@@ -44,9 +44,11 @@ class AudioController < ApplicationController
       @audio_recording.do_notifications_if_pending(1, current_user)
     end
 
-    setup_related_topic_and_zoom_and_redirect(@audio_recording,
-                                              nil,
-                                              private: (params[:audio_recording][:private] == 'true'))
+    setup_related_topic_and_zoom_and_redirect(
+      @audio_recording,
+      nil,
+      private: (params[:audio_recording][:private] == 'true')
+    )
   end
 
   def edit

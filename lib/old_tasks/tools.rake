@@ -240,8 +240,9 @@ namespace :kete do
 
     namespace :tiny_mce do
       desc 'Do everything that we need done, like adding data to the db, for an upgrade.'
-      task configure_imageselector: ['kete:tools:tiny_mce:write_default_imageselector_providers_json',
-                                     'kete:tools:tiny_mce:write_default_imageselector_sizes_json']
+      task configure_imageselector: [
+        'kete:tools:tiny_mce:write_default_imageselector_providers_json',
+        'kete:tools:tiny_mce:write_default_imageselector_sizes_json']
 
       desc 'Write javascripts/image_selector_config/providers.json file that reflects this site. Will replace file if it exists.'
       task write_default_imageselector_providers_json: :environment do
@@ -251,26 +252,32 @@ namespace :kete do
           title: SystemSetting.pretty_site_name,
           domain: SystemSetting.site_name,
           oembed_endpoint: SystemSetting.site_url + 'oembed',
-          upload_startpoint: { label: 'Upload New Image',
-                               url: SystemSetting.site_url + 'site/images/new?as_service=true&append_show_url=true' },
+          upload_startpoint: { 
+            label: 'Upload New Image',
+            url: SystemSetting.site_url + 'site/images/new?as_service=true&append_show_url=true' 
+          },
           insertIntoEditor: { editor: 'TinyMCE' },
           sources: [
-            { name: 'Latest',
+            { 
+              name: 'Latest',
               media_type: 'image',
               media_type_plural: 'images',
               url: SystemSetting.site_url + 'site/all/images/rss.xml',
               searchable_stub: false,
               limit_parameter: '?count=',
               display_limit: 4,
-              page_parameter: '&page=' },
-            { name: 'Search',
+              page_parameter: '&page=' 
+            },
+            { 
+              name: 'Search',
               media_type: 'image',
               media_type_plural: 'images',
               url: SystemSetting.site_url + 'site/search/images/for/terms/rss.xml?search_terms=',
               searchable_stub: true,
               limit_parameter: '&count=',
               display_limit: 4,
-              page_parameter: '&page=' }
+              page_parameter: '&page=' 
+            }
           ]
         }
 
@@ -389,8 +396,10 @@ namespace :kete do
 
               clause = "#{table_name}.id >= :start_id"
               clause_values = Hash.new
-              clause_values[:start_id] = topic.send(kind.to_sym).find(:first,
-                                                                      order: "#{table_name}.id").id
+              clause_values[:start_id] = topic.send(kind.to_sym).find(
+                :first,
+                order: "#{table_name}.id"
+              ).id
 
               # load up to batch_size results into memory at a time
               batch_count = 1
@@ -401,15 +410,19 @@ namespace :kete do
               kind_count_so_far = 0
               while kind_count > kind_count_so_far
                 if kind_count_so_far > 0
-                  clause_values[:start_id] = topic.send(kind.to_sym).find(:first,
-                                                                          conditions: "#{table_name}.id > #{last_id}",
-                                                                          order: "#{table_name}.id").id
+                  clause_values[:start_id] = topic.send(kind.to_sym).find(
+                    :first,
+                    conditions: "#{table_name}.id > #{last_id}",
+                    order: "#{table_name}.id"
+                  ).id
                 end
 
-                related_items = topic.send(kind.to_sym).find(:all,
-                                                             conditions: [clause, clause_values],
-                                                             limit: batch_size,
-                                                             order: "#{table_name}.id")
+                related_items = topic.send(kind.to_sym).find(
+                  :all,
+                  conditions: [clause, clause_values],
+                  limit: batch_size,
+                  order: "#{table_name}.id"
+                )
 
                 @logger.info('number to do in batch: ' + related_items.size.to_s)
 

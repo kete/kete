@@ -34,13 +34,17 @@ module WorkerControllerHelpers
     end
 
     def backgroundrb_is_running?(worker_type, worker_key = nil)
-      backgroundrb_running_for?(worker_type,
-                                worker_key || worker_key_for(worker_type))
+      backgroundrb_running_for?(
+        worker_type,
+        worker_key || worker_key_for(worker_type)
+      )
     end
 
     def delete_existing_workers_for(worker_type, worker_key = nil, with_delay = true)
-      backgroundrb_delete_existing_workers_for(worker_type,
-                                               worker_key || worker_key_for(worker_type))
+      backgroundrb_delete_existing_workers_for(
+        worker_type,
+        worker_key || worker_key_for(worker_type)
+      )
     end
   end
 end

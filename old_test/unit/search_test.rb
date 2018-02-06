@@ -7,12 +7,14 @@ class SearchTest < ActiveSupport::TestCase
     # hash of params to use as the basis for tests
     # handling simple case first, all action
     # with no other params set
-    @options = { :default => 'none',
-                 :query => String.new,
-                 :user_specified => nil,
-                 :direction => nil,
-                 :action => 'all',
-                 :search_terms => nil }
+    @options = { 
+      :default => 'none',
+      :query => String.new,
+      :user_specified => nil,
+      :direction => nil,
+      :action => 'all',
+      :search_terms => nil 
+    }
 
     @sort_stub = '@attr 7='
   end
@@ -84,11 +86,12 @@ class SearchTest < ActiveSupport::TestCase
       direction_value = Search.date_types.include?(sort_type) ? 2 : 1
       requested = nil
 
-      code = Proc.new do
-        @search = Search.new
-        @search.update_sort_direction_value_for_pqf_query(requested, sort_type)
-        assert_equal direction_value, @search.pqf_query.direction_value
-      end
+      code =
+        Proc.new do
+          @search = Search.new
+               @search.update_sort_direction_value_for_pqf_query(requested, sort_type)
+               assert_equal direction_value, @search.pqf_query.direction_value
+        end
 
       define_method(method_name, &code)
 

@@ -120,9 +120,13 @@ module OaiDcHelpers
       # record.
       protocol = appropriate_protocol_for(self)
 
-      xml.send('dc:identifier', utf8_url_for(uri_attrs.merge(protocol: protocol,
-                                                             host: host,
-                                                             locale: false)))
+      xml.send(
+        'dc:identifier', utf8_url_for(uri_attrs.merge(
+                                        protocol: protocol,
+                                        host: host,
+                                        locale: false
+        ))
+      )
     end
 
     def oai_dc_xml_dc_title(xml, options = {})
@@ -275,8 +279,10 @@ module OaiDcHelpers
     # if there is a license for item, put in its url
     # otherwise site's terms and conditions url
     def oai_dc_xml_dc_rights(xml)
-      terms_and_conditions_topic = Basket.about_basket.topics.find(:first,
-                                                                   conditions: "UPPER(title) like '%TERMS AND CONDITIONS'")
+      terms_and_conditions_topic = Basket.about_basket.topics.find(
+        :first,
+        conditions: "UPPER(title) like '%TERMS AND CONDITIONS'"
+      )
       terms_and_conditions_topic ||= 4
 
       if respond_to?(:license) && !license.blank?

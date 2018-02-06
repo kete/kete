@@ -5,9 +5,11 @@ class SiteLinkingWorker < BackgrounDRb::MetaWorker
   include SiteLinking
 
   def create(args = nil)
-    results = { linking_success: false,
-                linking_validation_errors: Array.new,
-                linking_complete: false }
+    results = { 
+      linking_success: false,
+      linking_validation_errors: Array.new,
+      linking_complete: false 
+    }
 
     cache[:results] = results
   end
@@ -44,9 +46,11 @@ class SiteLinkingWorker < BackgrounDRb::MetaWorker
   end
 
   def reset_worker
-    results = { linking_success: false,
-                linking_validation_errors: Array.new,
-                linking_complete: false }
+    results = { 
+      linking_success: false,
+      linking_validation_errors: Array.new,
+      linking_complete: false 
+    }
 
     cache[:results] = results
   end

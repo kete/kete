@@ -69,9 +69,10 @@ class Kete
 
     def define_reader_method_as(method_name, value)
       # create the template code
-      code = Proc.new do
-        value
-      end
+      code =
+        Proc.new do
+          value
+        end
 
       metaclass.instance_eval { define_method(method_name, &code) }
 

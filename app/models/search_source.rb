@@ -44,16 +44,18 @@ class SearchSource < ActiveRecord::Base
   end
 
   def self.or_positions
-    [[I18n.t('search_source_model.or_positions.no_or_syntax'), 'none'],
-     [I18n.t('search_source_model.or_positions.before_terms'), 'before'],
-     [I18n.t('search_source_model.or_positions.between_terms'), 'between'],
-     [I18n.t('search_source_model.or_positions.after_terms'), 'after']]
+    [
+      [I18n.t('search_source_model.or_positions.no_or_syntax'), 'none'],
+      [I18n.t('search_source_model.or_positions.before_terms'), 'before'],
+      [I18n.t('search_source_model.or_positions.between_terms'), 'between'],
+      [I18n.t('search_source_model.or_positions.after_terms'), 'after']]
   end
 
   def self.case_values
-    [[I18n.t('search_source_model.case_values.doesnt_matter'), ''],
-     [I18n.t('search_source_model.case_values.uppercase'), 'upper'],
-     [I18n.t('search_source_model.case_values.lowercase'), 'lower']]
+    [
+      [I18n.t('search_source_model.case_values.doesnt_matter'), ''],
+      [I18n.t('search_source_model.case_values.uppercase'), 'upper'],
+      [I18n.t('search_source_model.case_values.lowercase'), 'lower']]
   end
 
   def source_url
@@ -131,16 +133,17 @@ class SearchSource < ActiveRecord::Base
   def parse_search_text(search_text)
     if or_syntax && !or_syntax[:position].blank? && or_syntax[:position] != 'none'
       or_string = or_syntax[:case] == 'upper' ? 'OR' : 'or'
-      search_text = case or_syntax[:position]
-                    when 'before'
-                      "#{or_string} #{search_text}"
-                    when 'after'
-                      "#{search_text} #{or_string}"
-                    when 'between'
-                      search_text.strip.gsub(/\s/, " #{or_string} ")
-                    else
-                      search_text
-                    end
+      search_text =
+        case or_syntax[:position]
+        when 'before'
+          "#{or_string} #{search_text}"
+        when 'after'
+          "#{search_text} #{or_string}"
+        when 'between'
+          search_text.strip.gsub(/\s/, " #{or_string} ")
+        else
+          search_text
+                           end
     else
       if or_syntax && or_syntax[:case]
         or_string = or_syntax[:case] == 'upper' ? 'OR' : 'or'

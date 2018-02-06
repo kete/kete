@@ -274,11 +274,15 @@ class AccountControllerTest < ActionController::TestCase
 
   protected
 
-    # James is working on this..
+  # James is working on this..
   def create_user(options = {})
-    post :signup, { :user => { :login => 'quire', :email => 'quire@changme.com',
-                               :password => 'quire', :password_confirmation => 'quire', :captcha_type => 'image',
-                               :agree_to_terms => '1', :security_code => 'test', :locale => 'en' }.merge(options), :urlified_name => @urlified_name },
+    post :signup, { 
+      :user => { 
+        :login => 'quire', :email => 'quire@changme.com',
+        :password => 'quire', :password_confirmation => 'quire', :captcha_type => 'image',
+        :agree_to_terms => '1', :security_code => 'test', :locale => 'en' 
+      }.merge(options), :urlified_name => @urlified_name 
+    },
          { :captcha_id => 1 }
   end
 

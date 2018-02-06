@@ -72,9 +72,10 @@ class RelatedToTopicTest < ActionController::IntegrationTest
 
           context "with a linkable item available" do
             setup do
-              @item_for_relating = send("new_#{@tableized.singularize}", :title => "Item for relating") do
-                fill_in_needed_information_for(class_name)
-              end
+              @item_for_relating =
+                send("new_#{@tableized.singularize}", :title => "Item for relating") do
+                  fill_in_needed_information_for(class_name)
+                end
             end
 
             should "be able to link existing related #{class_name}" do
@@ -102,9 +103,11 @@ class RelatedToTopicTest < ActionController::IntegrationTest
               fill_in "search_terms", :with => @item_for_relating.title
               click_button "Search"
 
-              body_should_contain I18n.t('search.related_form.select_items',
-                                         :item_class => lower_case_name,
-                                         :action => 'Add')
+              body_should_contain I18n.t(
+                'search.related_form.select_items',
+                :item_class => lower_case_name,
+                :action => 'Add'
+              )
               body_should_contain @item_for_relating.title
 
               check "item_#{@item_for_relating.id}"
@@ -136,9 +139,10 @@ class RelatedToTopicTest < ActionController::IntegrationTest
 
           context "which has been added to a topic" do
             setup do
-              @item_for_relating = send("new_#{@tableized.singularize}", :title => "Item for relating", :relate_to => @topic) do
-                fill_in_needed_information_for(class_name)
-              end
+              @item_for_relating =
+                send("new_#{@tableized.singularize}", :title => "Item for relating", :relate_to => @topic) do
+                  fill_in_needed_information_for(class_name)
+                end
             end
 
             should "be able to unlink related #{class_name}" do
@@ -152,9 +156,11 @@ class RelatedToTopicTest < ActionController::IntegrationTest
 
               lower_case_name = @humanized_plural.downcase
 
-              body_should_contain I18n.t('search.related_form.title',
-                                         :action => 'Remove',
-                                         :zoom_class_plural => lower_case_name)
+              body_should_contain I18n.t(
+                'search.related_form.title',
+                :action => 'Remove',
+                :zoom_class_plural => lower_case_name
+              )
               body_should_contain @item_for_relating.title
 
               check "item_#{@item_for_relating.id}"
@@ -282,10 +288,13 @@ class RelatedToTopicTest < ActionController::IntegrationTest
     ITEM_CLASSES.each do |zoom_class|
       context "when a #{zoom_class} is added" do
         setup do
-          @related_item = send("new_#{zoom_class.tableize.singularize}",
-                               { :title => 'Child Item 1', :relate_to => @parent_topic }) do |field_prefix|
-            fill_in_needed_information_for(zoom_class)
-          end
+          @related_item =
+            send(
+              "new_#{zoom_class.tableize.singularize}",
+              { :title => 'Child Item 1', :relate_to => @parent_topic }
+            ) do |field_prefix|
+              fill_in_needed_information_for(zoom_class)
+            end
         end
 
         should "not show up in the parent topic if the child item is deleted" do
@@ -319,10 +328,13 @@ class RelatedToTopicTest < ActionController::IntegrationTest
         end
 
         should "not show up if a different related item is deleted" do
-          @related_item2 = send("new_#{zoom_class.tableize.singularize}",
-                                { :title => 'Child Item 2', :relate_to => @parent_topic }) do |field_prefix|
-            fill_in_needed_information_for(zoom_class)
-          end
+          @related_item2 =
+            send(
+              "new_#{zoom_class.tableize.singularize}",
+              { :title => 'Child Item 2', :relate_to => @parent_topic }
+            ) do |field_prefix|
+              fill_in_needed_information_for(zoom_class)
+            end
 
           # delete one of the two related items
           old_title = @related_item.title

@@ -99,10 +99,12 @@ class Search < ActiveRecord::Base
   end
 
   def add_sort_to_query_if_needed(options = {})
-    sort_type = sort_type(default: 'none',
-                          user_specified: options[:user_specified],
-                          action: options[:action],
-                          search_terms: options[:search_terms])
+    sort_type = sort_type(
+      default: 'none',
+      user_specified: options[:user_specified],
+      action: options[:action],
+      search_terms: options[:search_terms]
+    )
 
     return @pqf_query if sort_type == 'none'
 

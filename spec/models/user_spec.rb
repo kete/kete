@@ -3,15 +3,17 @@ require 'spec_helper'
 describe User do
   let(:default_password) { 'quirk' }
   let(:user) do
-    User.create(login: 'user_2',
-                email: 'user_2@example.com',
-                password: default_password,
-                password_confirmation: default_password,
-                agree_to_terms: '1',
-                security_code: 'test',
-                security_code_confirmation: 'test',
-                locale: 'en',
-                resolved_name: 'John Doe')
+    User.create(
+      login: 'user_2',
+      email: 'user_2@example.com',
+      password: default_password,
+      password_confirmation: default_password,
+      agree_to_terms: '1',
+      security_code: 'test',
+      security_code_confirmation: 'test',
+      locale: 'en',
+      resolved_name: 'John Doe'
+    )
   end
   let(:activated_user) do
     user.activate

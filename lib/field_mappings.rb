@@ -68,15 +68,16 @@ module FieldMappings
     def used_by_items?
       # Check whether we are dealing with a topic type mapping
       # or a content type mapping and get items accordingly
-      @all_versions ||= if is_a?(TopicTypeToFieldMapping)
-                          Topic::Version.all(conditions: { topic_type_id: topic_type.full_set.collect { |tt| tt.id } })
-                        else
-                          if content_type.class_name == 'User'
-                            User.all
-                          else
-                            content_type.class_name.constantize::Version.all
-                          end
-                        end
+      @all_versions ||=
+        if is_a?(TopicTypeToFieldMapping)
+          Topic::Version.all(conditions: { topic_type_id: topic_type.full_set.collect { |tt| tt.id } })
+        else
+          if content_type.class_name == 'User'
+            User.all
+          else
+            content_type.class_name.constantize::Version.all
+          end
+                               end
 
       ef_label = Regexp.escape(extended_field_label.downcase.tr(' ', '_'))
       element_label = extended_field_multiple ? "#{ef_label}_multiple" : ef_label

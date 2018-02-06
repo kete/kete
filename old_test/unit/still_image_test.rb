@@ -11,8 +11,10 @@ class StillImageTest < ActiveSupport::TestCase
     # eval(@base_class).send(:include, ItemPrivacyTestHelper::Model)
 
     # hash of params to create new instance of model, e.g. {:name => 'Test Model', :description => 'Dummy'}
-    @new_model = { :title => 'test item',
-                   :basket_id => Basket.find(:first) }
+    @new_model = { 
+      :title => 'test item',
+      :basket_id => Basket.find(:first) 
+    }
 
     # name of fields that must be present, e.g. %(name description)
     @req_attr_names = %w(title)

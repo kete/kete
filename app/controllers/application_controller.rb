@@ -59,34 +59,36 @@ class ApplicationController < ActionController::Base
   private :password_protect
 
   # only permit site members to add/delete things
-  before_filter :login_required, only: %i[new create
-                                          edit update destroy
-                                          appearance homepage_options
-                                          convert
-                                          make_theme
-                                          find_related
-                                          link_related
-                                          find_index
-                                          flag_form
-                                          flag_version
-                                          restore
-                                          reject
-                                          choose_type render_item_form
-                                          setup_rebuild
-                                          rebuild_zoom_index
-                                          add_portrait remove_portrait
-                                          make_selected_portrait
-                                          contact send_email
-                                          join]
+  before_filter :login_required, only: %i[
+    new create
+    edit update destroy
+    appearance homepage_options
+    convert
+    make_theme
+    find_related
+    link_related
+    find_index
+    flag_form
+    flag_version
+    restore
+    reject
+    choose_type render_item_form
+    setup_rebuild
+    rebuild_zoom_index
+    add_portrait remove_portrait
+    make_selected_portrait
+    contact send_email
+    join]
 
   # doesn't work for redirects, those are handled by
   # after filters on registered on specific controllers
   # based on SystemSetting.allowed_anonymous_actions specs
   # this should prevent url surgery to subvert logging out of anonymous user though
-  before_filter :logout_anonymous_user_unless_allowed, except: %i[logout
-                                                                  login
-                                                                  signup
-                                                                  show_captcha]
+  before_filter :logout_anonymous_user_unless_allowed, except: %i[
+    logout
+    login
+    signup
+    show_captcha]
 
   # all topics and content items belong in a basket
   # and will always be specified in our routes
@@ -380,10 +382,12 @@ class ApplicationController < ActionController::Base
   end
 
   def redirect_to_search_for(zoom_class)
-    redirect_to(controller: 'search',
-                trailing_slash: true,
-                action: :all,
-                controller_name_for_zoom_class: zoom_class)
+    redirect_to(
+      controller: 'search',
+      trailing_slash: true,
+      action: :all,
+      controller_name_for_zoom_class: zoom_class
+    )
   end
 
   def redirect_to_default_all
@@ -467,11 +471,13 @@ class ApplicationController < ActionController::Base
     item_url = nil
     if (item.class.name == 'Comment') && (correct_action != 'preview')
       commented_item = item.commentable
-      item_url = url_for(controller: zoom_class_controller(commented_item.class.name),
-                         action: correct_action,
-                         id: commented_item,
-                         anchor: item.id,
-                         urlified_name: commented_item.basket.urlified_name)
+      item_url = url_for(
+        controller: zoom_class_controller(commented_item.class.name),
+        action: correct_action,
+        id: commented_item,
+        anchor: item.id,
+        urlified_name: commented_item.basket.urlified_name
+      )
     else
       item_url = url_for(options)
     end
@@ -910,8 +916,10 @@ class ApplicationController < ActionController::Base
 
   def redirect_if_current_basket_isnt_approved_for_public_viewing
     if @current_basket.status != 'approved' && !@site_admin && !@basket_admin
-      flash[:error] = t('application_controller.redirect_if_current_basket_isnt_approved_for_public_viewing.not_available',
-                        basket_name: @current_basket.name)
+      flash[:error] = t(
+        'application_controller.redirect_if_current_basket_isnt_approved_for_public_viewing.not_available',
+        basket_name: @current_basket.name
+      )
       redirect_to "/#{@site_basket.urlified_name}"
     end
   end
