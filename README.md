@@ -5,6 +5,7 @@
 [![Code Climate](https://codeclimate.com/github/kete/kete/badges/gpa.svg)](https://codeclimate.com/github/kete/kete)
 [![Test Coverage](https://codeclimate.com/github/kete/kete/badges/coverage.svg)](https://codeclimate.com/github/kete/kete/coverage)
 [![Issue Count](https://codeclimate.com/github/kete/kete/badges/issue_count.svg)](https://codeclimate.com/github/kete/kete)
+[![AwesomeCode Status for kete/kete](https://awesomecode.io/projects/4182a368-cfa8-462a-95ab-016e45488e68/status)](https://awesomecode.io/projects/60)
 
 Kete is a knowledge basket of images, audio, video and documents which are collected and catalogued by the community.
 
