@@ -2,6 +2,6 @@ require 'spec_helper'
 
 describe Profile do
   it 'does not blow up when you initialize it' do
-    foo = Profile.new
+    foo = described_class.new
   end
 end

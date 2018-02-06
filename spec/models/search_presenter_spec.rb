@@ -12,6 +12,6 @@ describe SearchPresenter do
       target_basket: '',
       page: '1'
     )
-    sp = SearchPresenter.new(query: q)
+    sp = described_class.new(query: q)
   end
 end

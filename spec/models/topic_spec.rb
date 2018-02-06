@@ -2,14 +2,14 @@ require 'spec_helper'
 
 describe Topic do
   it 'does not blow up when you initialize it' do
-    expect { Topic.new }.not_to raise_error
+    expect { described_class.new }.not_to raise_error
   end
 
   it 'allows setting of a custom title' do
     unique = 'a unique title'
     topic_type = FactoryGirl.create(:topic_type)
     basket = FactoryGirl.create(:basket)
-    topic = Topic.new(title: unique, topic_type: topic_type, basket: basket)
+    topic = described_class.new(title: unique, topic_type: topic_type, basket: basket)
     topic.save!
     expect(topic.title).to eq(unique)
   end
@@ -21,7 +21,7 @@ describe Topic do
 
     it 'cannot be set during topic creation' do
       expect {
-        Topic.create(title: 'A title',
+        described_class.create(title: 'A title',
                      topic_type: topic_type,
                      basket: basket,
                      creator: user)
@@ -29,7 +29,7 @@ describe Topic do
     end
 
     it 'can be set after a Topic is created' do
-      topic = Topic.create(title: 'A title',
+      topic = described_class.create(title: 'A title',
                            topic_type: topic_type,
                            basket: basket)
 
