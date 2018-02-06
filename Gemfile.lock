@@ -385,7 +385,7 @@ DEPENDENCIES
   libxml-ruby
   mime-types
   mini_exiftool (< 2.0.0)
-  nokogiri (>= 1.8.1)
+  nokogiri (>= 1.8.2)
   oai (~> 0.3.1)
   oembed_provider_engine
   packet
@@ -423,6 +423,5 @@ DEPENDENCIES
 
 RUBY VERSION
    ruby 2.3.3p222
-
 BUNDLED WITH
    1.16.1
