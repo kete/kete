@@ -16,9 +16,10 @@ class ProfileTest < ActiveSupport::TestCase
 
   context "The Profile class" do
     should "have valid type_options" do
-      options_spec = [['None', 'none'],
-                      ['All', 'all'],
-                      ['Select Below', 'some']]
+      options_spec = [
+        ['None', 'none'],
+        ['All', 'all'],
+        ['Select Below', 'some']]
       assert_equal Profile.type_options, options_spec
     end
   end

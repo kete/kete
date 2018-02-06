@@ -44,8 +44,10 @@ class AccountController < ApplicationController
 
           anonymous_name = params[:name].blank? ? @anonymous_user.user_name : params[:name]
 
-          session[:anonymous_user] = { name: anonymous_name,
-                                       email: params[:email] }
+          session[:anonymous_user] = { 
+            name: anonymous_name,
+            email: params[:email] 
+          }
 
           # see if the submitted website is valid
           # append protocol if they have left it off
@@ -70,10 +72,14 @@ class AccountController < ApplicationController
           move_session_searches_to_current_user
           flash[:notice] = t('account_controller.login.logged_in')
         end
-        redirect_back_or_default({ locale: current_user.locale,
-                                   urlified_name: @site_basket.urlified_name,
-                                   controller: 'account',
-                                   action: 'index' }, current_user.locale)
+        redirect_back_or_default(
+          { 
+            locale: current_user.locale,
+            urlified_name: @site_basket.urlified_name,
+            controller: 'account',
+            action: 'index' 
+          }, current_user.locale
+        )
       else
         if params[:login].present? && params[:password].present?
           flash[:notice] = t('account_controller.login.failed_login')
@@ -130,10 +136,12 @@ class AccountController < ApplicationController
       end
     end
 
-    redirect_back_or_default({ locale: params[:user][:locale],
+    redirect_back_or_default({ 
+                               locale: params[:user][:locale],
                                urlified_name: @site_basket.urlified_name,
                                controller: 'account',
-                               action: 'index' })
+                               action: 'index' 
+                             })
   rescue ActiveRecord::RecordInvalid
     render action: 'signup'
   end
@@ -148,8 +156,9 @@ class AccountController < ApplicationController
 
   def forgot_password
     return unless request.post?
-    @users = !params[:user][:login].blank? ? User.find_all_by_email_and_login(params[:user][:email], params[:user][:login]) :
-                                             User.find_all_by_email(params[:user][:email])
+    @users =
+      !params[:user][:login].blank? ? User.find_all_by_email_and_login(params[:user][:email], params[:user][:login]) :
+                                                  User.find_all_by_email(params[:user][:email])
     if @users.size == 1
       user = @users.first
       user.forgot_password
@@ -182,9 +191,11 @@ class AccountController < ApplicationController
       format.js do
         render :update do |page|
           page.replace_html params[:avatar_id],
-                            avatar_tag(User.new({ email: params[:email] || String.new }),
-                                       { size: 30, rating: 'G', gravatar_default_url: '/images/no-avatar.png' },
-                                       { width: 30, height: 30, alt: t('account_controller.fetch_gravatar.your_gravatar') })
+                            avatar_tag(
+                              User.new({ email: params[:email] || String.new }),
+                              { size: 30, rating: 'G', gravatar_default_url: '/images/no-avatar.png' },
+                              { width: 30, height: 30, alt: t('account_controller.fetch_gravatar.your_gravatar') }
+                            )
         end
       end
     end
@@ -197,9 +208,11 @@ class AccountController < ApplicationController
   def logout
     deauthenticate
     flash[:notice] = t('account_controller.logout.logged_out')
-    redirect_back_or_default(controller: 'index_page',
-                             urlified_name: @current_basket.urlified_name,
-                             action: 'index')
+    redirect_back_or_default(
+      controller: 'index_page',
+      urlified_name: @current_basket.urlified_name,
+      action: 'index'
+    )
   end
 
   def show
@@ -228,11 +241,13 @@ class AccountController < ApplicationController
     if @user.update_attributes(params[:user])
 
       flash[:notice] = t('account_controller.update.user_updated')
-      redirect_to({ locale: params[:user][:locale],
+      redirect_to({ 
+                    locale: params[:user][:locale],
                     urlified_name: @site_basket.urlified_name,
                     controller: 'account',
                     action: 'show',
-                    id: @user })
+                    id: @user 
+                  })
     else
       logger.debug('what is problem')
       render action: 'edit'
@@ -245,9 +260,10 @@ class AccountController < ApplicationController
       if params[:password] == params[:password_confirmation]
         current_user.password_confirmation = params[:password_confirmation]
         current_user.password = params[:password]
-        flash[:notice] = current_user.save ?
-        t('account_controller.change_password.password_changed') :
-          t('account_controller.change_password.password_not_changed')
+        flash[:notice] =
+          current_user.save ?
+                 t('account_controller.change_password.password_changed') :
+                   t('account_controller.change_password.password_not_changed')
         if SystemSetting.is_configured?
           redirect_to action: 'show'
         else
@@ -272,9 +288,11 @@ class AccountController < ApplicationController
     if @user && @user.activate
       if SystemSetting.administrator_activates?
         flash[:notice] = t('account_controller.activate.admin_activated', new_user: @user.resolved_name)
-        redirect_back_or_default(controller: '/account',
-                                 action: 'show',
-                                 id: @user.id)
+        redirect_back_or_default(
+          controller: '/account',
+          action: 'show',
+          id: @user.id
+        )
       else
         flash[:notice] = t('account_controller.activate.activated')
         redirect_back_or_default(controller: '/account', action: 'login')

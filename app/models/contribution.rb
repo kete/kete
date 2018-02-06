@@ -26,7 +26,9 @@ class Contribution < ActiveRecord::Base
   end
 
   def self.add_as_to(user, role, item)
-    with_scope(create: { contributor_role: role,
-                         version: user.version }) { item.concat user }
+    with_scope(create: { 
+                 contributor_role: role,
+                 version: user.version 
+               }) { item.concat user }
   end
 end

@@ -27,9 +27,11 @@ module XmlHelpers
       if (item.respond_to?(:public_filename) && !item.public_filename.blank?) ||
          (item.respond_to?(:original_file) && !item.original_file.blank?)
         protocol = protocol || 'http'
-        args = { type: item.content_type,
-                 length: item.size.to_s,
-                 url: file_url_from_bits_for(item, host, protocol) }
+        args = { 
+          type: item.content_type,
+          length: item.size.to_s,
+          url: file_url_from_bits_for(item, host, protocol) 
+        }
 
         if item.class.name == 'ImageFile'
           args[:width] = item.width
@@ -97,17 +99,21 @@ module XmlHelpers
         # which we can tell by seeing if the version is private
         # (in which case we are building the private search index)
         return if item.file_private? && !item.private?
-        xml.media_content(size: item.size,
-                          content_type: item.content_type,
-                          src: protocol + '://' + host + item.public_filename)
+        xml.media_content(
+          size: item.size,
+          content_type: item.content_type,
+          src: protocol + '://' + host + item.public_filename
+        )
       else
         # if there is any non-placeholder public version it is ok to return large version
         # for still images
         large = item.large_file
-        xml.media_content(height: large.height, width: large.width,
-                          size: large.size,
-                          content_type: large.content_type,
-                          src: protocol + '://' + host + large.public_filename)
+        xml.media_content(
+          height: large.height, width: large.width,
+          size: large.size,
+          content_type: large.content_type,
+          src: protocol + '://' + host + large.public_filename
+        )
       end
     end
 
@@ -150,8 +156,10 @@ module XmlHelpers
             # and generating them also slows down the create/update actions for items
             # limiting here, since we are likely to only want this many
             # if the item is not private, don't allow private related still images
-            options = { limit: SystemSetting.number_of_related_things_to_display_per_type,
-                        conditions: PUBLIC_CONDITIONS }
+            options = { 
+              limit: SystemSetting.number_of_related_things_to_display_per_type,
+              conditions: PUBLIC_CONDITIONS 
+            }
 
             options.delete(:conditions) if item.private
 

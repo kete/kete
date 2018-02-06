@@ -22,10 +22,11 @@ class Basket < ActiveRecord::Base
 
   # we use these for who can see what
   def self.member_level_options
-    [[I18n.t('basket_model.basket_member'), 'at least member'],
-     [I18n.t('basket_model.basket_moderator'), 'at least moderator'],
-     [I18n.t('basket_model.basket_admin'), 'at least admin'],
-     [I18n.t('basket_model.site_admin'), 'at least site admin']]
+    [
+      [I18n.t('basket_model.basket_member'), 'at least member'],
+      [I18n.t('basket_model.basket_moderator'), 'at least moderator'],
+      [I18n.t('basket_model.basket_admin'), 'at least admin'],
+      [I18n.t('basket_model.site_admin'), 'at least site admin']]
   end
 
   def self.user_level_options
@@ -46,36 +47,40 @@ class Basket < ActiveRecord::Base
   # profile forms, these should correspond to actions in the controller
   # really this would be nicer if it came from reflecting on the baskets_controller class
   def self.forms_options
-    [[I18n.t('basket_model.basket_new_or_edit'), 'edit'],
-     [I18n.t('basket_model.basket_appearance'), 'appearance'],
-     [I18n.t('basket_model.basket_homepage_options'), 'homepage_options']]
+    [
+      [I18n.t('basket_model.basket_new_or_edit'), 'edit'],
+      [I18n.t('basket_model.basket_appearance'), 'appearance'],
+      [I18n.t('basket_model.basket_homepage_options'), 'homepage_options']]
   end
 
   # Editable Basket Attributes (copy from the basket database fields)
-  EDITABLE_ATTRIBUTES = %w{ index_page_redirect_to_all index_page_topic_is_entire_page
-                            index_page_link_to_index_topic_as index_page_basket_search index_page_image_as
-                            index_page_tags_as index_page_number_of_tags index_page_order_tags_by
-                            index_page_recent_topics_as index_page_number_of_recent_topics index_page_archives_as
-                            index_page_extra_side_bar_html private_default file_private_default allow_non_member_comments
-                            show_privacy_controls do_not_sanitize feeds_attributes }
+  EDITABLE_ATTRIBUTES = %w{ 
+    index_page_redirect_to_all index_page_topic_is_entire_page
+    index_page_link_to_index_topic_as index_page_basket_search index_page_image_as
+    index_page_tags_as index_page_number_of_tags index_page_order_tags_by
+    index_page_recent_topics_as index_page_number_of_recent_topics index_page_archives_as
+    index_page_extra_side_bar_html private_default file_private_default allow_non_member_comments
+    show_privacy_controls do_not_sanitize feeds_attributes }
 
   # Editable Basket Settings
-  EDITABLE_SETTINGS = %w{ fully_moderated moderated_except private_file_visibility browse_view_as
-                          sort_order_default sort_direction_reversed_default disable_site_recent_topics_display
-                          basket_join_policy memberlist_policy import_archive_set_policy allow_basket_admin_contact private_item_notification
-                          private_item_notification_show_title private_item_notification_show_short_summary
-                          theme_font_family header_image theme show_action_menu show_discussion show_flagging
-                          show_add_links side_menu_number_of_topics side_menu_ordering_of_topics side_menu_direction_of_topics
-                          additional_footer_content do_not_sanitize_footer_content replace_existing_footer }
+  EDITABLE_SETTINGS = %w{ 
+    fully_moderated moderated_except private_file_visibility browse_view_as
+    sort_order_default sort_direction_reversed_default disable_site_recent_topics_display
+    basket_join_policy memberlist_policy import_archive_set_policy allow_basket_admin_contact private_item_notification
+    private_item_notification_show_title private_item_notification_show_short_summary
+    theme_font_family header_image theme show_action_menu show_discussion show_flagging
+    show_add_links side_menu_number_of_topics side_menu_ordering_of_topics side_menu_direction_of_topics
+    additional_footer_content do_not_sanitize_footer_content replace_existing_footer }
 
   # Basket settings that are always editable or come under a parent option
-  NESTED_FIELDS = %w{ name status creator_id do_not_sanitize moderated_except
-                      sort_direction_reversed_default private_item_notification_show_title
-                      private_item_notification_show_short_summary index_page_link_to_index_topic_as
-                      index_page_recent_topics_as index_page_tags_as index_page_order_tags_by
-                      show_action_menu show_discussion show_flagging show_add_links
-                      side_menu_number_of_topics side_menu_ordering_of_topics side_menu_direction_of_topics
-                      do_not_sanitize_footer_content replace_existing_footer }
+  NESTED_FIELDS = %w{ 
+    name status creator_id do_not_sanitize moderated_except
+    sort_direction_reversed_default private_item_notification_show_title
+    private_item_notification_show_short_summary index_page_link_to_index_topic_as
+    index_page_recent_topics_as index_page_tags_as index_page_order_tags_by
+    show_action_menu show_discussion show_flagging show_add_links
+    side_menu_number_of_topics side_menu_ordering_of_topics side_menu_direction_of_topics
+    do_not_sanitize_footer_content replace_existing_footer }
 
   # Kieran Pilkington, 2008-07-09
   # remove the roles from a basket before destroying it to prevent problems later on
@@ -431,45 +436,52 @@ class Basket < ActiveRecord::Base
 
   # attribute options methods
   def self.link_to_index_topic_as_options
-    [[I18n.t('basket_model.dont_link'), ''],
-     [I18n.t('basket_model.details_and_comments'), 'full topic and comments'],
-     [I18n.t('basket_model.only_details'), 'full topic'],
-     [I18n.t('basket_model.only_comments'), 'comments']]
+    [
+      [I18n.t('basket_model.dont_link'), ''],
+      [I18n.t('basket_model.details_and_comments'), 'full topic and comments'],
+      [I18n.t('basket_model.only_details'), 'full topic'],
+      [I18n.t('basket_model.only_comments'), 'comments']]
   end
 
   def self.recent_topics_as_options
-    [[I18n.t('basket_model.recent_dont_show'), ''],
-     [I18n.t('basket_model.recent_as_summaries'), 'summaries'],
-     [I18n.t('basket_model.recent_as_headlines'), 'headlines']]
+    [
+      [I18n.t('basket_model.recent_dont_show'), ''],
+      [I18n.t('basket_model.recent_as_summaries'), 'summaries'],
+      [I18n.t('basket_model.recent_as_headlines'), 'headlines']]
   end
 
   def self.archives_as_options
-    [[I18n.t('basket_model.archives_dont_show'), ''],
-     [I18n.t('basket_model.archives_by_type'), 'by type']]
+    [
+      [I18n.t('basket_model.archives_dont_show'), ''],
+      [I18n.t('basket_model.archives_by_type'), 'by type']]
   end
 
   def self.image_as_options
-    [[I18n.t('basket_model.image_dont_show'), ''],
-     [I18n.t('basket_model.image_latest'), 'latest'],
-     [I18n.t('basket_model.image_random'), 'random']]
+    [
+      [I18n.t('basket_model.image_dont_show'), ''],
+      [I18n.t('basket_model.image_latest'), 'latest'],
+      [I18n.t('basket_model.image_random'), 'random']]
   end
 
   def self.order_tags_by_options
-    [[I18n.t('basket_model.tags_ordered_most_popular'), 'number'],
-     [I18n.t('basket_model.tags_ordered_by_name'), 'alphabetical'],
-     [I18n.t('basket_model.tags_ordered_latest'), 'latest'],
-     [I18n.t('basket_model.tags_ordered_random'), 'random']]
+    [
+      [I18n.t('basket_model.tags_ordered_most_popular'), 'number'],
+      [I18n.t('basket_model.tags_ordered_by_name'), 'alphabetical'],
+      [I18n.t('basket_model.tags_ordered_latest'), 'latest'],
+      [I18n.t('basket_model.tags_ordered_random'), 'random']]
   end
 
   def self.tags_as_options
-    [[I18n.t('basket_model.tags_as_categories'), 'categories'],
-     [I18n.t('basket_model.tags_as_tag_cloud'), 'tag cloud']]
+    [
+      [I18n.t('basket_model.tags_as_categories'), 'categories'],
+      [I18n.t('basket_model.tags_as_tag_cloud'), 'tag cloud']]
   end
 
   def moderation_select_options(default = nil)
     select_options = String.new
-    [[I18n.t('basket_model.moderate_before_approved'), true],
-     [I18n.t('basket_model.moderate_on_flagged'), false]].each do |option|
+    [
+      [I18n.t('basket_model.moderate_before_approved'), true],
+      [I18n.t('basket_model.moderate_on_flagged'), false]].each do |option|
       label = option[0]
       value = option[1]
       select_options += "<option value=\"#{value}\""
@@ -527,9 +539,10 @@ class Basket < ActiveRecord::Base
 
   def font_family_select_options(default = nil)
     select_options = String.new
-    [[I18n.t('basket_model.font_use_theme_default'), ''],
-     [I18n.t('basket_model.font_sans_serif'), 'sans-serif'],
-     [I18n.t('basket_model.font_serif'), 'serif']].each do |option|
+    [
+      [I18n.t('basket_model.font_use_theme_default'), ''],
+      [I18n.t('basket_model.font_sans_serif'), 'sans-serif'],
+      [I18n.t('basket_model.font_serif'), 'serif']].each do |option|
       label = option[0]
       value = option[1]
       select_options += "<option value=\"#{value}\""
@@ -601,10 +614,12 @@ class Basket < ActiveRecord::Base
 
     formatted_name = name.to_s
 
-    self.urlified_name = format_friendly_unicode_for(formatted_name,
-                                                     demarkator: '_',
-                                                     at_start: false,
-                                                     at_end: false)
+    self.urlified_name = format_friendly_unicode_for(
+      formatted_name,
+      demarkator: '_',
+      at_start: false,
+      at_end: false
+    )
   end
 
   def self.list_as_names_and_urlified_names

@@ -68,9 +68,11 @@ module Importer
       @import_field_to_extended_field_map = Hash.new
       @description_end_templates = Hash.new
       @collections_to_skip = Array.new
-      @results = { do_work_time: Time.now.to_s,
-                   done_with_do_work: false,
-                   records_processed: 0 }
+      @results = { 
+        do_work_time: Time.now.to_s,
+        done_with_do_work: false,
+        records_processed: 0 
+      }
 
       cache[:results] = @results
     end
@@ -278,14 +280,16 @@ module Importer
               topic_type = TopicType.find_by_id(extended_field.topic_type)
               logger.info 'finding topic in topic type: ' + topic_type.inspect
 
-              topics = importer_fetch_related_topics(value, params, {
-                                                       item_type: 'topics',
-                                                       topic_type: topic_type,
-                                                       extended_field_data: {
-                                                         label: @extended_field_that_contains_related_topics_reference.label_for_params,
-                                                         value: value
-                                                       }
-                                                     })
+              topics = importer_fetch_related_topics(
+                value, params, {
+                  item_type: 'topics',
+                  topic_type: topic_type,
+                  extended_field_data: {
+                    label: @extended_field_that_contains_related_topics_reference.label_for_params,
+                    value: value
+                  }
+                }
+              )
               logger.info 'what is found topics? ' + topics.inspect
               return params if topics.blank?
               topic_url = url_for_dc_identifier(topics.first)
@@ -348,24 +352,28 @@ module Importer
                   xml.safe_send(key.to_s) do
                     logger.debug('inside hash: key: ' + key.to_s)
                     m_value = hash_of_values[key]
-                    extended_content_field_xml_tag(xml: xml,
-                                                   field: field_name,
-                                                   value: m_value,
-                                                   xml_element_name: field_to_xml.extended_field_xml_element_name,
-                                                   xsi_type: field_to_xml.extended_field_xsi_type,
-                                                   extended_field: field_to_xml.extended_field)
+                    extended_content_field_xml_tag(
+                      xml: xml,
+                      field: field_name,
+                      value: m_value,
+                      xml_element_name: field_to_xml.extended_field_xml_element_name,
+                      xsi_type: field_to_xml.extended_field_xsi_type,
+                      extended_field: field_to_xml.extended_field
+                    )
                   end
                 end
               end
             end
           else
             value = (params[item_key]['extended_content_values'][field_name] || '') rescue ''
-            extended_content_field_xml_tag(xml: xml,
-                                           field: field_name,
-                                           value: value,
-                                           xml_element_name: field_to_xml.extended_field_xml_element_name,
-                                           xsi_type: field_to_xml.extended_field_xsi_type,
-                                           extended_field: field_to_xml.extended_field)
+            extended_content_field_xml_tag(
+              xml: xml,
+              field: field_name,
+              value: value,
+              xml_element_name: field_to_xml.extended_field_xml_element_name,
+              xsi_type: field_to_xml.extended_field_xsi_type,
+              extended_field: field_to_xml.extended_field
+            )
           end
         end
       end
@@ -777,10 +785,12 @@ module Importer
 
       if record_value.present?
         # if it's mapped to an extended field, params are updated
-        params = importer_prepare_extended_field(value: record_value,
-                                                 field: record_field,
-                                                 zoom_class_for_params: zoom_class_for_params,
-                                                 params: params)
+        params = importer_prepare_extended_field(
+          value: record_value,
+          field: record_field,
+          zoom_class_for_params: zoom_class_for_params,
+          params: params
+        )
 
         # the field may also be mapped to non-extended fields
         # such as tags, description, title
@@ -1086,14 +1096,16 @@ module Importer
             related_topic_identifier = related_topic_identifier.strip
 
             if @last_related_topic_identifier.blank? || @last_related_topic_identifier != related_topic_identifier
-              related_topics = importer_fetch_related_topics(related_topic_identifier, params, {
-                                                               item_type: 'topics',
-                                                               topic_type: @related_topic_type,
-                                                               extended_field_data: {
-                                                                 label: @extended_field_that_contains_related_topics_reference.label_for_params,
-                                                                 value: related_topic_identifier
-                                                               }
-                                                             }) if @extended_field_that_contains_related_topics_reference.present?
+              related_topics = importer_fetch_related_topics(
+                related_topic_identifier, params, {
+                  item_type: 'topics',
+                  topic_type: @related_topic_type,
+                  extended_field_data: {
+                    label: @extended_field_that_contains_related_topics_reference.label_for_params,
+                    value: related_topic_identifier
+                  }
+                }
+              ) if @extended_field_that_contains_related_topics_reference.present?
             else
               related_topics = @last_related_topics
             end
@@ -1156,15 +1168,17 @@ module Importer
       # we set the virtual attribute, do_not_moderate to true
       # so that our imported topics go live right away
       # and thus can be found (since then they won't have blank attributes)
-      related_topic = Topic.create!(title: topic_params[:topic][:title],
-                                    description: topic_params[:topic][:description],
-                                    short_summary: topic_params[:topic][:short_summary],
-                                    extended_content: topic_params[:topic][:extended_content],
-                                    basket_id: topic_params[:topic][:basket_id],
-                                    license_id: topic_params[:topic][:license_id],
-                                    topic_type_id: topic_params[:topic][:topic_type_id],
-                                    do_not_moderate: true,
-                                    related_items_position: (SystemSetting.related_items_position_default ? SystemSetting.related_items_position_default : 'inset'))
+      related_topic = Topic.create!(
+        title: topic_params[:topic][:title],
+        description: topic_params[:topic][:description],
+        short_summary: topic_params[:topic][:short_summary],
+        extended_content: topic_params[:topic][:extended_content],
+        basket_id: topic_params[:topic][:basket_id],
+        license_id: topic_params[:topic][:license_id],
+        topic_type_id: topic_params[:topic][:topic_type_id],
+        do_not_moderate: true,
+        related_items_position: (SystemSetting.related_items_position_default ? SystemSetting.related_items_position_default : 'inset')
+      )
 
       related_topic.creator = @contributing_user
       related_topic

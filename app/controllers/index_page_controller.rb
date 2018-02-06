@@ -30,26 +30,34 @@ class IndexPageController < ApplicationController
         if !@topic.nil? # if @topic is not nil do ...
           case @current_basket.index_page_link_to_index_topic_as
           when 'full topic and comments'
-            @url_to_full_topic = url_for(urlified_name: @topic.basket.urlified_name,
-                                         action: :show,
-                                         controller: 'topics',
-                                         id: @topic)
-            @url_to_comments = url_for(action: 'show',
-                                       urlified_name: @topic.basket.urlified_name,
-                                       controller: 'topics',
-                                       id: @topic,
-                                       anchor: 'comments')
+            @url_to_full_topic = url_for(
+              urlified_name: @topic.basket.urlified_name,
+              action: :show,
+              controller: 'topics',
+              id: @topic
+            )
+            @url_to_comments = url_for(
+              action: 'show',
+              urlified_name: @topic.basket.urlified_name,
+              controller: 'topics',
+              id: @topic,
+              anchor: 'comments'
+            )
           when 'full topic'
-            @url_to_full_topic = url_for(urlified_name: @topic.basket.urlified_name,
-                                         action: :show,
-                                         controller: 'topics',
-                                         id: @topic)
+            @url_to_full_topic = url_for(
+              urlified_name: @topic.basket.urlified_name,
+              action: :show,
+              controller: 'topics',
+              id: @topic
+            )
           when 'comments'
-            @url_to_comments = url_for(action: 'show',
-                                       urlified_name: @topic.basket.urlified_name,
-                                       controller: 'topics',
-                                       id: @topic,
-                                       anchor: 'comments')
+            @url_to_comments = url_for(
+              action: 'show',
+              urlified_name: @topic.basket.urlified_name,
+              controller: 'topics',
+              id: @topic,
+              anchor: 'comments'
+            )
           end
 
           # prepare blog list of most recent topics

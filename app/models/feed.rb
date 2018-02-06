@@ -45,12 +45,14 @@ class Feed < ActiveRecord::Base
   def update_feed
     entries = Feed.fetch(url)
     if serialized_feed != entries # is there something different
-      update_attributes({ serialized_feed: entries,
-                          last_downloaded: Time.now.utc.to_s(:db) })
+      update_attributes({ 
+                          serialized_feed: entries,
+                          last_downloaded: Time.now.utc.to_s(:db) 
+                        })
       clear_caches
     end
   rescue
-      # fail silently - make sure nothing causes errors to output
+    # fail silently - make sure nothing causes errors to output
   end
 
   # for backgroundrb feeds_worker support

@@ -21,17 +21,21 @@ describe Topic do
 
     it 'cannot be set during topic creation' do
       expect {
-        Topic.create(title: 'A title',
-                     topic_type: topic_type,
-                     basket: basket,
-                     creator: user)
+        Topic.create(
+          title: 'A title',
+          topic_type: topic_type,
+          basket: basket,
+          creator: user
+        )
       }.to raise_error
     end
 
     it 'can be set after a Topic is created' do
-      topic = Topic.create(title: 'A title',
-                           topic_type: topic_type,
-                           basket: basket)
+      topic = Topic.create(
+        title: 'A title',
+        topic_type: topic_type,
+        basket: basket
+      )
 
       topic.creator = user
       expect(topic.creator).to eq(user)

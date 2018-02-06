@@ -294,57 +294,61 @@ module ExtendedContent
     # Underneath the hood, conversion is done by #extended_content_values=, the same way it is handled normally
     # for POSTed params.
     def structured_extended_content=(hash)
-      hash_for_conversion = hash.inject(Hash.new) do |result, field|
-        # Extract the name of the field
-        field_param_name = field.delete(field.first)
-
-        # Grab the extended field for this field name
-        extended_field = all_fields.find { |ef| field_param_name == ef.label_for_params }
-
-        # Remove the extra level of nesting left after removing the first of two elements
-        field = field.first
-
-        # in some cases, field may be nil, but needs to be nil wrapped in an array
-        field = [nil] if field.nil?
-
-        if ['map', 'map_address'].member?(extended_field.ftype)
-          result[field_param_name] = convert_value_from_structured_hash(field, extended_field)
-
-        # if we are dealing with a multiple topic type
-        # we need to do things a bit differently
-        elsif extended_field.ftype == 'topic_type' && extended_field.multiple?
-          index = 1
-          result[field_param_name] = field.inject(Hash.new) do |multiple, value|
-            unless value.blank?
-              multiple[index.to_s] = value
-              index += 1
-            end
-            multiple
-          end
-        elsif ['autocomplete', 'choice'].member?(extended_field.ftype)
-          if field.size > 1
-            # We're dealing with a multiple field value.
-            result[field_param_name] = field.inject(Hash.new) do |multiple, value|
-              multiple[(field.index(value) + 1).to_s] = convert_value_from_structured_hash(value, extended_field)
-              multiple
-            end
-          else
-            result[field_param_name] = convert_value_from_structured_hash(field, extended_field)
-          end
-        else
-          if (extended_field.multiple && field.size > 0) || field.size > 1
-            # We're dealing with a multiple field value.
-            result[field_param_name] = field.inject(Hash.new) do |multiple, value|
-              multiple[(field.index(value) + 1).to_s] = convert_value_from_structured_hash(value, extended_field)
-              multiple
-            end
-          else
-            result[field_param_name] = convert_value_from_structured_hash(field, extended_field)
-          end
+      hash_for_conversion =
+        hash.inject(Hash.new) do |result, field|
+          # Extract the name of the field
+          field_param_name = field.delete(field.first)
+       
+               # Grab the extended field for this field name
+               extended_field = all_fields.find { |ef| field_param_name == ef.label_for_params }
+       
+               # Remove the extra level of nesting left after removing the first of two elements
+               field = field.first
+       
+               # in some cases, field may be nil, but needs to be nil wrapped in an array
+               field = [nil] if field.nil?
+       
+               if ['map', 'map_address'].member?(extended_field.ftype)
+                 result[field_param_name] = convert_value_from_structured_hash(field, extended_field)
+       
+               # if we are dealing with a multiple topic type
+               # we need to do things a bit differently
+               elsif extended_field.ftype == 'topic_type' && extended_field.multiple?
+                 index = 1
+                 result[field_param_name] =
+                   field.inject(Hash.new) do |multiple, value|
+                     unless value.blank?
+                       multiple[index.to_s] = value
+                       index += 1
+                     end
+                              multiple
+                   end
+               elsif ['autocomplete', 'choice'].member?(extended_field.ftype)
+                 if field.size > 1
+                   # We're dealing with a multiple field value.
+                   result[field_param_name] =
+                     field.inject(Hash.new) do |multiple, value|
+                       multiple[(field.index(value) + 1).to_s] = convert_value_from_structured_hash(value, extended_field)
+                                  multiple
+                     end
+                 else
+                   result[field_param_name] = convert_value_from_structured_hash(field, extended_field)
+                 end
+               else
+                 if (extended_field.multiple && field.size > 0) || field.size > 1
+                   # We're dealing with a multiple field value.
+                   result[field_param_name] =
+                     field.inject(Hash.new) do |multiple, value|
+                       multiple[(field.index(value) + 1).to_s] = convert_value_from_structured_hash(value, extended_field)
+                                  multiple
+                     end
+                 else
+                   result[field_param_name] = convert_value_from_structured_hash(field, extended_field)
+                 end
+               end
+       
+               result
         end
-
-        result
-      end
 
       # Pass the pseudo params hash for conversion using the usual methods.
       self.extended_content_values = hash_for_conversion
@@ -800,8 +804,10 @@ module ExtendedContent
          (value.blank? || no_map_enabled || no_year_provided) &&
          extended_field_mapping.extended_field.ftype != 'checkbox'
 
-        errors.add_to_base(I18n.t('extended_content_lib.validate_extended_content_single_value.cannot_be_blank',
-                                  label: extended_field_mapping.extended_field.label)) unless \
+        errors.add_to_base(I18n.t(
+                             'extended_content_lib.validate_extended_content_single_value.cannot_be_blank',
+                             label: extended_field_mapping.extended_field.label
+        )) unless \
           extended_field_mapping.extended_field.ftype != 'year' && \
           xml_attributes_without_position[extended_field_mapping.extended_field.label_for_params].nil? && \
           allow_nil_values_for_extended_content
@@ -809,8 +815,10 @@ module ExtendedContent
       else
 
         # Otherwise delegate to specialized method..
-        if message = send("validate_extended_#{extended_field_mapping.extended_field.ftype}_field_content".to_sym, \
-                          extended_field_mapping, value)
+        if message = send(
+          "validate_extended_#{extended_field_mapping.extended_field.ftype}_field_content".to_sym, \
+          extended_field_mapping, value
+        )
 
           errors.add_to_base(message)
         end
@@ -819,31 +827,37 @@ module ExtendedContent
     end
 
     def validate_extended_content_multiple_values(extended_field_mapping, values)
-      all_values_blank = values.all? do |v|
-        v = v['value'] if v.is_a?(Hash) && v['value']
-        v.to_s.blank?
-      end
+      all_values_blank =
+        values.all? do |v|
+          v = v['value'] if v.is_a?(Hash) && v['value']
+               v.to_s.blank?
+        end
 
       if extended_field_mapping.required && all_values_blank && \
          extended_field_mapping.extended_field.ftype != 'checkbox'
 
-        errors.add_to_base(I18n.t('extended_content_lib.validate_extended_content_multiple_values.need_at_least_one',
-                                  label: extended_field_mapping.extended_field.label)) unless \
+        errors.add_to_base(I18n.t(
+                             'extended_content_lib.validate_extended_content_multiple_values.need_at_least_one',
+                             label: extended_field_mapping.extended_field.label
+        )) unless \
           xml_attributes_without_position[extended_field_mapping.extended_field.label_for_params + '_multiple'].nil? && \
           allow_nil_values_for_extended_content
 
       else
 
         # Delegate to specialized method..
-        error_array = values.map do |v|
-          # if label is included, you get back a hash for value
-          v = v['value'] if v.is_a?(Hash) && v['value'] && extended_field_mapping.extended_field.ftype != 'year'
-
-          v = v.to_s unless extended_field_mapping.extended_field.ftype == 'year'
-
-          send("validate_extended_#{extended_field_mapping.extended_field.ftype}_field_content".to_sym, \
-               extended_field_mapping, v)
-        end
+        error_array =
+          values.map do |v|
+            # if label is included, you get back a hash for value
+            v = v['value'] if v.is_a?(Hash) && v['value'] && extended_field_mapping.extended_field.ftype != 'year'
+         
+                   v = v.to_s unless extended_field_mapping.extended_field.ftype == 'year'
+         
+                   send(
+                     "validate_extended_#{extended_field_mapping.extended_field.ftype}_field_content".to_sym, \
+                     extended_field_mapping, v
+                   )
+          end
 
         error_array.compact.each do |error|
           errors.add_to_base(error)
@@ -857,8 +871,10 @@ module ExtendedContent
       return nil if value.blank?
 
       unless value =~ /^((Y|y)es|(N|n)o)$/
-        I18n.t('extended_content_lib.validate_extended_checkbox_field_content.must_be_valid',
-               label: extended_field_mapping.extended_field_label)
+        I18n.t(
+          'extended_content_lib.validate_extended_checkbox_field_content.must_be_valid',
+          label: extended_field_mapping.extended_field_label
+        )
       end
     end
 
@@ -873,8 +889,10 @@ module ExtendedContent
       return nil if value.blank?
 
       unless value =~ /^[0-9]{4}\-[0-9]{2}\-[0-9]{2}$/
-        I18n.t('extended_content_lib.validate_extended_date_field_content.must_be_valid',
-               label: extended_field_mapping.extended_field_label)
+        I18n.t(
+          'extended_content_lib.validate_extended_date_field_content.must_be_valid',
+          label: extended_field_mapping.extended_field_label
+        )
       end
     end
 
@@ -883,15 +901,19 @@ module ExtendedContent
       # Allow nil values. If this is required, the nil value will be caught earlier.
       return nil if values.blank?
       # the values passed in should form an array
-      return I18n.t('extended_content_lib.validate_extended_year_field_content.not_a_hash',
-                    label: extended_field_mapping.extended_field_label,
-                    class: values.class.name, value: values.inspect) unless values.is_a?(Hash)
+      return I18n.t(
+        'extended_content_lib.validate_extended_year_field_content.not_a_hash',
+        label: extended_field_mapping.extended_field_label,
+        class: values.class.name, value: values.inspect
+      ) unless values.is_a?(Hash)
       # allow the value to be blank
       return nil if values['value'].blank?
       # verify that we have a proper formatted value (YYYY)
       unless values['value'] =~ /^[0-9]{4}$/
-        I18n.t('extended_content_lib.validate_extended_year_field_content.must_be_valid',
-               label: extended_field_mapping.extended_field_label)
+        I18n.t(
+          'extended_content_lib.validate_extended_year_field_content.must_be_valid',
+          label: extended_field_mapping.extended_field_label
+        )
       end
     end
 
@@ -917,17 +939,20 @@ module ExtendedContent
 
       # make everything everything an array, so we can deal with it uniformly
       # strip blank values, while we are at it
-      values_array = values.to_a.reject { |v| v.blank? }.collect do |v|
-        if v.is_a?(Hash)
-          v['value']
-        else
-          v
+      values_array =
+        values.to_a.reject { |v| v.blank? }.collect do |v|
+          if v.is_a?(Hash)
+            v['value']
+          else
+            v
+          end
         end
-      end
 
       if !values_array.all? { |v| valid_choice_values.member?(v) }
-        I18n.t('extended_content_lib.validate_extended_choice_field_content.must_be_valid',
-               label: extended_field_mapping.extended_field_label)
+        I18n.t(
+          'extended_content_lib.validate_extended_choice_field_content.must_be_valid',
+          label: extended_field_mapping.extended_field_label
+        )
       end
     end
 
@@ -951,16 +976,20 @@ module ExtendedContent
       topic = Topic.find_by_id(value.split('/').last.to_i, select: 'topic_type_id')
 
       # if this is nil, we were unable to find a matching topic
-      return I18n.t('extended_content_lib.validate_extended_topic_type_field_content.no_such_topic',
-                    label: extended_field_mapping.extended_field_label) unless topic
+      return I18n.t(
+        'extended_content_lib.validate_extended_topic_type_field_content.no_such_topic',
+        label: extended_field_mapping.extended_field_label
+      ) unless topic
 
       parent_topic_type = TopicType.find(extended_field_mapping.extended_field.topic_type.to_i)
       valid_topic_type_ids = parent_topic_type.full_set.collect { |topic_type| topic_type.id }
 
       unless valid_topic_type_ids.include?(topic.topic_type_id)
-        I18n.t('extended_content_lib.validate_extended_topic_type_field_content.must_be_valid',
-               label: extended_field_mapping.extended_field_label,
-               topic_type: parent_topic_type.name)
+        I18n.t(
+          'extended_content_lib.validate_extended_topic_type_field_content.must_be_valid',
+          label: extended_field_mapping.extended_field_label,
+          topic_type: parent_topic_type.name
+        )
       end
     end
 

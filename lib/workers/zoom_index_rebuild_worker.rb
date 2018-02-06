@@ -9,12 +9,14 @@ class ZoomIndexRebuildWorker < BackgrounDRb::MetaWorker
   include ZoomControllerHelpers
 
   def create(_args = nil)
-    results = { do_work_time: Time.now.utc.to_s,
-                done_with_do_work: false,
-                done_with_do_work_time: nil,
-                records_processed: 0,
-                records_skipped: 0,
-                records_failed: 0 }
+    results = { 
+      do_work_time: Time.now.utc.to_s,
+      done_with_do_work: false,
+      done_with_do_work_time: nil,
+      records_processed: 0,
+      records_skipped: 0,
+      records_failed: 0 
+    }
 
     cache[:results] = results
   end
@@ -40,18 +42,20 @@ class ZoomIndexRebuildWorker < BackgrounDRb::MetaWorker
     @public_zoom_db = ZoomDb.find_by_database_name('public')
     @private_zoom_db = @skip_private ? nil : ZoomDb.find_by_database_name('private')
 
-    @use_zebraidx = if args[:use_zebraidx]
-                      args[:use_zebraidx]
-                    else
-                      @use_zebraidx = if @public_zoom_db.host == 'localhost' &&
-                                         (@skip_private ||
-                                          (@private_zoom_db &&
-                                           @private_zoom_db.host == 'localhost'))
-                                        true
-                                      else
-                                        false
-                                      end
-                    end
+    @use_zebraidx =
+      if args[:use_zebraidx]
+        args[:use_zebraidx]
+      else
+        @use_zebraidx =
+          if @public_zoom_db.host == 'localhost' &&
+             (@skip_private ||
+              (@private_zoom_db &&
+               @private_zoom_db.host == 'localhost'))
+            true
+          else
+            false
+                            end
+                         end
 
     ENV['SKIP_PRIVATE'] = 'true' if @skip_private && @use_zebraidx
 
@@ -129,9 +133,11 @@ class ZoomIndexRebuildWorker < BackgrounDRb::MetaWorker
       class_count_so_far = 0
       while the_class_count > class_count_so_far
         if class_count_so_far > 0
-          clause_values[:start_id] = the_class.find(:first,
-                                                    select: 'id',
-                                                    conditions: "id > #{@last_id}").id
+          clause_values[:start_id] = the_class.find(
+            :first,
+            select: 'id',
+            conditions: "id > #{@last_id}"
+          ).id
         end
 
         # the_class.find_in_batches(:conditions => [clause, clause_values]) do |batch_of_the_class|
@@ -153,16 +159,20 @@ class ZoomIndexRebuildWorker < BackgrounDRb::MetaWorker
           end
 
           if @use_zebraidx
-            item.prepare_and_save_to_zoom(write_files: true,
-                                          import_private: false,
-                                          skip_private: @skip_private,
-                                          import_request: @import_request)
+            item.prepare_and_save_to_zoom(
+              write_files: true,
+              import_private: false,
+              skip_private: @skip_private,
+              import_request: @import_request
+            )
           else
-            item.prepare_and_save_to_zoom(public_existing_connectiond: @public_zoom_connection,
-                                          private_existing_connectiond: @private_zoom_connection,
-                                          import_private: false,
-                                          skip_private: @skip_private,
-                                          import_request: @import_request)
+            item.prepare_and_save_to_zoom(
+              public_existing_connectiond: @public_zoom_connection,
+              private_existing_connectiond: @private_zoom_connection,
+              import_private: false,
+              skip_private: @skip_private,
+              import_request: @import_request
+            )
 
             if @public_zoom_db.has_zoom_record?(item.zoom_id, @public_zoom_connection) || (@skip_private == false && @private_zoom_db.has_zoom_record?(item.zoom_id, @private_zoom_connection))
               @record_count += 1

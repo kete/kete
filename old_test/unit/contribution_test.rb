@@ -19,11 +19,13 @@ class ContributionTest < ActiveSupport::TestCase
 
       @basket = Basket.first
       @last_topic_in_site = @basket.topics.last
-      @comment = Comment.create!(:title => "created by anonymous",
-                                 :description => "test",
-                                 :basket => @basket,
-                                 :commentable_type => 'Topic',
-                                 :commentable_id => @last_topic_in_site)
+      @comment = Comment.create!(
+        :title => "created by anonymous",
+        :description => "test",
+        :basket => @basket,
+        :commentable_type => 'Topic',
+        :commentable_id => @last_topic_in_site
+      )
       @comment.creator = @anon_user
     end
 

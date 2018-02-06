@@ -12,9 +12,10 @@ module PreviousSearches
     # Order with the most recent search at the top
     def users_previous_searches
       if logged_in?
-        @previous_searches ||= current_user.searches.collect do |s|
-          { id: s.id, title: s.title, url: s.url }
-        end
+        @previous_searches ||=
+          current_user.searches.collect do |s|
+            { id: s.id, title: s.title, url: s.url }
+          end
       else
         @previous_searches ||= session[:searches] || Array.new
       end
@@ -98,8 +99,10 @@ module PreviousSearches
       end
       title_parts << libt(:date_since, since: @date_since) if @date_since
       title_parts << libt(:date_until, until: @date_until) if @date_until
-      title_parts << libt(:type_and_basket, all: ('all' if params[:action] != 'for').to_s, privacy: @privacy.to_s,
-                                            item_type: plural_item_type, basket_name: @current_basket.name).strip
+      title_parts << libt(
+        :type_and_basket, all: ('all' if params[:action] != 'for').to_s, privacy: @privacy.to_s,
+                          item_type: plural_item_type, basket_name: @current_basket.name
+      ).strip
       title_parts << libt(:sort_type, sort_type: params[:sort_type]) if params[:sort_type] && params[:sort_type] != 'none'
       title_parts << libt(:in_reverse) if params[:sort_direction] == 'reverse'
       title_parts.compact.join(', ')

@@ -4,9 +4,11 @@ class SearchHelperTest < ActionView::TestCase
   include ApplicationHelper
 
   def params
-    { :urlified_name => 'site',
+    { 
+      :urlified_name => 'site',
       :controller => 'search',
-      :action => 'all' }
+      :action => 'all' 
+    }
   end
 
   context "The other_results helper" do

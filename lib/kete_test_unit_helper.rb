@@ -53,10 +53,12 @@ module KeteTestUnitHelper
 
     old_url = new_url.sub(new_basket.urlified_name, old_urlified_name)
 
-    assert_not_nil RedirectRegistration.find(:first,
-                                             conditions: {
-                                               source_url_pattern: old_url,
-                                               target_url_pattern: new_url
-                                             })
+    assert_not_nil RedirectRegistration.find(
+      :first,
+      conditions: {
+        source_url_pattern: old_url,
+        target_url_pattern: new_url
+      }
+    )
   end
 end

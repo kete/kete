@@ -55,8 +55,10 @@ class ImagesController < ApplicationController
     params[:image_file] = Hash.new unless params[:image_file]
 
     # handle problems with image file first
-    @image_file = ImageFile.new(params[:image_file].merge({ file_private: params[:still_image][:file_private],
-                                                            item_private: params[:still_image][:private] }))
+    @image_file = ImageFile.new(params[:image_file].merge({ 
+                                                            file_private: params[:still_image][:file_private],
+                                                            item_private: params[:still_image][:private] 
+                                                          }))
 
     @successful = @image_file.save
 

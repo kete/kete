@@ -27,9 +27,10 @@ module ApplicationHelper
   # Get the integer of any given image size
   def image_size_of(string)
     return string.to_i if string.is_a? Numeric
-    size = SystemSetting.image_sizes[string.to_sym].is_a?(String) ? \
-             SystemSetting.image_sizes[string.to_sym].split('x').first : \
-             SystemSetting.image_sizes[string.to_sym].first
+    size =
+      SystemSetting.image_sizes[string.to_sym].is_a?(String) ? \
+                  SystemSetting.image_sizes[string.to_sym].split('x').first : \
+                  SystemSetting.image_sizes[string.to_sym].first
     size.gsub(/(!|>|<)/, '').to_i
   end
 
@@ -37,13 +38,18 @@ module ApplicationHelper
   include Avatar::View::ActionViewSupport
   def avatar_for(user, options = {})
     # New installs use strings for the small_sq value, but we have to handle legacy settings containing arrays
-    image_dimension = SystemSetting.image_sizes[:small_sq].is_a?(String) ? \
-                        SystemSetting.image_sizes[:small_sq].gsub(/(!|>|<)/, '').split('x').first.to_i : \
-                        SystemSetting.image_sizes[:small_sq].first
-    default_options = { width: image_dimension,
-                        height: image_dimension,
-                        alt: t('application_helper.avatar_for.users_avatar',
-                               user_name: user.user_name) }
+    image_dimension =
+      SystemSetting.image_sizes[:small_sq].is_a?(String) ? \
+                             SystemSetting.image_sizes[:small_sq].gsub(/(!|>|<)/, '').split('x').first.to_i : \
+                             SystemSetting.image_sizes[:small_sq].first
+    default_options = { 
+      width: image_dimension,
+      height: image_dimension,
+      alt: t(
+        'application_helper.avatar_for.users_avatar',
+        user_name: user.user_name
+      ) 
+    }
     options = default_options.merge(options)
 
     return nil if options[:return_portrait] && (!SystemSetting.enable_user_portraits? || user.avatar.nil?)
@@ -126,10 +132,12 @@ module ApplicationHelper
   end
 
   def opensearch_descriptions
-    tag(:link, rel: 'search',
-               type: 'application/opensearchdescription+xml',
-               href: '/opensearchdescription.xml',
-               title: "#{SystemSetting.pretty_site_name} Web Search")
+    tag(
+      :link, rel: 'search',
+             type: 'application/opensearchdescription+xml',
+             href: '/opensearchdescription.xml',
+             title: "#{SystemSetting.pretty_site_name} Web Search"
+    )
   end
 
   def open_search_metadata
@@ -225,11 +233,15 @@ module ApplicationHelper
     link_text = options.delete(:link_text)
     li_class = options.delete(:class) || ''
     html = "<li id='header_add_item' class='#{li_class}'>"
-    html += link_to_unless_current(link_text,
-                                   { controller: 'baskets',
-                                     action: 'choose_type',
-                                     urlified_name: @current_basket.urlified_name }.merge(options),
-                                   tabindex: '2')
+    html += link_to_unless_current(
+      link_text,
+      { 
+        controller: 'baskets',
+        action: 'choose_type',
+        urlified_name: @current_basket.urlified_name 
+      }.merge(options),
+      tabindex: '2'
+    )
     html += '</li>'
   end
 
@@ -270,16 +282,19 @@ module ApplicationHelper
 
     return unless current_user_can_add_or_request_basket?
 
-    basket_text = if basket_policy_request_with_permissions?
-                    t('application_helper.header_add_basket_link.request_basket')
-                  else
-                    t('application_helper.header_add_basket_link.add_basket')
-                  end
+    basket_text =
+      if basket_policy_request_with_permissions?
+        t('application_helper.header_add_basket_link.request_basket')
+      else
+        t('application_helper.header_add_basket_link.add_basket')
+                       end
 
-    html = link_to_unless_current(basket_text,
-                                  controller: 'baskets',
-                                  action: 'new',
-                                  urlified_name: @site_basket.urlified_name)
+    html = link_to_unless_current(
+      basket_text,
+      controller: 'baskets',
+      action: 'new',
+      urlified_name: @site_basket.urlified_name
+    )
     html.html_safe
   end
 
@@ -299,30 +314,32 @@ module ApplicationHelper
         order_with_inheritence = basket.setting(:side_menu_ordering_of_topics) || @site_basket.setting(:side_menu_ordering_of_topics)
         direction_with_inheritence = basket.setting(:side_menu_direction_of_topics) || @site_basket.setting(:side_menu_direction_of_topics)
 
-        order = case order_with_inheritence
-                when 'alphabetical'
-                  case direction_with_inheritence
-                  when 'reverse'
-                    'title DESC'
-                  else
-                    'title ASC'
-                  end
-                else
-                  case direction_with_inheritence
-                  when 'reverse'
-                    'updated_at ASC'
-                  else
-                    'updated_at DESC'
-                  end
-                end
+        order =
+          case order_with_inheritence
+          when 'alphabetical'
+            case direction_with_inheritence
+            when 'reverse'
+              'title DESC'
+            else
+              'title ASC'
+            end
+          else
+            case direction_with_inheritence
+            when 'reverse'
+              'updated_at ASC'
+            else
+              'updated_at DESC'
+            end
+                         end
 
-        limit = if !basket.setting(:side_menu_number_of_topics).blank?
-                  basket.setting(:side_menu_number_of_topics).to_i
-                elsif !@site_basket.setting(:side_menu_number_of_topics).blank?
-                  @site_basket.setting(:side_menu_number_of_topics).to_i
-                else
-                  10
-                end
+        limit =
+          if !basket.setting(:side_menu_number_of_topics).blank?
+            basket.setting(:side_menu_number_of_topics).to_i
+          elsif !@site_basket.setting(:side_menu_number_of_topics).blank?
+            @site_basket.setting(:side_menu_number_of_topics).to_i
+          else
+            10
+                         end
 
         basket_topic_count = 0
 
@@ -334,12 +351,18 @@ module ApplicationHelper
         end
 
         if basket.topics.count > basket_topic_count && basket_topic_count > 0
-          html += content_tag('li', link_to(t('application_helper.render_baskets_as_menu.more'),
-                                            { controller: 'search',
-                                              action: 'all',
-                                              urlified_name: basket.urlified_name,
-                                              controller_name_for_zoom_class: 'topics' },
-                                            tabindex: '2'))
+          html += content_tag(
+            'li', link_to(
+                    t('application_helper.render_baskets_as_menu.more'),
+                    { 
+                      controller: 'search',
+                      action: 'all',
+                      urlified_name: basket.urlified_name,
+                      controller_name_for_zoom_class: 'topics' 
+                    },
+                    tabindex: '2'
+            )
+          )
         end
 
         html += '</ul>'
@@ -359,30 +382,33 @@ module ApplicationHelper
   end
 
   def current_user_can_see_add_links?
-    can_see_add_links = if @current_basket.setting(:show_add_links) == 'at least moderator'
-                          logged_in? && @at_least_a_moderator
-                        else
-                          true
-                        end
+    can_see_add_links =
+      if @current_basket.setting(:show_add_links) == 'at least moderator'
+        logged_in? && @at_least_a_moderator
+      else
+        true
+                             end
     can_see_add_links
   end
 
   def current_user_can_see_action_menu?
     # return true
-    can_see_action_menu = if @current_basket.setting(:show_action_menu) == 'at least moderator'
-                            logged_in? && @at_least_a_moderator
-                          else
-                            true
-                          end
+    can_see_action_menu =
+      if @current_basket.setting(:show_action_menu) == 'at least moderator'
+        logged_in? && @at_least_a_moderator
+      else
+        true
+                               end
     can_see_action_menu
   end
 
   def current_user_can_see_discussion?
-    can_see_discussion = if @current_basket.setting(:show_discussion) == 'at least moderator'
-                           logged_in? && @at_least_a_moderator
-                         else
-                           true
-                         end
+    can_see_discussion =
+      if @current_basket.setting(:show_discussion) == 'at least moderator'
+        logged_in? && @at_least_a_moderator
+      else
+        true
+                              end
     return_value = can_see_discussion
   end
 
@@ -391,24 +417,36 @@ module ApplicationHelper
     if session[:return_to_title].blank?
       link_to(t('application_helper.link_to_last_stored_location.back_to_kete_home'), '/')
     else
-      link_to(t('application_helper.link_to_last_stored_location.back_to_stored_location',
-                stored_location: session[:return_to_title]),
-              session[:return_to])
+      link_to(
+        t(
+          'application_helper.link_to_last_stored_location.back_to_stored_location',
+          stored_location: session[:return_to_title]
+        ),
+        session[:return_to]
+      )
     end
   end
 
   def link_to_members_of(basket, options = {})
-    options = { viewable_text: t('application_helper.link_to_members_of.members_link_text'),
-                unavailable_text: '' }.merge(options)
+    options = { 
+      viewable_text: t('application_helper.link_to_members_of.members_link_text'),
+      unavailable_text: '' 
+    }.merge(options)
     if current_user_can_see_memberlist_for?(basket)
-      content_tag('li', link_to(options[:viewable_text],
-                                urlified_name: basket.urlified_name,
-                                controller: 'members',
-                                action: 'list'),
-                  class: options[:class])
+      content_tag(
+        'li', link_to(
+                options[:viewable_text],
+                urlified_name: basket.urlified_name,
+                controller: 'members',
+                action: 'list'
+        ),
+        class: options[:class]
+      )
     elsif !options[:unavailable_text].blank?
-      content_tag('li', options[:unavailable_text],
-                  class: options[:class])
+      content_tag(
+        'li', options[:unavailable_text],
+        class: options[:class]
+      )
     else
       ''
     end
@@ -417,21 +455,25 @@ module ApplicationHelper
   def link_to_membership_request_of(basket, options = {})
     return '' unless logged_in?
 
-    options = { join_text: t('application_helper.link_to_membership_request_of.join'),
-                request_text: t('application_helper.link_to_membership_request_of.request'),
-                closed_text: '',
-                as_list_element: true,
-                plus_divider: '',
-                pending_text: t('application_helper.link_to_membership_request_of.pending'),
-                rejected_text: t('application_helper.link_to_membership_request_of.rejected'),
-                current_role: t('application_helper.link_to_membership_request_of.current_role'),
-                leave_text: t('application_helper.link_to_membership_request_of.leave') }.merge(options)
+    options = { 
+      join_text: t('application_helper.link_to_membership_request_of.join'),
+      request_text: t('application_helper.link_to_membership_request_of.request'),
+      closed_text: '',
+      as_list_element: true,
+      plus_divider: '',
+      pending_text: t('application_helper.link_to_membership_request_of.pending'),
+      rejected_text: t('application_helper.link_to_membership_request_of.rejected'),
+      current_role: t('application_helper.link_to_membership_request_of.current_role'),
+      leave_text: t('application_helper.link_to_membership_request_of.leave') 
+    }.merge(options)
 
     show_roles = options[:show_roles].nil? ? true : options[:show_roles]
 
-    location_hash = { urlified_name: basket.urlified_name,
-                      controller: 'members',
-                      action: 'join' }
+    location_hash = { 
+      urlified_name: basket.urlified_name,
+      controller: 'members',
+      action: 'join' 
+    }
 
     html = ''
 
@@ -454,10 +496,12 @@ module ApplicationHelper
         html += options[:rejected_text]
       else
         if show_roles
-          html += link_to(options[:current_role].gsub('|role|', role),
-                          urlified_name: @site_basket.urlified_name,
-                          controller: 'account',
-                          action: 'baskets')
+          html += link_to(
+            options[:current_role].gsub('|role|', role),
+            urlified_name: @site_basket.urlified_name,
+            controller: 'account',
+            action: 'baskets'
+          )
         end
         # no one can remove themselves from the site basket
         # and there needs to be at least one basket admin remaining if the user removed him/herself
@@ -509,10 +553,12 @@ module ApplicationHelper
   end
 
   def url_for_contributions_of(user, zoom_class)
-    url_for(controller: 'search',
-            urlified_name: @site_basket.urlified_name,
-            controller_name_for_zoom_class: zoom_class_controller(zoom_class),
-            action: :all, contributor: user, trailing_slash: true, only_path: false)
+    url_for(
+      controller: 'search',
+      urlified_name: @site_basket.urlified_name,
+      controller_name_for_zoom_class: zoom_class_controller(zoom_class),
+      action: :all, contributor: user, trailing_slash: true, only_path: false
+    )
   end
 
   def link_to_contributions_of(user, zoom_class = 'Topic', options = {})
@@ -558,9 +604,11 @@ module ApplicationHelper
   end
 
   def url_for_profile_of(user)
-    url_for(controller: 'account',
-            urlified_name: @site_basket.urlified_name,
-            action: :show, id: user, only_path: false)
+    url_for(
+      controller: 'account',
+      urlified_name: @site_basket.urlified_name,
+      action: :show, id: user, only_path: false
+    )
   end
 
   def link_to_profile_for(user, phrase = nil, link_options = {})
@@ -627,18 +675,19 @@ module ApplicationHelper
   end
 
   def related_items_count_for_current_item(item)
-    @related_items_count_for_current_item ||= begin
-      if item
-        item_id = item.id
-        class_name = zoom_class_from_controller(params[:controller])
-      else
-        item_id = @topic.id if @topic.present?
-        class_name = 'Topic' if class_name == 'IndexPage'
-      end
-      conditions = "(content_item_relations.related_item_id = :item_id AND content_item_relations.related_item_type = '#{class_name}')"
-      conditions += ' OR (content_item_relations.topic_id = :item_id)' if params[:controller] == 'topics' || params[:controller] == 'index_page'
-      ContentItemRelation.count(conditions: [conditions, { item_id: item_id }])
-    end
+    @related_items_count_for_current_item ||=
+      begin
+           if item
+             item_id = item.id
+             class_name = zoom_class_from_controller(params[:controller])
+           else
+             item_id = @topic.id if @topic.present?
+             class_name = 'Topic' if class_name == 'IndexPage'
+           end
+           conditions = "(content_item_relations.related_item_id = :item_id AND content_item_relations.related_item_type = '#{class_name}')"
+           conditions += ' OR (content_item_relations.topic_id = :item_id)' if params[:controller] == 'topics' || params[:controller] == 'index_page'
+           ContentItemRelation.count(conditions: [conditions, { item_id: item_id }])
+         end
   end
 
   # Create two methods for fetching public and private related items
@@ -735,33 +784,43 @@ module ApplicationHelper
     options = { privacy_type: 'public' }.merge(options)
     if still_image.is_a?(StillImage)
       if !still_image.thumbnail_file.nil?
-        thumb_src_value = still_image.already_at_blank_version? ? '/images/pending.jpg' :
-                                                                  still_image.thumbnail_file.public_filename
-        link_text = image_tag(thumb_src_value, size: still_image.thumbnail_file.image_size,
-                                               alt: "#{still_image.title}. ")
+        thumb_src_value =
+          still_image.already_at_blank_version? ? '/images/pending.jpg' :
+                                                                           still_image.thumbnail_file.public_filename
+        link_text = image_tag(
+          thumb_src_value, size: still_image.thumbnail_file.image_size,
+                           alt: "#{still_image.title}. "
+        )
       else
         link_text = t('application_helper.related_image_link_for.only_original')
       end
-      link_location = if link_options.is_a?(String)
-                        link_options
-                      else
-                        { urlified_name: still_image.basket.urlified_name,
-                          controller: 'images', action: 'show', id: still_image,
-                          private: (options[:privacy_type] == 'private') }.merge(link_options)
-                      end
+      link_location =
+        if link_options.is_a?(String)
+          link_options
+        else
+          { 
+            urlified_name: still_image.basket.urlified_name,
+            controller: 'images', action: 'show', id: still_image,
+            private: (options[:privacy_type] == 'private') 
+          }.merge(link_options)
+                             end
     else
       thumb_src_value = still_image[:thumbnail][:src]
-      link_text = image_tag(thumb_src_value, width: still_image[:thumbnail][:width],
-                                             height: still_image[:thumbnail][:height],
-                                             alt: "#{still_image[:title]}. ")
+      link_text = image_tag(
+        thumb_src_value, width: still_image[:thumbnail][:width],
+                         height: still_image[:thumbnail][:height],
+                         alt: "#{still_image[:title]}. "
+      )
       link_location = still_image[:url]
     end
     link_to(link_text, link_location)
   end
 
   def link_to_related_item_function(options = {})
-    options = { link_text: t('application_helper.link_to_related_item_function.link_text',
-                             function: options[:function].capitalize) }.merge(options)
+    options = { link_text: t(
+      'application_helper.link_to_related_item_function.link_text',
+      function: options[:function].capitalize
+    ) }.merge(options)
     link_text = options.delete(:link_text)
     disabled = false
     disabled = true if options[:function] == 'remove' && @total_item_counts < 1
@@ -778,9 +837,11 @@ module ApplicationHelper
   def link_to_add_set_of_related_items(options = {})
     options = { link_text: t('application_helper.link_to_add_set_of_related_items.link_text') }.merge(options)
     link_text = options.delete(:link_text)
-    link = link_to(link_text, controller: 'importers',
-                              action: 'new_related_set_from_archive_file',
-                              relate_to_topic: options[:relate_to_item])
+    link = link_to(
+      link_text, controller: 'importers',
+                 action: 'new_related_set_from_archive_file',
+                 relate_to_topic: options[:relate_to_item]
+    )
     content_tag('li', link)
   end
 
@@ -877,9 +938,11 @@ module ApplicationHelper
   end
 
   def basket_option_for(basket, options = {})
-    content_tag(:option, (options[:label] || basket.name), value: (options[:value] || basket.urlified_name),
-                                                           class: ('not_member' unless @basket_access_hash.key?(basket.urlified_name.to_sym)),
-                                                           selected: ('selected' if options[:selected] && basket.urlified_name.to_sym == options[:selected].to_sym))
+    content_tag(
+      :option, (options[:label] || basket.name), value: (options[:value] || basket.urlified_name),
+                                                 class: ('not_member' unless @basket_access_hash.key?(basket.urlified_name.to_sym)),
+                                                 selected: ('selected' if options[:selected] && basket.urlified_name.to_sym == options[:selected].to_sym)
+    )
   end
 
   #
@@ -892,13 +955,15 @@ module ApplicationHelper
     options_array = []
 
     if @extended_field
-      options_array = @extended_field.choices.find_top_level.inject([]) do |memo, choice|
-        memo + option_for_choice_control(choice, level: 0)
-      end
+      options_array =
+        @extended_field.choices.find_top_level.inject([]) do |memo, choice|
+          memo + option_for_choice_control(choice, level: 0)
+        end
     elsif categories_field
-      options_array = categories_field.choices.find_top_level.reject { |c| c.extended_fields.empty? }.inject([]) do |memo, choice|
-        memo + option_for_choice_control(choice, level: 0)
-      end
+      options_array =
+        categories_field.choices.find_top_level.reject { |c| c.extended_fields.empty? }.inject([]) do |memo, choice|
+          memo + option_for_choice_control(choice, level: 0)
+        end
     else
       return
     end
@@ -925,11 +990,12 @@ module ApplicationHelper
     raq = ' &raquo; '
     html = []
 
-    mappings = if item.is_a?(Topic)
-                 item.all_field_mappings
-               else
-                 ContentType.find_by_class_name(item.class.name).content_type_to_field_mappings
-               end
+    mappings =
+      if item.is_a?(Topic)
+        item.all_field_mappings
+      else
+        ContentType.find_by_class_name(item.class.name).content_type_to_field_mappings
+                    end
 
     content = item.extended_content_pairs
 
@@ -946,11 +1012,12 @@ module ApplicationHelper
       # value = content[qualified_name_for_field(field)]
       field_name = field.multiple? ? qualified_name_for_field(field) + '_multiple' : qualified_name_for_field(field)
 
-      value = begin
-                content.select { |pair| pair[0] == field_name }.first.last
-              rescue
-                nil
-              end
+      value =
+        begin
+                       content.select { |pair| pair[0] == field_name }.first.last
+                     rescue
+                       nil
+                     end
       next if value.to_s.blank?
 
       value = formatted_extended_content_value(field, field_name, value, item, mapping)
@@ -1198,22 +1265,30 @@ module ApplicationHelper
                           </div>"
 
         comment_string += '<ul>'
-        comment_string += "<li class='first'>" + link_to(t('application_helper.show_comments_for.reply'),
-                                                         controller: 'comments',
-                                                         action: :new,
-                                                         parent_id: comment) + "</li>\n"
+        comment_string += "<li class='first'>" + link_to(
+          t('application_helper.show_comments_for.reply'),
+          controller: 'comments',
+          action: :new,
+          parent_id: comment
+        ) + "</li>\n"
 
         if logged_in? && @at_least_a_moderator
-          comment_string += '<li>' + link_to(t('application_helper.show_comments_for.edit'),
-                                             controller: 'comments',
-                                             action: :edit,
-                                             id: comment) + "</li>\n"
-          comment_string += '<li>' + link_to(t('application_helper.show_comments_for.delete'),
-                                             { action: :destroy,
-                                               controller: 'comments',
-                                               id: comment },
-                                             method: :delete,
-                                             confirm: t('application_helper.show_comments_for.confirm_delete')) + "</li>\n"
+          comment_string += '<li>' + link_to(
+            t('application_helper.show_comments_for.edit'),
+            controller: 'comments',
+            action: :edit,
+            id: comment
+          ) + "</li>\n"
+          comment_string += '<li>' + link_to(
+            t('application_helper.show_comments_for.delete'),
+            { 
+              action: :destroy,
+              controller: 'comments',
+              id: comment 
+            },
+            method: :delete,
+            confirm: t('application_helper.show_comments_for.confirm_delete')
+          ) + "</li>\n"
         end
 
         comment_string += "</ul>\n"
@@ -1223,19 +1298,23 @@ module ApplicationHelper
         comment_string += '</div>' # comment-wrapper
 
         html_string += "<div class='comment-outer-wrapper #{comment_depth_div_classes_for(comment)}'>"
-        html_string += stylish_link_to_contributions_of(comment.creator, 'Comment',
-                                                        link_text: "<h3>|user_name_link|</h3><div class=\"stylish_user_contribution_link_extra\"><h3>&nbsp;#{t('application_helper.show_comments_for.said')} <a href=\"##{comment.to_anchor}\" name=\"#{comment.to_anchor}\">#{h(comment.title)}</a></h3></div>",
-                                                        additional_html: comment_string)
+        html_string += stylish_link_to_contributions_of(
+          comment.creator, 'Comment',
+          link_text: "<h3>|user_name_link|</h3><div class=\"stylish_user_contribution_link_extra\"><h3>&nbsp;#{t('application_helper.show_comments_for.said')} <a href=\"##{comment.to_anchor}\" name=\"#{comment.to_anchor}\">#{h(comment.title)}</a></h3></div>",
+          additional_html: comment_string
+        )
         html_string += '</div>' # comment-outer-wrapper
       end
 
     end
-    html_string += '<p>' + link_to(t('application_helper.show_comments_for.join_discussion'),
-                                   action: 'new',
-                                   controller: 'comments',
-                                   commentable_id: item,
-                                   commentable_type: item.class.name,
-                                   commentable_private: item.respond_to?(:private) && item.private? ? 1 : 0) + '</p>'
+    html_string += '<p>' + link_to(
+      t('application_helper.show_comments_for.join_discussion'),
+      action: 'new',
+      controller: 'comments',
+      commentable_id: item,
+      commentable_type: item.class.name,
+      commentable_private: item.respond_to?(:private) && item.private? ? 1 : 0
+    ) + '</p>'
 
     html_string.html_safe
   end
@@ -1249,11 +1328,12 @@ module ApplicationHelper
     parent_comment_id = comment.parent_id
     until parent_comment_id.blank?
       depth += 1
-      parent_comment_id = begin
-                            @comments.select { |c| c.id == parent_comment_id }.first.parent_id
-                          rescue
-                            nil
-                          end
+      parent_comment_id =
+        begin
+                                   @comments.select { |c| c.id == parent_comment_id }.first.parent_id
+                                 rescue
+                                   nil
+                                 end
     end
     depth
   end
@@ -1276,12 +1356,16 @@ module ApplicationHelper
       html_string = "<h4>#{t('application_helper.pending_review.pending')} "
       privacy_type = item.respond_to?(:private) && item.private? ? 'private' : 'public'
       if !item.already_at_blank_version?
-        html_string += t('application_helper.pending_review.reverted',
-                         privacy_type: privacy_type,
-                         item_version: item.version)
+        html_string += t(
+          'application_helper.pending_review.reverted',
+          privacy_type: privacy_type,
+          item_version: item.version
+        )
       elsif
-        html_string += t('application_helper.pending_review.no_safe_version',
-                         privacy_type: privacy_type)
+        html_string += t(
+          'application_helper.pending_review.no_safe_version',
+          privacy_type: privacy_type
+        )
       end
       html_string += '</h4>'
     end
@@ -1309,11 +1393,13 @@ module ApplicationHelper
   end
 
   def url_for_preview_of(item, version_number)
-    url_for(controller: zoom_class_controller(item.class.name),
-            urlified_name: item.basket.urlified_name,
-            action: 'preview',
-            id: item.id,
-            version: version_number)
+    url_for(
+      controller: zoom_class_controller(item.class.name),
+      urlified_name: item.basket.urlified_name,
+      action: 'preview',
+      id: item.id,
+      version: version_number
+    )
   end
 
   def li_with_correct_class(count)
@@ -1333,24 +1419,29 @@ module ApplicationHelper
   end
 
   def link_to_edit_for(item)
-    link_to("<span class=\"edit-link\">#{t('topics.actions_menu.edit')}</span>".html_safe,
-            { action: :edit, id: item, private: params[:private] },
-            tabindex: '1')
+    link_to(
+      "<span class=\"edit-link\">#{t('topics.actions_menu.edit')}</span>".html_safe,
+      { action: :edit, id: item, private: params[:private] },
+      tabindex: '1'
+    )
   end
 
   def link_to_history_for(item)
-    link_to("<span class=\"history-link\">#{t('topics.actions_menu.history')}</span>".html_safe,
-            { action: :history, id: item },
-            tabindex: '1')
+    link_to(
+      "<span class=\"history-link\">#{t('topics.actions_menu.history')}</span>".html_safe,
+      { action: :history, id: item },
+      tabindex: '1'
+    )
   end
 
   # we use this in imports, too
   def topic_type_select_with_indent(object, method, collection, value_method, text_method, current_value, html_options = {}, pre_options = [])
-    result = if method
-               "<select name=\"#{object}[#{method}]\" id=\"#{object}_#{method}\""
-             else
-               "<select name=\"#{object}\" id=\"#{object}\""
-             end
+    result =
+      if method
+        "<select name=\"#{object}[#{method}]\" id=\"#{object}_#{method}\""
+      else
+        "<select name=\"#{object}\" id=\"#{object}\""
+                  end
     html_options.each do |key, value|
       result << ' ' + key.to_s + '="' + value.to_s + '"'
     end
@@ -1444,9 +1535,11 @@ module ApplicationHelper
     # create the link with text, current direction image (if needed), and pointing to opposite direction (if needed)
     if remote_link
       # create a remote to link
-      link_to link_to_text, { url: location_hash,
-                              before: "Element.show('data_spinner')",
-                              complete: "Element.hide('data_spinner')" },
+      link_to link_to_text, { 
+        url: location_hash,
+        before: "Element.show('data_spinner')",
+        complete: "Element.hide('data_spinner')" 
+      },
               remote: true,
               href: url_for(location_hash)
     else
@@ -1474,13 +1567,18 @@ module ApplicationHelper
   end
 
   def kete_time_ago_in_words(from_time)
-    string = if from_time < Time.now - 1.week
-               t('application_helper.kete_time_ago_in_words.longer_than_a_week',
-                 date: from_time.to_s(:euro_date_time))
-             else
-               t('application_helper.kete_time_ago_in_words.within_a_week',
-                 time: time_ago_in_words(from_time))
-             end
+    string =
+      if from_time < Time.now - 1.week
+        t(
+          'application_helper.kete_time_ago_in_words.longer_than_a_week',
+          date: from_time.to_s(:euro_date_time)
+        )
+      else
+        t(
+          'application_helper.kete_time_ago_in_words.within_a_week',
+          time: time_ago_in_words(from_time)
+        )
+                  end
     string
   end
 
@@ -1535,11 +1633,12 @@ module ApplicationHelper
       # pop the first parent off the end of the parent_choices array
       current_choice = parent_choices.shift
 
-      choices = if current_choice.is_a?(ExtendedField)
-                  current_choice.choices.find_top_level.reject { |c| !categories_field.choices.member?(c) }
-                else
-                  current_choice.choices.reject { |c| !categories_field.choices.member?(c) }
-                end
+      choices =
+        if current_choice.is_a?(ExtendedField)
+          current_choice.choices.find_top_level.reject { |c| !categories_field.choices.member?(c) }
+        else
+          current_choice.choices.reject { |c| !categories_field.choices.member?(c) }
+                       end
 
       # Skip this choice if it doesn't have any choices
       next if choices.empty?
@@ -1548,15 +1647,23 @@ module ApplicationHelper
       html += '<ul>'
       # If we're in the first column, provide a link to go back to all results
       if time.zero?
-        html += content_tag('li', link_to(t('application_helper.browse_by_category_columns.all_items',
-                                            item_type: zoom_class_plural_humanize(@current_class)),
-                                          view_as: 'choice_hierarchy'),
-                            class: (params[:limit_to_choice] ? '' : 'current'))
+        html += content_tag(
+          'li', link_to(
+                  t(
+                    'application_helper.browse_by_category_columns.all_items',
+                    item_type: zoom_class_plural_humanize(@current_class)
+                  ),
+                  view_as: 'choice_hierarchy'
+          ),
+          class: (params[:limit_to_choice] ? '' : 'current')
+        )
       end
       # For every choice in the current choice, lets add a list item
       choices.each do |choice|
-        html += list_item_for_choice(choice, { current: parent_choices.include?(choice), include_children: false },
-                                     extended_field: categories_field, view_as: 'choice_hierarchy')
+        html += list_item_for_choice(
+          choice, { current: parent_choices.include?(choice), include_children: false },
+          extended_field: categories_field, view_as: 'choice_hierarchy'
+        )
       end
       html += '</ul>'
       html += '</div>'
@@ -1575,10 +1682,14 @@ module ApplicationHelper
       choices << if I18n.locale.to_sym == key.to_sym
                    content_tag(:li, value, class: "current #{'first' if index.zero?}")
                  else
-                   content_tag(:li, link_to(value, urlified_name: @current_basket.urlified_name,
-                                                   controller: 'account',
-                                                   action: 'change_locale',
-                                                   override_locale: key), class: ('first' if index.zero?))
+                   content_tag(
+                     :li, link_to(
+                            value, urlified_name: @current_basket.urlified_name,
+                                   controller: 'account',
+                                   action: 'change_locale',
+                                   override_locale: key
+                     ), class: ('first' if index.zero?)
+                   )
                  end
     end
     content_tag(:ul, choices)
@@ -1586,13 +1697,14 @@ module ApplicationHelper
 
   def locale_dropdown(form = nil, options = nil)
     options ||= {}
-    options[:default] ||= if params[:user]
-                            params[:user][:locale]
-                          elsif current_user != :false
-                            current_user.locale
-                          else
-                            I18n.locale
-                          end
+    options[:default] ||=
+      if params[:user]
+        params[:user][:locale]
+      elsif current_user != :false
+        current_user.locale
+      else
+        I18n.locale
+                               end
     locales = I18n.available_locales_with_labels.collect { |key, value| [value, key] }
     locales = ([[options[:pre_text], '']] + locales) if options[:pre_text]
     if form
@@ -1660,8 +1772,10 @@ module ApplicationHelper
     topic_types_and_counts = topics.collection_of_objects_and_counts_for(:topic_type, true)
     topic_types_and_counts.each do |topic_type, count|
       title = "#{h(topic_type.name.pluralize)} (#{count})"
-      html += '<li>' + link_to_related_items_of(item, 'Topic', { link_text: title },
-                                                topic_type: topic_type.urlified_name) + '</li>'
+      html += '<li>' + link_to_related_items_of(
+        item, 'Topic', { link_text: title },
+        topic_type: topic_type.urlified_name
+      ) + '</li>'
     end
     html += '</ul>'
     html

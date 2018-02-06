@@ -6,11 +6,12 @@ class SiteLockdownAuthTest < ActionController::IntegrationTest
       add_alice_as_regular_user
       login_as('alice')
       @topic = new_topic :title => 'Kete'
-      @pages = ['/',
-                '/site/all/topics',
-                '/site/baskets/choose_type',
-                '/site/all/topics/rss.xml',
-                "/#{@topic.basket.urlified_name}/topics/show/#{@topic.id}"]
+      @pages = [
+        '/',
+        '/site/all/topics',
+        '/site/baskets/choose_type',
+        '/site/all/topics/rss.xml',
+        "/#{@topic.basket.urlified_name}/topics/show/#{@topic.id}"]
     end
 
     context "when a site has http credentials, it" do

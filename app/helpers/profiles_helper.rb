@@ -14,9 +14,11 @@ module ProfilesHelper
         form_type = form_option[1]
         html += "<div id=\"#{form_type}_section\">"
         html += "<label for=\"#{form_type}\">#{form_option[0]}</label>"
-        html += select_tag("#{input_name}[#{form_type}][rule_type]",
-                           options_for_select(type_options, current_rule_for(form_type)),
-                           id: "record_rules_#{form_type}_rule_type")
+        html += select_tag(
+          "#{input_name}[#{form_type}][rule_type]",
+          options_for_select(type_options, current_rule_for(form_type)),
+          id: "record_rules_#{form_type}_rule_type"
+        )
         html += "<div id=\"record_rules_#{form_type}_form\"#{" style=\"display:none;\"" if current_rule_for(form_type) != 'some'}>"
         html += fetch_form_for(form_type, input_name)
         html += '</div>'
@@ -53,11 +55,13 @@ module ProfilesHelper
   # sets some vars used in the form so we dont have to have unnessecary duplication
   # The render_to_string method is made public and a helper in the profiles_controller
   def fetch_form_for(form_type, input_name)
-    @rule_locals = { form_type: form_type,
-                     input_name: input_name,
-                     allowed_field_name: "#{input_name}[#{form_type}][allowed][]",
-                     values_field_prefix: "#{input_name}[#{form_type}][values]",
-                     field_id_prefix: "record_rules_#{form_type}" }
+    @rule_locals = { 
+      form_type: form_type,
+      input_name: input_name,
+      allowed_field_name: "#{input_name}[#{form_type}][allowed][]",
+      values_field_prefix: "#{input_name}[#{form_type}][values]",
+      field_id_prefix: "record_rules_#{form_type}" 
+    }
     render_to_string(partial: "profiles/#{form_type}")
   end
 
@@ -69,13 +73,17 @@ module ProfilesHelper
     @profile_sections ||= Array.new
     @profile_sections << name
 
-    content = check_box_tag(@rule_locals[:allowed_field_name], name, allowed_value?(name),
-                            id: rules_allowed_id(name))
-    content += '<br />' + image_tag('icon_results_next_off.gif',
-                                    id: "#{rules_allowed_id(name)}_expander",
-                                    class: 'expand_policy',
-                                    alt: t('profiles_helper.rules_allowed_check_box.expand_policy'),
-                                    title: t('profiles_helper.rules_allowed_check_box.expand_policy'))
+    content = check_box_tag(
+      @rule_locals[:allowed_field_name], name, allowed_value?(name),
+      id: rules_allowed_id(name)
+    )
+    content += '<br />' + image_tag(
+      'icon_results_next_off.gif',
+      id: "#{rules_allowed_id(name)}_expander",
+      class: 'expand_policy',
+      alt: t('profiles_helper.rules_allowed_check_box.expand_policy'),
+      title: t('profiles_helper.rules_allowed_check_box.expand_policy')
+    )
     content_tag('div', content, class: 'allowed_check_box')
   end
 
@@ -98,8 +106,10 @@ module ProfilesHelper
     '<div class="form-element">' +
       content_tag('label', label, for: rules_label_id(name), style: 'width: 100%;') +
       '<div style="clear: left">' +
-      text_field_tag("#{@rule_locals[:values_field_prefix]}[#{name}]", current_value_for(name),
-                     id: "#{@rule_locals[:field_id_prefix]}_values_#{name}", tabindex: '1') +
+      text_field_tag(
+        "#{@rule_locals[:values_field_prefix]}[#{name}]", current_value_for(name),
+        id: "#{@rule_locals[:field_id_prefix]}_values_#{name}", tabindex: '1'
+      ) +
       '</div>' +
       '</div>'
   end
@@ -109,8 +119,10 @@ module ProfilesHelper
   def rules_text_area_tag(name, label = nil, class_name = 'tinymce')
     '<div class="form-element">' +
       (label ? content_tag('label', label, for: rules_label_id(name), class: 'inline') : '') +
-      text_area_tag("#{@rule_locals[:values_field_prefix]}[#{name}]", current_value_for(name),
-                    rows: 7, cols: 30, class: class_name) +
+      text_area_tag(
+        "#{@rule_locals[:values_field_prefix]}[#{name}]", current_value_for(name),
+        rows: 7, cols: 30, class: class_name
+      ) +
       '</div>'
   end
 
@@ -120,8 +132,10 @@ module ProfilesHelper
     '<div class="form-element">' +
       (label ? content_tag('label', label, for: rules_label_id(name), style: 'width: 100%;') : '') +
       '<div style="clear: left">' +
-      select_tag("#{@rule_locals[:values_field_prefix]}[#{name}]", options,
-                 id: "#{@rule_locals[:field_id_prefix]}_values_#{name}", tabindex: '1') +
+      select_tag(
+        "#{@rule_locals[:values_field_prefix]}[#{name}]", options,
+        id: "#{@rule_locals[:field_id_prefix]}_values_#{name}", tabindex: '1'
+      ) +
       '</div>' +
       '</div>'
   end
@@ -130,8 +144,10 @@ module ProfilesHelper
   # with label, and appropriate id and name
   def rules_radio_button_tag(name, value, label)
     '<div class="form-element">' +
-      radio_button_tag("#{@rule_locals[:values_field_prefix]}[#{name}]", value, (current_value_for(name) == value),
-                       id: "#{@rule_locals[:field_id_prefix]}_values_#{name}_#{value}", tabindex: '1') +
+      radio_button_tag(
+        "#{@rule_locals[:values_field_prefix]}[#{name}]", value, (current_value_for(name) == value),
+        id: "#{@rule_locals[:field_id_prefix]}_values_#{name}_#{value}", tabindex: '1'
+      ) +
       content_tag('label', label, for: rules_label_id(name, value), class: 'inline') +
       '</div>'
   end
@@ -140,9 +156,11 @@ module ProfilesHelper
   # with label, and appropriate id and name
   def rules_check_box_tag(name, value, label, is_array = false)
     '<div class="form-element">' +
-      check_box_tag("#{@rule_locals[:values_field_prefix]}[#{name}]#{'[]' if is_array}", value,
-                    (is_array && current_value_for(name).is_a?(Array) ? current_value_for(name).include?(value) : current_value_for(name) == value),
-                    id: "#{@rule_locals[:field_id_prefix]}_values_#{name}#{"_#{value.underscore.downcase}" if is_array}", tabindex: '1') +
+      check_box_tag(
+        "#{@rule_locals[:values_field_prefix]}[#{name}]#{'[]' if is_array}", value,
+        (is_array && current_value_for(name).is_a?(Array) ? current_value_for(name).include?(value) : current_value_for(name) == value),
+        id: "#{@rule_locals[:field_id_prefix]}_values_#{name}#{"_#{value.underscore.downcase}" if is_array}", tabindex: '1'
+      ) +
       content_tag('label', label, for: "#{rules_label_id(name)}#{"_#{value.underscore.downcase}" if is_array}", class: 'inline') +
       '</div>'
   end

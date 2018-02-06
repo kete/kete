@@ -11,9 +11,11 @@ class WebLinkTest < ActiveSupport::TestCase
     eval(@base_class).send(:include, ItemPrivacyTestHelper::Model)
 
     # hash of params to create new instance of model, e.g. {:name => 'Test Model', :description => 'Dummy'}
-    @new_model = { :title => 'test item',
-                   :basket => Basket.find(:first),
-                   :url => "http://kete.net.nz/about/" }
+    @new_model = { 
+      :title => 'test item',
+      :basket => Basket.find(:first),
+      :url => "http://kete.net.nz/about/" 
+    }
 
     # name of fields that must be present, e.g. %(name description)
     @req_attr_names = %w(title url)

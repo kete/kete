@@ -5,11 +5,12 @@
 namespace :kete do
   namespace :repair do
     # Run all tasks
-    task all: ['kete:repair:fix_topic_versions',
-               'kete:repair:set_missing_contributors',
-               'kete:repair:correct_thumbnail_privacies',
-               'kete:repair:correct_site_basket_roles',
-               'kete:repair:extended_fields']
+    task all: [
+      'kete:repair:fix_topic_versions',
+      'kete:repair:set_missing_contributors',
+      'kete:repair:correct_thumbnail_privacies',
+      'kete:repair:correct_site_basket_roles',
+      'kete:repair:extended_fields']
 
     desc 'Fix invalid topic versions (adds version column value or prunes on a case-by-case basis.'
     task fix_topic_versions: :environment do
@@ -279,8 +280,9 @@ namespace :kete do
     end
 
     desc 'Run all extended field repair tasks'
-    task extended_fields: ['kete:repair:extended_fields:legacy_google_map',
-                           'kete:repair:extended_fields:repopulate_related_items_from_topic_type_choices']
+    task extended_fields: [
+      'kete:repair:extended_fields:legacy_google_map',
+      'kete:repair:extended_fields:repopulate_related_items_from_topic_type_choices']
 
     namespace :extended_fields do
       desc 'Run the legacy google map repair tasks'
@@ -306,8 +308,10 @@ namespace :kete do
                   map_data = map_data_as_hash
                 end
 
-                value = { 'zoom_lvl' => (map_data['zoom_lvl'] || SystemSetting.default_zoom_level.to_s),
-                          'no_map' => (map_data['no_map'] || '0'), 'coords' => map_data['coords'] }
+                value = { 
+                  'zoom_lvl' => (map_data['zoom_lvl'] || SystemSetting.default_zoom_level.to_s),
+                  'no_map' => (map_data['no_map'] || '0'), 'coords' => map_data['coords'] 
+                }
                 value['address'] = map_data['address'] if map_data['address']
                 item.send("#{field}=", value)
               end

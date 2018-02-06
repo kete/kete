@@ -87,8 +87,10 @@ class Document < ActiveRecord::Base
         logger.debug("what is received #{attr_name}: " + send(attr_name).inspect)
       end
       unless enum.nil? || enum.include?(send(attr_name))
-        errors.add attr_name, I18n.t("document_model.not_acceptable_#{attr_name}",
-                                     max_size: (SystemSetting.maximum_uploaded_file_size / 1.megabyte))
+        errors.add attr_name, I18n.t(
+          "document_model.not_acceptable_#{attr_name}",
+          max_size: (SystemSetting.maximum_uploaded_file_size / 1.megabyte)
+        )
       end
     end
   end

@@ -4,8 +4,10 @@ require 'ostruct'
 
 class RedirectRegistrationTest < ActiveSupport::TestCase
   setup do
-    @redirect_registration = RedirectRegistration.create!(:source_url_pattern => '/foo/',
-                                                          :target_url_pattern => '/bar/')
+    @redirect_registration = RedirectRegistration.create!(
+      :source_url_pattern => '/foo/',
+      :target_url_pattern => '/bar/'
+    )
   end
 
   test "should match request" do

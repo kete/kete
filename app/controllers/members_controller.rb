@@ -57,9 +57,11 @@ class MembersController < ApplicationController
 
   def list_members_in(role_name, order = 'users.login asc')
     @non_member_roles_plural = Hash.new
-    @possible_roles = { 'admin' => t('members_controller.list_members_in.admin'),
-                        'moderator' => t('members_controller.list_members_in.moderator'),
-                        'member' => t('members_controller.list_members_in.member') }
+    @possible_roles = { 
+      'admin' => t('members_controller.list_members_in.admin'),
+      'moderator' => t('members_controller.list_members_in.moderator'),
+      'member' => t('members_controller.list_members_in.member') 
+    }
 
     @admin_actions = Hash.new
 

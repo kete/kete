@@ -34,37 +34,51 @@ end
 
 log 'Loading seeds ...'
 
-load_yaml(file: 'roles.yml',
-          model: Role,
-          unique_attrs: [:id])
+load_yaml(
+  file: 'roles.yml',
+  model: Role,
+  unique_attrs: [:id]
+)
 
 load_yaml(file: 'users.yml', model: User, unique_attrs: [:email]) do |user|
   # activate admin after create
   user.activate if user.login == 'admin'
 end
 
-load_yaml(file: 'roles_users.yml',
-          model: RolesUser,
-          unique_attrs: %i[user_id role_id])
+load_yaml(
+  file: 'roles_users.yml',
+  model: RolesUser,
+  unique_attrs: %i[user_id role_id]
+)
 
-load_yaml(file: 'baskets.yml',
-          model: Basket,
-          unique_attrs: [:name])
+load_yaml(
+  file: 'baskets.yml',
+  model: Basket,
+  unique_attrs: [:name]
+)
 
-load_yaml(file: 'topics.yml',
-          model: Topic,
-          unique_attrs: [:title])
+load_yaml(
+  file: 'topics.yml',
+  model: Topic,
+  unique_attrs: [:title]
+)
 
-load_yaml(file: 'topic_types.yml',
-          model: TopicType,
-          unique_attrs: [:name])
+load_yaml(
+  file: 'topic_types.yml',
+  model: TopicType,
+  unique_attrs: [:name]
+)
 
-load_yaml(file: 'content_types.yml',
-          model: ContentType,
-          unique_attrs: [:class_name])
+load_yaml(
+  file: 'content_types.yml',
+  model: ContentType,
+  unique_attrs: [:class_name]
+)
 
-load_yaml(file: 'licenses.yml',
-          model: License,
-          unique_attrs: [:name])
+load_yaml(
+  file: 'licenses.yml',
+  model: License,
+  unique_attrs: [:name]
+)
 
 log 'done.'

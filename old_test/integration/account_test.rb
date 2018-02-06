@@ -7,23 +7,35 @@ class AccountTest < ActionController::IntegrationTest
     end
 
     should "be able to login" do
-      login_as('paul', 'test', { :navigate_to_login => true,
-                                 :by_form => true })
+      login_as(
+        'paul', 'test', { 
+          :navigate_to_login => true,
+          :by_form => true 
+        }
+      )
       body_should_contain "Logged in successfully"
       should_be_on_site_homepage
     end
 
     should "should have details displayed on the menu" do
-      login_as('paul', 'test', { :navigate_to_login => true,
-                                 :by_form => true })
+      login_as(
+        'paul', 'test', { 
+          :navigate_to_login => true,
+          :by_form => true 
+        }
+      )
       body_should_contain "paul"
       body_should_contain "Logout"
     end
 
     should "fail login with incorrect credentials" do
-      login_as('incorrect', 'login', { :navigate_to_login => true,
-                                       :by_form => true,
-                                       :should_fail_login => true })
+      login_as(
+        'incorrect', 'login', { 
+          :navigate_to_login => true,
+          :by_form => true,
+          :should_fail_login => true 
+        }
+      )
       body_should_contain "Your password or login do not match our records. Please try again."
     end
 
@@ -58,8 +70,12 @@ class AccountTest < ActionController::IntegrationTest
         logout
         visit "/"
         visit "/site/account/login"
-        login_as('paul', 'test', { :navigate_to_login => false,
-                                   :by_form => true })
+        login_as(
+          'paul', 'test', { 
+            :navigate_to_login => false,
+            :by_form => true 
+          }
+        )
         url_should_contain Regexp.new("/$")
       end
     end
@@ -68,8 +84,11 @@ class AccountTest < ActionController::IntegrationTest
       setup do
         @@site_basket.update_attribute(:show_privacy_controls, true)
         login_as('paul')
-        @item = new_still_image({ :private_true => true,
-                                  :file_private_true => true }) { attach_file "image_file_uploaded_data", "white.jpg" }
+        @item =
+          new_still_image({ 
+                            :private_true => true,
+                            :file_private_true => true 
+                          }) { attach_file "image_file_uploaded_data", "white.jpg" }
       end
 
       teardown do
@@ -126,8 +145,10 @@ class AccountTest < ActionController::IntegrationTest
       setup do
         logout
         configure_environment do
-          set_constant('ALLOWED_ANONYMOUS_ACTIONS',
-                       [{ :allowed_for => 'comments/new', :finished_after => 'comments/create' }, { :allowed_for => 'baskets/contact', :finished_after => 'baskets/send_email' }])
+          set_constant(
+            'ALLOWED_ANONYMOUS_ACTIONS',
+            [{ :allowed_for => 'comments/new', :finished_after => 'comments/create' }, { :allowed_for => 'baskets/contact', :finished_after => 'baskets/send_email' }]
+          )
         end
       end
 

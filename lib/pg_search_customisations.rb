@@ -33,9 +33,10 @@ module PgSearchCustomisations
       #
       # * we just want the contents of the 'value' key
 
-      values = extended_content_values.values.map do |value|
-        value.class == Hash ? value['value'] : value
-      end
+      values =
+        extended_content_values.values.map do |value|
+          value.class == Hash ? value['value'] : value
+        end
 
       values.join(' ').squish
     end

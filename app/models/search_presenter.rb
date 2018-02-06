@@ -167,12 +167,14 @@ class SearchPresenter
   end
 
   def content_item_type_to_tab_nav_name(content_item_type)
-    mapping = { 'Topic' => 'Topics',
-                'StillImage' => 'Images',
-                'AudioRecording' => 'Audio',
-                'Video' => 'Video',
-                'WebLink' => 'Web links',
-                'Document' => 'Documents', }
+    mapping = { 
+      'Topic' => 'Topics',
+      'StillImage' => 'Images',
+      'AudioRecording' => 'Audio',
+      'Video' => 'Video',
+      'WebLink' => 'Web links',
+      'Document' => 'Documents', 
+    }
     mapping[content_item_type] || 'Unknown content_item_type'
   end
 

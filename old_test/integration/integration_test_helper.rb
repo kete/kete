@@ -71,11 +71,13 @@ class ActionController::IntegrationTest
   # header. Then fill in fields and click "Log in" Takes required username, and optional password, whether to
   # navigate to login (not needed if we're there already) and whether we are expecting this login to fail
   def login_as(username, password = 'test', options = {})
-    options = { :navigate_to_login => false,
-                :by_form => false,
-                :logout_first => false,
-                :test_success => false,
-                :should_fail_login => false }.merge(options)
+    options = { 
+      :navigate_to_login => false,
+      :by_form => false,
+      :logout_first => false,
+      :test_success => false,
+      :should_fail_login => false 
+    }.merge(options)
 
     options[:logout_first] = true if options[:navigate_to_login]
     options[:test_success] = true if options[:navigate_to_login]

@@ -10,8 +10,10 @@ class ExtendedFieldTest < ActiveSupport::TestCase
   end
 
   def test_unique_label
-    extended_field = ExtendedField.new(:label => ExtendedField.find(1).label,
-                                       :description => "yyy")
+    extended_field = ExtendedField.new(
+      :label => ExtendedField.find(1).label,
+      :description => "yyy"
+    )
     assert !extended_field.save
     assert_equal ActiveRecord::Errors.default_error_messages[:taken], extended_field.errors.on(:label)
   end
@@ -21,8 +23,10 @@ class ExtendedFieldTest < ActiveSupport::TestCase
     special_chars = ["\'", "\"", "\\", "/", "&", "?", "<", ">", "-"]
 
     special_chars.each do |sp|
-      extended_field = ExtendedField.new(:label => sp,
-                                         :description => "yyy")
+      extended_field = ExtendedField.new(
+        :label => sp,
+        :description => "yyy"
+      )
       assert !extended_field.valid?
       assert extended_field.errors.invalid?(:label)
     end
@@ -33,8 +37,10 @@ class ExtendedFieldTest < ActiveSupport::TestCase
     invalid_label_names = TopicType.column_names + ContentType.column_names
 
     invalid_label_names.uniq.each do |invalid_label|
-      extended_field = ExtendedField.new(:label => invalid_label,
-                                         :description => "yyy")
+      extended_field = ExtendedField.new(
+        :label => invalid_label,
+        :description => "yyy"
+      )
       assert !extended_field.valid?
       assert extended_field.errors.invalid?(:label)
     end
@@ -42,16 +48,20 @@ class ExtendedFieldTest < ActiveSupport::TestCase
 
   # format of xml_element_name
   def test_format_of_xml_element_name_no_spaces
-    extended_field = ExtendedField.new(:label => 'some field',
-                                       :xml_element_name => 'some element name',
-                                       :description => "yyy")
+    extended_field = ExtendedField.new(
+      :label => 'some field',
+      :xml_element_name => 'some element name',
+      :description => "yyy"
+    )
     assert !extended_field.valid?
     assert extended_field.errors.invalid?(:xml_element_name)
   end
 
   def test_label_does_not_begin_or_end_with_spaces
-    extended_field = ExtendedField.create!(:label => ' ends and begins with spaces ',
-                                           :description => "yyy")
+    extended_field = ExtendedField.create!(
+      :label => ' ends and begins with spaces ',
+      :description => "yyy"
+    )
 
     assert_equal "ends and begins with spaces", extended_field.label
   end
@@ -90,8 +100,9 @@ class ExtendedFieldTest < ActiveSupport::TestCase
   # should never return a field that has already been mapped to a certain topic_type
   def test_find_available_fields_topic_type
     ExtendedField.find_available_fields(@person_type, 'TopicType').each do |field|
-      fcount = TopicTypeToFieldMapping.count :conditions => ["extended_field_id = :extended_field_id and topic_type_id = :topic_type_id",
-                                                             { :extended_field_id => field.id, :topic_type_id => @person_type.id }]
+      fcount = TopicTypeToFieldMapping.count :conditions => [
+        "extended_field_id = :extended_field_id and topic_type_id = :topic_type_id",
+        { :extended_field_id => field.id, :topic_type_id => @person_type.id }]
       assert_equal fcount, 0, "find_available_fields list is returning a field that has already been mapped to this topic_type."
     end
   end
@@ -99,8 +110,9 @@ class ExtendedFieldTest < ActiveSupport::TestCase
   # should never return a field that has already been mapped to a certain content_type
   def test_find_available_fields_content_type
     ExtendedField.find_available_fields(@user_type, 'ContentType').each do |field|
-      fcount = TopicTypeToFieldMapping.count :conditions => ["extended_field_id = :extended_field_id and topic_type_id = :topic_type_id",
-                                                             { :extended_field_id => field.id, :topic_type_id => @user_type.id }]
+      fcount = TopicTypeToFieldMapping.count :conditions => [
+        "extended_field_id = :extended_field_id and topic_type_id = :topic_type_id",
+        { :extended_field_id => field.id, :topic_type_id => @user_type.id }]
       assert_equal fcount, 0, "find_available_fields list is returning a field that has already been mapped to this content_type."
     end
   end

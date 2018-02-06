@@ -75,12 +75,16 @@ class UserNotifier < ActionMailer::Base
 
     case type
     when 'joined'
-      @subject += I18n.t('user_notifier_model.user_joined',
-                         user_name: sender.user_name, basket_name: basket.name)
+      @subject += I18n.t(
+        'user_notifier_model.user_joined',
+        user_name: sender.user_name, basket_name: basket.name
+      )
       @template_name = 'join_policy/member'
     when 'request'
-      @subject += I18n.t('user_notifier_model.user_requested',
-                         user_name: sender.user_name, basket_name: basket.name)
+      @subject += I18n.t(
+        'user_notifier_model.user_requested',
+        user_name: sender.user_name, basket_name: basket.name
+      )
       @template_name = 'join_policy/request'
     when 'approved'
       @subject += I18n.t('user_notifier_model.membership_accepted', basket_name: basket.name)
@@ -155,13 +159,17 @@ class UserNotifier < ActionMailer::Base
 
     case type
     when 'created'
-      @subject += I18n.t('user_notifier_model.basket_created',
-                         user_name: sender.user_name, basket_name: basket.name)
+      @subject += I18n.t(
+        'user_notifier_model.basket_created',
+        user_name: sender.user_name, basket_name: basket.name
+      )
       @needs_approval = false
       @template_name = 'basket_create_policy/created'
     when 'request'
-      @subject += I18n.t('user_notifier_model.basket_requested',
-                         user_name: sender.user_name, basket_name: basket.name)
+      @subject += I18n.t(
+        'user_notifier_model.basket_requested',
+        user_name: sender.user_name, basket_name: basket.name
+      )
       @needs_approval = true
       @template_name = 'basket_create_policy/created'
     when 'approved'

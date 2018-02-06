@@ -10,9 +10,10 @@ class HistoryTest < ActionController::IntegrationTest
         add_rach_as_regular_user
 
         login_as('dean')
-        @item = new_item({ :title => 'History Test v1' }, nil, nil, item_class) do
-          fill_in_needed_information_for(item_class)
-        end
+        @item =
+          new_item({ :title => 'History Test v1' }, nil, nil, item_class) do
+            fill_in_needed_information_for(item_class)
+          end
         login_as('angela', 'test', { :logout_first => true })
         @item = update_item(@item, { :title => 'History Test v2' })
 
@@ -46,8 +47,10 @@ class HistoryTest < ActionController::IntegrationTest
   private
 
   def old_login_as(username, password = 'test', options = {})
-    options = { :navigate_to_login => true,
-                :should_fail_login => false }.merge(options)
+    options = { 
+      :navigate_to_login => true,
+      :should_fail_login => false 
+    }.merge(options)
     if options[:navigate_to_login]
       logout # make sure we arn't logged in first
       visit "/site/account/login"

@@ -14,7 +14,7 @@ module ExtendedContentHelpers
       fields_in_sorted_array = fields_with_position.keys.sort_by { |s| s.to_s }.map { |key| fields_with_position[key] }
       fields_in_sorted_array.each do |field_hash|
         field_hash.each_pair do |field_key, field_data|
-        # If this is google map contents, and no_map is '1', then do not use this data
+          # If this is google map contents, and no_map is '1', then do not use this data
           next if field_data.is_a?(Hash) && field_data['no_map'] && field_data['no_map'] == '1'
 
           if field_key =~ /_multiple$/
@@ -216,13 +216,14 @@ module ExtendedContentHelpers
 
           # in case we are given something like this [ { 'value' => 'this', :label => 'that' } ]
           # This happens in the case of using replace_value_for method (field=) on a different field
-          parts = if value.is_a?(Array) && value_label_hash?(value.first)
-                    [nil, value.first['label'], value.first['value']]
-                  elsif value.is_a?(String)
-                    value.match(/(.+)\(([^\(\)]+)\)\Z/).to_a
-                  else
-                    Array.new
-                  end
+          parts =
+            if value.is_a?(Array) && value_label_hash?(value.first)
+              [nil, value.first['label'], value.first['value']]
+            elsif value.is_a?(String)
+              value.match(/(.+)\(([^\(\)]+)\)\Z/).to_a
+            else
+              Array.new
+                             end
 
           unless parts.blank?
             options[:label] = parts[1].chomp(' ')

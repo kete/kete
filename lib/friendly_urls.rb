@@ -48,15 +48,16 @@ module FriendlyUrls
       # because depending on how we selected this item, self.title
       # may or may not be available, but self.attributes['title']
       # always is (same goes with name)
-      string = if attributes.include?('title')
-                 attributes['title']
-               elsif attributes.include?('name')
-                 attributes['name']
-               elsif attributes.include?('label')
-                 attributes['label']
-               else
-                 String.new
-               end
+      string =
+        if attributes.include?('title')
+          attributes['title']
+        elsif attributes.include?('name')
+          attributes['name']
+        elsif attributes.include?('label')
+          attributes['label']
+        else
+          String.new
+                      end
 
       id_for_url = topic_version ? topic_id.to_s : id.to_s
 

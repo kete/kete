@@ -6,11 +6,12 @@ module AnonymousFinishedAfterFilter
 
       specs = Array.new
       if SystemSetting.respond_to?(:allowed_anonymous_actions) && SystemSetting.allowed_anonymous_actions.present?
-        specs = SystemSetting.allowed_anonymous_actions.collect do |h|
-          h[:finished_after]
-        end.flatten.select do |s|
-          s.include?(class_key)
-        end
+        specs =
+          SystemSetting.allowed_anonymous_actions.collect do |h|
+            h[:finished_after]
+          end.flatten.select do |s|
+            s.include?(class_key)
+          end
       end
 
       finished_after_actions = specs.collect { |pair| pair.split('/')[1].to_sym }

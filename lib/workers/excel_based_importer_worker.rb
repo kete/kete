@@ -185,17 +185,18 @@ class ExcelBasedImporterWorker < BackgrounDRb::MetaWorker
 
     rows = ExcelPreProcessor.new(path_to_xl_xml_file, zoom_class: @zoom_class, import_dir_path: @import_dir_path, record_interval: @record_interval).records
 
-    builder = Nokogiri::XML::Builder.new(encoding: 'UTF-8') do |xml|
-      xml.records do
-        rows.each do |row|
-          xml.record do
-            row.each do |element_name, value|
-              xml.safe_send(element_name, value)
+    builder =
+      Nokogiri::XML::Builder.new(encoding: 'UTF-8') do |xml|
+        xml.records do
+          rows.each do |row|
+            xml.record do
+              row.each do |element_name, value|
+                xml.safe_send(element_name, value)
+              end
             end
           end
         end
       end
-    end
 
     File.open(path_to_records_file_output, 'w') { |f| f.write(builder.to_xml) }
   end

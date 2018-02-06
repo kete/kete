@@ -55,9 +55,10 @@ class Profile < ActiveRecord::Base
   # otherwise they choose which fields specifically to show
   # each form within a profile may have a type
   def self.type_options
-    [[I18n.t('profile_model.type_options.none'), 'none'],
-     [I18n.t('profile_model.type_options.all'), 'all'],
-     [I18n.t('profile_model.type_options.select_below'), 'some']]
+    [
+      [I18n.t('profile_model.type_options.none'), 'none'],
+      [I18n.t('profile_model.type_options.all'), 'all'],
+      [I18n.t('profile_model.type_options.select_below'), 'some']]
   end
 
   # send @rules to profile.setting(:rules) for storage
@@ -76,15 +77,16 @@ class Profile < ActiveRecord::Base
     data = Array.new
     setting(:rules).each do |k, v|
       value = "#{k.humanize}: "
-      value += if v['rule_type'] == 'all'
-                 I18n.t('profile_model.rules.all')
-               elsif v['rule_type'] == 'none'
-                 I18n.t('profile_model.rules.none')
-               elsif v['rule_type'] == 'some' && v['allowed']
-                 v['allowed'].collect { |a| a.humanize }.join(', ') + '.'
-               else
-                 I18n.t('profile_model.rules.none')
-               end
+      value +=
+        if v['rule_type'] == 'all'
+          I18n.t('profile_model.rules.all')
+        elsif v['rule_type'] == 'none'
+          I18n.t('profile_model.rules.none')
+        elsif v['rule_type'] == 'some' && v['allowed']
+          v['allowed'].collect { |a| a.humanize }.join(', ') + '.'
+        else
+          I18n.t('profile_model.rules.none')
+                      end
       data << value
     end
     data.join(' ')

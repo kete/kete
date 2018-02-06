@@ -48,8 +48,10 @@ module ZoomControllerHelpers
           related_item.prepare_and_save_to_zoom
         end
 
-        flash[:notice] = I18n.t('zoom_controller_helpers_lib.zoom_destroy_and_redirect.destroyed',
-                                pretty_zoom_class: pretty_zoom_class)
+        flash[:notice] = I18n.t(
+          'zoom_controller_helpers_lib.zoom_destroy_and_redirect.destroyed',
+          pretty_zoom_class: pretty_zoom_class
+        )
       end
       redirect_to action: 'list'
     end

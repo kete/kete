@@ -33,11 +33,15 @@ module SiteLinking
       top_message = I18n.t('site_linking_lib.error_linking_site.error_occured')
       site_listing
       if @site_listing.blank?
-        top_message += I18n.t('site_linking_lib.error_linking_site.manual_linking',
-                              new_kete_site: @new_kete_site)
+        top_message += I18n.t(
+          'site_linking_lib.error_linking_site.manual_linking',
+          new_kete_site: @new_kete_site
+        )
       else
-        top_message += I18n.t('site_linking_lib.error_linking_site.appears_listed',
-                              new_kete_site: @new_kete_site)
+        top_message += I18n.t(
+          'site_linking_lib.error_linking_site.appears_listed',
+          new_kete_site: @new_kete_site
+        )
       end
       render :update do |page|
         page.hide('spinner')

@@ -61,11 +61,12 @@ module Embedded
         raw_attribute_name = setting.name.gsub(' Synonyms', '')
         attribute_name = raw_attribute_name.downcase.tr(' ', '_')
 
-        name_variants = [attribute_name.upcase,
-                         attribute_name.humanize,
-                         attribute_name.camelize,
-                         attribute_name,
-                         raw_attribute_name]
+        name_variants = [
+          attribute_name.upcase,
+          attribute_name.humanize,
+          attribute_name.camelize,
+          attribute_name,
+          raw_attribute_name]
 
         attribute_synonyms = name_variants + Object.const_get(setting.constant_name).to_a
 
@@ -136,9 +137,11 @@ module Embedded
               raise 'Error: Trying to use Google Maps without configuation (config/google_map_api.yml)'
             end
             coords = convert_dms_to_decimal_degree(value)
-            value = { 'zoom_lvl' => SystemSetting.default_zoom_level.to_s,
-                      'no_map' => '0',
-                      'coords' => "#{coords[:latitude]},#{coords[:longitude]}" }
+            value = { 
+              'zoom_lvl' => SystemSetting.default_zoom_level.to_s,
+              'no_map' => '0',
+              'coords' => "#{coords[:latitude]},#{coords[:longitude]}" 
+            }
             send("#{field.label_for_params}=", value)
           else
             send("#{field.label_for_params}+=", value)

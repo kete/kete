@@ -255,17 +255,21 @@ class SearchController < ApplicationController
 
     if from_result_set.size > 0
       # get the raw xml results from zoom
-      raw_results = from_result_set.records_from(start_record: @start_record,
-                                                 end_record: @end_record)
+      raw_results = from_result_set.records_from(
+        start_record: @start_record,
+        end_record: @end_record
+      )
       # create a hash of link, title, description for each record
       raw_results.each do |raw_record|
         result_from_xml_hash = parse_from_xml_in(raw_record)
         @results << result_from_xml_hash
       end
     end
-    @results = WillPaginate::Collection.new(@current_page,
-                                            @number_per_page,
-                                            from_result_set.size).concat(@results)
+    @results = WillPaginate::Collection.new(
+      @current_page,
+      @number_per_page,
+      from_result_set.size
+    ).concat(@results)
   end
 
   def populate_result_sets_for(zoom_class)
@@ -381,10 +385,12 @@ class SearchController < ApplicationController
     sort_direction = @current_basket.setting(:sort_direction_reversed_default)
     search_sort_type = params[:sort_type].blank? and !sort_type.blank? ? sort_type : params[:sort_type]
     search_sort_direction = params[:sort_type].blank? and !sort_direction.blank? ? sort_direction : params[:sort_direction]
-    @search.add_sort_to_query_if_needed(user_specified: search_sort_type,
-                                        direction: search_sort_direction,
-                                        action: params[:action],
-                                        search_terms: @search_terms)
+    @search.add_sort_to_query_if_needed(
+      user_specified: search_sort_type,
+      direction: search_sort_direction,
+      action: params[:action],
+      search_terms: @search_terms
+    )
 
     logger.debug('what is query: ' + @search.pqf_query.to_s.inspect)
 
@@ -411,24 +417,28 @@ class SearchController < ApplicationController
   # takes search_terms from form
   # and redirects to .../for/seach-term1-and-search-term2 url
   def terms_to_page_url_redirect
-    basket_name = params[:target_basket].nil? ? \
-      params[:urlified_name] : params[:target_basket]
+    basket_name =
+      params[:target_basket].nil? ? \
+           params[:urlified_name] : params[:target_basket]
 
-    controller_name = params[:controller_name_for_zoom_class].nil? ? \
-      zoom_class_controller(SystemSetting.default_search_class) : params[:controller_name_for_zoom_class]
+    controller_name =
+      params[:controller_name_for_zoom_class].nil? ? \
+           zoom_class_controller(SystemSetting.default_search_class) : params[:controller_name_for_zoom_class]
 
-    location_hash = { urlified_name: basket_name,
-                      controller_name_for_zoom_class: controller_name,
-                      existing_array_string: params[:existing_array_string],
+    location_hash = { 
+      urlified_name: basket_name,
+      controller_name_for_zoom_class: controller_name,
+      existing_array_string: params[:existing_array_string],
 
-                      # sort_direction is a boolean, so we need to force a blank value if not
-                      # sent through to ensure the users choice of direction is maintained
-                      sort_direction: params[:sort_direction] || '',
+      # sort_direction is a boolean, so we need to force a blank value if not
+      # sent through to ensure the users choice of direction is maintained
+      sort_direction: params[:sort_direction] || '',
 
-                      sort_type: params[:sort_type],
-                      limit_to_choice: params[:limit_to_choice],
-                      extended_field: params[:extended_field],
-                      authenticity_token: nil }
+      sort_type: params[:sort_type],
+      limit_to_choice: params[:limit_to_choice],
+      extended_field: params[:extended_field],
+      authenticity_token: nil 
+    }
 
     if is_a_private_search?
       location_hash[:privacy_type] = params[:privacy_type]
@@ -436,9 +446,11 @@ class SearchController < ApplicationController
 
     if !params[:search_terms].blank?
       # we are searching
-      location_hash.merge!({ search_terms_slug: to_search_terms_slug(params[:search_terms]),
+      location_hash.merge!({ 
+                             search_terms_slug: to_search_terms_slug(params[:search_terms]),
                              search_terms: params[:search_terms],
-                             action: 'for' })
+                             action: 'for' 
+                           })
     else
       # we are viewing all
       location_hash[:action] = 'all'
@@ -647,11 +659,13 @@ class SearchController < ApplicationController
       @next_action = 'link'
 
       # Find resulting items through deleted relationships
-      @results = ContentItemRelation::Deleted.find_all_by_topic_id_and_related_item_type(@relate_to_item, related_class_name) \
-                                             .collect { |r| related_class.find(r.related_item_id) }
+      @results =
+        ContentItemRelation::Deleted.find_all_by_topic_id_and_related_item_type(@relate_to_item, related_class_name) \
+                                    .collect { |r| related_class.find(r.related_item_id) }
       if related_class_is_topic
-        @results += ContentItemRelation::Deleted.find_all_by_related_item_id_and_related_item_type(@relate_to_item, 'Topic') \
-                                                .collect { |r| Topic.find(r.topic_id) }
+        @results +=
+          ContentItemRelation::Deleted.find_all_by_related_item_id_and_related_item_type(@relate_to_item, 'Topic') \
+                                      .collect { |r| Topic.find(r.topic_id) }
       end
     when 'add'
       @verb = t('search_controller.find_related.add')
@@ -667,13 +681,15 @@ class SearchController < ApplicationController
         @results = @results.paginate(page: current_page)
 
         # Store pagination information, we'll need this later
-        pagination_methods = ['total_entries', 'total_pages', 'current_page',
-                              'previous_page', 'next_page']
+        pagination_methods = [
+          'total_entries', 'total_pages', 'current_page',
+          'previous_page', 'next_page']
 
-        pagination_methods = pagination_methods.inject(Hash.new) do |hash, method_name|
-          hash[method_name] = @results.send(method_name)
-          hash
-        end
+        pagination_methods =
+          pagination_methods.inject(Hash.new) do |hash, method_name|
+            hash[method_name] = @results.send(method_name)
+                   hash
+          end
         # EOIN: pagination_methods is a hash
         #   key = one of ['total_entries', 'total_pages', 'current_page', 'previous_page', 'next_page']
         #   value = the result of sending the method name in the key to the @results collection

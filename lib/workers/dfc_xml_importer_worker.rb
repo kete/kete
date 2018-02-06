@@ -34,57 +34,58 @@ class DfcXmlImporterWorker < BackgrounDRb::MetaWorker
       dfc_xml = Nokogiri::XML(File.read(path_to_dfc_xml_file))
       rows = dfc_xml.search('metadata/asset')
 
-      output = Nokogiri::XML::Builder.new(encoding: 'UTF-8') do |xml|
-        xml.records do
-          rows.each do |row|
-            fields = Hash.new
-
-            row.search('field').each do |field|
-              value = field.inner_text.strip
-              field_name = field.attributes['name'].to_s.gsub(/\s/, '_')
-              next if value.blank? || field_name.blank?
-              fields[field_name] = value
-            end
-
-            unless fields['Filename'].blank?
-              # we use "path_to_file" internally, but "Filename" is the column name we get
-              file_path = @import_dir_path + '/files/' + fields['Filename']
-              fields['path_to_file'] = file_path if File.exist?(file_path)
-            end
-
-            if @zoom_class == 'StillImage' && !fields['path_to_file']
-              log.write("Photograph #{fields['Filename']} not found at #{@import_dir_path}. Skipping record.\n")
-              next
-            end
-
-            xml.record do
-              fields.each do |field_name, value|
-                xml.safe_send(field_name, value)
+      output =
+        Nokogiri::XML::Builder.new(encoding: 'UTF-8') do |xml|
+          xml.records do
+            rows.each do |row|
+              fields = Hash.new
+  
+              row.search('field').each do |field|
+                value = field.inner_text.strip
+                field_name = field.attributes['name'].to_s.gsub(/\s/, '_')
+                next if value.blank? || field_name.blank?
+                fields[field_name] = value
               end
-
-              title_parts, filename_without_ext = Array.new, fields['Filename'].split('.').first
-
-              case (fields['Record_Type'] || '').downcase
-              when 'archives', 'publication'
-                title_parts << "Collection Title: #{fields['Collection_Title']}" unless fields['Collection_Title'].blank?
-                title_parts << "Reference: #{fields['Archive_Reference']}" unless fields['Archive_Reference'].blank?
-                title_parts << "Part #{$1.strip}" if filename_without_ext =~ /([a-z])$/
-              when 'photograph'
-                title_parts << "Collection Title: #{fields['Collection_Title']}" unless fields['Collection_Title'].blank?
-                title_parts << "Reference: #{fields['Photograph_Reference']}" unless fields['Photograph_Reference'].blank?
-                title_parts << "Part #{$1.strip}" if filename_without_ext =~ /([a-z])$/
-              else
-                xml.Record_Identifier($1.strip.to_i) if fields['Filename'] =~ /(\d+)/
+  
+              unless fields['Filename'].blank?
+                # we use "path_to_file" internally, but "Filename" is the column name we get
+                file_path = @import_dir_path + '/files/' + fields['Filename']
+                fields['path_to_file'] = file_path if File.exist?(file_path)
               end
-
-              # If we don't have an title parts at this point, make one up based on the filename
-              title_parts << filename_without_ext if title_parts.blank?
-
-              xml.Record_Title(title_parts.join(' - '))
+  
+              if @zoom_class == 'StillImage' && !fields['path_to_file']
+                log.write("Photograph #{fields['Filename']} not found at #{@import_dir_path}. Skipping record.\n")
+                next
+              end
+  
+              xml.record do
+                fields.each do |field_name, value|
+                  xml.safe_send(field_name, value)
+                end
+  
+                title_parts, filename_without_ext = Array.new, fields['Filename'].split('.').first
+  
+                case (fields['Record_Type'] || '').downcase
+                when 'archives', 'publication'
+                  title_parts << "Collection Title: #{fields['Collection_Title']}" unless fields['Collection_Title'].blank?
+                  title_parts << "Reference: #{fields['Archive_Reference']}" unless fields['Archive_Reference'].blank?
+                  title_parts << "Part #{$1.strip}" if filename_without_ext =~ /([a-z])$/
+                when 'photograph'
+                  title_parts << "Collection Title: #{fields['Collection_Title']}" unless fields['Collection_Title'].blank?
+                  title_parts << "Reference: #{fields['Photograph_Reference']}" unless fields['Photograph_Reference'].blank?
+                  title_parts << "Part #{$1.strip}" if filename_without_ext =~ /([a-z])$/
+                else
+                  xml.Record_Identifier($1.strip.to_i) if fields['Filename'] =~ /(\d+)/
+                end
+  
+                # If we don't have an title parts at this point, make one up based on the filename
+                title_parts << filename_without_ext if title_parts.blank?
+  
+                xml.Record_Title(title_parts.join(' - '))
+              end
             end
           end
         end
-      end
 
       File.open(path_to_records_file_output, 'w') { |f| f.write(output.to_xml) }
     end

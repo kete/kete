@@ -51,9 +51,10 @@ class ModerationTest < ActionController::IntegrationTest
 
     context "a topic with several revisions, one of which is invalid due to an additional extended field" do
       setup do
-        @basket = new_basket :name => "Moderation test basket" do
-          select 'moderator views before item approved', :from => 'settings_fully_moderated'
-        end
+        @basket =
+          new_basket :name => "Moderation test basket" do
+            select 'moderator views before item approved', :from => 'settings_fully_moderated'
+          end
 
         # Create a new topic type
         visit "/site/topic_types/new?parent_id=1"
@@ -170,7 +171,7 @@ class ModerationTest < ActionController::IntegrationTest
 
   private
 
-    # Some macros
+  # Some macros
 
   def create_a_new_pending_topic_and_accept_it
     # Create a new topic, which should be moderated since Paul is only a normal basket member.
@@ -204,7 +205,7 @@ class ModerationTest < ActionController::IntegrationTest
     should_appear_once_in_search_results(@topic, :title => @topic.title)
   end
 
-    # Some helpers below
+  # Some helpers below
 
   def latest_version_should_be_pending(item)
     assert item.versions.last.version != item.version || \
