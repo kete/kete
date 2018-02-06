@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class UserNotifier < ActionMailer::Base
   default from: SystemSetting.notifier_email.to_s
 

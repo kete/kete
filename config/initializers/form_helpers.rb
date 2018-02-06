@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class FormHelper < ActionView::Helpers::FormBuilder
   helpers = field_helpers +
             %w{date_select datetime_select time_select} +

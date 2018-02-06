@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class TopicType < ActiveRecord::Base
   # dependent topics should be what if a topic_type is destroyed?
   has_many :topics

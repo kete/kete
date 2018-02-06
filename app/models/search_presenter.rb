@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class SearchPresenter
   include ActionView::Helpers::NumberHelper
   include ActionView::Helpers::UrlHelper

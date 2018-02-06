@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # A collection of methods, purpose of which has been derived from the code in search_controller.rb
 # Performs queries to public/private zebra databases and returns results
 

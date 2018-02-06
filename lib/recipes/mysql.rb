@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # This file is unused/unmaintained
 
 # MySQL recipe (unfinished)

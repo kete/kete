@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 namespace :rabid do
   desc 'Merges users who have multiple accounts on same email address.'
   task fixup_duplicate_users: :environment do

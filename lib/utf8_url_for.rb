@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # we use this to maintain unicode characters in unescaped form in our urls
 module Utf8UrlFor
   unless included_modules.include? Utf8UrlFor

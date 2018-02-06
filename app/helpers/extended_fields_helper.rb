@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module ExtendedFieldsHelper
   # Override for ActiveScaffold extended field controller edit view
   # Refer to http://activescaffold.com/docs/form-overrides for details

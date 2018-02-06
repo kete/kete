@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module KeteAuthorisationSettings
   # ROB:  This could possibly be a helper rather than a model.
 

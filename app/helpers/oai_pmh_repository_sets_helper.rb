@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module OaiPmhRepositorySetsHelper
   def zoom_db_column(record)
     link_to(

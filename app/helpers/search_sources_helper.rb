@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module SearchSourcesHelper
   # This is the only method that should be used. The rest are internally used methods
 

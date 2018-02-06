@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # kete specific capistrano recipes
 
 namespace :deploy do

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # Change secret_token when you deploy to production, or I'll throw my toys.
 
 # This is a secret key for verifying the integrity of signed cookies.

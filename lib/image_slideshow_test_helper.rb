@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module ImageSlideshowTestHelper
   unless included_modules.include? ImageSlideshowTestHelper
     def self.included(base)

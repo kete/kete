@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module ZoomControllerHelpers
   unless included_modules.include? ZoomControllerHelpers
     # set up our helper methods

@@ -1,4 +1,6 @@
 # -*- coding: utf-8 -*-
+# frozen_string_literal: true
+
 module LatitudeLongitudeConvertors
   unless included_modules.include? LatitudeLongitudeConvertors
 

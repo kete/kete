@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # lib/tasks/zebra.rake
 #
 # tasks related to setting up and running zebra for kete

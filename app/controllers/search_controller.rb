@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class SearchController < ApplicationController
   # Walter McGinnis, 2008-02-07
   # search forms never add anything to db

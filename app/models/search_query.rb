@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class SearchQuery
   # Responsibilities
   # * encapsulate the user's question to us (their search)
