@@ -299,13 +299,13 @@ module ExtendedContent
           # Extract the name of the field
           field_param_name = field.delete(field.first)
        
-               # Grab the extended field for this field name
+          # Grab the extended field for this field name
           extended_field = all_fields.find { |ef| field_param_name == ef.label_for_params }
        
-               # Remove the extra level of nesting left after removing the first of two elements
+          # Remove the extra level of nesting left after removing the first of two elements
           field = field.first
        
-               # in some cases, field may be nil, but needs to be nil wrapped in an array
+          # in some cases, field may be nil, but needs to be nil wrapped in an array
           field = [nil] if field.nil?
        
           if ['map', 'map_address'].member?(extended_field.ftype)
