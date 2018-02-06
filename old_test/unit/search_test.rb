@@ -89,8 +89,8 @@ class SearchTest < ActiveSupport::TestCase
       code =
         Proc.new do
           @search = Search.new
-               @search.update_sort_direction_value_for_pqf_query(requested, sort_type)
-               assert_equal direction_value, @search.pqf_query.direction_value
+          @search.update_sort_direction_value_for_pqf_query(requested, sort_type)
+          assert_equal direction_value, @search.pqf_query.direction_value
         end
 
       define_method(method_name, &code)
