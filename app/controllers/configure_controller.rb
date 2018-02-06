@@ -118,7 +118,7 @@ class ConfigureController < ApplicationController
     @zoom_dbs =
       ZoomDb.all.each do |zoom_db|
         zoom_db.zoom_password = @kete_password
-           zoom_db.port = params[:zoom_db][zoom_db.id.to_s][:port]
+        zoom_db.port = params[:zoom_db][zoom_db.id.to_s][:port]
       end
 
     # run validations

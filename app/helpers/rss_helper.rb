@@ -51,7 +51,7 @@ module RssHelper
     array =
       item.creators.map do |creator|
         sub_array = [creator.user_name]
-           sub_array << creator.login if creator.user_name != creator.login
+        sub_array << creator.login if creator.user_name != creator.login
       end
     array.flatten
   end
@@ -63,7 +63,7 @@ module RssHelper
     array =
       item.contributors.select(:login).uniq.map do |contributor|
         sub_array = [contributor.user_name]
-           sub_array << contributor.login if contributor.user_name != contributor.login
+        sub_array << contributor.login if contributor.user_name != contributor.login
       end
     array.flatten
   end
