@@ -96,7 +96,6 @@ class Document < ActiveRecord::Base
     end
   end
 
-
   # take gzip, zip, or tar file and decompress it to public/themes
   def decompress_as_theme
     decompress_under(THEMES_ROOT + '/')

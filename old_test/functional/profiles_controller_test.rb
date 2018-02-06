@@ -7,7 +7,6 @@ class ProfilesControllerTest < ActionController::TestCase
     @urlified_name = Basket.find(:first).urlified_name
   end
 
-
   context "The profiles controller" do
     # test that you must be logged in to access list
     should "test that you must be logged in to access list action" do

@@ -182,7 +182,6 @@ class AccountController < ApplicationController
   ### not sure of visiblity yet
   #####################################################################
 
-
   def simple_return_tos
     ['find_related']
   end
@@ -470,5 +469,4 @@ class AccountController < ApplicationController
   def load_content_type
     @content_type = ContentType.find_by_class_name('User')
   end
-
 end

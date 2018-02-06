@@ -122,6 +122,7 @@ module I18n
           mi: { prefix: 'te ' },
           zh: { prefix: '', suffix: '' }
         }
+
       protected
 
         # Kieran Pilkington, 2009-07-09
@@ -179,7 +180,6 @@ module I18n
 
         #   interpolate_orig(locale, string, values)
         # end
-
 
         def pluralize_with_locale(locale, string)
           if PluralizeValues[locale.to_sym]
