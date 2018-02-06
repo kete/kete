@@ -688,7 +688,7 @@ class SearchController < ApplicationController
         pagination_methods =
           pagination_methods.inject(Hash.new) do |hash, method_name|
             hash[method_name] = @results.send(method_name)
-                   hash
+            hash
           end
         # EOIN: pagination_methods is a hash
         #   key = one of ['total_entries', 'total_pages', 'current_page', 'previous_page', 'next_page']

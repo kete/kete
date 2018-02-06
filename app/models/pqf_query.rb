@@ -83,17 +83,17 @@ class PqfQuery
     code =
       Proc.new do |term_or_terms, *options|
         options = options.first || Hash.new
-           terms = terms_as_array(term_or_terms)
+        terms = terms_as_array(term_or_terms)
      
            # make default operator @and, if unspecified
-           options[:operator] = options[:operator].nil? ? '@and' : options[:operator]
+        options[:operator] = options[:operator].nil? ? '@and' : options[:operator]
            # pass nil operator, if 'none' is specified
-           options[:operator] = nil if options[:operator] == 'none'
+        options[:operator] = nil if options[:operator] == 'none'
      
-           query_part = create_query_part(options.merge({ 
-                                                          attribute_spec: attribute_spec,
-                                                          term_or_terms: terms 
-                                                        }))
+        query_part = create_query_part(options.merge({ 
+                                                       attribute_spec: attribute_spec,
+                                                       term_or_terms: terms 
+                                                     }))
       end
 
     define_method(method_name, &code)
