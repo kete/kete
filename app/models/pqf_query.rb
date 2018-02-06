@@ -85,9 +85,9 @@ class PqfQuery
         options = options.first || Hash.new
         terms = terms_as_array(term_or_terms)
      
-           # make default operator @and, if unspecified
+        # make default operator @and, if unspecified
         options[:operator] = options[:operator].nil? ? '@and' : options[:operator]
-           # pass nil operator, if 'none' is specified
+        # pass nil operator, if 'none' is specified
         options[:operator] = nil if options[:operator] == 'none'
      
         query_part = create_query_part(options.merge({ 
