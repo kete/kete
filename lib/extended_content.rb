@@ -300,54 +300,54 @@ module ExtendedContent
           field_param_name = field.delete(field.first)
        
                # Grab the extended field for this field name
-               extended_field = all_fields.find { |ef| field_param_name == ef.label_for_params }
+          extended_field = all_fields.find { |ef| field_param_name == ef.label_for_params }
        
                # Remove the extra level of nesting left after removing the first of two elements
-               field = field.first
+          field = field.first
        
                # in some cases, field may be nil, but needs to be nil wrapped in an array
-               field = [nil] if field.nil?
+          field = [nil] if field.nil?
        
-               if ['map', 'map_address'].member?(extended_field.ftype)
-                 result[field_param_name] = convert_value_from_structured_hash(field, extended_field)
+          if ['map', 'map_address'].member?(extended_field.ftype)
+            result[field_param_name] = convert_value_from_structured_hash(field, extended_field)
+  
+          # if we are dealing with a multiple topic type
+          # we need to do things a bit differently
+          elsif extended_field.ftype == 'topic_type' && extended_field.multiple?
+            index = 1
+            result[field_param_name] =
+              field.inject(Hash.new) do |multiple, value|
+                unless value.blank?
+                  multiple[index.to_s] = value
+                  index += 1
+                end
+                multiple
+              end
+          elsif ['autocomplete', 'choice'].member?(extended_field.ftype)
+            if field.size > 1
+              # We're dealing with a multiple field value.
+              result[field_param_name] =
+                field.inject(Hash.new) do |multiple, value|
+                  multiple[(field.index(value) + 1).to_s] = convert_value_from_structured_hash(value, extended_field)
+                  multiple
+                end
+            else
+              result[field_param_name] = convert_value_from_structured_hash(field, extended_field)
+            end
+          else
+            if (extended_field.multiple && field.size > 0) || field.size > 1
+              # We're dealing with a multiple field value.
+              result[field_param_name] =
+                field.inject(Hash.new) do |multiple, value|
+                  multiple[(field.index(value) + 1).to_s] = convert_value_from_structured_hash(value, extended_field)
+                  multiple
+                end
+            else
+              result[field_param_name] = convert_value_from_structured_hash(field, extended_field)
+            end
+          end
        
-               # if we are dealing with a multiple topic type
-               # we need to do things a bit differently
-               elsif extended_field.ftype == 'topic_type' && extended_field.multiple?
-                 index = 1
-                 result[field_param_name] =
-                   field.inject(Hash.new) do |multiple, value|
-                     unless value.blank?
-                       multiple[index.to_s] = value
-                       index += 1
-                     end
-                              multiple
-                   end
-               elsif ['autocomplete', 'choice'].member?(extended_field.ftype)
-                 if field.size > 1
-                   # We're dealing with a multiple field value.
-                   result[field_param_name] =
-                     field.inject(Hash.new) do |multiple, value|
-                       multiple[(field.index(value) + 1).to_s] = convert_value_from_structured_hash(value, extended_field)
-                                  multiple
-                     end
-                 else
-                   result[field_param_name] = convert_value_from_structured_hash(field, extended_field)
-                 end
-               else
-                 if (extended_field.multiple && field.size > 0) || field.size > 1
-                   # We're dealing with a multiple field value.
-                   result[field_param_name] =
-                     field.inject(Hash.new) do |multiple, value|
-                       multiple[(field.index(value) + 1).to_s] = convert_value_from_structured_hash(value, extended_field)
-                                  multiple
-                     end
-                 else
-                   result[field_param_name] = convert_value_from_structured_hash(field, extended_field)
-                 end
-               end
-       
-               result
+          result
         end
 
       # Pass the pseudo params hash for conversion using the usual methods.
@@ -830,7 +830,7 @@ module ExtendedContent
       all_values_blank =
         values.all? do |v|
           v = v['value'] if v.is_a?(Hash) && v['value']
-               v.to_s.blank?
+          v.to_s.blank?
         end
 
       if extended_field_mapping.required && all_values_blank && \
@@ -851,12 +851,12 @@ module ExtendedContent
             # if label is included, you get back a hash for value
             v = v['value'] if v.is_a?(Hash) && v['value'] && extended_field_mapping.extended_field.ftype != 'year'
          
-                   v = v.to_s unless extended_field_mapping.extended_field.ftype == 'year'
+            v = v.to_s unless extended_field_mapping.extended_field.ftype == 'year'
          
-                   send(
-                     "validate_extended_#{extended_field_mapping.extended_field.ftype}_field_content".to_sym, \
-                     extended_field_mapping, v
-                   )
+            send(
+              "validate_extended_#{extended_field_mapping.extended_field.ftype}_field_content".to_sym, \
+              extended_field_mapping, v
+            )
           end
 
         error_array.compact.each do |error|
