@@ -114,10 +114,10 @@ module I18n
 
   module Backend
     class Simple
-        PluralizeValues = {
-          mi: { prefix: 'ngā ' },
-          zh: { prefix: '', suffix: '' }
-        }
+      PluralizeValues = {
+        mi: { prefix: 'ngā ' },
+        zh: { prefix: '', suffix: '' }
+      }
         SingularizeValues = {
           mi: { prefix: 'te ' },
           zh: { prefix: '', suffix: '' }
