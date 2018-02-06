@@ -18,6 +18,10 @@ class AccountController < ApplicationController
   #####################################################################
   #####################################################################
 
+  include ExtendedContent
+  include ExtendedContentController
+  include EmailController
+  include SslControllerHelpers
   def index
     if logged_in? || User.count > 0
       redirect_to_default_all
@@ -178,9 +182,6 @@ class AccountController < ApplicationController
   ### not sure of visiblity yet
   #####################################################################
 
-  include ExtendedContent
-  include ExtendedContentController
-  include EmailController
 
   def simple_return_tos
     ['find_related']
@@ -470,5 +471,4 @@ class AccountController < ApplicationController
     @content_type = ContentType.find_by_class_name('User')
   end
 
-  include SslControllerHelpers
 end

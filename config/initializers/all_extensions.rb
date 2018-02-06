@@ -114,6 +114,14 @@ module I18n
 
   module Backend
     class Simple
+        PluralizeValues = {
+          mi: { prefix: 'ngā ' },
+          zh: { prefix: '', suffix: '' }
+        }
+        SingularizeValues = {
+          mi: { prefix: 'te ' },
+          zh: { prefix: '', suffix: '' }
+        }
       protected
 
         # Kieran Pilkington, 2009-07-09
@@ -172,14 +180,6 @@ module I18n
         #   interpolate_orig(locale, string, values)
         # end
 
-        PluralizeValues = {
-          mi: { prefix: 'ngā ' },
-          zh: { prefix: '', suffix: '' }
-        }
-        SingularizeValues = {
-          mi: { prefix: 'te ' },
-          zh: { prefix: '', suffix: '' }
-        }
 
         def pluralize_with_locale(locale, string)
           if PluralizeValues[locale.to_sym]

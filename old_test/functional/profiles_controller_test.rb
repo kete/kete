@@ -1,12 +1,12 @@
 require 'test_helper'
 
 class ProfilesControllerTest < ActionController::TestCase
+  include KeteTestFunctionalHelper
   def setup
     @base_class = "Profile"
     @urlified_name = Basket.find(:first).urlified_name
   end
 
-  include KeteTestFunctionalHelper
 
   context "The profiles controller" do
     # test that you must be logged in to access list
