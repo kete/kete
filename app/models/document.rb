@@ -80,6 +80,7 @@ class Document < ActiveRecord::Base
   # acts as licensed but this is not versionable (cant change a license once it is applied)
   acts_as_licensed
 
+  include ArchiveUtilities
   def attachment_attributes_valid?
     %i[size content_type].each do |attr_name|
       enum = attachment_options[attr_name]
@@ -95,7 +96,6 @@ class Document < ActiveRecord::Base
     end
   end
 
-  include ArchiveUtilities
 
   # take gzip, zip, or tar file and decompress it to public/themes
   def decompress_as_theme

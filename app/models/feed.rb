@@ -26,6 +26,7 @@ class Feed < ActiveRecord::Base
     feed.class.name =~ /Feedzirra/ ? feed.entries : []
   end
 
+  include WorkerControllerHelpers # for deleting bgrb workers
   def entries
     feed_limit = limit
     serialized_feed[0..(feed_limit - 1)]
@@ -71,7 +72,6 @@ class Feed < ActiveRecord::Base
     self.url = url.strip.gsub('feed:', 'http:') if url.present?
   end
 
-  include WorkerControllerHelpers # for deleting bgrb workers
   def destroy_feed_workers
     delete_existing_workers_for(:feeds_worker, to_worker_key, false)
   end
