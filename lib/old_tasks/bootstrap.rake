@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # lib/tasks/bootstrap.rake
 #
 # copied and modified from Mephisto, et. al

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 namespace :kete do
   desc 'Rebuild the pg_search multisearch index'
   task rebuild_search_index: :environment do

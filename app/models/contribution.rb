@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class Contribution < ActiveRecord::Base
   # this is where we track our polymorphic contributions
   # between users

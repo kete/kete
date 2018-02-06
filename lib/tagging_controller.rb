@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module TaggingController
   unless included_modules.include? TaggingController
     def self.included(klass)

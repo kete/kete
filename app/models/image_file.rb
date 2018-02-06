@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class ImageFile < ActiveRecord::Base
   # this is the class for different sized versions of an image
   # including the original of the file

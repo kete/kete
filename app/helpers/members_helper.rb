@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module MembersHelper
   def admin_actions_correct_list_item(user, action_key, action_label, tool_count)
     html_string = String.new

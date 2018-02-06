@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # TODO: Rails 2.0 - needs @request updated
 module AuthenticatedTestHelper
   # Sets the current user in the session from the user fixtures.

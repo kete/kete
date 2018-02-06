@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module FriendlyUrls
   unless included_modules.include? FriendlyUrls
     # eventually we will want to depreciate the use of normalize_KD transliteration

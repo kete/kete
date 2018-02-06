@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class ContentType < ActiveRecord::Base
   has_many :content_type_to_field_mappings, dependent: :destroy, order: 'position'
   # you have to do the elimination of dupes through the sql

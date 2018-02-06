@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'oai_dc_helpers'
 require 'xml_helpers'
 require 'zoom_helpers'

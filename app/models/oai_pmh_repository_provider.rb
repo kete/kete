@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'oai'
 require 'system_setting'
 require 'user'

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class TopicTypeToFieldMapping < ActiveRecord::Base
   include FieldMappings
 

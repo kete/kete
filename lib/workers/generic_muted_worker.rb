@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'methods_for_generic_muted_worker'
 # meant to be a container worker
 # a method name is passed in that will be run during do_work method execution

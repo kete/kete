@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # lib/tasks/upgrade.rake
 #
 # mainly checks that the system settings we need for the new code

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # from http://blog.airbladesoftware.com/2007/6/27/compressing-images-with-attachment_fu-and-rmagick
 # and http://blog.airbladesoftware.com/2008/1/15/converting-image-format-when-thumbnailing
 # modified to use more standard tools, i believe there was some unnecessary code in here

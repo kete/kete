@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # Kete means "basket" in the Te Reo Maori language
 # using term basket here to spell out concept for developers
 # and to avoid confusion with the kete app

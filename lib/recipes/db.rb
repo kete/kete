@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # capistrano recipes specific to database server
 
 namespace :deploy do

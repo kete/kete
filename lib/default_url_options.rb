@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module DefaultUrlOptions
   unless included_modules.include? DefaultUrlOptions
 

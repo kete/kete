@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class ExtendedContentParser
   # ROB: This code is ripped from the oai_dc_xml_dc_extended_content() and oai_dc_xml_for_field_dataset()
   #      in lib/extended_content_helpers.rb.

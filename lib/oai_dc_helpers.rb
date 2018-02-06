@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 include Utf8UrlFor
 include KeteUrlFor
 include ActionView::Helpers::SanitizeHelper

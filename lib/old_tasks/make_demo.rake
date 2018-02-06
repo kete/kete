@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # lib/tasks/make_demo.rake
 #
 # use demo-data to create a demo version of kete

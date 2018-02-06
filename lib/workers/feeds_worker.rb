@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class FeedsWorker < BackgrounDRb::MetaWorker
   set_worker_name :feeds_worker
   set_no_auto_load true

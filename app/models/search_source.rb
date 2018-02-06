@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'feedzirra'
 
 class SearchSource < ActiveRecord::Base
