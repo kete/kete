@@ -190,7 +190,7 @@ namespace :kete do
         next unless Basket.standard_baskets.include?(basket.id)
         next unless basket.created_at == basket.updated_at
 
-        correctable_fields = ['private_default', 'file_private_default', 'allow_non_member_comments', 'show_privacy_controls']
+        correctable_fields = %w[private_default file_private_default allow_non_member_comments show_privacy_controls]
         current_basket_defaults = correctable_fields.map { |field| basket.send(field) }
         if basket.id == 1 # site basket
           standard_basket_defaults = [false, false, true, false]
@@ -232,7 +232,7 @@ namespace :kete do
 
     desc 'Make about, documentation, and help baskets ignore on the site basket recent topics if not done yet.'
     task ignore_default_baskets_if_setting_not_set: :environment do
-      Basket.find_all_by_urlified_name(['about', 'documentation', 'help']).each do |basket|
+      Basket.find_all_by_urlified_name(%w[about documentation help]).each do |basket|
         if basket.setting(:disable_site_recent_topics_display).class == NilClass
           basket.set_setting(:disable_site_recent_topics_display, true)
         end
@@ -298,7 +298,7 @@ namespace :kete do
             # here's the hack way
             # we know RSS feed caches live under "all" or "for" directories
             # actually, just "all" most likely, but taking no chances
-            ['all', 'for'].each do |subdir|
+            %w[all for].each do |subdir|
               full_path = path + '/' + subdir + '/' + zoom_class_controller(zoom_class)
               next unless File.directory?(full_path)
               # empty the directory files and then delete it
@@ -318,7 +318,7 @@ namespace :kete do
             #                                               :controller_name_for_zoom_class => zoom_class_controller(zoom_class))
           end
           # finally delete the unneeded all and for directories
-          ['all', 'for'].each do |subdir|
+          %w[all for].each do |subdir|
             full_path = path + '/' + subdir
             next unless File.directory?(full_path)
             Dir.rmdir(full_path)

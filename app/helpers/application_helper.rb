@@ -693,7 +693,7 @@ module ApplicationHelper
   # Create two methods for fetching public and private related items
   # Both are identical except for method names, so use module_eval
   # so we don't have to repeat ourselves.
-  %w(public_related_items_for private_related_items_for).each do |method_name|
+  %w[public_related_items_for private_related_items_for].each do |method_name|
     module_eval <<-EOT, __FILE__, __LINE__ + 1
       def #{method_name}(item, options={})
         options = { :start_record => nil, :end_record => nil,
@@ -1080,7 +1080,7 @@ module ApplicationHelper
       # for the extended_field if it is set
       # but only if it hasn't been done previously in other formatting
       base_url = field.base_url
-      unless base_url.blank? || %w(map map_address choice autocomplete).include?(field.ftype)
+      unless base_url.blank? || %w[map map_address choice autocomplete].include?(field.ftype)
         value_output = link_to(value_output, base_url + value_output)
       end
 
@@ -1088,7 +1088,7 @@ module ApplicationHelper
     end
 
     if output_array.size > 1
-      if %w(map map_address).include?(field.ftype)
+      if %w[map map_address].include?(field.ftype)
         # TODO: look into how best to present multiple maps
         # they may not need any extra formatting
         output_array.join('<br\>')
@@ -1101,7 +1101,7 @@ module ApplicationHelper
   end
 
   def formatted_value_from_xml(value, ef = nil, item = nil)
-    if ef && %w(autocomplete choice).member?(ef.ftype)
+    if ef && %w[autocomplete choice].member?(ef.ftype)
       base_url = ef.base_url
 
       # If the extended field type is a choice, then link the value to the search page for the EF.
@@ -1789,7 +1789,7 @@ module ApplicationHelper
   def extras_after_title_headline; end
 
   # three helpers for ITEM_CLASSES form that can be redefined in add-ons
-  %w(beginning mid end).each do |location|
+  %w[beginning mid end].each do |location|
     define_method('add_ons_item_form_' + location, proc { |form| })
   end
 end

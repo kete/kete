@@ -25,10 +25,10 @@ set :deploy_to, '/home/deploy/kete'
 # set :pty, true
 
 # set :linked_dirs, %w{bin log tmp/pids tmp/cache tmp/sockets vendor/bundle public/system}
-set :linked_files, %w{config/database.yml config/secrets.yml config/initializers/secret_token.rb config/application.yml}
+set :linked_files, %w[config/database.yml config/secrets.yml config/initializers/secret_token.rb config/application.yml]
 
 # Default value for linked_dirs is []
-set :linked_dirs, %w{bin log tmp/pids tmp/cache tmp/sockets vendor/bundle public/audio public/documents public/image_files public/video public/system public/uploads}
+set :linked_dirs, %w[bin log tmp/pids tmp/cache tmp/sockets vendor/bundle public/audio public/documents public/image_files public/video public/system public/uploads]
 
 # Default value for default_env is {}
 # set :default_env, { path: "/opt/ruby/bin:$PATH" }
@@ -43,7 +43,7 @@ set :rbenv_type, :system
 set :rbenv_custom_path, '/opt/rbenv'
 set :rbenv_ruby, '2.1.2'
 set :rbenv_prefix, "RAILS_ENV=#{fetch(:stage)} RBENV_ROOT=#{fetch(:rbenv_path)} RBENV_VERSION=#{fetch(:rbenv_ruby)} #{fetch(:rbenv_path)}/bin/rbenv exec"
-set :rbenv_map_bins, %w{rake gem bundle ruby rails}
+set :rbenv_map_bins, %w[rake gem bundle ruby rails]
 # set :rbenv_roles, :all # default value
 
 # Configure Bundler

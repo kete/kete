@@ -209,7 +209,7 @@ class ApplicationController < ActionController::Base
 
   def show_basket_list_naviation_menu?
     return false unless SystemSetting.is_configured
-    return false if params[:controller] == 'baskets' && ['edit', 'appearance', 'homepage_options'].include?(params[:action])
+    return false if params[:controller] == 'baskets' && %w[edit appearance homepage_options].include?(params[:action])
     return false if params[:controller] == 'search'
     SystemSetting.uses_basket_list_navigation_menu_on_every_page?
   end
@@ -594,7 +594,7 @@ class ApplicationController < ActionController::Base
     # send notifications of private item edit
     # do not do this when flagging, restoring, changing a homepage topic,
     # or converting a document into the description
-    skipped_actions = ['flag_version', 'restore', 'find_index', 'convert']
+    skipped_actions = %w[flag_version restore find_index convert]
     if !skipped_actions.include?(params[:action]) && params[item.class_as_key][:private] == 'true'
       private_item_notification_for(item, :edited)
     end
@@ -642,7 +642,7 @@ class ApplicationController < ActionController::Base
     query_parameters = request.query_parameters
 
     # delete the parameters that are artifacts from normal search
-    %w(number_of_results_per_page tabindex sort_type sort_direction).each do |not_relevant|
+    %w[number_of_results_per_page tabindex sort_type sort_direction].each do |not_relevant|
       query_parameters.delete(not_relevant)
     end
 
@@ -705,19 +705,19 @@ class ApplicationController < ActionController::Base
   def render_full_width_content_wrapper?
     if @displaying_error
       false
-    elsif (params[:controller] == 'baskets') && ['edit', 'update', 'homepage_options', 'appearance'].include?(params[:action])
+    elsif (params[:controller] == 'baskets') && %w[edit update homepage_options appearance].include?(params[:action])
       false
-    elsif ['moderate', 'members', 'importers'].include?(params[:controller]) && ['list', 'create', 'new', 'new_related_set_from_archive_file', 'potential_new_members'].include?(params[:action])
+    elsif %w[moderate members importers].include?(params[:controller]) && %w[list create new new_related_set_from_archive_file potential_new_members].include?(params[:action])
       false
     elsif (params[:controller] == 'index_page') && (params[:action] == 'index')
       false
-    elsif %w(tags search).include?(params[:controller])
+    elsif %w[tags search].include?(params[:controller])
       false
     elsif add_ons_full_width_content_wrapper_controllers.include?(params[:controller])
       true
     elsif (params[:controller] == 'account') && (params[:action] == 'show')
       true
-    elsif !['show', 'preview', 'show_private'].include?(params[:action])
+    elsif !%w[show preview show_private].include?(params[:action])
       true
     else
       false
@@ -838,7 +838,7 @@ class ApplicationController < ActionController::Base
 
   def current_sorting_options(default_order, default_direction, valid_orders = Array.new)
     @order = valid_orders.include?(params[:order]) ? params[:order] : default_order
-    @direction = ['asc', 'desc'].include?(params[:direction]) ? params[:direction] : default_direction
+    @direction = %w[asc desc].include?(params[:direction]) ? params[:direction] : default_direction
     "#{@order} #{@direction}"
   end
 

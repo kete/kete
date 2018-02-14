@@ -20,9 +20,9 @@ class TopicTest < ActiveSupport::TestCase
     }
 
     # name of fields that must be present, e.g. %(name description)
-    @req_attr_names = %w(title)
+    @req_attr_names = %w[title]
     # name of fields that cannot be a duplicate, e.g. %(name description)
-    @duplicate_attr_names = %w()
+    @duplicate_attr_names = %w[]
   end
 
   # load in sets of tests and helper methods
@@ -112,7 +112,7 @@ class TopicTest < ActiveSupport::TestCase
       model.save!
     end
 
-    assert_equal [["first_names", "Joe"], ["last_name", "Bloggs"], ["address_multiple", [["Wollaston St."], ["Nelson"]]], ["place_of_birth", nil]].sort, \
+    assert_equal [%w[first_names Joe], %w[last_name Bloggs], ["address_multiple", [["Wollaston St."], ["Nelson"]]], ["place_of_birth", nil]].sort, \
                  model.extended_content_pairs.sort
   end
 
@@ -597,7 +597,7 @@ class TopicTest < ActiveSupport::TestCase
 
       assert_equal "Joe", t.first_names
       assert_nil t.place_of_birth
-      past_jobs = ['Janitor', 'Garbageman']
+      past_jobs = %w[Janitor Garbageman]
       assert_equal past_jobs, t.past_jobs
 
       past_jobs = ['Gas Station Attendant', 'Paper Shuffler']
@@ -884,10 +884,10 @@ class TopicTest < ActiveSupport::TestCase
 
   def set_up_choices
     choice_content = [
-      ["Married", "Married"],
+      %w[Married Married],
       ["Defacto relationship", "Defacto Relationship"],
-      ["Dating", "Dating"],
-      ["Single", "Single"]
+      %w[Dating Dating],
+      %w[Single Single]
     ]
 
     choice_content.each do |l, v|
@@ -897,7 +897,7 @@ class TopicTest < ActiveSupport::TestCase
   end
 
   def married_dating_array
-    %w(Married Dating)
+    %w[Married Dating]
   end
 
   def married_dating_as_hashes(in_array = true)

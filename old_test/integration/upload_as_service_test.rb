@@ -37,7 +37,7 @@ class UploadAsServiceTest < ActionController::IntegrationTest
           body_should_contain 'class="simple"'
         end
 
-        %w(as_service service_target append_show_url).each do |parameter_name|
+        %w[as_service service_target append_show_url].each do |parameter_name|
           should_have_query_string_parameter_as_input(parameter_name)
         end
 

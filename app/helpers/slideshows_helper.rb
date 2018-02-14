@@ -55,7 +55,7 @@ module SlideshowsHelper
       # James - 2008-11-19
       # Factored out slideshow controls partial rendering statement to application.rhtml, so we need to check that the controller
       # and action are right now as the partial is no longer called from the 'show' view for each item type.
-      %w(audio documents images topics video web_links).member?(params[:controller]) &&
+      %w[audio documents images topics video web_links].member?(params[:controller]) &&
       params[:action] == 'show'
   end
 
@@ -64,7 +64,7 @@ module SlideshowsHelper
   # Support for keeping view size for images
   def url_without_extras(url)
     # Store the view size and return the URL without the matching part.
-    if url =~ /view_size=([a-z_]+)$/ && %w{small_sq medium small large}.member?($1)
+    if url =~ /view_size=([a-z_]+)$/ && %w[small_sq medium small large].member?($1)
       slideshow.image_view_size = $1
     else
       slideshow.image_view_size = nil

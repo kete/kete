@@ -73,9 +73,9 @@ namespace :deploy do
 
     desc 'Symlink folders for existing Kete installations'
     namespace :symlink do
-      public_dirs = %w{audio documents image_files video themes}
-      root_dirs = %w{zebradb imports private}
-      config_dirs = %w{locales}
+      public_dirs = %w[audio documents image_files video themes]
+      root_dirs = %w[zebradb imports private]
+      config_dirs = %w[locales]
       all_dirs = public_dirs + root_dirs + config_dirs
 
       desc 'Symlink all files'

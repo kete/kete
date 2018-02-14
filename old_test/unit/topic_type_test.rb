@@ -4,8 +4,8 @@ class TopicTypeTest < ActiveSupport::TestCase
   # fixtures preloaded
 
   NEW_TOPIC_TYPE = { :name => 'Test TopicType', :description => 'Dummy', :parent_id => 1 }
-  REQ_ATTR_NAMES       = %w(name description) # name of fields that must be present, e.g. %(name description)
-  DUPLICATE_ATTR_NAMES = %w(name) # name of fields that cannot be a duplicate, e.g. %(name description)
+  REQ_ATTR_NAMES       = %w[name description] # name of fields that must be present, e.g. %(name description)
+  DUPLICATE_ATTR_NAMES = %w[name] # name of fields that cannot be a duplicate, e.g. %(name description)
 
   def setup
     # Retrieve fixtures via their name

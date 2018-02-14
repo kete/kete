@@ -251,7 +251,7 @@ module OaiDcHelpers
     def oai_dc_xml_dc_format(xml)
       # item's content type is the default
       format = String.new
-      html_classes = %w(Topic Comment WebLink)
+      html_classes = %w[Topic Comment WebLink]
       case self.class.name
       when 'StillImage'
         if !original_file.nil?

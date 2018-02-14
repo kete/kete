@@ -21,10 +21,10 @@ class DocumentTest < ActiveSupport::TestCase
     }
 
     # name of fields that must be present, e.g. %(name description)
-    @req_attr_names = %w(title)
+    @req_attr_names = %w[title]
 
     # name of fields that cannot be a duplicate, e.g. %(name description)
-    @duplicate_attr_names = %w()
+    @duplicate_attr_names = %w[]
 
     # Name of the folder we expect files to be saved to
     @uploads_folder = 'documents'
@@ -103,11 +103,11 @@ class DocumentTest < ActiveSupport::TestCase
     document.save!
 
     # Add some tags on different contexts
-    ["a", "b", "c"].each do |tag|
+    %w[a b c].each do |tag|
       document.private_tag_list << tag
     end
 
-    ["x", "y", "z", "c"].each do |tag|
+    %w[x y z c].each do |tag|
       document.public_tag_list << tag
     end
 
@@ -115,8 +115,8 @@ class DocumentTest < ActiveSupport::TestCase
     document.save
     document.reload
 
-    assert_equal ["a", "b", "c"], document.private_tag_list.sort
-    assert_equal ["c", "x", "y", "z"], document.public_tag_list.sort
+    assert_equal %w[a b c], document.private_tag_list.sort
+    assert_equal %w[c x y z], document.public_tag_list.sort
 
     # Delete a common tag and check the deletion was only in the specified context.
     document.save
@@ -129,7 +129,7 @@ class DocumentTest < ActiveSupport::TestCase
     document = nil
     document = Document.last
 
-    assert_equal ["a", "b", "c"], document.tags_on(:private_tags).map(&:name).sort
-    assert_equal ["x", "y", "z"], document.tags_on(:public_tags).map(&:name).sort
+    assert_equal %w[a b c], document.tags_on(:private_tags).map(&:name).sort
+    assert_equal %w[x y z], document.tags_on(:public_tags).map(&:name).sort
   end
 end

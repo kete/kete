@@ -195,7 +195,7 @@ class UserNotifier < ActionMailer::Base
   #   private_item_edited
   #   private_comment_created
   #   private_comment_edited
-  ['item_created', 'item_edited', 'comment_created', 'comment_edited'].each do |type|
+  %w[item_created item_edited comment_created comment_edited].each do |type|
     define_method "private_#{type}" do |recipient, item, url|
       setup_email(recipient)
       item.private_version!

@@ -23,7 +23,7 @@ module Merge
       # get the attributes for the item that can be updated
       # and there existing values
       # prune attributes that shouldn't be messed with
-      ok_to_update = %w(title short_summary description)
+      ok_to_update = %w[title short_summary description]
 
       attributes_to_update = Hash.new
       attributes.each do |k, v|

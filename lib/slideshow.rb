@@ -70,7 +70,7 @@ class Slideshow
 
   def redirect_to_results_hash
     search_params.reject do |param, value|
-      %w{direction search_action}.member?(param.to_s)
+      %w[direction search_action].member?(param.to_s)
     end
   end
 

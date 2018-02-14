@@ -1,7 +1,7 @@
 require File.dirname(__FILE__) + '/../test_helper'
 
 class ContentTypeToFieldMappingTest < ActiveSupport::TestCase
-  (ITEM_CLASSES - ['Topic', 'Comment']).each do |zoom_class|
+  (ITEM_CLASSES - %w[Topic Comment]).each do |zoom_class|
     context "When the #{zoom_class} content type exists with two extended field mappings (one single value, one multiple)" do
       setup do
         @content_type, @mappings = setup_mappings_of_class('ContentType', zoom_class)

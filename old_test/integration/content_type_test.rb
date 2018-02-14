@@ -1,7 +1,7 @@
 require File.dirname(__FILE__) + '/integration_test_helper'
 
 class ContentTypeTest < ActionController::IntegrationTest
-  (ITEM_CLASSES - ['Topic', 'Comment']).each do |zoom_class|
+  (ITEM_CLASSES - %w[Topic Comment]).each do |zoom_class|
     context "When the #{zoom_class} content type exists with two extended field mappings (one single value/optional, one multiple/required)" do
       setup do
         add_admin_as_super_user

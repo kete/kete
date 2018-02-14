@@ -91,7 +91,7 @@ class OaiDcHelpersTest < ActiveSupport::TestCase
 
       should "output correct dc:description for #{zoom_class} when given only xml argument" do
         has_short_summary = false
-        if ['Topic', 'Document'].include?(zoom_class)
+        if %w[Topic Document].include?(zoom_class)
           @item.short_summary = "Short Summary"
           @item.save
           @item.reload

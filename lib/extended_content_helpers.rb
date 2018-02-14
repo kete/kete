@@ -163,7 +163,7 @@ module ExtendedContentHelpers
             matching_choice_mapped = extended_field.choices.matching(l, v)
 
             # Handle the creation of new choices where the choice is not recognised.
-            if !matching_choice_mapped && %w(autocomplete choice).include?(ftype) && user_choice_addition
+            if !matching_choice_mapped && %w[autocomplete choice].include?(ftype) && user_choice_addition
               sorted_values = value.dup.sort
               index = sorted_values.index([k, v])
 
@@ -206,7 +206,7 @@ module ExtendedContentHelpers
       else
         # text and textarea, we intepret their values as not having
         # the special case where value and label are passed together
-        unless %w(text textarea).include?(ftype)
+        unless %w[text textarea].include?(ftype)
           # handle special case where we have a label embedded in the value
           # if our value looks like this
           # a label string (value)

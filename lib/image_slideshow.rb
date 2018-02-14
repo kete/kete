@@ -4,7 +4,7 @@ module ImageSlideshow
       if klass.name == 'TopicsController'
         klass.send :before_filter, :prepare_slideshow, only: ['selected_image']
       else
-        klass.send :before_filter, :prepare_slideshow, only: ['index', 'selected_image']
+        klass.send :before_filter, :prepare_slideshow, only: %w[index selected_image]
       end
       klass.helper_method :slideshow_div, :slideshow_updater
     end

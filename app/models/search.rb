@@ -20,11 +20,11 @@ class Search < ActiveRecord::Base
   end
 
   def self.boolean_operators
-    ['and', 'or', 'not']
+    %w[and or not]
   end
 
   def self.date_types
-    ['last_modified', 'date']
+    %w[last_modified date]
   end
 
   def self.sort_types

@@ -5,7 +5,7 @@ class OaiPmhRepositoryController < ApplicationController
   def index
     if SystemSetting.is_configured? && defined?(SystemSetting.provide_oai_pmh_repository) && SystemSetting.provide_oai_pmh_repository
       # Remove controller and action from the options.  Rails adds them automatically.
-      options = params.delete_if { |k, v| %w{controller action}.include?(k) }
+      options = params.delete_if { |k, v| %w[controller action].include?(k) }
       provider = OaiPmhRepositoryProvider.new
       response = provider.process_request(options)
       render text: response, content_type: 'text/xml'

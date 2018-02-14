@@ -452,7 +452,7 @@ module Flagging
     # find_disputed(basket_id)
     # find_reviewed(basket_id)
     # find_rejected(basket_id)
-    %w{disputed reviewed rejected}.each do |type|
+    %w[disputed reviewed rejected].each do |type|
       define_method("find_#{type}") do |basket_id|
         # the select with the predicate method covers versions
         # that have multiple flaggings on them

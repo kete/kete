@@ -99,7 +99,7 @@ class OaiPmhRepositorySet < ActiveRecord::Base
 
   def test_match_with(item, for_value)
     code = 'item.' + match_code
-    if ['true', 'false'].include?(for_value)
+    if %w[true false].include?(for_value)
       for_value = eval(for_value)
     end
     for_value == eval(code)

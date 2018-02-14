@@ -163,7 +163,7 @@ class SearchPresenter
   def content_item_types
     # EOIN: these used to be called ZOOM_CLASSES
     # EOIN: TODO: not clear where we should pull this from yet
-    %w(Topic StillImage AudioRecording Video WebLink Document)
+    %w[Topic StillImage AudioRecording Video WebLink Document]
   end
 
   def content_item_type_to_tab_nav_name(content_item_type)

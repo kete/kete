@@ -8,7 +8,7 @@ class ContentItemRelationsTest < ActionController::TestCase
   def setup
     @base_class = "ContentItem"
 
-    @class_names = ['Topic', 'StillImage', 'AudioRecording', 'Video', 'WebLink', 'Document']
+    @class_names = %w[Topic StillImage AudioRecording Video WebLink Document]
 
     login_as(:admin)
   end

@@ -24,9 +24,9 @@ class UserTest < ActiveSupport::TestCase
     }
 
     # name of fields that must be present, e.g. %(name description)
-    @req_attr_names = %w(login email agree_to_terms security_code password password_confirmation locale)
+    @req_attr_names = %w[login email agree_to_terms security_code password password_confirmation locale]
     # name of fields that cannot be a duplicate, e.g. %(name description)
-    @duplicate_attr_names = %w(login)
+    @duplicate_attr_names = %w[login]
   end
 
   # load in sets of tests and helper methods
