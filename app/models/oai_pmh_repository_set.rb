@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # Used in conjunction with ZoomDbWrapper
 # to return OAI-PMH Repository records
 # from a ZoomDb

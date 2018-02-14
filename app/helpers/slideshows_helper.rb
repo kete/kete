@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module SlideshowsHelper
   # James - 2008-07-04
   # Helpers specific to slideshow/results navigation

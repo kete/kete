@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Merge
   unless included_modules.include? Merge
     # the last version listed will take precedence

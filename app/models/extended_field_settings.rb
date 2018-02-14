@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class ExtendedFieldSettings
   # ROB:  This class is here to remove settings stored in the acts_as_configurable
   #       table.

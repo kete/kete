@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # Skip the system configuration steps when we load the environment/routes,
 # because we'll set and reload routes later
 SKIP_SYSTEM_CONFIGURATION = true

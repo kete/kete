@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # Methods for access and setting of user searches
 module PreviousSearches
   unless included_modules.include? PreviousSearches

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class ContentItemRelation < ActiveRecord::Base
   # this is where we store our polymorphic "related to" between topics and items, and topics and topics
   belongs_to :topic

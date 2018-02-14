@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class LoadFeedUpdatersWorker < BackgrounDRb::MetaWorker
   set_worker_name :load_feed_updaters_worker
 

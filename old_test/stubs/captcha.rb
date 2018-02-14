@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # Mock for captcha
 class Captcha
   attr_accessor :id

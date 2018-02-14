@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'mini_exiftool'
 # Read (and perhaps later write) embedded metadata from binary files
 # and make a new embedded object (of class MiniExiftool) available

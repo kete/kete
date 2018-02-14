@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # Walter McGinnis, 2007-11-02
 # test that correspond to HasContributors Module
 module HasContributorsTestUnitHelper

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class Choice < ActiveRecord::Base
   ROOT = Choice.find(1) rescue nil
 

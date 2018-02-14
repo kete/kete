@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # lib/tasks/extract_table_rows_to_fixture.rake
 #
 # Walter McGinnis, 2007-07-04

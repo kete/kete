@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module CommentsHelper
   # Splits each paragraph, then splits each line break.
   # then sends that to clean_and_wrap. The result is then

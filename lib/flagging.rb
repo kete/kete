@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # RABID:
 # * this module is
 #   * included directly in Topic,

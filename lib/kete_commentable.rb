@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # based on acts_as_commentable, but customized to suit kete
 module KeteCommentable
   unless included_modules.include? KeteCommentable

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # Search class isn't an ActiveRecord descendent
 # refactoring to make search_controller stuff move to search model
 # has only just started, so this is limited
