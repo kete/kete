@@ -4,7 +4,8 @@ class BasketsController < ApplicationController
   permit 'site_admin or admin of :current_basket', only: %i[
     edit update homepage_options destroy
     add_index_topic appearance update_appearance
-    set_settings]
+    set_settings
+]
 
   before_filter :redirect_if_current_user_cant_add_or_request_basket, only: %i[new create]
 
@@ -322,7 +323,8 @@ class BasketsController < ApplicationController
       if zoom_class != 'Comment'
         @item_types << [
           zoom_class_humanize(zoom_class),
-          zoom_class_controller(zoom_class)]
+          zoom_class_controller(zoom_class)
+]
       end
     end
 

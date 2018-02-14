@@ -78,7 +78,8 @@ class ApplicationController < ActionController::Base
     add_portrait remove_portrait
     make_selected_portrait
     contact send_email
-    join]
+    join
+]
 
   # doesn't work for redirects, those are handled by
   # after filters on registered on specific controllers
@@ -88,7 +89,8 @@ class ApplicationController < ActionController::Base
     logout
     login
     signup
-    show_captcha]
+    show_captcha
+]
 
   # all topics and content items belong in a basket
   # and will always be specified in our routes

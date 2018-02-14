@@ -28,7 +28,8 @@ class BasketTest < ActiveSupport::TestCase
       options_spec = [
         ['Basket New or Edit', 'edit'],
         ['Basket Appearance', 'appearance'],
-        ['Basket Homepage Options', 'homepage_options']]
+        ['Basket Homepage Options', 'homepage_options']
+]
       assert_equal Basket.forms_options, options_spec
     end
   end

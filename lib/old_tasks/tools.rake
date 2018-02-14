@@ -242,7 +242,8 @@ namespace :kete do
       desc 'Do everything that we need done, like adding data to the db, for an upgrade.'
       task configure_imageselector: [
         'kete:tools:tiny_mce:write_default_imageselector_providers_json',
-        'kete:tools:tiny_mce:write_default_imageselector_sizes_json']
+        'kete:tools:tiny_mce:write_default_imageselector_sizes_json'
+]
 
       desc 'Write javascripts/image_selector_config/providers.json file that reflects this site. Will replace file if it exists.'
       task write_default_imageselector_providers_json: :environment do
