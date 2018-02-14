@@ -251,11 +251,11 @@ module Flagging
       else
         # we leave required fields alone
         # and let the view handle whether they should be shown
-        update_hash = { 
+        update_hash = {
           title: SystemSetting.blank_title,
           description: nil,
           extended_content: nil,
-          tag_list: nil 
+          tag_list: nil
         }
 
         update_hash[:private] = private? if respond_to?(:private)

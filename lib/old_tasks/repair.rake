@@ -308,9 +308,9 @@ namespace :kete do
                   map_data = map_data_as_hash
                 end
 
-                value = { 
+                value = {
                   'zoom_lvl' => (map_data['zoom_lvl'] || SystemSetting.default_zoom_level.to_s),
-                  'no_map' => (map_data['no_map'] || '0'), 'coords' => map_data['coords'] 
+                  'no_map' => (map_data['no_map'] || '0'), 'coords' => map_data['coords']
                 }
                 value['address'] = map_data['address'] if map_data['address']
                 item.send("#{field}=", value)

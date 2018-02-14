@@ -27,10 +27,10 @@ module XmlHelpers
       if (item.respond_to?(:public_filename) && !item.public_filename.blank?) ||
          (item.respond_to?(:original_file) && !item.original_file.blank?)
         protocol = protocol || 'http'
-        args = { 
+        args = {
           type: item.content_type,
           length: item.size.to_s,
-          url: file_url_from_bits_for(item, host, protocol) 
+          url: file_url_from_bits_for(item, host, protocol)
         }
 
         if item.class.name == 'ImageFile'
@@ -156,9 +156,9 @@ module XmlHelpers
             # and generating them also slows down the create/update actions for items
             # limiting here, since we are likely to only want this many
             # if the item is not private, don't allow private related still images
-            options = { 
+            options = {
               limit: SystemSetting.number_of_related_things_to_display_per_type,
-              conditions: PUBLIC_CONDITIONS 
+              conditions: PUBLIC_CONDITIONS
             }
 
             options.delete(:conditions) if item.private

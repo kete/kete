@@ -364,7 +364,7 @@ module ExtendedFieldsHelper
     html = text_field_with_auto_complete(
       name.split(/\[/)[0], '',
       { id: id, value: value, tabindex: '1', size: 50, name: name },
-      { 
+      {
         indicator: spinner_id,
         update: "#{id}_results",
         url: {
@@ -373,7 +373,7 @@ module ExtendedFieldsHelper
           extended_field_id: extended_field.id,
           extended_field_for: name.split(/\[/)[0],
           multiple_id: (extended_field.multiple? ? @field_multiple_id : nil)
-        } 
+        }
       }
     )
     html += "<img src='#{image_path('indicator.gif')}' width='16' height='16' alt='#{t('extended_fields_helper.extended_field_topic_type_editor.getting_topics')}' id='#{spinner_id}' style='display:none;' />"
@@ -424,11 +424,11 @@ module ExtendedFieldsHelper
       'extended_fields_helper.additional_extended_field_control.add_another',
       field_name: display_label_for(extended_field).singularize.downcase
     )
-    url = { 
+    url = {
       controller: 'extended_fields',
       action: 'add_field_to_multiples',
       extended_field_id: extended_field.id,
-      n: n, item_key: @item_type_for_params 
+      n: n, item_key: @item_type_for_params
     }
     link_to(text, url, { id: id, remote: true })
   end

@@ -54,7 +54,7 @@ class Basket < ActiveRecord::Base
   end
 
   # Editable Basket Attributes (copy from the basket database fields)
-  EDITABLE_ATTRIBUTES = %w{ 
+  EDITABLE_ATTRIBUTES = %w{
     index_page_redirect_to_all index_page_topic_is_entire_page
     index_page_link_to_index_topic_as index_page_basket_search index_page_image_as
     index_page_tags_as index_page_number_of_tags index_page_order_tags_by
@@ -63,7 +63,7 @@ class Basket < ActiveRecord::Base
     show_privacy_controls do_not_sanitize feeds_attributes }
 
   # Editable Basket Settings
-  EDITABLE_SETTINGS = %w{ 
+  EDITABLE_SETTINGS = %w{
     fully_moderated moderated_except private_file_visibility browse_view_as
     sort_order_default sort_direction_reversed_default disable_site_recent_topics_display
     basket_join_policy memberlist_policy import_archive_set_policy allow_basket_admin_contact private_item_notification
@@ -73,7 +73,7 @@ class Basket < ActiveRecord::Base
     additional_footer_content do_not_sanitize_footer_content replace_existing_footer }
 
   # Basket settings that are always editable or come under a parent option
-  NESTED_FIELDS = %w{ 
+  NESTED_FIELDS = %w{
     name status creator_id do_not_sanitize moderated_except
     sort_direction_reversed_default private_item_notification_show_title
     private_item_notification_show_short_summary index_page_link_to_index_topic_as
