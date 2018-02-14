@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class AudioController < ApplicationController
   include ExtendedContentController
   include MayBeUploadAsServiceController

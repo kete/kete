@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module HasContributors
   # this is where we handle contributed and created items by users
   unless included_modules.include? HasContributors

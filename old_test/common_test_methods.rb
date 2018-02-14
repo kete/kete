@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 #
 # A collection of methods shared between the unit/functional and integration
 # test helpers

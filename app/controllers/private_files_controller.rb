@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class PrivateFilesController < ApplicationController
   class UnknownTypeError < StandardError
   end

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module SearchDcDateFormulator
   unless included_modules.include? SearchDcDateFormulator
 

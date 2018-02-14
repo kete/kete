@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # lib/tasks/prep_app.rake
 #
 # a wrapper task does most everything

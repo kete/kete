@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module OverrideAttachmentFuMethods
   # https://github.com/kete/attachment_fu/blob/master/lib/technoweenie/attachment_fu/backends/file_system_backend.rb#L47
   def partitioned_path(*args)

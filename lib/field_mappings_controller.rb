@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module FieldMappingsController
   unless included_modules.include? FieldMappingsController
 

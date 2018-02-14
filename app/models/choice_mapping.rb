@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class ChoiceMapping < ActiveRecord::Base
   belongs_to :choice
   belongs_to :field, polymorphic: true

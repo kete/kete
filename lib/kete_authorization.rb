@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module KeteAuthorization
   unless included_modules.include? KeteAuthorization
     def self.included(klass)

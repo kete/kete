@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # = Profile
 #
 # Profiles are ways of shaping a model's forms to different purposes depending on context.

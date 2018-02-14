@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'importer'
 # Imports Filemaker Pro's FMPDSORESULT format
 # for importing topics without related images or anything

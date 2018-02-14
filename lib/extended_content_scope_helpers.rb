@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # class methods useful for defining scopes specific to an extended field
 # requires that class being extended has been extended with ExtendedContentHelpers
 module ExtendedContentScopeHelpers

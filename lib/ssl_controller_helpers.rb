@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module SslControllerHelpers
   unless included_modules.include? SslControllerHelpers
 

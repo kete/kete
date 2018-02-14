@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # require 'oai_pmh_provider'
 class OaiPmhRepositoryController < ApplicationController
   before_filter :set_page_title

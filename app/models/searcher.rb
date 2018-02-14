@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class Searcher
   def initialize(query: SearchQuery.new)
     @query = query

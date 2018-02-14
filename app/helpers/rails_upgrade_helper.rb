@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module RailsUpgradeHelper
   # Code added for the Rails 2 to Rails 3 upgrade
   # !! should be replace with better Rails 3 solutions.

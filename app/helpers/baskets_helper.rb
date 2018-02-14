@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module BasketsHelper
   def link_to_link_index_topic(options = {})
     link_to options[:phrase], {

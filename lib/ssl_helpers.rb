@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module SslHelpers
   def self.included(klass)
     if defined?(SystemSetting.force_https_on_restricted_pages) && SystemSetting.force_https_on_restricted_pages

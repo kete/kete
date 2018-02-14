@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # see has_value.rb for context
 #
 # structure of method name is simply to use test_file_name (sans _test)

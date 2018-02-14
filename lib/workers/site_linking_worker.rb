@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class SiteLinkingWorker < BackgrounDRb::MetaWorker
   set_worker_name :site_linking_worker
   set_no_auto_load true

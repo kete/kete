@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module ImportersHelper
   # dynamically define query methods for our attribute specs
   def self.define_options_method_for(constant_name)

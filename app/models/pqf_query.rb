@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # used for translating Kete search queries to
 # PQF queries that our ZoomDb understands
 class PqfQuery

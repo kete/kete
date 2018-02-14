@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # feature: import related set of items from uploaded archive file (zip, tar, gzip, tar/gzip)
 # title is derived from file name with _ to spaces
 # we use end description template to optionally add uniform description across imported items

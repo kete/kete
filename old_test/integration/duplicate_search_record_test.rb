@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require File.dirname(__FILE__) + '/integration_test_helper'
 
 # James - 2008-12-17

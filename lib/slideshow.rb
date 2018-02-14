@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class Slideshow
   def initialize(session_key)
     raise ArgumentError, "Passed in session key not valid. Must be an instance of HashWithIndifferentAccess, but was #{session_key.class.name}." \

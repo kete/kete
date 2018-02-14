@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # lib/tasks/db_disk_usage_report.rake
 #
 # Walter McGinnis, 2007-10-11

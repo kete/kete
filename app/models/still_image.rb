@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class StillImage < ActiveRecord::Base
   include PgSearch
   include PgSearchCustomisations

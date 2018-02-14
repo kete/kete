@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # Walter McGinnis, 2010-05-08
 # For holding info about the kete application instance
 # including an extensions mechanism that add-ons can use
