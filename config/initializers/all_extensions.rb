@@ -118,25 +118,25 @@ module I18n
         mi: { prefix: 'ngā ' },
         zh: { prefix: '', suffix: '' }
       }
-        SingularizeValues = {
-          mi: { prefix: 'te ' },
-          zh: { prefix: '', suffix: '' }
-        }
+      SingularizeValues = {
+        mi: { prefix: 'te ' },
+        zh: { prefix: '', suffix: '' }
+      }
 
       protected
 
         # Kieran Pilkington, 2009-07-09
         # Adding very simple translation fallback support to I18n module
         # Calls the original lookup method. If the value is empty, call it again with default locale
-        alias lookup_orig lookup
-        def lookup(locale, key, scope = [], options = {})
-          return unless key
-          entry = lookup_orig(locale, key, scope, options)
-          if (entry.nil? || (entry.is_a?(String) && entry.empty?)) && I18n.default_locale
-            entry = lookup_orig(I18n.default_locale, key, scope, options)
-          end
-          entry
+      alias lookup_orig lookup
+      def lookup(locale, key, scope = [], options = {})
+        return unless key
+        entry = lookup_orig(locale, key, scope, options)
+        if (entry.nil? || (entry.is_a?(String) && entry.empty?)) && I18n.default_locale
+          entry = lookup_orig(I18n.default_locale, key, scope, options)
         end
+        entry
+      end
 
         # Kieran Pilkington, 2009-07-09
         # Allows us to use keys in translations "Change {{t.base.password}}"
@@ -181,35 +181,35 @@ module I18n
         #   interpolate_orig(locale, string, values)
         # end
 
-        def pluralize_with_locale(locale, string)
-          if PluralizeValues[locale.to_sym]
-            string = strip_prefix_and_suffix(locale, string)
-            PluralizeValues[locale.to_sym][:prefix].to_s + string + PluralizeValues[locale.to_sym][:suffix].to_s
-          else
-            string.pluralize
-          end
+      def pluralize_with_locale(locale, string)
+        if PluralizeValues[locale.to_sym]
+          string = strip_prefix_and_suffix(locale, string)
+          PluralizeValues[locale.to_sym][:prefix].to_s + string + PluralizeValues[locale.to_sym][:suffix].to_s
+        else
+          string.pluralize
         end
+      end
 
-        def singularize_with_locale(locale, string)
-          if SingularizeValues[locale.to_sym]
-            string = strip_prefix_and_suffix(locale, string)
-            SingularizeValues[locale.to_sym][:prefix].to_s + string + SingularizeValues[locale.to_sym][:suffix].to_s
-          else
-            string.singularize
-          end
+      def singularize_with_locale(locale, string)
+        if SingularizeValues[locale.to_sym]
+          string = strip_prefix_and_suffix(locale, string)
+          SingularizeValues[locale.to_sym][:prefix].to_s + string + SingularizeValues[locale.to_sym][:suffix].to_s
+        else
+          string.singularize
         end
+      end
 
-        def strip_prefix_and_suffix(locale, string)
-          # strip any prefixes for this locale
-          string.gsub!(/^#{PluralizeValues[locale.to_sym][:prefix]}/, '') unless PluralizeValues[locale.to_sym][:prefix].blank?
-          string.gsub!(/^#{SingularizeValues[locale.to_sym][:prefix]}/, '') unless SingularizeValues[locale.to_sym][:prefix].blank?
+      def strip_prefix_and_suffix(locale, string)
+        # strip any prefixes for this locale
+        string.gsub!(/^#{PluralizeValues[locale.to_sym][:prefix]}/, '') unless PluralizeValues[locale.to_sym][:prefix].blank?
+        string.gsub!(/^#{SingularizeValues[locale.to_sym][:prefix]}/, '') unless SingularizeValues[locale.to_sym][:prefix].blank?
 
-          # strip any suffixes for this locale
-          string.gsub!(/#{PluralizeValues[locale.to_sym][:suffix]}$/, '') unless PluralizeValues[locale.to_sym][:suffix].blank?
-          string.gsub!(/#{SingularizeValues[locale.to_sym][:suffix]}$/, '') unless SingularizeValues[locale.to_sym][:suffix].blank?
+        # strip any suffixes for this locale
+        string.gsub!(/#{PluralizeValues[locale.to_sym][:suffix]}$/, '') unless PluralizeValues[locale.to_sym][:suffix].blank?
+        string.gsub!(/#{SingularizeValues[locale.to_sym][:suffix]}$/, '') unless SingularizeValues[locale.to_sym][:suffix].blank?
 
-          string
-        end
+        string
+      end
     end
   end
 end
