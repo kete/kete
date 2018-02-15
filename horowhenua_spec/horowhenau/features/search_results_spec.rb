@@ -26,7 +26,7 @@ module SearchResultsHelpers
   end
 end
 
-feature "Browse search results" do
+describe "Browse search results" do
   include SearchResultsHelpers
 
   before do
@@ -93,7 +93,7 @@ feature "Browse search results" do
   end
 end
 
-feature "Search for a particular item" do
+describe "Search for a particular item" do
   include SearchResultsHelpers
 
   it "can search from the main page" do

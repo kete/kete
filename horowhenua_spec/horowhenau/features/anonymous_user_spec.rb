@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-feature 'Anonymous users' do
+describe 'Anonymous users' do
   it 'are asked to login if they try to see list of members' do
     visit '/en/site/members/list'
     expect(current_path).to eq('/en/site/baskets/permission_denied')
