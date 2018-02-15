@@ -89,7 +89,7 @@ class Comment < ActiveRecord::Base
   end
 
   def private_version(&block)
-    block.call
+    yield
   end
 
   def to_anchor
