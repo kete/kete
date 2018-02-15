@@ -16,8 +16,8 @@ describe Topic do
 
   describe 'creator (user who created the topic)' do
     let(:topic_type) { FactoryGirl.create(:topic_type) }
-    let(:basket)     { FactoryGirl.create(:basket) }
-    let(:user)       { FactoryGirl.create(:user) }
+    let(:basket)     { FactoryGirl.create(:basket)     }
+    let(:user)       { FactoryGirl.create(:user)       }
 
     it 'cannot be set during topic creation' do
       expect {
