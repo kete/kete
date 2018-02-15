@@ -1,8 +1,8 @@
 require 'spec_helper'
 
 feature 'Topic comments', js: true do
-  let(:user) { FactoryGirl.create(:user, :activated, :with_default_baskets) }
-  let(:topic) { FactoryGirl.create(:topic, creator: user) }
+  let(:user)            { FactoryGirl.create(:user, :activated, :with_default_baskets) }
+  let(:topic)           { FactoryGirl.create(:topic, creator: user) }
   let(:show_topic_path) { basket_topic_path(topic.basket.urlified_name, topic.id) }
 
   def add_comment_to_topic(comment_attrs)
