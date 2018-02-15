@@ -189,7 +189,7 @@ module Flagging
       last_version_tags_count = last_version.tags.size
 
       if last_version_number > 1
-        while last_version_tags_count > 0 || !block.call(last_version)
+        while last_version_tags_count > 0 || !yield(last_version)
           last_version_number = last_version_number - 1
           break if last_version_number == 0
 
@@ -199,7 +199,7 @@ module Flagging
       end
 
       # Only return a valid result
-      if last_version_tags_count == 0 && block.call(last_version)
+      if last_version_tags_count == 0 && yield(last_version)
         last_version
       else
         nil
