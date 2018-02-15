@@ -20,7 +20,7 @@ namespace :manage_gems do
     # default
     ENV['GEMS_ACTION'] ||= 'update'
 
-    if `echo $USER`.strip.downcase != 'root'
+    if !`echo $USER`.strip.casecmp('root').zero?
       puts "\n/!\\ IMPORTANT /!\\\n\n"
       puts 'This script has detected you are trying to run this as either a non root account or using sudo.'
       puts 'Please make sure you are installing these gems as a root user or as a user that will install gems in the system wide location.'
