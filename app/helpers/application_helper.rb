@@ -42,13 +42,13 @@ module ApplicationHelper
       SystemSetting.image_sizes[:small_sq].is_a?(String) ? \
                              SystemSetting.image_sizes[:small_sq].gsub(/(!|>|<)/, '').split('x').first.to_i : \
                              SystemSetting.image_sizes[:small_sq].first
-    default_options = { 
+    default_options = {
       width: image_dimension,
       height: image_dimension,
       alt: t(
         'application_helper.avatar_for.users_avatar',
         user_name: user.user_name
-      ) 
+      )
     }
     options = default_options.merge(options)
 
@@ -235,10 +235,10 @@ module ApplicationHelper
     html = "<li id='header_add_item' class='#{li_class}'>"
     html += link_to_unless_current(
       link_text,
-      { 
+      {
         controller: 'baskets',
         action: 'choose_type',
-        urlified_name: @current_basket.urlified_name 
+        urlified_name: @current_basket.urlified_name
       }.merge(options),
       tabindex: '2'
     )
@@ -354,11 +354,11 @@ module ApplicationHelper
           html += content_tag(
             'li', link_to(
                     t('application_helper.render_baskets_as_menu.more'),
-                    { 
+                    {
                       controller: 'search',
                       action: 'all',
                       urlified_name: basket.urlified_name,
-                      controller_name_for_zoom_class: 'topics' 
+                      controller_name_for_zoom_class: 'topics'
                     },
                     tabindex: '2'
             )
@@ -428,9 +428,9 @@ module ApplicationHelper
   end
 
   def link_to_members_of(basket, options = {})
-    options = { 
+    options = {
       viewable_text: t('application_helper.link_to_members_of.members_link_text'),
-      unavailable_text: '' 
+      unavailable_text: ''
     }.merge(options)
     if current_user_can_see_memberlist_for?(basket)
       content_tag(
@@ -455,7 +455,7 @@ module ApplicationHelper
   def link_to_membership_request_of(basket, options = {})
     return '' unless logged_in?
 
-    options = { 
+    options = {
       join_text: t('application_helper.link_to_membership_request_of.join'),
       request_text: t('application_helper.link_to_membership_request_of.request'),
       closed_text: '',
@@ -464,15 +464,15 @@ module ApplicationHelper
       pending_text: t('application_helper.link_to_membership_request_of.pending'),
       rejected_text: t('application_helper.link_to_membership_request_of.rejected'),
       current_role: t('application_helper.link_to_membership_request_of.current_role'),
-      leave_text: t('application_helper.link_to_membership_request_of.leave') 
+      leave_text: t('application_helper.link_to_membership_request_of.leave')
     }.merge(options)
 
     show_roles = options[:show_roles].nil? ? true : options[:show_roles]
 
-    location_hash = { 
+    location_hash = {
       urlified_name: basket.urlified_name,
       controller: 'members',
-      action: 'join' 
+      action: 'join'
     }
 
     html = ''
@@ -798,10 +798,10 @@ module ApplicationHelper
         if link_options.is_a?(String)
           link_options
         else
-          { 
+          {
             urlified_name: still_image.basket.urlified_name,
             controller: 'images', action: 'show', id: still_image,
-            private: (options[:privacy_type] == 'private') 
+            private: (options[:privacy_type] == 'private')
           }.merge(link_options)
                              end
     else
@@ -1281,10 +1281,10 @@ module ApplicationHelper
           ) + "</li>\n"
           comment_string += '<li>' + link_to(
             t('application_helper.show_comments_for.delete'),
-            { 
+            {
               action: :destroy,
               controller: 'comments',
-              id: comment 
+              id: comment
             },
             method: :delete,
             confirm: t('application_helper.show_comments_for.confirm_delete')
@@ -1535,10 +1535,10 @@ module ApplicationHelper
     # create the link with text, current direction image (if needed), and pointing to opposite direction (if needed)
     if remote_link
       # create a remote to link
-      link_to link_to_text, { 
+      link_to link_to_text, {
         url: location_hash,
         before: "Element.show('data_spinner')",
-        complete: "Element.hide('data_spinner')" 
+        complete: "Element.hide('data_spinner')"
       },
               remote: true,
               href: url_for(location_hash)

@@ -68,10 +68,10 @@ module Importer
       @import_field_to_extended_field_map = Hash.new
       @description_end_templates = Hash.new
       @collections_to_skip = Array.new
-      @results = { 
+      @results = {
         do_work_time: Time.now.to_s,
         done_with_do_work: false,
-        records_processed: 0 
+        records_processed: 0
       }
 
       cache[:results] = @results

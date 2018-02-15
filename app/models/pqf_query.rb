@@ -54,18 +54,18 @@ class PqfQuery
   } unless defined?(ATTRIBUTE_SPECS)
 
   # TODO: my hash_fu is failing me, DRY this up
-  DATETIME_SPECS = { 
+  DATETIME_SPECS = {
     'oai_datestamp' => ATTRIBUTE_SPECS['last_modified'],
     'last_modified' => ATTRIBUTE_SPECS['last_modified'],
-    'date' => ATTRIBUTE_SPECS['date'] 
+    'date' => ATTRIBUTE_SPECS['date']
   } unless defined?(DATETIME_SPECS)
 
-  DATETIME_COMPARISON_SPECS = { 
+  DATETIME_COMPARISON_SPECS = {
     'before' => QUALIFYING_ATTRIBUTE_SPECS['lt'],
     'after' => QUALIFYING_ATTRIBUTE_SPECS['gt'],
     'on' => QUALIFYING_ATTRIBUTE_SPECS['eq'],
     'on_or_before' => QUALIFYING_ATTRIBUTE_SPECS['le'],
-    'on_or_after' => QUALIFYING_ATTRIBUTE_SPECS['ge'] 
+    'on_or_after' => QUALIFYING_ATTRIBUTE_SPECS['ge']
   } unless defined?(DATETIME_COMPARISON_SPECS)
 
   # all ATTRIBUTE_SPECS wll have ..._include method created for them
@@ -84,15 +84,15 @@ class PqfQuery
       Proc.new do |term_or_terms, *options|
         options = options.first || Hash.new
         terms = terms_as_array(term_or_terms)
-     
+
         # make default operator @and, if unspecified
         options[:operator] = options[:operator].nil? ? '@and' : options[:operator]
         # pass nil operator, if 'none' is specified
         options[:operator] = nil if options[:operator] == 'none'
-     
-        query_part = create_query_part(options.merge({ 
+
+        query_part = create_query_part(options.merge({
                                                        attribute_spec: attribute_spec,
-                                                       term_or_terms: terms 
+                                                       term_or_terms: terms
                                                      }))
       end
 
@@ -214,16 +214,16 @@ class PqfQuery
 
     query_part = '@and ' + oai_datestamp_on_or_after(
       beginning,
-      options.merge({ 
+      options.merge({
                       only_return_as_string: true,
-                      operator: 'none' 
+                      operator: 'none'
                     })
     )
     query_part += ' ' + oai_datestamp_on_or_before(
       ending,
-      options.merge({ 
+      options.merge({
                       only_return_as_string: true,
-                      operator: 'none' 
+                      operator: 'none'
                     })
     )
 
@@ -251,16 +251,16 @@ class PqfQuery
   def creators_or_contributors_include(term_or_terms, options = {})
     query_part = '@or ' + creators_include(
       term_or_terms,
-      options.merge({ 
+      options.merge({
                       only_return_as_string: true,
-                      operator: 'none' 
+                      operator: 'none'
                     })
     )
     query_part += ' ' + contributors_include(
       term_or_terms,
-      options.merge({ 
+      options.merge({
                       only_return_as_string: true,
-                      operator: 'none' 
+                      operator: 'none'
                     })
     )
 
@@ -271,16 +271,16 @@ class PqfQuery
   def creators_or_contributors_equals_completely(term_or_terms, options = {})
     query_part = '@or ' + creators_equals_completely(
       term_or_terms,
-      options.merge({ 
+      options.merge({
                       only_return_as_string: true,
-                      operator: 'none' 
+                      operator: 'none'
                     })
     )
     query_part += ' ' + contributors_equals_completely(
       term_or_terms,
-      options.merge({ 
+      options.merge({
                       only_return_as_string: true,
-                      operator: 'none' 
+                      operator: 'none'
                     })
     )
 

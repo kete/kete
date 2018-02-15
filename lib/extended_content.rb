@@ -298,19 +298,19 @@ module ExtendedContent
         hash.inject(Hash.new) do |result, field|
           # Extract the name of the field
           field_param_name = field.delete(field.first)
-       
+
           # Grab the extended field for this field name
           extended_field = all_fields.find { |ef| field_param_name == ef.label_for_params }
-       
+
           # Remove the extra level of nesting left after removing the first of two elements
           field = field.first
-       
+
           # in some cases, field may be nil, but needs to be nil wrapped in an array
           field = [nil] if field.nil?
-       
+
           if ['map', 'map_address'].member?(extended_field.ftype)
             result[field_param_name] = convert_value_from_structured_hash(field, extended_field)
-  
+
           # if we are dealing with a multiple topic type
           # we need to do things a bit differently
           elsif extended_field.ftype == 'topic_type' && extended_field.multiple?
@@ -346,7 +346,7 @@ module ExtendedContent
               result[field_param_name] = convert_value_from_structured_hash(field, extended_field)
             end
           end
-       
+
           result
         end
 
@@ -850,9 +850,9 @@ module ExtendedContent
           values.map do |v|
             # if label is included, you get back a hash for value
             v = v['value'] if v.is_a?(Hash) && v['value'] && extended_field_mapping.extended_field.ftype != 'year'
-         
+
             v = v.to_s unless extended_field_mapping.extended_field.ftype == 'year'
-         
+
             send(
               "validate_extended_#{extended_field_mapping.extended_field.ftype}_field_content".to_sym, \
               extended_field_mapping, v

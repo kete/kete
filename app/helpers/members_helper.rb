@@ -33,10 +33,10 @@ module MembersHelper
       else
         html_string = li_with_correct_class(tool_count) +
                       link_to(
-                        action_label, { 
+                        action_label, {
                           action: action_key,
                           id: user,
-                          authenticity_token: form_authenticity_token 
+                          authenticity_token: form_authenticity_token
                         },
                         confirm: t('members_helper.admin_actions_correct_list_item.are_you_sure'),
                         method: :post

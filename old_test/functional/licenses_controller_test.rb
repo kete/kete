@@ -12,19 +12,19 @@ class LicensesControllerTest < ActionController::TestCase
     login_as(:admin)
 
     # hash of params to create new instance of model, e.g. {:name => 'Test Model', :description => 'Dummy'}
-    @new_model = { 
+    @new_model = {
       :name => 'License1',
       :description => 'License1',
       :url => 'http://www.licenses.com/license1.html',
       :is_available => true,
-      :is_creative_commons => true 
+      :is_creative_commons => true
     }
-    @updated_model = { 
+    @updated_model = {
       :name => 'License2',
       :description => 'License2',
       :url => 'http://www.licenses.com/license2.html',
       :is_available => true,
-      :is_creative_commons => true 
+      :is_creative_commons => true
     }
   end
 

@@ -220,9 +220,9 @@ class PastPerfect4ImporterWorker < BackgrounDRb::MetaWorker
 
               # create a new topic from related_accession_record
               # prepare user_reference for extended_content
-              accession_topic = { 'topic' => { 
+              accession_topic = { 'topic' => {
                 topic_type_id: @related_topic_type.id,
-                title: record_hash['COLLECTION'] 
+                title: record_hash['COLLECTION']
               } }
 
               descrip = RedCloth.new accession_record_hash['DESCRIP']

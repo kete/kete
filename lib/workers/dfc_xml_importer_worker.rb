@@ -39,32 +39,32 @@ class DfcXmlImporterWorker < BackgrounDRb::MetaWorker
           xml.records do
             rows.each do |row|
               fields = Hash.new
-  
+
               row.search('field').each do |field|
                 value = field.inner_text.strip
                 field_name = field.attributes['name'].to_s.gsub(/\s/, '_')
                 next if value.blank? || field_name.blank?
                 fields[field_name] = value
               end
-  
+
               unless fields['Filename'].blank?
                 # we use "path_to_file" internally, but "Filename" is the column name we get
                 file_path = @import_dir_path + '/files/' + fields['Filename']
                 fields['path_to_file'] = file_path if File.exist?(file_path)
               end
-  
+
               if @zoom_class == 'StillImage' && !fields['path_to_file']
                 log.write("Photograph #{fields['Filename']} not found at #{@import_dir_path}. Skipping record.\n")
                 next
               end
-  
+
               xml.record do
                 fields.each do |field_name, value|
                   xml.safe_send(field_name, value)
                 end
-  
+
                 title_parts, filename_without_ext = Array.new, fields['Filename'].split('.').first
-  
+
                 case (fields['Record_Type'] || '').downcase
                 when 'archives', 'publication'
                   title_parts << "Collection Title: #{fields['Collection_Title']}" unless fields['Collection_Title'].blank?
@@ -77,10 +77,10 @@ class DfcXmlImporterWorker < BackgrounDRb::MetaWorker
                 else
                   xml.Record_Identifier($1.strip.to_i) if fields['Filename'] =~ /(\d+)/
                 end
-  
+
                 # If we don't have an title parts at this point, make one up based on the filename
                 title_parts << filename_without_ext if title_parts.blank?
-  
+
                 xml.Record_Title(title_parts.join(' - '))
               end
             end
