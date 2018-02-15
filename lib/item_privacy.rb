@@ -91,7 +91,7 @@ module ItemPrivacy
 
       def private_version(&block)
         private_version!
-        result = block.call
+        result = yield
         reload
 
         # Return the result of the block, not the reloaded item
@@ -264,7 +264,7 @@ module ItemPrivacy
           alias_method :orig_store_correct_versions_after_save, :store_correct_versions_after_save
           alias_method :store_correct_versions_after_save, :empty_callback
         end
-        block.call
+        yield
       ensure
         class_eval do
           alias_method :store_correct_versions_after_save, :orig_store_correct_versions_after_save
