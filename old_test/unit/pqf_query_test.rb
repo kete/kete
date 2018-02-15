@@ -77,7 +77,7 @@ class PqfQueryTest < ActiveSupport::TestCase
     }
     assert_equal datetime_comparison_specs, @dtcs
 
-    do_not_auto_def_include_methods_for = ["last_modified_sort", "date_sort"]
+    do_not_auto_def_include_methods_for = %w[last_modified_sort date_sort]
     assert_equal do_not_auto_def_include_methods_for, @dnadimf
   end
 
@@ -118,8 +118,8 @@ class PqfQueryTest < ActiveSupport::TestCase
 
   def test_convert_terms_to_array
     # Check to make sure that what we pass in always comes back as an array
-    assert_equal ['a', 'b', 'c'], @pqf_query.terms_as_array(['a', 'b', 'c'])
-    assert_equal ['a', 'b', 'c'], @pqf_query.terms_to_a('a', 'b', 'c')
+    assert_equal %w[a b c], @pqf_query.terms_as_array(%w[a b c])
+    assert_equal %w[a b c], @pqf_query.terms_to_a('a', 'b', 'c')
     assert_equal ['a'], @pqf_query.terms_as_array('a')
     assert_equal ['a b'], @pqf_query.terms_as_array('a b')
   end

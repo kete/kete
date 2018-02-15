@@ -58,7 +58,7 @@ namespace :tools do
 
   desc 'Look for necessary commands for Rails deployment on remote server.'
   task :look_for_commands do
-    %w(ruby rake svn).each do |command|
+    %w[ruby rake svn].each do |command|
       run "which #{command}"
     end
   end

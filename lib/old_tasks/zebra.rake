@@ -70,7 +70,7 @@ namespace :zebra do
     # Save the record into both public and private zoom indexes
     # Assumes that both databases will be local and accessible by public and
     # private respectively
-    ['public', 'private'].each do |prefix|
+    %w[public private].each do |prefix|
       begin
         zoom_db = ZoomDb.find_by_database_name(prefix)
         the_record_id = "#{ZoomDb.zoom_id_stub}bootstrap:Bootstrap:1"
@@ -95,7 +95,7 @@ namespace :zebra do
   # to add search records
   desc 'Zebra index records for this Kete'
   task :index do
-    ['public', 'private'].each do |db|
+    %w[public private].each do |db|
       # have to run the command from inside #{Rails.root}/zebradb/#{db}
       `cd #{Rails.root}/zebradb/#{db}; zebraidx -c ../conf/zebra-#{db}.cfg -l #{Rails.root}/log/zebra.log update data; zebraidx -c ../conf/zebra-#{db}.cfg commit` unless ENV['SKIP_PRIVATE'] && db == 'private'
     end

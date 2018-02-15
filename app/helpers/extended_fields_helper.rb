@@ -209,13 +209,13 @@ module ExtendedFieldsHelper
     name = name_for_extended_field(extended_field)
 
     builder = "extended_field_#{extended_field.ftype}_editor".to_sym
-    if %w(choice autocomplete).member?(extended_field.ftype)
+    if %w[choice autocomplete].member?(extended_field.ftype)
       send(:extended_field_choice_editor, name, value, tag_options, extended_field)
     elsif extended_field.ftype == 'topic_type'
       send(:extended_field_topic_type_editor, name, value, tag_options, extended_field)
     elsif extended_field.ftype == 'year'
       send(:extended_field_year_editor, name, value, tag_options, extended_field)
-    elsif %w(map map_address).member?(extended_field.ftype)
+    elsif %w[map map_address].member?(extended_field.ftype)
       send(builder, name, value, extended_field, tag_options)
     elsif respond_to?(builder)
       send(builder, name, value, tag_options)

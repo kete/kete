@@ -27,7 +27,7 @@ class ConfigureController < ApplicationController
     @finished = params[:finished] || false
 
     stub = 'search_engine_'
-    ['show', 'setup', 'started', 'primed'].each do |step|
+    %w[show setup started primed].each do |step|
       var_name = stub + step
       instance_variable_set("@#{var_name}", params[var_name.to_sym] || false)
     end

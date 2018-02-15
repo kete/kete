@@ -103,7 +103,7 @@ require 'xmlsimple'
 #   values are presented as follows <dc:description>:first choice:child of first choice:</dc:description>.
 
 module ExtendedContent
-  CLASSES_WITH_SUMMARIES = ['Topic', 'Document']
+  CLASSES_WITH_SUMMARIES = %w[Topic Document]
 
   unless included_modules.include? ExtendedContent
 
@@ -247,7 +247,7 @@ module ExtendedContent
             values = field.first
 
             field_name = field_name_root
-          elsif ['map', 'map_address'].member?(extended_field.ftype)
+          elsif %w[map map_address].member?(extended_field.ftype)
             values = field.first # pull the hash out of the array it's been put into
           else
 
@@ -308,7 +308,7 @@ module ExtendedContent
           # in some cases, field may be nil, but needs to be nil wrapped in an array
           field = [nil] if field.nil?
        
-          if ['map', 'map_address'].member?(extended_field.ftype)
+          if %w[map map_address].member?(extended_field.ftype)
             result[field_param_name] = convert_value_from_structured_hash(field, extended_field)
   
           # if we are dealing with a multiple topic type
@@ -323,7 +323,7 @@ module ExtendedContent
                 end
                 multiple
               end
-          elsif ['autocomplete', 'choice'].member?(extended_field.ftype)
+          elsif %w[autocomplete choice].member?(extended_field.ftype)
             if field.size > 1
               # We're dealing with a multiple field value.
               result[field_param_name] =
@@ -361,7 +361,7 @@ module ExtendedContent
     # convert_value_from_structured_hash({ :coords => '123,123' }) # => { :coords => '123,123' }
     def convert_value_from_structured_hash(value_array, extended_field)
       # If the extended field is a choice, make sure it's values properly indexed in XML.
-      if ['autocomplete', 'choice'].member?(extended_field.ftype)
+      if %w[autocomplete choice].member?(extended_field.ftype)
         # gives some flexibility when value is being swapped in from add-ons (read translations)
         value_array = [value_array] if value_array.is_a?(String)
 
@@ -377,7 +377,7 @@ module ExtendedContent
           hash[value_index] = value
           hash
         end
-      elsif ['map', 'map_address'].member?(extended_field.ftype)
+      elsif %w[map map_address].member?(extended_field.ftype)
         value_array.is_a?(Array) ? value_array.first : value_array
       elsif extended_field.ftype == 'year'
         value_array = value_array.first if value_array.is_a?(Array)
@@ -459,7 +459,7 @@ module ExtendedContent
           matching_choice = Choice.matching(l, v)
 
           # Handle the creation of new choices where the choice is not recognised.
-          if !matching_choice && %w(autocomplete choice).include?(field.ftype) && field.user_choice_addition?
+          if !matching_choice && %w[autocomplete choice].include?(field.ftype) && field.user_choice_addition?
             parent = Choice.find(1)
 
             begin
@@ -745,7 +745,7 @@ module ExtendedContent
       # there is one instant where we just want to return the hash
       # if it has a label, we want a hash of label and value
       if value_label_hash?(hash) || hash.keys.include?('circa')
-        hash.keys.each { |key| hash.delete(key) unless %w(value label circa).include?(key) }
+        hash.keys.each { |key| hash.delete(key) unless %w[value label circa].include?(key) }
         return [hash]
       end
 
@@ -798,7 +798,7 @@ module ExtendedContent
     # Generic validation methods
     def validate_extended_content_single_value(extended_field_mapping, value)
       # Handle required fields here..
-      no_map_enabled = (%w(map map_address).member?(extended_field_mapping.extended_field.ftype) && (!value || value['no_map'] == '1'))
+      no_map_enabled = (%w[map map_address].member?(extended_field_mapping.extended_field.ftype) && (!value || value['no_map'] == '1'))
       no_year_provided = (extended_field_mapping.extended_field.ftype == 'year' && (!value || value['value'].blank?))
       if extended_field_mapping.required &&
          (value.blank? || no_map_enabled || no_year_provided) &&

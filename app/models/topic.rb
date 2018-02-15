@@ -217,7 +217,7 @@ class Topic < ActiveRecord::Base
   # perhaps in the future we will store thumbnails for links (i.e. webpage previews)
   # for topics, but not at the moment
   # return nil for these
-  %w(url height width).each do |method_stub|
+  %w[url height width].each do |method_stub|
     define_method('thumbnail_' + method_stub) do
       nil
     end

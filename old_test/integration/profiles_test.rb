@@ -2,7 +2,7 @@ require File.dirname(__FILE__) + '/integration_test_helper'
 
 class ProfilesTest < ActionController::IntegrationTest
   context "The basket profiles functionaltiy" do
-    ['site_admin', 'admin'].each do |role|
+    %w[site_admin admin].each do |role|
       context "when logged in as an #{role.humanize}" do
         setup do
           case role

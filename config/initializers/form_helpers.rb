@@ -1,8 +1,8 @@
 class FormHelper < ActionView::Helpers::FormBuilder
   helpers = field_helpers +
-            %w{date_select datetime_select time_select} +
-            %w{collection_select select country_select time_zone_select} -
-            %w{hidden_field label fields_for submit} # Don't decorate these
+            %w[date_select datetime_select time_select] +
+            %w[collection_select select country_select time_zone_select] -
+            %w[hidden_field label fields_for submit] # Don't decorate these
 
   helpers.each do |name|
     define_method(name) do |field, *args|

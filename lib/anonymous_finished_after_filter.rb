@@ -2,7 +2,7 @@ module AnonymousFinishedAfterFilter
   unless included_modules.include? AnonymousFinishedAfterFilter
     def self.included(klass)
       class_key = klass.name.sub('Controller', '').tableize
-      class_key = class_key.singularize if %w(audio video).include?(class_key.singularize)
+      class_key = class_key.singularize if %w[audio video].include?(class_key.singularize)
 
       specs = Array.new
       if SystemSetting.respond_to?(:allowed_anonymous_actions) && SystemSetting.allowed_anonymous_actions.present?

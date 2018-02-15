@@ -327,7 +327,7 @@ class SearchController < ApplicationController
       dc_element = 'description'
     end
 
-    plural_aliased_dc_methods = %w(relation subject creator contributor)
+    plural_aliased_dc_methods = %w[relation subject creator contributor]
 
     if plural_aliased_dc_methods.member?(dc_element)
 
@@ -681,9 +681,9 @@ class SearchController < ApplicationController
         @results = @results.paginate(page: current_page)
 
         # Store pagination information, we'll need this later
-        pagination_methods = [
-          'total_entries', 'total_pages', 'current_page',
-          'previous_page', 'next_page']
+        pagination_methods = %w[
+          total_entries total_pages current_page
+          previous_page next_page]
 
         pagination_methods =
           pagination_methods.inject(Hash.new) do |hash, method_name|

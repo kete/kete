@@ -18,10 +18,10 @@ class WebLinkTest < ActiveSupport::TestCase
     }
 
     # name of fields that must be present, e.g. %(name description)
-    @req_attr_names = %w(title url)
+    @req_attr_names = %w[title url]
 
     # name of fields that cannot be a duplicate, e.g. %(name description)
-    @duplicate_attr_names = %w(url)
+    @duplicate_attr_names = %w[url]
   end
 
   # load in sets of tests and helper methods

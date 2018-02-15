@@ -7,7 +7,7 @@ class PrivateFilesController < ApplicationController
 
   def show
     # Only respond to known types to avoid code injection attacks
-    raise UnknownTypeError unless %w(documents image_files audio video).member?(params[:type])
+    raise UnknownTypeError unless %w[documents image_files audio video].member?(params[:type])
 
     # Ensure we load the correct object type
     type = params[:type] == 'audio' ? 'audio_recordings' : params[:type]

@@ -117,7 +117,7 @@ module ItemPrivacyTestHelper
 
       def create_user_with_permission(role, basket_instance)
         raise 'Unknown role' unless
-          ['member', 'moderator', 'administrator', 'site_admin', 'tech_admin'].member?(role)
+          %w[member moderator administrator site_admin tech_admin].member?(role)
 
         user = User.create(
           login: 'quire',
@@ -570,7 +570,7 @@ module ItemPrivacyTestHelper
         assert_equal 1, d.versions.size
         assert_equal 'Version 1', d.description
         assert_equal 3, d.tags.size
-        assert %w{one two three}.all? { |t| d.tags.map { |g| g.name }.member?(t) }
+        assert %w[one two three].all? { |t| d.tags.map { |g| g.name }.member?(t) }
         assert_equal d.tags.sort_by(&:id), d.public_tags.sort_by(&:id)
         assert d.private_tags.empty?
       end
@@ -584,7 +584,7 @@ module ItemPrivacyTestHelper
           assert_equal true, d.private?
           assert_equal 3, d.tags.size
           assert_equal 'Version 1', d.description
-          assert %w{one two three}.all? { |t| d.tags.map { |v| v.name }.member?(t) }
+          assert %w[one two three].all? { |t| d.tags.map { |v| v.name }.member?(t) }
           assert_equal d.tags, d.private_tags
           assert d.public_tags.empty?
         end
@@ -612,7 +612,7 @@ module ItemPrivacyTestHelper
 
           assert_equal 3, d.tags.size
           assert_equal 'Version 1', d.description
-          assert %w{one two three}.all? { |t| d.tags.collect { |tag| tag.name }.member?(t) }
+          assert %w[one two three].all? { |t| d.tags.collect { |tag| tag.name }.member?(t) }
         end
 
         # Check there are no tags on public version upon restoration
@@ -642,7 +642,7 @@ module ItemPrivacyTestHelper
           # assert_equal "one, two, three", d.raw_tag_list
           assert_equal 3, d.tags.size
           assert_equal 'Version 1', d.description
-          assert %w{one two three}.all? { |t| d.tags.collect { |tag| tag.name }.member?(t) }
+          assert %w[one two three].all? { |t| d.tags.collect { |tag| tag.name }.member?(t) }
         end
 
         # Check there are no tags on public version upon restoration

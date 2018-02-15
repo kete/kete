@@ -8,9 +8,9 @@ class BasketTest < ActiveSupport::TestCase
 
     # hash of params to create new instance of model, e.g. {:name => 'Test Model', :description => 'Dummy'}
     @new_model = { :name => 'test basket', :private_default => false, :file_private_default => false }
-    @req_attr_names = %w(name)
+    @req_attr_names = %w[name]
     # name of fields that must be present, e.g. %(name description)
-    @duplicate_attr_names = %w() # name of fields that cannot be a duplicate, e.g. %(name description)
+    @duplicate_attr_names = %w[] # name of fields that cannot be a duplicate, e.g. %(name description)
   end
 
   # load in sets of tests and helper methods
@@ -269,15 +269,15 @@ class BasketTest < ActiveSupport::TestCase
 
       basket.settings[:private_item_notification] = 'at least admin'
       assert_equal 1, basket.users_to_notify_of_private_item.size
-      assert_equal %w{neil}, basket.users_to_notify_of_private_item.collect { |u| u.login }
+      assert_equal %w[neil], basket.users_to_notify_of_private_item.collect { |u| u.login }
 
       basket.settings[:private_item_notification] = 'at least moderator'
       assert_equal 2, basket.users_to_notify_of_private_item.size
-      assert_equal %w{neil jack}, basket.users_to_notify_of_private_item.collect { |u| u.login }
+      assert_equal %w[neil jack], basket.users_to_notify_of_private_item.collect { |u| u.login }
 
       basket.settings[:private_item_notification] = 'at least member'
       assert_equal 3, basket.users_to_notify_of_private_item.size
-      assert_equal %w{neil jack nancy}, basket.users_to_notify_of_private_item.collect { |u| u.login }
+      assert_equal %w[neil jack nancy], basket.users_to_notify_of_private_item.collect { |u| u.login }
 
       basket.settings[:private_item_notification] = 'do_not_email'
       assert_equal 0, basket.users_to_notify_of_private_item.size

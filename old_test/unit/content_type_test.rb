@@ -15,10 +15,10 @@ class ContentTypeTest < ActiveSupport::TestCase
     }
 
     # name of fields that must be present, e.g. %(name description)
-    @req_attr_names = %w(controller class_name humanized humanized_plural)
+    @req_attr_names = %w[controller class_name humanized humanized_plural]
 
     # name of fields that cannot be a duplicate, e.g. %(name description)
-    @duplicate_attr_names = %w(controller class_name humanized humanized_plural)
+    @duplicate_attr_names = %w[controller class_name humanized humanized_plural]
   end
 
   # load in sets of tests and helper methods

@@ -14,6 +14,6 @@ APPLICATION_SERVER = 'passenger'
 
 # (Do not edit below here.)
 
-unless ['passenger', 'mongrel'].member?(APPLICATION_SERVER)
+unless %w[passenger mongrel].member?(APPLICATION_SERVER)
   print "/!\\ WARNING: Incorrect value for APPLICATION_SERVER in config/initializers/APPLICATION_SERVER.rb on line 13. Should be one of \"passenger\", or \"mongrel\"; but was \"#{APPLICATION_SERVER}\". /!\\\n"
 end

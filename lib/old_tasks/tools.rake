@@ -180,9 +180,9 @@ namespace :kete do
 
     namespace :related_items do
       # ITEM_CLASSES is not available here
-      %w(Topic StillImage AudioRecording Video WebLink Document).each do |item_class|
+      %w[Topic StillImage AudioRecording Video WebLink Document].each do |item_class|
         namespace item_class.tableize.to_sym do
-          %w{inset below sidebar}.each do |setting|
+          %w[inset below sidebar].each do |setting|
             desc "Update all #{item_class.tableize} so that the related items section in each is positioned #{setting}."
             task "position_to_#{setting}" => :environment do
               set_related_items_inset_to(item_class, setting)
@@ -194,10 +194,10 @@ namespace :kete do
 
       # Provide an option to make everything a certain type at once
       namespace :all do
-        %w{inset below sidebar}.each do |setting|
+        %w[inset below sidebar].each do |setting|
           desc "Update all item types so that the related items section in each is positioned #{setting}."
           task "position_to_#{setting}" => :environment do
-            %w(Topic StillImage AudioRecording Video WebLink Document).each do |item_class|
+            %w[Topic StillImage AudioRecording Video WebLink Document].each do |item_class|
               set_related_items_inset_to(item_class, setting)
             end
             puts "Finished. All item types now have their related items #{setting}."
@@ -383,7 +383,7 @@ namespace :kete do
             topic.add_as_contributor(user, topic.version)
 
             # split things up into different types
-            class_names = ZOOM_CLASSES - ['Topic', 'Comment']
+            class_names = ZOOM_CLASSES - %w[Topic Comment]
 
             kinds_to_process = ['child_related_topics'] + ['parent_related_topics'] + class_names.collect { |n| n.tableize }
             kinds_to_process.each do |kind|

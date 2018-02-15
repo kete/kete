@@ -33,9 +33,9 @@ class BasketsControllerTest < ActionController::TestCase
       :allow_non_member_comments => nil 
     }
 
-    @req_attr_names = %w(name private_default file_private_default)
+    @req_attr_names = %w[name private_default file_private_default]
     # name of fields that must be present, e.g. %(name description)
-    @duplicate_attr_names = %w() # name of fields that cannot be a duplicate, e.g. %(name description)
+    @duplicate_attr_names = %w[] # name of fields that cannot be a duplicate, e.g. %(name description)
   end
 
   def test_redirect_to_basket_all
@@ -341,7 +341,7 @@ class BasketsControllerTest < ActionController::TestCase
       @rules = {
         'edit' => {
           'rule_type' => 'some',
-          'allowed' => ['show_privacy_controls', 'allow_non_member_comments'],
+          'allowed' => %w[show_privacy_controls allow_non_member_comments],
           'values' => {
             'show_privacy_controls' => false,
             'private_default' => false

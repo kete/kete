@@ -163,7 +163,7 @@ class ExtendedField < ActiveRecord::Base
   end
 
   def is_a_choice?
-    ['autocomplete', 'choice'].include?(ftype)
+    %w[autocomplete choice].include?(ftype)
   end
 
   def link_choice_values

@@ -24,13 +24,13 @@ class SearchTest < ActiveSupport::TestCase
   def test_boolean_operators
     assert_not_nil Search.boolean_operators
     assert Search.boolean_operators.is_a?(Array)
-    assert_equal ['and', 'or', 'not'], Search.boolean_operators
+    assert_equal %w[and or not], Search.boolean_operators
   end
 
   def test_date_types
     assert_not_nil Search.date_types
     assert Search.date_types.is_a?(Array)
-    assert_equal ['last_modified', 'date'], Search.date_types
+    assert_equal %w[last_modified date], Search.date_types
   end
 
   def test_sort_types

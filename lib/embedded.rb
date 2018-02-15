@@ -46,7 +46,7 @@ module Embedded
 
       # TODO: this may be MySQL specific, test with PostgreSQL
       conditions = "name LIKE '%Synonyms'"
-      conditions += " AND name NOT LIKE 'Short Summary%'" unless %w(Topic Document).include?(self.class.name)
+      conditions += " AND name NOT LIKE 'Short Summary%'" unless %w[Topic Document].include?(self.class.name)
 
       relevant_settings = SystemSetting.find(:all, conditions: conditions)
 
@@ -132,7 +132,7 @@ module Embedded
         matching_extended_fields = ContentType.find_by_class_name(self.class.name).form_fields.find(:all, conditions: "import_synonyms like \'%#{key}%\'")
 
         matching_extended_fields.each do |field|
-          if %{ map map_address }.include?(field.ftype)
+          if %( map map_address ).include?(field.ftype)
             unless SystemSetting.enable_maps?
               raise 'Error: Trying to use Google Maps without configuation (config/google_map_api.yml)'
             end

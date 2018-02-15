@@ -17,5 +17,5 @@ module ImportersHelper
     define_method(method_name, &code)
   end
 
-  ['ATTACHABLE_CLASSES', 'ITEM_CLASSES'].each { |constant_name| define_options_method_for(constant_name) }
+  %w[ATTACHABLE_CLASSES ITEM_CLASSES].each { |constant_name| define_options_method_for(constant_name) }
 end

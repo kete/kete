@@ -254,7 +254,7 @@ module Importer
           params[zoom_class_for_params]['extended_content_values'] = Hash.new if \
             params[zoom_class_for_params]['extended_content_values'].nil?
 
-          if %w{choice autocomplete}.include?(extended_field.ftype)
+          if %w[choice autocomplete].include?(extended_field.ftype)
             params[zoom_class_for_params]['extended_content_values'][extended_field.label_for_params] ||= Hash.new
             if extended_field.multiple
               value.split(',').each_with_index do |multiple_choice, multiple_index|

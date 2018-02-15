@@ -639,7 +639,7 @@ class ActionController::IntegrationTest
       # new_topic / new_audio_recording
       # takes basket and a hash of values, plus an optional block
       # provides a more readable option for the <tt>add_item</tt> declaration
-      valid_zoom_types = ['topic', 'still_image', 'audio_recording', 'video', 'web_link', 'document']
+      valid_zoom_types = %w[topic still_image audio_recording video web_link document]
       unless valid_zoom_types.include?($1)
         raise "ERROR: Invalid item type '#{$1}'. Must be one of #{valid_zoom_types.join(', ')}."
       end

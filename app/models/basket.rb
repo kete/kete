@@ -54,33 +54,33 @@ class Basket < ActiveRecord::Base
   end
 
   # Editable Basket Attributes (copy from the basket database fields)
-  EDITABLE_ATTRIBUTES = %w{ 
+  EDITABLE_ATTRIBUTES = %w[ 
     index_page_redirect_to_all index_page_topic_is_entire_page
     index_page_link_to_index_topic_as index_page_basket_search index_page_image_as
     index_page_tags_as index_page_number_of_tags index_page_order_tags_by
     index_page_recent_topics_as index_page_number_of_recent_topics index_page_archives_as
     index_page_extra_side_bar_html private_default file_private_default allow_non_member_comments
-    show_privacy_controls do_not_sanitize feeds_attributes }
+    show_privacy_controls do_not_sanitize feeds_attributes ]
 
   # Editable Basket Settings
-  EDITABLE_SETTINGS = %w{ 
+  EDITABLE_SETTINGS = %w[ 
     fully_moderated moderated_except private_file_visibility browse_view_as
     sort_order_default sort_direction_reversed_default disable_site_recent_topics_display
     basket_join_policy memberlist_policy import_archive_set_policy allow_basket_admin_contact private_item_notification
     private_item_notification_show_title private_item_notification_show_short_summary
     theme_font_family header_image theme show_action_menu show_discussion show_flagging
     show_add_links side_menu_number_of_topics side_menu_ordering_of_topics side_menu_direction_of_topics
-    additional_footer_content do_not_sanitize_footer_content replace_existing_footer }
+    additional_footer_content do_not_sanitize_footer_content replace_existing_footer ]
 
   # Basket settings that are always editable or come under a parent option
-  NESTED_FIELDS = %w{ 
+  NESTED_FIELDS = %w[ 
     name status creator_id do_not_sanitize moderated_except
     sort_direction_reversed_default private_item_notification_show_title
     private_item_notification_show_short_summary index_page_link_to_index_topic_as
     index_page_recent_topics_as index_page_tags_as index_page_order_tags_by
     show_action_menu show_discussion show_flagging show_add_links
     side_menu_number_of_topics side_menu_ordering_of_topics side_menu_direction_of_topics
-    do_not_sanitize_footer_content replace_existing_footer }
+    do_not_sanitize_footer_content replace_existing_footer ]
 
   # Kieran Pilkington, 2008-07-09
   # remove the roles from a basket before destroying it to prevent problems later on
@@ -223,7 +223,7 @@ class Basket < ActiveRecord::Base
   def tag_counts_array(options = {})
     tag_limit = !options[:limit].nil? ? options[:limit] : index_page_number_of_tags
     tag_order = !options[:order].nil? ? options[:order] : index_page_order_tags_by
-    tag_direction = ['asc', 'desc'].include?(options[:direction]) ? options[:direction] : (tag_order == 'alphabetical' ? 'asc' : 'desc')
+    tag_direction = %w[asc desc].include?(options[:direction]) ? options[:direction] : (tag_order == 'alphabetical' ? 'asc' : 'desc')
     private_tags = options[:allow_private] || false
 
     return Array.new unless !tag_limit || tag_limit > 0 # false = no limit, 0 = no tags
@@ -310,7 +310,7 @@ class Basket < ActiveRecord::Base
 
   def side_menu_ordering_of_topics_as_options(site_basket, default = nil)
     current_value = default || setting(:side_menu_ordering_of_topics) || site_basket.setting(:side_menu_ordering_of_topics) || 'updated_at'
-    options_array = [['Latest', 'latest'], ['Alphabetical', 'alphabetical']]
+    options_array = [%w[Latest latest], %w[Alphabetical alphabetical]]
     select_options = array_to_options_list_with_defaults(options_array, current_value)
   end
 
@@ -514,7 +514,7 @@ class Basket < ActiveRecord::Base
   # all_disputed_revisions
   # all_reviewed_revisions
   # all_rejected_revisions
-  %w{disputed reviewed rejected}.each do |type|
+  %w[disputed reviewed rejected].each do |type|
     define_method("all_#{type}_revisions") do
       revisions = ZOOM_CLASSES.collect do |zoom_class|
         send(zoom_class.tableize.to_sym).send("find_#{type}", id)
@@ -565,7 +565,7 @@ class Basket < ActiveRecord::Base
   # open / request = true
   # closed = false
   def allows_join_requests_with_inheritance?
-    ['open', 'request'].include?(join_policy_with_inheritance)
+    %w[open request].include?(join_policy_with_inheritance)
   end
 
   # get the current basket join policy. If nil, use the site baskets

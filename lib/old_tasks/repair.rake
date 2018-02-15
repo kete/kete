@@ -150,7 +150,7 @@ namespace :kete do
 
       # Do this in the context of both public and private files
 
-      ['public', 'private'].each do |privacy_folder|
+      %w[public private].each do |privacy_folder|
         copy_directives.each_pair do |src, dest|
           from  = File.join(RAILS_ROOT, privacy_folder, src, '.')
           to    = File.join(RAILS_ROOT, privacy_folder, dest)
@@ -287,7 +287,7 @@ namespace :kete do
     namespace :extended_fields do
       desc 'Run the legacy google map repair tasks'
       task legacy_google_map: :environment do
-        map_types = ['map', 'map_address']
+        map_types = %w[map map_address]
         map_fields = ExtendedField.all(conditions: ['ftype IN (?)', map_types]).collect { |f| f.label_for_params }
         if map_fields.size > 0
           map_sql = map_fields.collect { |f| "extended_content LIKE '%<#{f}%'" }.join(' OR ')
