@@ -7,13 +7,13 @@ class SearchTest < ActiveSupport::TestCase
     # hash of params to use as the basis for tests
     # handling simple case first, all action
     # with no other params set
-    @options = { 
+    @options = {
       :default => 'none',
       :query => String.new,
       :user_specified => nil,
       :direction => nil,
       :action => 'all',
-      :search_terms => nil 
+      :search_terms => nil
     }
 
     @sort_stub = '@attr 7='

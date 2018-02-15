@@ -7,13 +7,13 @@ class RegisterTest < ActionController::IntegrationTest
     end
 
     should "get errors when not all fields are filled in correctly" do
-      fields = { 
+      fields = {
         :user_login => 'tete',
         :user_email => 'test@kete.net.nz',
         :user_password => 'test',
         :user_password_confirmation => 'test',
         :user_display_name => 'Test',
-        :user_security_code => 'SECURITY' 
+        :user_security_code => 'SECURITY'
       }
       fields.each { |name, value| fill_in name.to_s, :with => '' }
       click_button 'Sign up'

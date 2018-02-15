@@ -38,9 +38,9 @@ class ProfilesControllerTest < ActionController::TestCase
         Basket.forms_options.each do |form_option|
           Profile.type_options.each do |type_option|
             should "be able to set form and type for #{form_option[0]} and #{type_option[0]}" do
-              post :create, :urlified_name => @urlified_name, :record => { 
+              post :create, :urlified_name => @urlified_name, :record => {
                 :name => 'Test Profile',
-                :rules => { form_option[1] => { 'rule_type' => type_option[1] } } 
+                :rules => { form_option[1] => { 'rule_type' => type_option[1] } }
               }
             end
           end

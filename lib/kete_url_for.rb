@@ -8,13 +8,13 @@ module KeteUrlFor
     # this will give us what we always use as a kete item's url
     # without privacy
     def url_for_dc_identifier(item, options = {})
-      location = { 
+      location = {
         controller: zoom_class_controller(item.class.name),
         action: 'show',
         id: item,
         format: nil,
         locale: false,
-        urlified_name: item.basket_or_default.urlified_name 
+        urlified_name: item.basket_or_default.urlified_name
       }
 
       location[:protocol] = 'http' if options[:force_http]

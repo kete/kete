@@ -569,10 +569,10 @@ class BasketsController < ApplicationController
       @default_sorting[:direction], %w(name created_at)
     )
 
-    options = { 
+    options = {
       page: params[:page],
       per_page: per_page,
-      order: paginate_order 
+      order: paginate_order
     }
     options[:conditions] = ['status = ?', @listing_type]
 

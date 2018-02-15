@@ -98,11 +98,11 @@ class ImportersController < ApplicationController
       unless backgroundrb_is_running?(@worker_type)
         MiddleMan.new_worker(worker: @worker_type, worker_key: @worker_key)
         import_request = { host: request.host, protocol: request.protocol, request_uri: request.original_url }
-        MiddleMan.worker(@worker_type, @worker_key).async_do_work(arg: { 
+        MiddleMan.worker(@worker_type, @worker_key).async_do_work(arg: {
                                                                     zoom_class: @zoom_class,
                                                                     import: @import.id,
                                                                     params: params,
-                                                                    import_request: import_request 
+                                                                    import_request: import_request
                                                                   })
 
         # fixing failure due to unnecessary loading of tiny_mce

@@ -13,24 +13,24 @@ class BasketsControllerTest < ActionController::TestCase
     login_as(:admin)
 
     # hash of params to create new instance of model, e.g. {:name => 'Test Model', :description => 'Dummy'}
-    @default_model = { 
+    @default_model = {
       :show_privacy_controls => nil,
       :private_default => nil,
       :file_private_default => nil,
-      :allow_non_member_comments => nil 
+      :allow_non_member_comments => nil
     }
-    @new_model =     { 
+    @new_model =     {
       :name => 'Test Basket',
       :show_privacy_controls => true,
       :private_default => false,
       :file_private_default => nil,
-      :allow_non_member_comments => true 
+      :allow_non_member_comments => true
     }
-    @updated_model = { 
+    @updated_model = {
       :show_privacy_controls => nil,
       :private_default => true,
       :file_private_default => false,
-      :allow_non_member_comments => nil 
+      :allow_non_member_comments => nil
     }
 
     @req_attr_names = %w(name private_default file_private_default)

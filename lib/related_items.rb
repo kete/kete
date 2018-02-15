@@ -7,7 +7,7 @@ module RelatedItems
         begin
                related_items_hash = Hash.new
                related_items_hash['Topic'] = is_a?(Topic) ? related_topics : topics
-       
+
                if is_a?(Topic)
                  ZOOM_CLASSES.each do |zoom_class|
                    next if zoom_class == 'Topic'

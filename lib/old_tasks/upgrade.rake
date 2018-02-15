@@ -99,11 +99,11 @@ namespace :kete do
       # support for legacy kete installations where basket ids
       # are different from those in topics.yml
       # NOTE: if this gets uses again in another task, move this to a reusable method of its own
-      basket_ids = { 
+      basket_ids = {
         '1' => 1,
         '2' => Basket::HELP_BASKET_ID,
         '3' => Basket::ABOUT_BASKET_ID,
-        '4' => Basket::DOCUMENTATION_BASKET_ID, 
+        '4' => Basket::DOCUMENTATION_BASKET_ID,
       }
 
       # for each topic from yml
@@ -223,9 +223,9 @@ namespace :kete do
     desc 'Make all baskets with the status of NULL set to approved'
     task make_baskets_approved_if_status_null: :environment do
       Basket.all.each do |basket|
-        basket.update_attributes!({ 
+        basket.update_attributes!({
                                     status: 'approved',
-                                    creator_id: 1 
+                                    creator_id: 1
                                   }) if basket.status.blank?
       end
     end
