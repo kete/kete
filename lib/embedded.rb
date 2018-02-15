@@ -66,7 +66,8 @@ module Embedded
           attribute_name.humanize,
           attribute_name.camelize,
           attribute_name,
-          raw_attribute_name]
+          raw_attribute_name
+]
 
         attribute_synonyms = name_variants + Object.const_get(setting.constant_name).to_a
 

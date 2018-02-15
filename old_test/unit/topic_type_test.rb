@@ -87,7 +87,8 @@ class TopicTypeTest < ActiveSupport::TestCase
         :first,
         :conditions => [
           "extended_field_id = :extended_field_id and topic_type_id = :topic_type_id",
-          { :extended_field_id => @name_field.id, :topic_type_id => @organization_type.id }]
+          { :extended_field_id => @name_field.id, :topic_type_id => @organization_type.id }
+]
       )
     assert_equal @organization_type.form_fields.size, mapping.position
     assert !mapping.required?, "The default for required in form_fields should be false or nil."
@@ -106,7 +107,8 @@ class TopicTypeTest < ActiveSupport::TestCase
           :first,
           :conditions => [
             "extended_field_id = :extended_field_id and topic_type_id = :topic_type_id",
-            { :extended_field_id => field.id, :topic_type_id => @organization_type.id }]
+            { :extended_field_id => field.id, :topic_type_id => @organization_type.id }
+]
         )
       test_position = mapping.position.to_i
       last_position = test_position
@@ -124,7 +126,8 @@ class TopicTypeTest < ActiveSupport::TestCase
         :first,
         :conditions => [
           "extended_field_id = :extended_field_id and topic_type_id = :topic_type_id",
-          { :extended_field_id => @city_field.id, :topic_type_id => @organization_type.id }]
+          { :extended_field_id => @city_field.id, :topic_type_id => @organization_type.id }
+]
       )
     assert_equal @organization_type.form_fields.size, mapping.position
     assert mapping.required?, "The default for required in required_form_fields should be true."
@@ -143,7 +146,8 @@ class TopicTypeTest < ActiveSupport::TestCase
           :first,
           :conditions => [
             "extended_field_id = :extended_field_id and topic_type_id = :topic_type_id",
-            { :extended_field_id => field.id, :topic_type_id => @organization_type.id }]
+            { :extended_field_id => field.id, :topic_type_id => @organization_type.id }
+]
         )
       test_position = mapping.position.to_i
       last_position = test_position
@@ -156,7 +160,8 @@ class TopicTypeTest < ActiveSupport::TestCase
     @organization_type.available_fields.each do |field|
       fcount = TopicTypeToFieldMapping.count :conditions => [
         "extended_field_id = :extended_field_id and topic_type_id = :topic_type_id",
-        { :extended_field_id => field.id, :topic_type_id => @organization_type.id }]
+        { :extended_field_id => field.id, :topic_type_id => @organization_type.id }
+]
       assert_equal fcount, 0, "There is a field listed in available_fields that has already been mapped to this topic_type."
     end
   end

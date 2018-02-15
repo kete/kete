@@ -10,7 +10,8 @@ namespace :kete do
       'kete:repair:set_missing_contributors',
       'kete:repair:correct_thumbnail_privacies',
       'kete:repair:correct_site_basket_roles',
-      'kete:repair:extended_fields']
+      'kete:repair:extended_fields'
+]
 
     desc 'Fix invalid topic versions (adds version column value or prunes on a case-by-case basis.'
     task fix_topic_versions: :environment do
@@ -282,7 +283,8 @@ namespace :kete do
     desc 'Run all extended field repair tasks'
     task extended_fields: [
       'kete:repair:extended_fields:legacy_google_map',
-      'kete:repair:extended_fields:repopulate_related_items_from_topic_type_choices']
+      'kete:repair:extended_fields:repopulate_related_items_from_topic_type_choices'
+]
 
     namespace :extended_fields do
       desc 'Run the legacy google map repair tasks'
