@@ -79,7 +79,7 @@ module Embedded
 
         # accept ; as demarkation of separate values
         # Adobe's Bridge software doesn't use commas
-        if value.is_a?(String) && key.downcase == 'subject'
+        if value.is_a?(String) && key.casecmp('subject').zero?
           value = value.split(';').collect { |i| i.strip }
         end
 

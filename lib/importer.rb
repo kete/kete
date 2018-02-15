@@ -596,7 +596,7 @@ module Importer
       # that is a title synonym, we go with last match just in case
       title = nil
       record_hash.keys.each do |field_name|
-        title = record_hash[field_name].strip if field_name.downcase == 'title' || (SystemSetting.SystemSetting.title_synonyms && SystemSetting.SystemSetting.title_synonyms.include?(field_name))
+        title = record_hash[field_name].strip if field_name.casecmp('title').zero? || (SystemSetting.SystemSetting.title_synonyms && SystemSetting.SystemSetting.title_synonyms.include?(field_name))
       end
 
       logger.info('after record field_name loop')
@@ -795,7 +795,7 @@ module Importer
         # the field may also be mapped to non-extended fields
         # such as tags, description, title
         # the value maybe used multiple times, so case isn't appropriate
-        if record_field.upcase == 'TITLE' || (!SystemSetting.title_synonyms.blank? && SystemSetting.title_synonyms.include?(record_field))
+        if record_field.casecmp('TITLE').zero? || (!SystemSetting.title_synonyms.blank? && SystemSetting.title_synonyms.include?(record_field))
           params[zoom_class_for_params][:title] = record_value
         end
 
@@ -819,7 +819,7 @@ module Importer
           @tag_list_array += record_value.split(',').collect { |tag| tag.strip }
         end
 
-        if zoom_class == 'WebLink' && record_field.upcase == 'URL'
+        if zoom_class == 'WebLink' && record_field.casecmp('URL').zero?
           params[zoom_class_for_params][:url] = record_value
         end
 

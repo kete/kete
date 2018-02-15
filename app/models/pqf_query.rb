@@ -320,7 +320,7 @@ class PqfQuery
           # then replace the @and for this element of the query with @not
           # all other boolean operators are treated as normal words if first term
           if term_count == 1
-            if term.downcase == 'not'
+            if term.casecmp('not').zero?
               query_starts_with_not = true
             else
               terms_array << term
