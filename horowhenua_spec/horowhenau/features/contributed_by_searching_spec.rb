@@ -20,7 +20,7 @@ def within_contributor_area
   find("#content-tools")
 end
 
-feature "Contributed By Searching" do
+describe "Contributed By Searching" do
   it "Searching by contributions from a topic page" do
     visit "/en/site/topics/196-levin-pottery-club"
     within_contributor_area.click_link "Rosalie"

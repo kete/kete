@@ -7,7 +7,7 @@ def exec_with_horowhenua_attachments
   Rails.configuration.attachments_overide_url = old_overide_url
 end
 
-feature "Related Items" do
+describe "Related Items" do
   it "are listed on a page" do
     visit "/en/site/topics/2453"
 
