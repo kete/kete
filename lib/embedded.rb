@@ -137,10 +137,10 @@ module Embedded
               raise 'Error: Trying to use Google Maps without configuation (config/google_map_api.yml)'
             end
             coords = convert_dms_to_decimal_degree(value)
-            value = { 
+            value = {
               'zoom_lvl' => SystemSetting.default_zoom_level.to_s,
               'no_map' => '0',
-              'coords' => "#{coords[:latitude]},#{coords[:longitude]}" 
+              'coords' => "#{coords[:latitude]},#{coords[:longitude]}"
             }
             send("#{field.label_for_params}=", value)
           else

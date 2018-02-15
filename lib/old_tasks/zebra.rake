@@ -22,11 +22,11 @@ namespace :zebra do
     # read in template
     servers_conf_xml = File.read("#{conf_file_path}.template")
 
-    specs = { 
+    specs = {
       'unix_spec_private' => "unix:#{Rails.root}/tmp/sockets/zebra-#{ENV['PRIVATE_PORT']}",
       'unix_spec_public' => "unix:#{Rails.root}/tmp/sockets/zebra-#{ENV['PUBLIC_PORT']}",
       'private_spec' => "tcp:localhost:#{ENV['PRIVATE_PORT']}",
-      'public_spec' => "tcp:localhost:#{ENV['PUBLIC_PORT']}" 
+      'public_spec' => "tcp:localhost:#{ENV['PUBLIC_PORT']}"
     }
 
     specs.each do |spec_name, listen_spec|

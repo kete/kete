@@ -12,7 +12,7 @@ class UserTest < ActiveSupport::TestCase
     @base_class = "User"
 
     # hash of params to create new instance of model, e.g. {:name => 'Test Model', :description => 'Dummy'}
-    @new_model = { 
+    @new_model = {
       :login => 'quire',
       :email => 'quire@example.com',
       :password => 'quire',
@@ -20,7 +20,7 @@ class UserTest < ActiveSupport::TestCase
       :agree_to_terms => '1',
       :security_code => 'test',
       :security_code_confirmation => 'test',
-      :locale => 'en' 
+      :locale => 'en'
     }
 
     # name of fields that must be present, e.g. %(name description)

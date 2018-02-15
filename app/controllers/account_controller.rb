@@ -48,9 +48,9 @@ class AccountController < ApplicationController
 
           anonymous_name = params[:name].blank? ? @anonymous_user.user_name : params[:name]
 
-          session[:anonymous_user] = { 
+          session[:anonymous_user] = {
             name: anonymous_name,
-            email: params[:email] 
+            email: params[:email]
           }
 
           # see if the submitted website is valid
@@ -77,11 +77,11 @@ class AccountController < ApplicationController
           flash[:notice] = t('account_controller.login.logged_in')
         end
         redirect_back_or_default(
-          { 
+          {
             locale: current_user.locale,
             urlified_name: @site_basket.urlified_name,
             controller: 'account',
-            action: 'index' 
+            action: 'index'
           }, current_user.locale
         )
       else
@@ -140,11 +140,11 @@ class AccountController < ApplicationController
       end
     end
 
-    redirect_back_or_default({ 
+    redirect_back_or_default({
                                locale: params[:user][:locale],
                                urlified_name: @site_basket.urlified_name,
                                controller: 'account',
-                               action: 'index' 
+                               action: 'index'
                              })
   rescue ActiveRecord::RecordInvalid
     render action: 'signup'
@@ -241,12 +241,12 @@ class AccountController < ApplicationController
     if @user.update_attributes(params[:user])
 
       flash[:notice] = t('account_controller.update.user_updated')
-      redirect_to({ 
+      redirect_to({
                     locale: params[:user][:locale],
                     urlified_name: @site_basket.urlified_name,
                     controller: 'account',
                     action: 'show',
-                    id: @user 
+                    id: @user
                   })
     else
       logger.debug('what is problem')

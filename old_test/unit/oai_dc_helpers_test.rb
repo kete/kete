@@ -8,15 +8,15 @@ class OaiDcHelpersTest < ActiveSupport::TestCase
       setup do
         @parent = Topic.create(:title => 'Parent Topic', :topic_type_id => 1, :basket_id => 1)
 
-        options = { 
+        options = {
           :title => 'Child Item',
-          :description => 'Child Description' 
+          :description => 'Child Description'
         }
 
         if zoom_class == 'Comment'
-          options = { 
+          options = {
             :commentable_type => 'Topic',
-            :commentable_id => @parent.id 
+            :commentable_id => @parent.id
           }.merge(options)
         end
 

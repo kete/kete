@@ -7,11 +7,11 @@ class ContentTypeTest < ActiveSupport::TestCase
     @base_class = "ContentType"
 
     # hash of params to create new instance of model, e.g. {:name => 'Test Model', :description => 'Dummy'}
-    @new_model = { 
+    @new_model = {
       :class_name => 'TestType',
       :controller => 'test_types',
       :humanized => 'Test Type',
-      :humanized_plural => 'Test Types' 
+      :humanized_plural => 'Test Types'
     }
 
     # name of fields that must be present, e.g. %(name description)

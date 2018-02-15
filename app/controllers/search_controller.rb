@@ -425,7 +425,7 @@ class SearchController < ApplicationController
       params[:controller_name_for_zoom_class].nil? ? \
            zoom_class_controller(SystemSetting.default_search_class) : params[:controller_name_for_zoom_class]
 
-    location_hash = { 
+    location_hash = {
       urlified_name: basket_name,
       controller_name_for_zoom_class: controller_name,
       existing_array_string: params[:existing_array_string],
@@ -437,7 +437,7 @@ class SearchController < ApplicationController
       sort_type: params[:sort_type],
       limit_to_choice: params[:limit_to_choice],
       extended_field: params[:extended_field],
-      authenticity_token: nil 
+      authenticity_token: nil
     }
 
     if is_a_private_search?
@@ -446,10 +446,10 @@ class SearchController < ApplicationController
 
     if !params[:search_terms].blank?
       # we are searching
-      location_hash.merge!({ 
+      location_hash.merge!({
                              search_terms_slug: to_search_terms_slug(params[:search_terms]),
                              search_terms: params[:search_terms],
-                             action: 'for' 
+                             action: 'for'
                            })
     else
       # we are viewing all

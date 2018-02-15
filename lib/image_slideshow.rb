@@ -25,9 +25,9 @@ module ImageSlideshow
       update_id = (topic_slideshow? ? 'related_items_slideshow' : 'selected-image-display')
       @template.periodically_call_remote(
         update: update_id,
-        url: { 
+        url: {
           action: 'selected_image',
-          topic_id: topic_slideshow? ? params[:id] : nil 
+          topic_id: topic_slideshow? ? params[:id] : nil
         },
         frequency: 15,
         method: 'get',

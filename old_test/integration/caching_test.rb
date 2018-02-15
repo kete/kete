@@ -21,9 +21,9 @@ class CachingTest < ActionController::IntegrationTest
     context "when homepage topic is added" do
       setup do
         @topic = new_homepage_topic(
-          { 
+          {
             :title => 'Homepage 1 Title',
-            :description => 'Homepage 1 Description' 
+            :description => 'Homepage 1 Description'
           }, @@cache_basket
         )
       end
@@ -36,16 +36,16 @@ class CachingTest < ActionController::IntegrationTest
     context "when homepage topic is replaced" do
       setup do
         @topic1 = new_homepage_topic(
-          { 
+          {
             :title => 'Old Homepage Topic Title',
-            :description => 'Old Homepage Topic Description' 
+            :description => 'Old Homepage Topic Description'
           }, @@cache_basket
         )
         check_cache_current_for(@topic1)
         @topic2 = new_homepage_topic(
-          { 
+          {
             :title => 'Homepage 2 Title',
-            :description => 'Homepage 2 Description' 
+            :description => 'Homepage 2 Description'
           }, @@cache_basket
         )
       end
@@ -60,16 +60,16 @@ class CachingTest < ActionController::IntegrationTest
     context "when homepage topic is updated" do
       setup do
         @topic = new_homepage_topic(
-          { 
+          {
             :title => 'Homepage 3 Title',
-            :description => 'Homepage 3 Description' 
+            :description => 'Homepage 3 Description'
           }, @@cache_basket
         )
         check_cache_current_for(@topic)
         @topic = update_item(
-          @topic, { 
+          @topic, {
             :title => 'Homepage 3 Updated Title',
-            :description => 'Homepage 3 Updated Description' 
+            :description => 'Homepage 3 Updated Description'
           }
         )
       end
@@ -84,9 +84,9 @@ class CachingTest < ActionController::IntegrationTest
     context "when homepage topic is deleted" do
       setup do
         @topic = new_homepage_topic(
-          { 
+          {
             :title => 'Homepage 4 Title',
-            :description => 'Homepage 4 Description' 
+            :description => 'Homepage 4 Description'
           }, @@cache_basket
         )
         check_cache_current_for(@topic)
@@ -103,25 +103,25 @@ class CachingTest < ActionController::IntegrationTest
 
     context "when recent topics are enabled" do
       setup do
-        @@cache_basket.update_attributes({ 
+        @@cache_basket.update_attributes({
                                            :index_page_number_of_recent_topics => 5,
-                                           :index_page_recent_topics_as => 'headlines' 
+                                           :index_page_recent_topics_as => 'headlines'
                                          })
       end
 
       teardown do
-        @@cache_basket.update_attributes({ 
+        @@cache_basket.update_attributes({
                                            :index_page_number_of_recent_topics => 0,
-                                           :index_page_recent_topics_as => nil 
+                                           :index_page_recent_topics_as => nil
                                          })
       end
 
       context "and when the basket has a topic added" do
         setup do
           @topic = new_topic(
-            { 
+            {
               :title => 'Recent Topic 1 Title',
-              :description => 'Recent Topic 1 Description' 
+              :description => 'Recent Topic 1 Description'
             }, @@cache_basket
           )
         end
@@ -134,16 +134,16 @@ class CachingTest < ActionController::IntegrationTest
       context "and when the basket has a topic updated" do
         setup do
           @topic = new_topic(
-            { 
+            {
               :title => 'Recent Topic 2 Title',
-              :description => 'Recent Topic 2 Description' 
+              :description => 'Recent Topic 2 Description'
             }, @@cache_basket
           )
           check_recent_topics_includes(@topic)
           @topic = update_item(
-            @topic, { 
+            @topic, {
               :title => 'Recent Topic 2 Updated Title',
-              :description => 'Recent Topic 2 Updated Description' 
+              :description => 'Recent Topic 2 Updated Description'
             }
           )
         end
@@ -158,9 +158,9 @@ class CachingTest < ActionController::IntegrationTest
       context "and when the basket has a topic deleted" do
         setup do
           @topic = new_topic(
-            { 
+            {
               :title => 'Recent Topic 3 Title',
-              :description => 'Recent Topic 3 Description' 
+              :description => 'Recent Topic 3 Description'
             }, @@cache_basket
           )
           check_recent_topics_includes(@topic)
@@ -188,18 +188,18 @@ class CachingTest < ActionController::IntegrationTest
       context "and when homepage has a private version" do
         setup do
           @topic = new_homepage_topic(
-            { 
+            {
               :title => 'Public Title',
               :description => 'Public Description',
-              :private_false => true 
+              :private_false => true
             }, @@cache_basket
           )
           check_cache_current_for(@topic)
           @topic = update_item(
-            @topic, { 
+            @topic, {
               :title => 'Private Title',
               :description => 'Private Description',
-              :private_true => true 
+              :private_true => true
             }
           )
         end
@@ -216,9 +216,9 @@ class CachingTest < ActionController::IntegrationTest
           check_viewing_public_version_of(@topic, { :check_all_links => false })
           login_as('joe')
           check_viewing_private_version_of(
-            @topic, { 
+            @topic, {
               :check_all_links => false,
-              :check_show_link => true 
+              :check_show_link => true
             }
           )
         end
@@ -235,10 +235,10 @@ class CachingTest < ActionController::IntegrationTest
           login_as('joe')
           visit "/#{@topic.basket.urlified_name}/index_page?private=true"
           check_viewing_private_version_of(
-            @topic, { 
+            @topic, {
               :on_topic_already => true,
               :check_all_links => false,
-              :check_show_link => true 
+              :check_show_link => true
             }
           )
         end
@@ -264,10 +264,10 @@ class CachingTest < ActionController::IntegrationTest
             login_as('joe')
             visit "/#{@topic.basket.urlified_name}"
             check_viewing_private_version_of(
-              @topic, { 
+              @topic, {
                 :on_topic_already => true,
                 :check_all_links => false,
-                :check_show_link => true 
+                :check_show_link => true
               }
             )
           end
@@ -293,9 +293,9 @@ class CachingTest < ActionController::IntegrationTest
     context "when a topic is added" do
       setup do
         @topic = new_topic(
-          { 
+          {
             :title => 'Topic 1 Title',
-            :description => 'Topic 1 Description' 
+            :description => 'Topic 1 Description'
           }, @@cache_basket
         )
       end
@@ -308,16 +308,16 @@ class CachingTest < ActionController::IntegrationTest
     context "when a topic is updated" do
       setup do
         @topic = new_topic(
-          { 
+          {
             :title => 'Topic 2 Title',
-            :description => 'Topic 2 Description' 
+            :description => 'Topic 2 Description'
           }, @@cache_basket
         )
         check_cache_current_for(@topic, { :on_topic_already => true, :check_show_link => false })
         @topic = update_item(
-          @topic, { 
+          @topic, {
             :title => 'Topic 2 Updated Title',
-            :description => 'Topic 2 Updated Description' 
+            :description => 'Topic 2 Updated Description'
           }
         )
       end
@@ -335,9 +335,9 @@ class CachingTest < ActionController::IntegrationTest
     context "when a topic is deleted" do
       setup do
         @topic = new_topic(
-          { 
+          {
             :title => 'Topic 3 Title',
-            :description => 'Topic 3 Description' 
+            :description => 'Topic 3 Description'
           }, @@cache_basket
         )
         check_cache_current_for(@topic, { :on_topic_already => true, :check_show_link => false })
@@ -366,18 +366,18 @@ class CachingTest < ActionController::IntegrationTest
       context "and when topic has a private version" do
         setup do
           @topic = new_topic(
-            { 
+            {
               :title => 'Public Title',
               :description => 'Public Description',
-              :private_false => true 
+              :private_false => true
             }, @@cache_basket
           )
           check_cache_current_for(@topic, { :on_topic_already => true, :check_show_link => false })
           @topic = update_item(
-            @topic, { 
+            @topic, {
               :title => 'Private Title',
               :description => 'Private Description',
-              :private_true => true 
+              :private_true => true
             }
           )
         end
@@ -418,33 +418,33 @@ class CachingTest < ActionController::IntegrationTest
       context "and a topic has both a public and private version, with revisions, it" do
         setup do
           @topic = new_topic(
-            { 
+            {
               :title => 'Public Title',
               :description => 'Public Description',
-              :private_false => true 
+              :private_false => true
             }, @@cache_basket
           )
           @topic = update_item(
-            @topic, { 
+            @topic, {
               :title => 'Public SPAM',
               :description => 'Public SPAM',
-              :private_false => true 
+              :private_false => true
             }
           )
           check_viewing_public_version_of(@topic, :on_topic_already => true, :check_show_link => false)
           @topic = update_item(
-            @topic, { 
+            @topic, {
               :title => 'Private Title',
               :description => 'Private Description',
-              :private_true => true 
+              :private_true => true
             }
           )
           @topic.private_version!
           @topic = update_item(
-            @topic, { 
+            @topic, {
               :title => 'Private SPAM',
               :description => 'Private SPAM',
-              :private_true => true 
+              :private_true => true
             }
           )
           check_viewing_private_version_of(@topic, :on_topic_already => true, :check_show_link => false)

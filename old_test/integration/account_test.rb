@@ -8,9 +8,9 @@ class AccountTest < ActionController::IntegrationTest
 
     should "be able to login" do
       login_as(
-        'paul', 'test', { 
+        'paul', 'test', {
           :navigate_to_login => true,
-          :by_form => true 
+          :by_form => true
         }
       )
       body_should_contain "Logged in successfully"
@@ -19,9 +19,9 @@ class AccountTest < ActionController::IntegrationTest
 
     should "should have details displayed on the menu" do
       login_as(
-        'paul', 'test', { 
+        'paul', 'test', {
           :navigate_to_login => true,
-          :by_form => true 
+          :by_form => true
         }
       )
       body_should_contain "paul"
@@ -30,10 +30,10 @@ class AccountTest < ActionController::IntegrationTest
 
     should "fail login with incorrect credentials" do
       login_as(
-        'incorrect', 'login', { 
+        'incorrect', 'login', {
           :navigate_to_login => true,
           :by_form => true,
-          :should_fail_login => true 
+          :should_fail_login => true
         }
       )
       body_should_contain "Your password or login do not match our records. Please try again."
@@ -71,9 +71,9 @@ class AccountTest < ActionController::IntegrationTest
         visit "/"
         visit "/site/account/login"
         login_as(
-          'paul', 'test', { 
+          'paul', 'test', {
             :navigate_to_login => false,
-            :by_form => true 
+            :by_form => true
           }
         )
         url_should_contain Regexp.new("/$")
@@ -85,9 +85,9 @@ class AccountTest < ActionController::IntegrationTest
         @@site_basket.update_attribute(:show_privacy_controls, true)
         login_as('paul')
         @item =
-          new_still_image({ 
+          new_still_image({
                             :private_true => true,
-                            :file_private_true => true 
+                            :file_private_true => true
                           }) { attach_file "image_file_uploaded_data", "white.jpg" }
       end
 

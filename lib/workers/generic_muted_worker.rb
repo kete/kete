@@ -16,10 +16,10 @@ class GenericMutedWorker < BackgrounDRb::MetaWorker
   # even though this worker isn't expected to report its progress
   # provide simple debugging results hash
   def create(args = nil)
-    cache[:results] = { 
+    cache[:results] = {
       do_work_time: Time.now.utc.to_s,
       done_with_do_work: false,
-      done_with_do_work_time: nil 
+      done_with_do_work_time: nil
     }
   end
 

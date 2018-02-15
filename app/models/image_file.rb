@@ -12,11 +12,11 @@ class ImageFile < ActiveRecord::Base
   # from vendor/plugins/attachment_fu/lib/technoweenie/attachment_fu/processors/rmagick.rb
   # we also make non-web friendly image files end up with jpegs for resized versions
   # see lib/resize_as_jpeg_when_necessary
-  attachment_options = { 
+  attachment_options = {
     storage: :file_system,
     content_type: SystemSetting.image_content_types,
     thumbnails: SystemSetting.image_sizes,
-    max_size: SystemSetting.maximum_uploaded_file_size 
+    max_size: SystemSetting.maximum_uploaded_file_size
   }
 
   # allow sites to opt-in for keeping embedded metadata from original with resized versions

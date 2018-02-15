@@ -252,13 +252,13 @@ namespace :kete do
           title: SystemSetting.pretty_site_name,
           domain: SystemSetting.site_name,
           oembed_endpoint: SystemSetting.site_url + 'oembed',
-          upload_startpoint: { 
+          upload_startpoint: {
             label: 'Upload New Image',
-            url: SystemSetting.site_url + 'site/images/new?as_service=true&append_show_url=true' 
+            url: SystemSetting.site_url + 'site/images/new?as_service=true&append_show_url=true'
           },
           insertIntoEditor: { editor: 'TinyMCE' },
           sources: [
-            { 
+            {
               name: 'Latest',
               media_type: 'image',
               media_type_plural: 'images',
@@ -266,9 +266,9 @@ namespace :kete do
               searchable_stub: false,
               limit_parameter: '?count=',
               display_limit: 4,
-              page_parameter: '&page=' 
+              page_parameter: '&page='
             },
-            { 
+            {
               name: 'Search',
               media_type: 'image',
               media_type_plural: 'images',
@@ -276,7 +276,7 @@ namespace :kete do
               searchable_stub: true,
               limit_parameter: '&count=',
               display_limit: 4,
-              page_parameter: '&page=' 
+              page_parameter: '&page='
             }
           ]
         }

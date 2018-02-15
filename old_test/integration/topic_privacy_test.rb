@@ -67,13 +67,13 @@ class TopicPrivacyTest < ActionController::IntegrationTest
 
     context 'with private baskets and items of various privacies' do
       setup do
-        @first_basket   = new_basket({ 
+        @first_basket   = new_basket({
                                        :name => "First basket",
-                                       :show_privacy_controls_true => true 
+                                       :show_privacy_controls_true => true
                                      })
-        @second_basket  = new_basket({ 
+        @second_basket  = new_basket({
                                        :name => "Second basket",
-                                       :show_privacy_controls_true => true 
+                                       :show_privacy_controls_true => true
                                      })
 
         add_laura_as_super_user

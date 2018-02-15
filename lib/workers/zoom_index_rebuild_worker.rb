@@ -9,13 +9,13 @@ class ZoomIndexRebuildWorker < BackgrounDRb::MetaWorker
   include ZoomControllerHelpers
 
   def create(_args = nil)
-    results = { 
+    results = {
       do_work_time: Time.now.utc.to_s,
       done_with_do_work: false,
       done_with_do_work_time: nil,
       records_processed: 0,
       records_skipped: 0,
-      records_failed: 0 
+      records_failed: 0
     }
 
     cache[:results] = results

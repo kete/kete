@@ -55,12 +55,12 @@ module ProfilesHelper
   # sets some vars used in the form so we dont have to have unnessecary duplication
   # The render_to_string method is made public and a helper in the profiles_controller
   def fetch_form_for(form_type, input_name)
-    @rule_locals = { 
+    @rule_locals = {
       form_type: form_type,
       input_name: input_name,
       allowed_field_name: "#{input_name}[#{form_type}][allowed][]",
       values_field_prefix: "#{input_name}[#{form_type}][values]",
-      field_id_prefix: "record_rules_#{form_type}" 
+      field_id_prefix: "record_rules_#{form_type}"
     }
     render_to_string(partial: "profiles/#{form_type}")
   end

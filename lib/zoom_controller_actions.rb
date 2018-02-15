@@ -15,10 +15,10 @@ module ZoomControllerActions
       @worker_type = 'zoom_index_rebuild_worker'
       @worker_key ||= worker_key_for(@worker_type)
 
-      import_request = { 
+      import_request = {
         host: request.host,
         protocol: request.protocol,
-        request_uri: request.original_url 
+        request_uri: request.original_url
       }
 
       @worker_running = false
