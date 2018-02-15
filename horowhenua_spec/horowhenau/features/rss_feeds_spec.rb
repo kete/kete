@@ -11,13 +11,13 @@ def one_day_ago
   (DateTime.now - 1.day).iso8601
 end
 
-feature "RSS Feeds" do
-  scenario "RSS links in footer are disabled" do
+describe "RSS Feeds" do
+  it "RSS links in footer are disabled" do
     visit "/"
     expect(page).not_to have_css("#linkToRSS")
   end
 
-  scenario "RSS links in <head> are disabled" do
+  it "RSS links in <head> are disabled" do
     visit "/"
     expect(page).not_to have_css("link[type='application/rss+xml']", visible: false)
   end

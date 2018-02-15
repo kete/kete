@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-feature "Users can CRUD images" do
+describe "Users can CRUD images" do
   def create_image(attrs = nil)
     if attrs.nil?
       attrs = {
