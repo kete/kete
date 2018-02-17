@@ -37,7 +37,7 @@ namespace :tools do
   end
 
   namespace :ssh do
-    # TODO Create SSH key generation task
+    # TODO: Create SSH key generation task
 
     desc 'Copies contents of ssh public keys into authorized_keys file'
     task :setup do
@@ -160,7 +160,7 @@ namespace :tools do
 
     desc 'Install a gem on the remote server'
     task :install do
-      # TODO Figure out how to use Highline with this
+      # TODO: Figure out how to use Highline with this
       puts "Enter the name of the gem you'd like to install:"
       gem_name = $stdin.gets.chomp
       logger.info "trying to install #{gem_name}"

@@ -326,7 +326,7 @@ class PastPerfect4ImporterWorker < BackgrounDRb::MetaWorker
     if options[:record_hash].nil?
       record_hash = Hash.from_xml(record.to_s)
 
-      # HACK to go down one more level
+      # HACK: to go down one more level
       record_hash.keys.each do |record_field|
         record_hash = record_hash[record_field]
       end
