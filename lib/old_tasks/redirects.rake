@@ -62,7 +62,7 @@ class ExcelPreProcessor < Nokogiri::XML::SAX::Document
     when :Row
       self.within_row = true
       self.current_row += 1
-      records <<({})
+      records << ({})
     when :Cell
       # ss:Index helps compact filesize but causes issues with our column header
       # allocation so make use of it to prevent any issues from popping up
