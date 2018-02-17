@@ -115,8 +115,6 @@ class ExtendedField < ActiveRecord::Base
       where('id not in (select extended_field_id from topic_type_to_field_mappings where topic_type_id in (?))', topic_types_to_exclude).readonly(false).all
     elsif type_of == 'ContentType'
       where('id not in (select extended_field_id from content_type_to_field_mappings where content_type_id = ?)', type).readonly(false).all
-    else
-      # TODO: this is an error, say something meaningful
     end
   end
 

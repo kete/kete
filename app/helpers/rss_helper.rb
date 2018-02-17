@@ -35,8 +35,6 @@ module RssHelper
       nil
     elsif ::Import::VALID_ARCHIVE_CLASSES.include?(item.class.name)
       file_url_from_bits_for(item, request[:host])
-    else
-      nil
     end
   end
 

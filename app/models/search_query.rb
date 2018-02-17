@@ -92,8 +92,6 @@ class SearchQuery
     # Give the topic's id if items related to that topic where searched for.
     if related_item_topic_query?
       related_item_id
-    else
-      nil
     end
   end
 
