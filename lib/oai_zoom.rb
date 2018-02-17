@@ -160,32 +160,32 @@ module OaiZoom
 
     # TODO: this may not be needed anymore
     def importer_oai_dc_xml_dc_identifier(xml, item, passed_request = nil)
-      if !passed_request.nil?
-        host = passed_request[:host]
+      host = if !passed_request.nil?
+        passed_request[:host]
       else
-        host = request.host
-      end
+        request.host
+             end
       # HACK, brittle, but can't use url_for here
       xml.send('dc:identifier', fully_qualified_item_url({ host: host, controller: zoom_class_controller(item.class.name), item: item, urlified_name: item.basket.urlified_name, locale: false }))
     end
 
     # TODO: this may not be needed anymore
     def importer_oai_dc_xml_dc_relations_and_subjects(xml, item, passed_request = nil)
-      if !passed_request.nil?
-        host = passed_request[:host]
+      host = if !passed_request.nil?
+        passed_request[:host]
       else
-        host = request.host
-      end
+        request.host
+             end
 
       case item.class.name
       when 'Topic'
         ZOOM_CLASSES.each do |zoom_class|
           related_items = ''
-          if zoom_class == 'Topic'
-            related_items = item.related_topics
+          related_items = if zoom_class == 'Topic'
+            item.related_topics
           else
-            related_items = item.send(zoom_class.tableize)
-          end
+            item.send(zoom_class.tableize)
+                          end
           related_items.each do |related|
             xml.send('dc:subject') do
               xml.cdata related.title
@@ -212,17 +212,17 @@ module OaiZoom
 
     # TODO: probably no longer needed
     def importer_oai_dc_xml_dc_rights(xml, item, passed_request = nil)
-      if !passed_request.nil?
-        host = passed_request[:host]
+      host = if !passed_request.nil?
+        passed_request[:host]
       else
-        host = request.host
-      end
+        request.host
+             end
 
-      if item.respond_to?(:license) && !item.license.blank?
-        rights = item.license.url
+      rights = if item.respond_to?(:license) && !item.license.blank?
+        item.license.url
       else
-        rights = importer_item_url({ host: host, controller: 'topics', item: item, urlified_name: Basket.find(SystemSetting.about_basket).urlified_name, id: 4, locale: false })
-      end
+        importer_item_url({ host: host, controller: 'topics', item: item, urlified_name: Basket.find(SystemSetting.about_basket).urlified_name, id: 4, locale: false })
+               end
 
       xml.send('dc:rights', rights)
     end

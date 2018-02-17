@@ -61,11 +61,11 @@ module SearchDcDateFormulator
       dates = Array.new
       while dc_dates.size > 0 do
         date = dc_dates.shift
-        if [Time, DateTime].include?(date.class)
-          dates << date.localtime.to_s(:long)
+        dates << if [Time, DateTime].include?(date.class)
+          date.localtime.to_s(:long)
         else
-          dates << date
-        end
+          date
+                 end
       end
       dates
     end

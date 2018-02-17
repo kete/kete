@@ -146,11 +146,11 @@ module Importer
           # @skip_trimming is set in records_pre_processor (or not if it is not run)
           # just use records.xml if we should skip trimming
           records_xml_path = "#{@import_dir_path}/records.xml"
-          if @skip_trimming
-            @path_to_trimmed_records = records_xml_path
+          @path_to_trimmed_records = if @skip_trimming
+            records_xml_path
           else
-            @path_to_trimmed_records = importer_trim_fat_from_xml_import_file(records_xml_path, @path_to_trimmed_records)
-          end
+            importer_trim_fat_from_xml_import_file(records_xml_path, @path_to_trimmed_records)
+                                     end
 
           @import_records_xml = Nokogiri::XML File.open(@path_to_trimmed_records)
 
@@ -232,11 +232,11 @@ module Importer
         if @import_field_to_extended_field_map[field].present?
           extended_field = @import_field_to_extended_field_map[field]
         else
-          if @import_topic_type
-            extended_fields = @import_topic_type.mapped_fields
+          extended_fields = if @import_topic_type
+            @import_topic_type.mapped_fields
           else
-            extended_fields = ExtendedField.all(conditions: "import_synonyms like \'%#{field}%\'")
-          end
+            ExtendedField.all(conditions: "import_synonyms like \'%#{field}%\'")
+                            end
 
           if extended_fields.present?
             extended_field = extended_fields.select { |ext_field| (ext_field.import_synonyms || '').split.include?(field) }.first
@@ -749,11 +749,11 @@ module Importer
                 new_start_record_line = '<'
                 # if accessno is empty, we just open the export or Record so we have valid xml
                 # otherwise set as appropriate to the source xml file's format
-                if !@root_element_name.nil? && @root_element_name == 'Root'
-                  new_start_record_line += 'Record'
+                new_start_record_line += if !@root_element_name.nil? && @root_element_name == 'Root'
+                  'Record'
                 else
-                  new_start_record_line += 'export'
-                end
+                  'export'
+                                         end
 
                 unless accessno.blank?
                   new_start_record_line += " ACCESSNO=\'#{accessno}\'"
@@ -858,21 +858,21 @@ module Importer
       # clears it out if it does already
       params[zoom_class_for_params] = Hash.new
 
-      if options[:basket_id].nil?
-        params[zoom_class_for_params][:basket_id] = @current_basket.id
+      params[zoom_class_for_params][:basket_id] = if options[:basket_id].nil?
+        @current_basket.id
       else
-        params[zoom_class_for_params][:basket_id] = options[:basket_id]
-      end
+        options[:basket_id]
+                                                  end
 
       # check extended_field.import_field_synonyms
       # for which extended field to map the import_field to
       # special cases for title, short_summary, and description
       record_hash = Hash.new
-      if options[:record_hash].nil?
-        record_hash = importer_xml_record_to_hash(record)
+      record_hash = if options[:record_hash].nil?
+        importer_xml_record_to_hash(record)
       else
-        record_hash = options[:record_hash]
-      end
+        options[:record_hash]
+                    end
 
       field_count = 1
       @tag_list_array = Array.new
@@ -920,17 +920,17 @@ module Importer
 
       if !@import.description_beginning_template.blank?
         # append the citation to the description field
-        if !params[zoom_class_for_params][:description].nil?
-          params[zoom_class_for_params][:description] = @import.description_beginning_template + "\n\n" + params[zoom_class_for_params][:description]
+        params[zoom_class_for_params][:description] = if !params[zoom_class_for_params][:description].nil?
+          @import.description_beginning_template + "\n\n" + params[zoom_class_for_params][:description]
         else
-          params[zoom_class_for_params][:description] = @import.description_beginning_template
-        end
+          @import.description_beginning_template
+                                                      end
       elsif !SystemSetting.description_template.blank?
-        if !params[zoom_class_for_params][:description].nil?
-          params[zoom_class_for_params][:description] = SystemSetting.description_template + "\n\n" + params[zoom_class_for_params][:description]
+        params[zoom_class_for_params][:description] = if !params[zoom_class_for_params][:description].nil?
+          SystemSetting.description_template + "\n\n" + params[zoom_class_for_params][:description]
         else
-          params[zoom_class_for_params][:description] = SystemSetting.description_template
-        end
+          SystemSetting.description_template
+                                                      end
       end
 
       if !options[:description_end_template].nil?
@@ -1017,11 +1017,11 @@ module Importer
 
       # handle special case where title is derived from filename
       if new_record.title.blank?
-        if SystemSetting.enable_embedded_support && zoom_class != 'StillImage' && ATTACHABLE_CLASSES.include?(zoom_class)
-          new_record.title = '-replace-' + record_hash['placeholder_title']
+        new_record.title = if SystemSetting.enable_embedded_support && zoom_class != 'StillImage' && ATTACHABLE_CLASSES.include?(zoom_class)
+          '-replace-' + record_hash['placeholder_title']
         else
-          new_record.title = record_hash['placeholder_title']
-        end
+          record_hash['placeholder_title']
+                           end
       end
 
       # respect the Related Items Inset configurations
@@ -1156,11 +1156,11 @@ module Importer
       topic_params[:topic][:basket_id] = @current_basket.id
 
       # add the uniform license chosen at import to this item
-      if !@import.license.blank?
-        topic_params[:topic][:license_id] = @import.license.id
+      topic_params[:topic][:license_id] = if !@import.license.blank?
+        @import.license.id
       else
-        topic_params[:topic][:license_id] = nil
-      end
+        nil
+                                          end
 
       # replace with something that isn't reliant on params
       # replacement_topic_hash = pp4_importer_extended_fields_replacement_params_hash(:item_key => "topic", :item_class => 'Topic', :params => topic_params)

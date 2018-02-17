@@ -33,13 +33,13 @@ class ModerateController < ApplicationController
   private
 
   def fetch_revisions
-    case params[:type]
+    @items = case params[:type]
     when 'reviewed'
-      @items = @current_basket.all_reviewed_revisions
+      @current_basket.all_reviewed_revisions
     when 'rejected'
-      @items = @current_basket.all_rejected_revisions
+      @current_basket.all_rejected_revisions
     else
-      @items = @current_basket.all_disputed_revisions
-    end
+      @current_basket.all_disputed_revisions
+             end
   end
 end

@@ -68,11 +68,11 @@ class Search < ActiveRecord::Base
     full_sort_types = with_relevance ? ['relevance'] + Search.sort_types : Search.sort_types
 
     full_sort_types.each do |type|
-      if type == 'relevance'
-        sort_type_options += '<option class="none" value="none"'
+      sort_type_options += if type == 'relevance'
+        '<option class="none" value="none"'
       else
-        sort_type_options += "<option class=\"#{type}\" value=\"#{type}\""
-      end
+        "<option class=\"#{type}\" value=\"#{type}\""
+                           end
       sort_type_options += ' selected="selected"' if !sort_type.nil? && type == sort_type
       sort_type_options += '>' + I18n.t("search_model.#{type}") + '</option>'
     end

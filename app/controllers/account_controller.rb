@@ -133,11 +133,11 @@ class AccountController < ApplicationController
       move_session_searches_to_current_user
       flash[:notice] = t('account_controller.signup.signed_up')
     else
-      if SystemSetting.administrator_activates?
-        flash[:notice] = t('account_controller.signup.signed_up_admin_will_review')
+      flash[:notice] = if SystemSetting.administrator_activates?
+        t('account_controller.signup.signed_up_admin_will_review')
       else
-        flash[:notice] = t('account_controller.signup.signed_up_with_email')
-      end
+        t('account_controller.signup.signed_up_with_email')
+                       end
     end
 
     redirect_back_or_default({
@@ -217,11 +217,11 @@ class AccountController < ApplicationController
 
   def show
     if logged_in?
-      if params[:id]
-        @user = User.find(params[:id])
+      @user = if params[:id]
+        User.find(params[:id])
       else
-        @user = current_user
-      end
+        current_user
+              end
       @viewer_is_user = @user == @current_user
       @viewer_portraits = !@user.portraits.empty? ? @user.portraits.all(conditions: ['position != 1']) : nil
     else

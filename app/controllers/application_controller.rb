@@ -13,15 +13,15 @@ class ApplicationController < ActionController::Base
   # then the users locale, finally the default site locale
   def set_locale
     available_locales = I18n.available_locales_with_labels
-    if params[:locale] && available_locales.key?(params[:locale])
-      I18n.locale = params[:locale]
+    I18n.locale = if params[:locale] && available_locales.key?(params[:locale])
+      params[:locale]
     elsif session[:locale] && available_locales.key?(session[:locale])
-      I18n.locale = session[:locale]
+      session[:locale]
     elsif current_user != :false && available_locales.key?(current_user.locale)
-      I18n.locale = current_user.locale
+      current_user.locale
     else
-      I18n.locale = I18n.default_locale
-    end
+      I18n.default_locale
+                  end
     session[:locale] = I18n.locale # need to make sure this persists
   end
 
@@ -159,22 +159,22 @@ class ApplicationController < ActionController::Base
     @documentation_basket ||= Basket.documentation_basket
     @standard_basket_ids ||= Basket.standard_basket_ids
 
-    if params[:urlified_name].blank?
-      @current_basket = @site_basket
+    @current_basket = if params[:urlified_name].blank?
+      @site_basket
     else
       case params[:urlified_name]
       when @site_basket.urlified_name
-        @current_basket = @site_basket
+        @site_basket
       when @about_basket.urlified_name
-        @current_basket = @about_basket
+        @about_basket
       when @help_basket.urlified_name
-        @current_basket = @help_basket
+        @help_basket
       when @documentation_basket.urlified_name
-        @current_basket = @documentation_basket
+        @documentation_basket
       else
-        @current_basket = Basket.where(urlified_name: params[:urlified_name]).first
-      end
-    end
+        Basket.where(urlified_name: params[:urlified_name]).first
+                        end
+                      end
 
     if @current_basket.nil?
       @current_basket = @site_basket
@@ -324,11 +324,11 @@ class ApplicationController < ActionController::Base
       for id in params[:item].reject { |k, v| v != 'true' }.collect { |k, v| k }
         item = only_valid_zoom_class(params[:related_class]).find(id)
 
-        if params[:relate_to_type] == 'Topic' && params[:related_class] == 'Topic'
-          @existing_relation = @related_to_item.related_topics.include?(item)
+        @existing_relation = if params[:relate_to_type] == 'Topic' && params[:related_class] == 'Topic'
+          @related_to_item.related_topics.include?(item)
         else
-          @existing_relation = @related_to_item.send(params[:related_class].tableize).include?(item)
-        end
+          @related_to_item.send(params[:related_class].tableize).include?(item)
+                             end
 
         if !@existing_relation
           @successful = add_relation_and_update_zoom_and_related_caches_for(item, @related_to_item)
@@ -505,11 +505,11 @@ class ApplicationController < ActionController::Base
         private_conditions += 'AND private_version_serialized IS NOT NULL'
       end
 
-      if basket == @site_basket
-        @basket_stats_hash["#{zoom_class}_public"] = Module.class_eval(zoom_class).count(conditions: local_public_conditions)
+      @basket_stats_hash["#{zoom_class}_public"] = if basket == @site_basket
+        Module.class_eval(zoom_class).count(conditions: local_public_conditions)
       else
-        @basket_stats_hash["#{zoom_class}_public"] = basket.send(zoom_class.tableize).count(conditions: local_public_conditions)
-      end
+        basket.send(zoom_class.tableize).count(conditions: local_public_conditions)
+                                                   end
 
       # Walter McGinnis, 2008-11-18
       # normally the site basket is a special case, in that is shows all items from all baskets

@@ -324,27 +324,25 @@ module ExtendedContent
                 multiple
               end
           elsif ['autocomplete', 'choice'].member?(extended_field.ftype)
-            if field.size > 1
+            result[field_param_name] = if field.size > 1
               # We're dealing with a multiple field value.
-              result[field_param_name] =
-                field.inject(Hash.new) do |multiple, value|
+              field.inject(Hash.new) do |multiple, value|
                   multiple[(field.index(value) + 1).to_s] = convert_value_from_structured_hash(value, extended_field)
                   multiple
                 end
             else
-              result[field_param_name] = convert_value_from_structured_hash(field, extended_field)
-            end
+              convert_value_from_structured_hash(field, extended_field)
+                                       end
           else
-            if (extended_field.multiple && field.size > 0) || field.size > 1
+            result[field_param_name] = if (extended_field.multiple && field.size > 0) || field.size > 1
               # We're dealing with a multiple field value.
-              result[field_param_name] =
-                field.inject(Hash.new) do |multiple, value|
+              field.inject(Hash.new) do |multiple, value|
                   multiple[(field.index(value) + 1).to_s] = convert_value_from_structured_hash(value, extended_field)
                   multiple
                 end
             else
-              result[field_param_name] = convert_value_from_structured_hash(field, extended_field)
-            end
+              convert_value_from_structured_hash(field, extended_field)
+                                       end
           end
 
           result
@@ -1008,11 +1006,11 @@ module ExtendedContent
         new_k = tweaked_key(k)
         new_v = v.dup
 
-        if new_v.kind_of?(Hash)
-          out_hash[new_k] = remove_xml_fix(new_v)
+        out_hash[new_k] = if new_v.kind_of?(Hash)
+          remove_xml_fix(new_v)
         else
-          out_hash[new_k] = new_v
-        end
+          new_v
+                          end
       end
 
       out_hash

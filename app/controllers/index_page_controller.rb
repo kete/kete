@@ -91,15 +91,15 @@ class IndexPageController < ApplicationController
             # on the homepage. By using a while, we can resolve this issue
             while @recent_topics_items.size < @recent_topics_limit && items_offset <= @total_items
               # Make the find query based on current basket and privacy level
-              if @current_basket == @site_basket
-                recent_topics_items = Topic.recent.includes(:versions)
+              recent_topics_items = if @current_basket == @site_basket
+                Topic.recent.includes(:versions)
                                            .offset(items_offset).limit(@recent_topics_limit)
                                            .exclude_baskets_and_id(disabled_recent_topics_baskets, @topic)
               else
-                recent_topics_items = @current_basket.topics.recent.includes(:versions)
+                @current_basket.topics.recent.includes(:versions)
                                                      .offset(items_offset).limit(@recent_topics_limit)
                                                      .exclude_baskets_and_id(disabled_recent_topics_baskets, @topic)
-              end
+                                    end
 
               recent_topics_items = recent_topics_items.public unless @allow_private
 

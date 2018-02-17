@@ -76,34 +76,34 @@ module ZoomControllerHelpers
 
     def zoom_class_controller(zoom_class)
       zoom_class_controller = String.new
-      case zoom_class
+      zoom_class_controller = case zoom_class
       when 'StillImage'
-        zoom_class_controller = 'images'
+        'images'
       when 'Video'
-        zoom_class_controller = 'video'
+        'video'
       when 'Comment'
-        zoom_class_controller = 'comments'
+        'comments'
       when 'AudioRecording'
-        zoom_class_controller = 'audio'
+        'audio'
       else
-        zoom_class_controller = zoom_class.tableize
-      end
+        zoom_class.tableize
+                              end
     end
 
     def zoom_class_from_controller(controller)
       zoom_class = String.new
-      case controller
+      zoom_class = case controller
       when 'images'
-        zoom_class = 'StillImage'
+        'StillImage'
       when 'video'
-        zoom_class = 'Video'
+        'Video'
       when 'comments'
-        zoom_class = 'Comment'
+        'Comment'
       when 'audio'
-        zoom_class = 'AudioRecording'
+        'AudioRecording'
       else
-        zoom_class = controller.classify
-      end
+        controller.classify
+                   end
     end
 
     def zoom_class_humanize(zoom_class)
@@ -120,11 +120,11 @@ module ZoomControllerHelpers
 
     def zoom_class_humanize_after(count, zoom_class)
       humanized = count.to_s + ' '
-      if count.to_i != 1
-        humanized += zoom_class_plural_humanize(zoom_class)
+      humanized += if count.to_i != 1
+        zoom_class_plural_humanize(zoom_class)
       else
-        humanized += zoom_class_humanize(zoom_class)
-      end
+        zoom_class_humanize(zoom_class)
+                   end
       humanized
     end
 

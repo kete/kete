@@ -11,18 +11,18 @@ module ExtendedContentHelpersForTestSetUp
       @extended_item = Module.class_eval(@base_class).create! @new_model
     end
 
-    unless @base_class == 'Topic'
-      @mapped_to_type_instance = ContentType.find_by_class_name(@base_class)
+    @mapped_to_type_instance = unless @base_class == 'Topic'
+      ContentType.find_by_class_name(@base_class)
     else
-      @mapped_to_type_instance = @extended_item.topic_type
-    end
+      @extended_item.topic_type
+                               end
 
     @mapped_to_type_instance.form_fields << @extended_field
 
-    unless @base_class == 'Topic'
-      @mapping = @extended_field.content_type_to_field_mappings.last
+    @mapping = unless @base_class == 'Topic'
+      @extended_field.content_type_to_field_mappings.last
     else
-      @mapping = @extended_field.topic_type_to_field_mappings.last
-    end
+      @extended_field.topic_type_to_field_mappings.last
+               end
   end
 end

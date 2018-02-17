@@ -15,11 +15,11 @@ module RelatedItemsTestUnitHelper
           ContentItemRelation.new_relation_to_topic(@topic_related_to, @related_item)
 
           relations = Array.new
-          unless @base_class == 'Topic'
-            relations = @topic_related_to.send(@base_class.tableize)
+          relations = unless @base_class == 'Topic'
+            @topic_related_to.send(@base_class.tableize)
           else
-            relations = @topic_related_to.related_topics
-          end
+            @topic_related_to.related_topics
+                      end
 
           assert_equal relations.size, 1
         end

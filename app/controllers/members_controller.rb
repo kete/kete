@@ -13,11 +13,11 @@ class MembersController < ApplicationController
   end
 
   def list
-    if !params[:type].blank? && @basket_admin
-      @listing_type = params[:type]
+    @listing_type = if !params[:type].blank? && @basket_admin
+      params[:type]
     else
-      @listing_type = 'member'
-    end
+      'member'
+                    end
 
     @there_are_requested = 0
     @there_are_rejected = 0
@@ -85,11 +85,11 @@ class MembersController < ApplicationController
     else
       not_anonymous_condition = "login != 'anonymous'"
       if params[:action] == 'rss'
-        unless site_admin?
-          @members = @role.users.where(not_anonymous_condition).order('roles_users.created_at desc').limit(50)
+        @members = unless site_admin?
+          @role.users.where(not_anonymous_condition).order('roles_users.created_at desc').limit(50)
         else
-          @members = @role.users.order('roles_users.created_at desc').limit(50)
-        end
+          @role.users.order('roles_users.created_at desc').limit(50)
+                   end
 
       else
         options = { include: :contributions, order: order, page: params[:page], per_page: 20 }
@@ -240,11 +240,11 @@ class MembersController < ApplicationController
       end
     end
 
-    if params[:user].size > 1
-      flash[:notice] = t('members_controller.add_members.added_plural')
+    flash[:notice] = if params[:user].size > 1
+      t('members_controller.add_members.added_plural')
     else
-      flash[:notice] = t('members_controller.add_members.added_singular')
-    end
+      t('members_controller.add_members.added_singular')
+                     end
 
     redirect_to action: 'list'
   end
@@ -269,11 +269,11 @@ class MembersController < ApplicationController
       flash[:notice] = t('members_controller.remove.removed', basket_name: @current_basket.name)
     end
 
-    if current_user_can_see_memberlist_for?(@current_basket)
-      redirect_location = { action: 'list' }
+    redirect_location = if current_user_can_see_memberlist_for?(@current_basket)
+      { action: 'list' }
     else
-      redirect_location = "/#{@site_basket.urlified_name}/"
-    end
+      "/#{@site_basket.urlified_name}/"
+                        end
 
     redirect_to redirect_location
   end

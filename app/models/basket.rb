@@ -228,18 +228,18 @@ class Basket < ActiveRecord::Base
 
     return Array.new unless !tag_limit || tag_limit > 0 # false = no limit, 0 = no tags
 
-    case tag_order
+    find_tag_order = case tag_order
     when 'alphabetical'
-      find_tag_order = "tags.name #{tag_direction}"
+      "tags.name #{tag_direction}"
     when 'latest'
-      find_tag_order = "taggings.created_at #{tag_direction}"
+      "taggings.created_at #{tag_direction}"
     when 'number'
-      find_tag_order = "taggings_count #{tag_direction}"
+      "taggings_count #{tag_direction}"
     else
       # EOIN: the value here in old kete is :random but rails doesn't support that now (if it ever did)
       # TODO: do we really need to specify that the order should be random?
-      find_tag_order = 'RANDOM()' # RAND() is mysql specific, on postgres it would be RANDOM()
-    end
+      'RANDOM()' # RAND() is mysql specific, on postgres it would be RANDOM()
+                     end
 
     tag_offset = (((options[:page] || 1) - 1) * tag_limit)
 

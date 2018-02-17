@@ -16,11 +16,11 @@ class UploadAsServiceTest < ActionController::IntegrationTest
 
             value_string = String.new
 
-            if parameter_name == 'service_target'
-              value_string = '=a_test_url'
+            value_string = if parameter_name == 'service_target'
+              '=a_test_url'
             else
-              value_string = '=true'
-            end
+              '=true'
+                           end
 
             value_string += '&as_service=true' if parameter_name != 'as_service'
 

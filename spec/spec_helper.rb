@@ -25,11 +25,11 @@ RSpec.configure do |config|
   end
 
   config.around do |example|
-    if example.metadata[:type] == :feature
-      DatabaseCleaner.strategy = :truncation
+    DatabaseCleaner.strategy = if example.metadata[:type] == :feature
+      :truncation
     else
-      DatabaseCleaner.strategy = :transaction
-    end
+      :transaction
+                               end
 
     DatabaseCleaner.start
     example.run

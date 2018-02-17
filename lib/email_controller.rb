@@ -6,11 +6,11 @@ module EmailController
     #         but if you want basket/contact, you need to add that route manually)
 
     def self.included(klass)
-      if klass.name == 'BasketsController'
-        settings_method = :prepare_basket_contact_form
+      settings_method = if klass.name == 'BasketsController'
+        :prepare_basket_contact_form
       else
-        settings_method = :prepare_user_contact_form
-      end
+        :prepare_user_contact_form
+                        end
 
       # set a few instance variables to be used later on
       klass.send :before_filter, settings_method, only: %i[contact send_email redirect_if_contact_form_disabled]

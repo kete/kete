@@ -12,11 +12,11 @@ module OaiDcHelpers
     end
 
     def oai_dc_xml_request(xml, passed_request = nil)
-      if !passed_request.nil?
-        request_uri = passed_request[:original_url]
+      request_uri = if !passed_request.nil?
+        passed_request[:original_url]
       else
-        request_uri = simulated_request[:original_url]
-      end
+        simulated_request[:original_url]
+                    end
 
       xml.request(request_uri, verb: 'GetRecord', identifier: "#{ZoomDb.zoom_id_stub}#{basket_urlified_name}:#{self.class.name}:#{id}", metadataPrefix: 'oai_dc')
     end
@@ -82,11 +82,11 @@ module OaiDcHelpers
     end
 
     def oai_dc_xml_dc_identifier(xml, passed_request = nil)
-      if !passed_request.nil?
-        host = passed_request[:host]
+      host = if !passed_request.nil?
+        passed_request[:host]
       else
-        host = simulated_request[:host]
-      end
+        simulated_request[:host]
+             end
 
       uri_attrs = {
         controller: zoom_class_controller(self.class.name),
@@ -285,10 +285,10 @@ module OaiDcHelpers
       )
       terms_and_conditions_topic ||= 4
 
-      if respond_to?(:license) && !license.blank?
-        rights = license.url
+      rights = if respond_to?(:license) && !license.blank?
+        license.url
       else
-        rights = utf8_url_for(
+        utf8_url_for(
           host: SITE_NAME,
           id: terms_and_conditions_topic,
           urlified_name: Basket.about_basket.urlified_name,
@@ -297,17 +297,17 @@ module OaiDcHelpers
           escape: false,
           locale: false
         )
-      end
+               end
 
       xml.send('dc:rights', rights)
     end
 
     def oai_dc_xml_dc_source_for_file(xml, passed_request = nil)
-      if !passed_request.nil?
-        host = passed_request[:host]
+      host = if !passed_request.nil?
+        passed_request[:host]
       else
-        host = simulated_request[:host]
-      end
+        simulated_request[:host]
+             end
 
       if ::Import::VALID_ARCHIVE_CLASSES.include?(self.class.name)
         xml.send('dc:source', file_url_from_bits_for(self, host))

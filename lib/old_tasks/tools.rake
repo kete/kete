@@ -302,11 +302,11 @@ namespace :kete do
 
           width = specs.first.to_i
 
-          if specs.size == 1
-            height = 3 * width
+          height = if specs.size == 1
+            3 * width
           else
-            height = specs[1].to_i
-          end
+            specs[1].to_i
+                   end
 
           new_size = { 'name' => size_array.first.to_s }
           new_size['width'] = width if width

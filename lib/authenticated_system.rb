@@ -96,11 +96,11 @@ module AuthenticatedSystem
       have_auth_data = true if username && passwd
     end
     if have_auth_data
-      if user.nil?
-        self.current_user ||= :false
+      self.current_user ||= if user.nil?
+        :false
       else
-        self.current_user ||= user
-      end
+        user
+                            end
     end
     logged_in? && authorized? ? true : access_denied
   end

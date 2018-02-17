@@ -39,11 +39,11 @@ class RedirectRegistration < ActiveRecord::Base
   def new_url(request_url)
     partial_re = Regexp.new(/^\/.+\/$/)
 
-    if source_url_pattern =~ partial_re && target_url_pattern =~ partial_re
-      new_url = request_url.sub(source_url_pattern, target_url_pattern)
+    new_url = if source_url_pattern =~ partial_re && target_url_pattern =~ partial_re
+      request_url.sub(source_url_pattern, target_url_pattern)
     else
       # target_url_pattern is actually direct replacement
-      new_url = target_url_pattern
-    end
+      target_url_pattern
+              end
   end
 end
