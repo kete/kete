@@ -7,7 +7,7 @@ module TopicsHelper
       count += 1
       html += '<li class="'
 
-      classes = Array.new
+      classes = []
       classes << 'first' if count == 1
 
       if topic_types.size == count

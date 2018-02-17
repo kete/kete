@@ -14,7 +14,7 @@ class UploadAsServiceTest < ActionController::IntegrationTest
           should "pass url query string parameter for #{parameter_name} as a hidden input if present" do
             new_url = new_url_stub + parameter_name
 
-            value_string = String.new
+            value_string = ''
 
             if parameter_name == 'service_target'
               value_string = '=a_test_url'

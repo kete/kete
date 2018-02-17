@@ -75,7 +75,7 @@ module ZoomControllerHelpers
     end
 
     def zoom_class_controller(zoom_class)
-      zoom_class_controller = String.new
+      zoom_class_controller = ''
       case zoom_class
       when 'StillImage'
         zoom_class_controller = 'images'
@@ -91,7 +91,7 @@ module ZoomControllerHelpers
     end
 
     def zoom_class_from_controller(controller)
-      zoom_class = String.new
+      zoom_class = ''
       case controller
       when 'images'
         zoom_class = 'StillImage'

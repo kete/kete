@@ -2,7 +2,7 @@ module TaggingController
   unless included_modules.include? TaggingController
     def self.included(klass)
       controller = klass.name.gsub('Controller', '')
-      auto_complete_methods = Array.new
+      auto_complete_methods = []
       # If we're in the Baskets controller, we have to make all zoom class tag completion methods on load
       if controller == 'Baskets'
         ZOOM_CLASSES.each do |zoom_class|

@@ -6,7 +6,7 @@ module ImportersHelper
     # create the template code
     code =
       Proc.new do
-        options = Array.new
+        options = []
         constant_name.constantize.each do |item_class_name|
           selected = @zoom_class_name == item_class_name ? " selected='selected'" : ''
           options << "<option value='#{item_class_name}'#{selected}>#{zoom_class_plural_humanize(item_class_name)}</option>"

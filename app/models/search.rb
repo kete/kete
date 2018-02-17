@@ -3,7 +3,7 @@
 # has only just started, so this is limited
 class Search < ActiveRecord::Base
   def self.view_as_types
-    types = Array.new
+    types = []
     types << ['', I18n.t('search_model.browse_default')]
     types << ['choice_hierarchy', I18n.t('search_model.choice_hierarchy')] if ExtendedField.find_by_label('categories')
     types << ['map', I18n.t('search_model.map')] if File.exist?(File.join(RAILS_ROOT, 'config/gmaps_api_key.yml'))
@@ -11,7 +11,7 @@ class Search < ActiveRecord::Base
   end
 
   def self.view_as_types_as_options(current, show_inherit = true)
-    options = String.new
+    options = ''
     options += "<option value='inherit'>#{I18n.t('search_model.view_as_types_as_options.inherit')}</option>" if show_inherit
     Search.view_as_types.each do |type|
       options += "<option value='#{type[0]}'#{" selected='selected'" if type[0] == current}>#{type[1]}</option>"
@@ -64,7 +64,7 @@ class Search < ActiveRecord::Base
 
     sort_type = sort_type(action: action, user_specified: sort_type, default: 'none')
 
-    sort_type_options = String.new
+    sort_type_options = ''
     full_sort_types = with_relevance ? ['relevance'] + Search.sort_types : Search.sort_types
 
     full_sort_types.each do |type|

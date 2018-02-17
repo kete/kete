@@ -292,7 +292,7 @@ namespace :kete do
       task write_default_imageselector_sizes_json: :environment do
         return unless Kete.is_configured?
 
-        this_site_sizes_config = Array.new
+        this_site_sizes_config = []
 
         SystemSetting.image_sizes.each do |size_array|
           # decypher imagemagick rules
@@ -395,7 +395,7 @@ namespace :kete do
               table_name = 'topics' if kind.include?('child') || kind.include?('parent')
 
               clause = "#{table_name}.id >= :start_id"
-              clause_values = Hash.new
+              clause_values = {}
               clause_values[:start_id] = topic.send(kind.to_sym).find(
                 :first,
                 order: "#{table_name}.id"

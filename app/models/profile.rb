@@ -74,7 +74,7 @@ class Profile < ActiveRecord::Base
 
     return setting(:rules) if raw
 
-    data = Array.new
+    data = []
     setting(:rules).each do |k, v|
       value = "#{k.humanize}: "
       value +=
@@ -134,7 +134,7 @@ class Profile < ActiveRecord::Base
   # each form type are set else things may break later on
   def all_form_types_have_rule_type
     if @rules
-      missing_rule_types = Array.new
+      missing_rule_types = []
       @rules.each do |k, v|
         missing_rule_types << k.humanize if v['rule_type'].blank?
       end

@@ -13,7 +13,7 @@ class FormHelper < ActionView::Helpers::FormBuilder
       classes = "required #{classes}" if required
       required_icon = required ? ' <em>*</em>' : ''
 
-      label = String.new
+      label = ''
       label = label(field, options.delete(:label) + required_icon, class: classes) if options[:label].present?
 
       field_example = options[:example].nil? ? '' : @template.content_tag(:div, options.delete(:example), class: 'form-example')

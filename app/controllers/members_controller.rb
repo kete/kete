@@ -56,14 +56,14 @@ class MembersController < ApplicationController
   end
 
   def list_members_in(role_name, order = 'users.login asc')
-    @non_member_roles_plural = Hash.new
+    @non_member_roles_plural = {}
     @possible_roles = {
       'admin' => t('members_controller.list_members_in.admin'),
       'moderator' => t('members_controller.list_members_in.moderator'),
       'member' => t('members_controller.list_members_in.member')
     }
 
-    @admin_actions = Hash.new
+    @admin_actions = {}
 
     if (@current_basket == @site_basket) && site_admin?
       @possible_roles['tech_admin'] = t('members_controller.list_members_in.tech_admin')
@@ -99,7 +99,7 @@ class MembersController < ApplicationController
       end
 
       @all_roles = RolesUser.all(conditions: ['role_id = ? AND user_id IN (?)', @role, @members])
-      @role_creations = Hash.new
+      @role_creations = {}
       @members.each do |member|
         @role_creations[member.id] = @all_roles.reject { |r| r.user_id != member.id }.first.created_at
       end
@@ -116,7 +116,7 @@ class MembersController < ApplicationController
     @users_to_exclude = User.where(login: 'anonymous')
     @existing_users = @existing_users + @users_to_exclude
 
-    @potential_new_members = Array.new
+    @potential_new_members = []
     unless params[:search_name].blank?
       @potential_new_members = User.where(
         'id not in (?) and login like ? or display_name like ?',
@@ -229,7 +229,7 @@ class MembersController < ApplicationController
 
   def add_members
     if !params[:user]
-      params[:user] = Hash.new
+      params[:user] = {}
       params[:user][params[:id]] = 1
     end
 

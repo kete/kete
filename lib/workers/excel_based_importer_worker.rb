@@ -36,8 +36,8 @@ class ExcelPreProcessor < Nokogiri::XML::SAX::Document
   attr_accessor :has_path_to_file
 
   def start_document
-    self.column_headers = Array.new
-    self.records = Array.new
+    self.column_headers = []
+    self.records = []
     self.within_table = false
     self.within_row = false
     self.current_row = 0
@@ -53,7 +53,7 @@ class ExcelPreProcessor < Nokogiri::XML::SAX::Document
     when :Row
       self.within_row = true
       self.current_row += 1
-      records << Hash.new
+      records <<({})
     when :Cell
       # ss:Index helps compact filesize but causes issues with our column header
       # allocation so make use of it to prevent any issues from popping up

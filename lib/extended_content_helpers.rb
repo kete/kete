@@ -212,7 +212,7 @@ module ExtendedContentHelpers
           # a label string (value)
           # then we reassign value to what is between the ()
           # and push the beginning string to a label attribute
-          parts = Array.new
+          parts = []
 
           # in case we are given something like this [ { 'value' => 'this', :label => 'that' } ]
           # This happens in the case of using replace_value_for method (field=) on a different field
@@ -222,7 +222,7 @@ module ExtendedContentHelpers
             elsif value.is_a?(String)
               value.match(/(.+)\(([^\(\)]+)\)\Z/).to_a
             else
-              Array.new
+              []
                              end
 
           unless parts.blank?

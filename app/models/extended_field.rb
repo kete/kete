@@ -142,7 +142,7 @@ class ExtendedField < ActiveRecord::Base
       label_sql = 'label'
     end
 
-    clauses = Array.new
+    clauses = []
     if params_key_words.size == 1
       clauses << "#{label_sql} #{match_keyword} '#{params_key_words.first}'"
     else

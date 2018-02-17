@@ -7,7 +7,7 @@ class SiteLinkingWorker < BackgrounDRb::MetaWorker
   def create(args = nil)
     results = {
       linking_success: false,
-      linking_validation_errors: Array.new,
+      linking_validation_errors: [],
       linking_complete: false
     }
 
@@ -48,7 +48,7 @@ class SiteLinkingWorker < BackgrounDRb::MetaWorker
   def reset_worker
     results = {
       linking_success: false,
-      linking_validation_errors: Array.new,
+      linking_validation_errors: [],
       linking_complete: false
     }
 

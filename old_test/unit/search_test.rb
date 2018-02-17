@@ -9,7 +9,7 @@ class SearchTest < ActiveSupport::TestCase
     # with no other params set
     @options = {
       :default => 'none',
-      :query => String.new,
+      :query => '',
       :user_specified => nil,
       :direction => nil,
       :action => 'all',

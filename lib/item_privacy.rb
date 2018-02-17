@@ -169,7 +169,7 @@ module ItemPrivacy
       #       which is STORED ON THE IN-MEMORY MODEL (ie not in the database).
       def store_private!(save_after_serialization = false)
         prepared_array =
-          self.class.versioned_columns.inject(Array.new) do |memo, k|
+          self.class.versioned_columns.inject([]) do |memo, k|
             memo << [k.name, send(k.name.to_sym)]
           end
 
@@ -306,13 +306,13 @@ module ItemPrivacy
 
         # Get the raw tag list, split, squish (removed whitespace), and add each to raw_tag_array
         # Make sure we skip if the array already has that tag name (remove any duplicates that occur)
-        raw_tag_array = Array.new
+        raw_tag_array = []
         raw_tag_list.split(',').each do |raw_tag|
           next if raw_tag_array.include?(raw_tag.squish)
           raw_tag_array << raw_tag.squish
         end
 
-        tags = Array.new
+        tags = []
         if tags_out_of_order.size > 0
           # resort them to match raw_tag_list order
           tags = tags_out_of_order.sort { |a, b| raw_tag_array.index(a.name).to_i <=> raw_tag_array.index(b.name).to_i }
@@ -325,7 +325,7 @@ module ItemPrivacy
       # Required by tag cloud functionality on basket home-pages.
       def tag_counts(options, private_tags = false)
         # Only return public tags (for the time being..)
-        tags = Hash.new
+        tags = {}
         tags[:public] = public_tag_counts(options)
         tags[:private] = private_tags ? private_tag_counts(options) : {}
         tags

@@ -315,14 +315,14 @@ class PastPerfect4ImporterWorker < BackgrounDRb::MetaWorker
 
     # initialize the subhash in params
     # clears it out if it does already
-    params[zoom_class_for_params] = Hash.new
+    params[zoom_class_for_params] = {}
 
     params[zoom_class_for_params][:basket_id] = @current_basket.id
 
     # check extended_field.import_field_synonyms
     # for which extended field to map the import_field to
     # special cases for title, short_summary, and description
-    record_hash = Hash.new
+    record_hash = {}
     if options[:record_hash].nil?
       record_hash = Hash.from_xml(record.to_s)
 
@@ -335,7 +335,7 @@ class PastPerfect4ImporterWorker < BackgrounDRb::MetaWorker
     end
 
     field_count = 1
-    tag_list_array = Array.new
+    tag_list_array = []
     # add support for all items during this import getting a set of tags
     # added to every item in addition to the specific ones for the item
     tag_list_array = @import.base_tags.split(',') if !@import.base_tags.blank?
@@ -388,7 +388,7 @@ class PastPerfect4ImporterWorker < BackgrounDRb::MetaWorker
             people_in_lines = value.split("\n")
             people_in_lines.each do |person|
               names_array = person.split(',')
-              first_names = String.new
+              first_names = ''
               if !names_array[1].nil?
                 first_names = names_array[1].split('(')[0].strip
               end
@@ -434,7 +434,7 @@ class PastPerfect4ImporterWorker < BackgrounDRb::MetaWorker
 
     logger.info('after description_end_template')
 
-    description = String.new
+    description = ''
     # used to give use better html output for descriptions
     if !params[zoom_class_for_params][:description].nil?
       description = RedCloth.new params[zoom_class_for_params][:description]

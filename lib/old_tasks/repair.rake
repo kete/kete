@@ -223,7 +223,7 @@ namespace :kete do
     desc 'Move original files that have been mistakenly made publicly downloadable to private original files, specify still images ids with IDS= or a basket with the still images with BASKET_ID='
     task fix_still_image_originals_privacies: :environment do
       puts "Getting specified StillImages and updating their originals to be file_private\n"
-      still_images = Array.new
+      still_images = []
       if ENV['BASKET_ID']
         basket = Basket.find(ENV['BASKET_ID'])
         still_images = basket.still_images
@@ -301,7 +301,7 @@ namespace :kete do
               end
               if map_data.present?
                 if map_data.is_a?(Array)
-                  map_data_as_hash = Hash.new
+                  map_data_as_hash = {}
                   map_data.each do |pair|
                     map_data_as_hash[pair[0]] = pair[1]
                   end
@@ -329,7 +329,7 @@ namespace :kete do
         if topic_type_extended_fields.size > 0
           any_updated_items = false
 
-          conditions = Array.new
+          conditions = []
           topic_type_extended_fields.each { |field| conditions << "extended_content LIKE '%<#{field.label_for_params}%'" }
 
           each_item_with_extended_fields("(#{conditions.join(' OR ')})") do |item|

@@ -32,8 +32,8 @@ class Kete
     end
 
     def add_code_to_extensions_for(key, code)
-      extensions[:blocks] ||= Hash.new
-      extensions[:blocks][key] ||= Array.new
+      extensions[:blocks] ||= {}
+      extensions[:blocks][key] ||= []
       extensions[:blocks][key] << code
     end
 

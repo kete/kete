@@ -88,7 +88,7 @@ class AccountController < ApplicationController
         if params[:login].present? && params[:password].present?
           flash[:notice] = t('account_controller.login.failed_login')
         else
-          error_msgs = Array.new
+          error_msgs = []
 
           if params[:email].blank? || !params[:email].include?('@')
             error_msgs << t('account_controller.login.invalid_email')
@@ -192,7 +192,7 @@ class AccountController < ApplicationController
         render :update do |page|
           page.replace_html params[:avatar_id],
                             avatar_tag(
-                              User.new({ email: params[:email] || String.new }),
+                              User.new({ email: params[:email] || '' }),
                               { size: 30, rating: 'G', gravatar_default_url: '/images/no-avatar.png' },
                               { width: 30, height: 30, alt: t('account_controller.fetch_gravatar.your_gravatar') }
                             )

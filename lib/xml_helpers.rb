@@ -14,7 +14,7 @@ module XmlHelpers
 
     def file_url_from_bits_for(item, host, protocol = nil)
       protocol = protocol || appropriate_protocol_for(item)
-      the_url = String.new
+      the_url = ''
       if item.class.name == 'StillImage'
         the_url = "#{host}#{item.original_file.public_filename}"
       else
@@ -130,7 +130,7 @@ module XmlHelpers
       host = !passed_request.nil? ? passed_request[:host] : request.host
       request = !passed_request.nil? ? passed_request : request
 
-      totals_hash = Hash.new
+      totals_hash = {}
       # only add to totals if there are items
       total = item.related_items.size
       if total > 0

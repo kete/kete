@@ -164,8 +164,8 @@ class SearchSource < ActiveRecord::Base
 
   def sort_entries(entries, options = {})
     total = 0
-    links = Array.new
-    images = Array.new
+    links = []
+    images = []
     entries[0..((options[:limit] || limit) - 1)].each do |entry|
       media_data = entry.media_thumbnail || entry.enclosure
       if media_data && looks_like_image_url?(media_data)

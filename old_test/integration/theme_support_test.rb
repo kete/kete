@@ -5,7 +5,7 @@ require File.dirname(__FILE__) + '/integration_test_helper'
 class ThemeSupportTest < ActionController::IntegrationTest
   context "When there are more than 3 baskets on a site" do
     setup do
-      @baskets = Array.new
+      @baskets = []
       4.times { |i| @baskets << create_new_basket({ :name => "basket #{i}" }) }
     end
 

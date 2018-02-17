@@ -22,7 +22,7 @@ module BasketsHelper
   end
 
   def show_all_fields_link
-    html = String.new
+    html = ''
     # only show this link if the user is a basket admin
     # and the form hasn't been submitted, and the profile
     # doesn't already show all fields

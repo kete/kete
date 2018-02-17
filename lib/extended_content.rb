@@ -161,7 +161,7 @@ module ExtendedContent
     def xml_attributes
       extended_content_hash = xml_attributes_without_position
 
-      ordered_hash = Hash.new
+      ordered_hash = {}
       position = 1
 
       form_fields = all_field_mappings
@@ -224,7 +224,7 @@ module ExtendedContent
     # successive items in the values array. The values are doubly nested to allow for hierarchical choices, for example:
     # #=> { "field_name" => [['first value', 'child of first value'], ['second choice selection']] }
     def structured_extended_content
-      convert_xml_to_key_value_hash.inject(Hash.new) do |hash, field|
+      convert_xml_to_key_value_hash.inject({}) do |hash, field|
         field_name = field.delete(field.first)
         field_name_root = field_name.gsub('_multiple', '')
 
@@ -295,7 +295,7 @@ module ExtendedContent
     # for POSTed params.
     def structured_extended_content=(hash)
       hash_for_conversion =
-        hash.inject(Hash.new) do |result, field|
+        hash.inject({}) do |result, field|
           # Extract the name of the field
           field_param_name = field.delete(field.first)
 
@@ -316,7 +316,7 @@ module ExtendedContent
           elsif extended_field.ftype == 'topic_type' && extended_field.multiple?
             index = 1
             result[field_param_name] =
-              field.inject(Hash.new) do |multiple, value|
+              field.inject({}) do |multiple, value|
                 unless value.blank?
                   multiple[index.to_s] = value
                   index += 1
@@ -327,7 +327,7 @@ module ExtendedContent
             if field.size > 1
               # We're dealing with a multiple field value.
               result[field_param_name] =
-                field.inject(Hash.new) do |multiple, value|
+                field.inject({}) do |multiple, value|
                   multiple[(field.index(value) + 1).to_s] = convert_value_from_structured_hash(value, extended_field)
                   multiple
                 end
@@ -338,7 +338,7 @@ module ExtendedContent
             if (extended_field.multiple && field.size > 0) || field.size > 1
               # We're dealing with a multiple field value.
               result[field_param_name] =
-                field.inject(Hash.new) do |multiple, value|
+                field.inject({}) do |multiple, value|
                   multiple[(field.index(value) + 1).to_s] = convert_value_from_structured_hash(value, extended_field)
                   multiple
                 end
@@ -366,7 +366,7 @@ module ExtendedContent
         value_array = [value_array] if value_array.is_a?(String)
 
         value_array.flatten!
-        value_array.inject(Hash.new) do |hash, value|
+        value_array.inject({}) do |hash, value|
           value_index = (value_array.index(value) + 1).to_s
           if !value.is_a?(Hash)
             value = value.to_s
@@ -1002,7 +1002,7 @@ module ExtendedContent
     end
 
     def remove_xml_fix(in_hash)
-      out_hash = Hash.new
+      out_hash = {}
 
       in_hash.each do |k, v|
         new_k = tweaked_key(k)

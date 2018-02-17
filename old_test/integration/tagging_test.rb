@@ -85,7 +85,7 @@ class TaggingTest < ActionController::IntegrationTest
     context "when no tags are entered" do
       setup do
         @topic = new_topic
-        add_tags_to @topic, Array.new, false
+        add_tags_to @topic, [], false
       end
 
       should "redirect back to the item show page" do
@@ -97,7 +97,7 @@ class TaggingTest < ActionController::IntegrationTest
 
   private
 
-  def add_tags_to(item, tags = Array.new, check_successful = true)
+  def add_tags_to(item, tags = [], check_successful = true)
     item_class = item.class.name
     controller = zoom_class_controller(item_class)
     item_type = item_class.underscore

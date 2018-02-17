@@ -82,7 +82,7 @@ class PqfQuery
     # create the template code
     code =
       Proc.new do |term_or_terms, *options|
-        options = options.first || Hash.new
+        options = options.first || {}
         terms = terms_as_array(term_or_terms)
 
         # make default operator @and, if unspecified
@@ -100,10 +100,10 @@ class PqfQuery
   end
 
   def initialize
-    @query_parts = Array.new
-    @operators = Array.new
-    @title_or_any_text_query_string = String.new
-    @title_or_any_text_operators_string = String.new
+    @query_parts = []
+    @operators = []
+    @title_or_any_text_query_string = ''
+    @title_or_any_text_operators_string = ''
     @direction_value = 1
     @sort_spec = nil
     @should_search_web_links_too = false
@@ -127,7 +127,7 @@ class PqfQuery
       full_query_parts = full_query.split(prepend_at_pattern)
       no_relevance_query_string =
 
-        full_query = String.new
+        full_query = ''
       full_query += full_query_parts[0] unless full_query_parts[0].nil?
       full_query += '@or ' + prepend_at_pattern
       full_query += full_query_parts[1] unless full_query_parts[1].nil?
@@ -185,7 +185,7 @@ class PqfQuery
   # if we want to search for an exact match for an element
   # we wrap the term likeso ":term:"
   def exact_match_for_part_of_oai_identifier(term_or_terms, *options)
-    options = options.first || Hash.new
+    options = options.first || {}
 
     terms = terms_as_array(term_or_terms).collect { |term| ":#{term}:" }
 
@@ -311,8 +311,8 @@ class PqfQuery
         # add it to the correct spot
         # if not specified add another "@and"
         term_count = 1
-        terms_array = Array.new
-        operators_array = Array.new
+        terms_array = []
+        operators_array = []
         query_starts_with_not = false
         last_term_an_operator = false
         terms.each do |term|

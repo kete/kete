@@ -486,7 +486,7 @@ class ApplicationController < ActionController::Base
 
   def stats_by_type_for(basket)
     # prepare a hash of all the stats, so it's nice and easy to pass to partial
-    @basket_stats_hash = Hash.new
+    @basket_stats_hash = {}
     # special case: site basket contains everything
     # all contents of site basket plus all other baskets' contents
 
@@ -674,7 +674,7 @@ class ApplicationController < ActionController::Base
   def rss_tag(options = {})
     auto_detect = !options[:auto_detect].nil? ? options[:auto_detect] : true
 
-    tag = String.new
+    tag = ''
     tag += auto_detect ? '<link rel="alternate" type="application/rss+xml" title="RSS" ' : '<a '
     tag += 'href="' + derive_url_for_rss(options)
     tag += auto_detect ? '" />' : '" tabindex="1">' # A tag has a closing </a> in application layout
@@ -684,11 +684,11 @@ class ApplicationController < ActionController::Base
   cattr_accessor :add_ons_full_width_content_wrapper_controllers, :add_ons_content_wrapper_end_controllers
 
   def self.add_ons_full_width_content_wrapper_controllers
-    @@add_ons_full_width_content_wrapper_controllers || Array.new
+    @@add_ons_full_width_content_wrapper_controllers || []
   end
 
   def self.add_ons_content_wrapper_end_controllers
-    @@add_ons_content_wrapper_end_controllers || Array.new
+    @@add_ons_content_wrapper_end_controllers || []
   end
 
   # override in your add-on by adding to corresponding class attribute
@@ -836,7 +836,7 @@ class ApplicationController < ActionController::Base
     @current_item ||= @audio_recording || @document || @still_image || @topic || @video || @web_link || nil
   end
 
-  def current_sorting_options(default_order, default_direction, valid_orders = Array.new)
+  def current_sorting_options(default_order, default_direction, valid_orders = [])
     @order = valid_orders.include?(params[:order]) ? params[:order] : default_order
     @direction = ['asc', 'desc'].include?(params[:direction]) ? params[:direction] : default_direction
     "#{@order} #{@direction}"

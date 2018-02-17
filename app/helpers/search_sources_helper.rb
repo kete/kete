@@ -3,9 +3,9 @@ module SearchSourcesHelper
 
   def display_search_sources(search_text, options = {})
     @do_not_cache = options[:do_not_cache] || false
-    html = String.new
+    html = ''
 
-    conditions = Hash.new
+    conditions = {}
     if options[:target]
       # support for :target and [:target1, :target2]
       targets = options[:target].is_a?(Array) ? options[:target] : [options[:target]]
@@ -70,8 +70,8 @@ module SearchSourcesHelper
           nil
                      end
 
-      value = Hash.new if value.blank?
-      html = String.new
+      value = {} if value.blank?
+      html = ''
 
       html += "<span id='record_#{syntax}_case_div'>" +
               label_tag("#{input_name}[case]", t("search_sources_helper.#{syntax}_form_column.case"), class: 'inline') +

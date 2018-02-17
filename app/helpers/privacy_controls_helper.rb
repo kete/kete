@@ -3,7 +3,7 @@ module PrivacyControlsHelper
     if !item.new_record? && item.file_private? === false
       { 'disabled' => 'disabled' }
     else
-      Hash.new
+      {}
     end
   end
 
