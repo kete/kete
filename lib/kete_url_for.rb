@@ -41,11 +41,11 @@ module KeteUrlFor
       if item.class.name == 'Comment'
         commented_on_item = item.commentable
         url += zoom_class_controller(commented_on_item.class.name) + '/show/'
-        if item.should_save_to_private_zoom?
-          url += "#{commented_on_item.id}?private=true"
+        url += if item.should_save_to_private_zoom?
+          "#{commented_on_item.id}?private=true"
         else
-          url += commented_on_item.to_param.to_s
-        end
+          commented_on_item.to_param.to_s
+               end
         url += "#comment-#{item.id}"
       elsif is_relation
         # dc:relation fields should not have titles, or ?private=true in them
@@ -53,11 +53,11 @@ module KeteUrlFor
       elsif options[:id]
         url += "#{controller}/show/#{options[:id]}"
       else
-        if item.respond_to?(:private) && item.private?
-          url += "#{controller}/show/#{item.id}?private=true"
+        url += if item.respond_to?(:private) && item.private?
+          "#{controller}/show/#{item.id}?private=true"
         else
-          url += "#{controller}/show/#{item.to_param}"
-        end
+          "#{controller}/show/#{item.to_param}"
+               end
       end
       url
     end

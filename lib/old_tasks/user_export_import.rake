@@ -15,11 +15,11 @@ namespace :kete do
         yaml += "  fields:\n"
         user.attributes.each do |field, value|
           next if (field == 'id') || field.empty?
-          if field == 'extended_content'
-            yaml += "    #{field}: |\n      #{value}\n"
+          yaml += if field == 'extended_content'
+            "    #{field}: |\n      #{value}\n"
           else
-            yaml += "    #{field}: #{value}\n"
-          end
+            "    #{field}: #{value}\n"
+                  end
         end
         yaml += "  roles:\n"
         user.roles.each do |role|

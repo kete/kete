@@ -4,18 +4,18 @@ class SearchResultPresenter
   attr_reader :model
 
   def initialize(model, searched_topic_id)
-    if model.class == PgSearch::Document
+    @model = if model.class == PgSearch::Document
       # all/for searches
-      @model = model.searchable
+      model.searchable
     elsif model.class == ContentItemRelation
       # related_to searches
-      @model = dereference_content_item_relation(model, searched_topic_id)
+      dereference_content_item_relation(model, searched_topic_id)
     elsif model.class == Contribution
-      @model = model.contributed_item
+      model.contributed_item
     else
       # tagged/etc searches
-      @model = model
-    end
+      model
+             end
   end
 
   def id

@@ -64,11 +64,11 @@ module SlideshowsHelper
   # Support for keeping view size for images
   def url_without_extras(url)
     # Store the view size and return the URL without the matching part.
-    if url =~ /view_size=([a-z_]+)$/ && %w{small_sq medium small large}.member?($1)
-      slideshow.image_view_size = $1
+    slideshow.image_view_size = if url =~ /view_size=([a-z_]+)$/ && %w{small_sq medium small large}.member?($1)
+      $1
     else
-      slideshow.image_view_size = nil
-    end
+      nil
+                                end
 
     # Remove anything that won't match the dc:identifier for the current item
     url.gsub!(/[\?&]view_size=[a-z_]+/, '')

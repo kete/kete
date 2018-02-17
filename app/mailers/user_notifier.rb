@@ -209,11 +209,11 @@ class UserNotifier < ActionMailer::Base
         @title = nil
       end
 
-      if item.respond_to?(:short_summary) && basket.setting(:private_item_notification_show_short_summary) == true
-        @summary = item.short_summary
+      @summary = if item.respond_to?(:short_summary) && basket.setting(:private_item_notification_show_short_summary) == true
+        item.short_summary
       else
-        @summary = nil
-      end
+        nil
+                 end
 
       @item = item
       @url = url

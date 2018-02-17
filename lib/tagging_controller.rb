@@ -13,14 +13,14 @@ module TaggingController
       else
         # the following code is basicly a copy of zoom_class_from_controller in ZoomControllerHelpers
         # find a way to get that method in here without all the errors is brings with it
-        case controller
+        zoom_class = case controller
         when 'Images'
-          zoom_class = 'StillImage'
+          'StillImage'
         when 'Audio'
-          zoom_class = 'AudioRecording'
+          'AudioRecording'
         else
-          zoom_class = controller.singularize
-        end
+          controller.singularize
+                     end
         item_key = zoom_class.underscore.downcase.to_sym
         # klass.send :auto_complete_for, item_key, :tag_list, {}, { :through => { :object => 'tag', :method => 'name' } }
         auto_complete_methods << "auto_complete_for_#{item_key}_tag_list".to_sym

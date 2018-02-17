@@ -101,11 +101,11 @@ module SearchHelper
       img_html_tag = image_tag image.thumbnail_file.public_filename, alt: altify(image.title)
       tabindex_attr = options[:tabindex] ? options[:tabindex] : 1
 
-      if options[:link_to]
-        output += link_to(img_html_tag, options[:link_to], tabindex: tabindex_attr)
+      output += if options[:link_to]
+        link_to(img_html_tag, options[:link_to], tabindex: tabindex_attr)
       else
-        output += img_html_tag
-      end
+        img_html_tag
+                end
 
       output += '</li>'
     end

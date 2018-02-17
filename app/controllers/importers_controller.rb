@@ -234,12 +234,12 @@ class ImportersController < ApplicationController
   end
 
   def permitted_to_create_imports
-    if params[:action] == 'create' && !importing_archive_file?
+    user_is_authorized = if params[:action] == 'create' && !importing_archive_file?
       # if we aren't creating an import for archive sets, the rules of who can access the 'new' action apply
-      user_is_authorized = permit?('site_admin or admin of :current_basket or tech_admin of :site')
+      permit?('site_admin or admin of :current_basket or tech_admin of :site')
     else
-      user_is_authorized = current_user_can_import_archive_sets?
-    end
+      current_user_can_import_archive_sets?
+                         end
 
     unless user_is_authorized
       flash[:error] = t('importers_controller.permitted_to_create_imports.not_authorized')

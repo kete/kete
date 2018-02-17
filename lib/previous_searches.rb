@@ -11,14 +11,13 @@ module PreviousSearches
     # Returns an array of hash containing the :title and :url of previous search
     # Order with the most recent search at the top
     def users_previous_searches
-      if logged_in?
-        @previous_searches ||=
-          current_user.searches.collect do |s|
+      @previous_searches ||= if logged_in?
+        current_user.searches.collect do |s|
             { id: s.id, title: s.title, url: s.url }
           end
       else
-        @previous_searches ||= session[:searches] || Array.new
-      end
+        session[:searches] || Array.new
+                             end
     end
 
     # Moves any searches in the session for a logged out user into the searches of whatever

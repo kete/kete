@@ -192,17 +192,17 @@ class SearchController < ApplicationController
     @previous_page = @current_page - 1
 
     # rss is always is set at 50 per page unless limit if specified
-    if is_rss?
-      @number_per_page = (params[:count] || 50).to_i
+    @number_per_page = if is_rss?
+      (params[:count] || 50).to_i
     else
       # otherwise we fallback to default constant
       # unless user has specifically chosen a different number
-      if params[:number_of_results_per_page].blank?
-        @number_per_page = session[:number_of_results_per_page] ? session[:number_of_results_per_page].to_i : SystemSetting.default_records_per_page
+      @number_per_page = if params[:number_of_results_per_page].blank?
+        session[:number_of_results_per_page] ? session[:number_of_results_per_page].to_i : SystemSetting.default_records_per_page
       else
-        @number_per_page = params[:number_of_results_per_page].to_i
-      end
-    end
+        params[:number_of_results_per_page].to_i
+                         end
+                       end
 
     # update session with user preference for number of results per page
     store_number_of_results_per_page unless is_rss?

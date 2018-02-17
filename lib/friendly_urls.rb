@@ -19,17 +19,17 @@ module FriendlyUrls
 
       string = string.gsub(/\W/, demarkator)
 
-      if at_start
-        string = demarkator + string
+      string = if at_start
+        demarkator + string
       else
-        string = string.sub(/^#{demarkator}+/, '')
-      end
+        string.sub(/^#{demarkator}+/, '')
+               end
 
-      if at_end
-        string = string + demarkator
+      string = if at_end
+        string + demarkator
       else
-        string = string.sub(/#{demarkator}+$/, '')
-      end
+        string.sub(/#{demarkator}+$/, '')
+               end
 
       # get rid of multiple demarkators in a row
       string = string.gsub(/#{demarkator}+/, demarkator)

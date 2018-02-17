@@ -32,11 +32,11 @@ module BasketsHelper
       html += '<span class="show_all_fields">['
       action = params[:action] == 'render_basket_form' ? 'new' : params[:action]
       location = { action: action, basket_profile: params[:basket_profile] }
-      if params[:show_all_fields]
-        html += link_to t('baskets_helper.show_all_fields_link.show_allowed_fields'), location.merge(show_all_fields: nil)
+      html += if params[:show_all_fields]
+        link_to t('baskets_helper.show_all_fields_link.show_allowed_fields'), location.merge(show_all_fields: nil)
       else
-        html += link_to t('baskets_helper.show_all_fields_link.show_all_fields'), location.merge(show_all_fields: true)
-      end
+        link_to t('baskets_helper.show_all_fields_link.show_all_fields'), location.merge(show_all_fields: true)
+              end
       html += ']</span>'
     end
     html

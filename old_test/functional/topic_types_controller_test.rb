@@ -71,11 +71,11 @@ class TopicTypesControllerTest < ActionController::TestCase
     temp_hash = {}
 
     @place_type.available_fields.each do |field|
-      if field.id.odd?
-        temp_hash = { field.id => { :add_checkbox => '0', :required_checkbox => '1' } }
+      temp_hash = if field.id.odd?
+        { field.id => { :add_checkbox => '0', :required_checkbox => '1' } }
       else
-        temp_hash = { field.id => { :add_checkbox => '1', :required_checkbox => '0' } }
-      end
+        { field.id => { :add_checkbox => '1', :required_checkbox => '0' } }
+                  end
       extended_fields_hash.merge!(temp_hash)
     end
 
@@ -100,13 +100,13 @@ class TopicTypesControllerTest < ActionController::TestCase
     temp_hash = {}
 
     @person_type.topic_type_to_field_mappings.each do |mapping|
-      if mapping.id == org_first_mapping_id
-        temp_hash = { mapping.id => { :position => num_fields } }
+      temp_hash = if mapping.id == org_first_mapping_id
+        { mapping.id => { :position => num_fields } }
       elsif mapping.id == org_last_mapping_id
-        temp_hash = { mapping.id => { :position => '1' } }
+        { mapping.id => { :position => '1' } }
       else
-        temp_hash = { mapping.id => { :position => mapping.position } }
-      end
+        { mapping.id => { :position => mapping.position } }
+                  end
       mappings_hash.merge!(temp_hash)
     end
 

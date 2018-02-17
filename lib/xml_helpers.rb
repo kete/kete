@@ -15,11 +15,11 @@ module XmlHelpers
     def file_url_from_bits_for(item, host, protocol = nil)
       protocol = protocol || appropriate_protocol_for(item)
       the_url = String.new
-      if item.class.name == 'StillImage'
-        the_url = "#{host}#{item.original_file.public_filename}"
+      the_url = if item.class.name == 'StillImage'
+        "#{host}#{item.original_file.public_filename}"
       else
-        the_url = "#{host}#{item.public_filename}"
-      end
+        "#{host}#{item.public_filename}"
+                end
       the_url
     end
 

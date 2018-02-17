@@ -289,14 +289,14 @@ module ExtendedFieldsHelper
 
   def extended_field_choice_select_editor(name, value, options, extended_field, choices, level = 1)
     # Build OPTION tags
-    if choices.size > 0
-      option_tags = options_for_select(
+    option_tags = if choices.size > 0
+      options_for_select(
         [["- choose #{"sub-" if level > 1}#{display_label_for(extended_field).singularize.downcase} -", '']] +
                                                choices.map { |c| [c.label, c.value] }, value
       )
     else
-      option_tags = options_for_select([["- no #{"sub-" if level > 1}#{display_label_for(extended_field).singularize.downcase} -", '']])
-    end
+      options_for_select([["- no #{"sub-" if level > 1}#{display_label_for(extended_field).singularize.downcase} -", '']])
+                  end
 
     default_options = {
       id: "#{id_for_extended_field(extended_field)}_level_#{level}_preset",

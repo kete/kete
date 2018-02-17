@@ -159,15 +159,15 @@ class PastPerfect4ImporterWorker < BackgrounDRb::MetaWorker
       if related_topic_pp4_objectid != 0
         # this item has the same related_topic as the last
         # don't bother looking it up again
-        if !@last_related_topic_pp4_objectid.nil? && (related_topic_pp4_objectid == @last_related_topic_pp4_objectid)
-          related_topic = @last_related_topic
+        related_topic = if !@last_related_topic_pp4_objectid.nil? && (related_topic_pp4_objectid == @last_related_topic_pp4_objectid)
+          @last_related_topic
         else
-          related_topic = Topic.find(
+          Topic.find(
             :first,
             conditions: "extended_content like \'%<user_reference xml_element_name=\"dc:identifier\">#{related_topic_pp4_objectid}</user_reference>%\' AND topic_type_id = #{@related_topic_type.id}"
           )
 
-        end
+                        end
 
         related_accession_record = nil
 
@@ -410,17 +410,17 @@ class PastPerfect4ImporterWorker < BackgrounDRb::MetaWorker
 
     if !@import.description_beginning_template.blank?
       # append the citation to the description field
-      if !params[zoom_class_for_params][:description].nil?
-        params[zoom_class_for_params][:description] = @import.description_beginning_template + "\n\n" + params[zoom_class_for_params][:description]
+      params[zoom_class_for_params][:description] = if !params[zoom_class_for_params][:description].nil?
+        @import.description_beginning_template + "\n\n" + params[zoom_class_for_params][:description]
       else
-        params[zoom_class_for_params][:description] = @import.description_beginning_template
-      end
+        @import.description_beginning_template
+                                                    end
     elsif !SystemSetting.description_template.blank?
-      if !params[zoom_class_for_params][:description].nil?
-        params[zoom_class_for_params][:description] = SystemSetting.description_template + "\n\n" + params[zoom_class_for_params][:description]
+      params[zoom_class_for_params][:description] = if !params[zoom_class_for_params][:description].nil?
+        SystemSetting.description_template + "\n\n" + params[zoom_class_for_params][:description]
       else
-        params[zoom_class_for_params][:description] = SystemSetting.description_template
-      end
+        SystemSetting.description_template
+                                                    end
     end
 
     if !options[:description_end_template].nil?

@@ -6,8 +6,8 @@ module MembersHelper
     when 'destroy'
       user_contributions = user.contributions.size
 
-      if user_contributions == 0
-        html_string = li_with_correct_class(tool_count) +
+      html_string = if user_contributions == 0
+        li_with_correct_class(tool_count) +
                       link_to(
                         action_label,
                         { action: :destroy, id: user, authenticity_token: form_authenticity_token },
@@ -15,13 +15,13 @@ module MembersHelper
                         method: :post
                       )
       else
-        html_string = li_with_correct_class(tool_count) +
+        li_with_correct_class(tool_count) +
                       user_contributions.to_s +
                       ' contributions'
-      end
+                    end
     when 'ban'
-      if !user.banned_at.nil?
-        html_string = li_with_correct_class(tool_count) +
+      html_string = if !user.banned_at.nil?
+        li_with_correct_class(tool_count) +
                       t('members_helper.admin_actions_correct_list_item.banned') +
                       user.banned_at.to_s(:euro_date_time) +
                       link_to(
@@ -31,7 +31,7 @@ module MembersHelper
                         method: :post
                       )
       else
-        html_string = li_with_correct_class(tool_count) +
+        li_with_correct_class(tool_count) +
                       link_to(
                         action_label, {
                           action: action_key,
@@ -41,7 +41,7 @@ module MembersHelper
                         confirm: t('members_helper.admin_actions_correct_list_item.are_you_sure'),
                         method: :post
                       )
-      end
+                    end
     else
       html_string = li_with_correct_class(tool_count) +
                     link_to(

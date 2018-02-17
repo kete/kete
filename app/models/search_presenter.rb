@@ -9,11 +9,11 @@ class SearchPresenter
   public
 
   def initialize(query: nil, results: [], params: {})
-    if query
-      @query = query
+    @query = if query
+      query
     else
-      @query = SearchQuery.new(params)
-    end
+      SearchQuery.new(params)
+             end
 
     @params = params
     @results_by_class = results

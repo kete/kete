@@ -537,11 +537,11 @@ module ApplicationHelper
 
   def link_to_cancel(from_form = '')
     html = "<div id=\"cancel#{from_form}\" style=\"display:inline\">"
-    if session[:return_to].blank?
-      html += link_to(t('application_helper.link_to_cancel.cancel'), action: 'list', tabindex: '1')
+    html += if session[:return_to].blank?
+      link_to(t('application_helper.link_to_cancel.cancel'), action: 'list', tabindex: '1')
     else
-      html += link_to(t('application_helper.link_to_cancel.cancel'), url_for(session[:return_to]), tabindex: '1')
-    end
+      link_to(t('application_helper.link_to_cancel.cancel'), url_for(session[:return_to]), tabindex: '1')
+            end
     html += '</div>'
     html.html_safe
   end
@@ -755,17 +755,17 @@ module ApplicationHelper
     display_html += options[:are_still_images] ? '<ul class="results-list images-list">' : '<ul>'
     items.each_with_index do |related_item, index|
       li_class = index.zero? ? 'first' : ''
-      if related_item.is_a?(Hash)
+      display_html += if related_item.is_a?(Hash)
         if related_item.is_a?(Hash) && !related_item[:thumbnail].blank?
-          display_html += "<li class='#{li_class}'>#{related_image_link_for(related_item, options)}</li>"
+          "<li class='#{li_class}'>#{related_image_link_for(related_item, options)}</li>"
         else
-          display_html += "<li class='#{li_class}'>#{link_to(related_item[:title], related_item[:url])}</li>"
-        end
+          "<li class='#{li_class}'>#{link_to(related_item[:title], related_item[:url])}</li>"
+                        end
       elsif related_item.is_a?(StillImage)
-        display_html += "<li class='#{li_class}'>#{related_image_link_for(related_item, options)}</li>"
+        "<li class='#{li_class}'>#{related_image_link_for(related_item, options)}</li>"
       else
-        display_html += "<li class='#{li_class}'>#{link_to_item(related_item)}</li>"
-      end
+        "<li class='#{li_class}'>#{link_to_item(related_item)}</li>"
+                      end
     end
     if (options[:item] && options[:zoom_class] && options[:display_num] && options[:total_num]) &&
        (options[:total_num] > options[:display_num])

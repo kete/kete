@@ -192,11 +192,11 @@ namespace :kete do
 
         correctable_fields = ['private_default', 'file_private_default', 'allow_non_member_comments', 'show_privacy_controls']
         current_basket_defaults = correctable_fields.map { |field| basket.send(field) }
-        if basket.id == 1 # site basket
-          standard_basket_defaults = [false, false, true, false]
+        standard_basket_defaults = if basket.id == 1 # site basket
+          [false, false, true, false]
         else # other default baskets
-          standard_basket_defaults = [nil, nil, nil, nil]
-        end
+          [nil, nil, nil, nil]
+                                   end
 
         next if current_basket_defaults == standard_basket_defaults
 

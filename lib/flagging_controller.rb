@@ -232,11 +232,11 @@ module FlaggingController
         @current_private_version = @item.version
       end if @item.respond_to?(:private_version)
 
-      if @item.contributors.empty?
-        @item_contributors = []
+      @item_contributors = if @item.contributors.empty?
+        []
       else
-        @item_contributors = @item.contributors.all
-      end
+        @item.contributors.all
+                           end
 
       @contributor_index = 0
 
@@ -301,11 +301,11 @@ module FlaggingController
       @flag = !params[:flag].blank? ? params[:flag] : nil
       @version = !params[:version].blank? ? params[:version] : @item.version
       @version_after_update = @item.max_version + 1
-      if !params[:message].blank? && !params[:message][0].blank?
-        @message = params[:message][0]
+      @message = if !params[:message].blank? && !params[:message][0].blank?
+        params[:message][0]
       else
-        @message = String.new
-      end
+        String.new
+                 end
       @item_url = correct_url_for(@item)
       @submitter = @item.submitter_of(@version) if !@version.nil?
     end

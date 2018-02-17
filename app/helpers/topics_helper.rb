@@ -10,11 +10,11 @@ module TopicsHelper
       classes = Array.new
       classes << 'first' if count == 1
 
-      if topic_types.size == count
-        classes << 'selected-topic-type'
+      classes << if topic_types.size == count
+        'selected-topic-type'
       else
-        classes << 'ancestor-topic-type'
-      end
+        'ancestor-topic-type'
+                 end
 
       html += classes.join(' ') + '">'
 
