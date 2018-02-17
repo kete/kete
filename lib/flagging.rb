@@ -201,8 +201,6 @@ module Flagging
       # Only return a valid result
       if last_version_tags_count == 0 && yield(last_version)
         last_version
-      else
-        nil
       end
     end
 

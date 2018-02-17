@@ -66,9 +66,7 @@ module SearchSourcesHelper
           params[:record][syntax]
         elsif !record.new_record?
           record.send(syntax)
-        else
-          nil
-                     end
+        end
 
       value = Hash.new if value.blank?
       html = String.new
