@@ -81,7 +81,7 @@ class BasketTest < ActionController::IntegrationTest
 
   context "When editing a basket, it" do
     setup do
-      @@edit_basket = create_new_basket({ :name => 'Edit Basket' })
+      @@edit_basket = create_new_basket(:name => 'Edit Basket')
       add_sarah_as_super_user
       login_as('sarah')
       visit "/#{@@edit_basket.urlified_name}/baskets/edit/#{@@edit_basket.to_param}"
@@ -104,7 +104,7 @@ class BasketTest < ActionController::IntegrationTest
 
   context "When deleting a basket, it" do
     setup do
-      @@delete_basket ||= create_new_basket({ :name => 'Delete Basket' })
+      @@delete_basket ||= create_new_basket(:name => 'Delete Basket')
       add_sarah_as_super_user
       login_as('sarah')
     end

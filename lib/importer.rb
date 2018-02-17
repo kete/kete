@@ -281,14 +281,13 @@ module Importer
               logger.info 'finding topic in topic type: ' + topic_type.inspect
 
               topics = importer_fetch_related_topics(
-                value, params, {
+                value, params, 
                   item_type: 'topics',
                   topic_type: topic_type,
                   extended_field_data: {
                     label: @extended_field_that_contains_related_topics_reference.label_for_params,
                     value: value
                   }
-                }
               )
               logger.info 'what is found topics? ' + topics.inspect
               return params if topics.blank?
@@ -631,7 +630,7 @@ module Importer
       new_record = nil
       if existing_item.blank?
         description_end_template = @description_end_templates['default']
-        new_record = create_new_item_from_record(record, @zoom_class, { params: params, record_hash: record_hash, description_end_template: description_end_template })
+        new_record = create_new_item_from_record(record, @zoom_class, params: params, record_hash: record_hash, description_end_template: description_end_template)
       else
         logger.info('what is existing item: ' + existing_item.id.to_s)
         # record exists in kete already
@@ -1097,14 +1096,13 @@ module Importer
 
             if @last_related_topic_identifier.blank? || @last_related_topic_identifier != related_topic_identifier
               related_topics = importer_fetch_related_topics(
-                related_topic_identifier, params, {
+                related_topic_identifier, params, 
                   item_type: 'topics',
                   topic_type: @related_topic_type,
                   extended_field_data: {
                     label: @extended_field_that_contains_related_topics_reference.label_for_params,
                     value: related_topic_identifier
                   }
-                }
               ) if @extended_field_that_contains_related_topics_reference.present?
             else
               related_topics = @last_related_topics

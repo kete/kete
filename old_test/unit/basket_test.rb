@@ -34,7 +34,7 @@ class BasketTest < ActiveSupport::TestCase
   end
 
   def test_before_save_urlify_name
-    basket = Basket.new(@new_model.merge({ :name => "something wicked this way comes" }))
+    basket = Basket.new(@new_model.merge(:name => "something wicked this way comes"))
     assert_nil basket.urlified_name, "#{@base_class}.urlified_name shouldn't have a value yet."
     basket.save!
     basket.reload
@@ -42,7 +42,7 @@ class BasketTest < ActiveSupport::TestCase
   end
 
   def test_before_update_register_redirect_if_necessary
-    basket = Basket.create(@new_model.merge({ :name => "foo" }))
+    basket = Basket.create(@new_model.merge(:name => "foo"))
 
     basket.name = "bar"
 
@@ -58,7 +58,7 @@ class BasketTest < ActiveSupport::TestCase
   end
 
   def test_update_index_topic
-    basket = Basket.create(@new_model.merge({ :name => "something wicked this way comes" }))
+    basket = Basket.create(@new_model.merge(:name => "something wicked this way comes"))
     assert_nil basket.index_topic, "#{@base_class}.index_topic shouldn't have a value yet."
     index_topic = Topic.create!(:title => 'test topic', :basket => basket, :topic_type => TopicType.find(:first))
     basket.update_index_topic(index_topic)
@@ -67,7 +67,7 @@ class BasketTest < ActiveSupport::TestCase
   end
 
   def test_update_index_topic_destroy
-    basket = Basket.create(@new_model.merge({ :name => "something wicked this way comes" }))
+    basket = Basket.create(@new_model.merge(:name => "something wicked this way comes"))
     index_topic = Topic.create!(:title => 'test topic', :basket => basket, :topic_type => TopicType.find(:first))
     basket.update_index_topic(index_topic)
     basket.reload

@@ -166,7 +166,7 @@ module OaiZoom
         host = request.host
       end
       # HACK, brittle, but can't use url_for here
-      xml.send('dc:identifier', fully_qualified_item_url({ host: host, controller: zoom_class_controller(item.class.name), item: item, urlified_name: item.basket.urlified_name, locale: false }))
+      xml.send('dc:identifier', fully_qualified_item_url(host: host, controller: zoom_class_controller(item.class.name), item: item, urlified_name: item.basket.urlified_name, locale: false))
     end
 
     # TODO: this may not be needed anymore
@@ -221,7 +221,7 @@ module OaiZoom
       if item.respond_to?(:license) && !item.license.blank?
         rights = item.license.url
       else
-        rights = importer_item_url({ host: host, controller: 'topics', item: item, urlified_name: Basket.find(SystemSetting.about_basket).urlified_name, id: 4, locale: false })
+        rights = importer_item_url(host: host, controller: 'topics', item: item, urlified_name: Basket.find(SystemSetting.about_basket).urlified_name, id: 4, locale: false)
       end
 
       xml.send('dc:rights', rights)

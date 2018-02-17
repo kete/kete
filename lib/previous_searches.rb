@@ -62,7 +62,7 @@ module PreviousSearches
           previous_search = session[:searches].delete_at(index_in_searches)
           session[:searches].unshift(previous_search)
         else
-          session[:searches].unshift({ title: title, url: url })
+          session[:searches].unshift(title: title, url: url)
         end
       end
     end

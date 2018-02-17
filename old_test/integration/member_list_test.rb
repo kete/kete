@@ -8,7 +8,7 @@ class MemberListTest < ActionController::IntegrationTest
       add_joe_as_member_to(@@site_basket)
       add_john
 
-      login_as('admin', 'test', { :logout_first => true })
+      login_as('admin', 'test', :logout_first => true)
     end
 
     should 'have an RSS feed' do
@@ -74,13 +74,13 @@ class MemberListTest < ActionController::IntegrationTest
           @@site_basket.settings[:memberlist_policy] = at_least.to_s
         end
         should "allow #{title} access" do
-          !user.nil? ? login_as(user, 'test', { :logout_first => true }) : logout
+          !user.nil? ? login_as(user, 'test', :logout_first => true) : logout
           visit '/site/members/list'
           body_should_contain 'Site Members'
         end
         if !member_roles[(index + 1)].blank? && !member_roles[(index + 1)][2].blank?
           should "deny less than #{title} access" do
-            login_as(member_roles[(index + 1)][2], 'test', { :logout_first => true })
+            login_as(member_roles[(index + 1)][2], 'test', :logout_first => true)
             visit '/site/members/list'
             body_should_contain 'Permission Denied'
           end
@@ -92,7 +92,7 @@ class MemberListTest < ActionController::IntegrationTest
       @@site_basket.settings[:memberlist_policy] = 'at least member'
       visit "/site/members/list"
       body_should_contain Regexp.new("<a (.+)>User name</a>(\s+)or(\s+)<a (.+)>Login</a>")
-      login_as('joe', 'test', { :logout_first => true })
+      login_as('joe', 'test', :logout_first => true)
       visit "/site/members/list"
       body_should_not_contain Regexp.new("<a (.+)>User name</a>(\s+)or(\s+)<a (.+)>Login</a>")
       body_should_contain Regexp.new("<a (.+)>User name</a>")
@@ -100,10 +100,10 @@ class MemberListTest < ActionController::IntegrationTest
 
     context "when being sorted" do
       setup do
-        @@sorting_basket = create_new_basket({ :name => 'Sorting Basket' })
-        add_user1_as_member_to(@@sorting_basket, { :display_name => 'Brian' })
-        add_user2_as_member_to(@@sorting_basket, { :display_name => 'Josh' })
-        add_user3_as_member_to(@@sorting_basket, { :display_name => 'Amy' })
+        @@sorting_basket = create_new_basket(:name => 'Sorting Basket')
+        add_user1_as_member_to(@@sorting_basket, :display_name => 'Brian')
+        add_user2_as_member_to(@@sorting_basket, :display_name => 'Josh')
+        add_user3_as_member_to(@@sorting_basket, :display_name => 'Amy')
       end
 
       should "sort correctly by resolved name" do
@@ -124,7 +124,7 @@ class MemberListTest < ActionController::IntegrationTest
     setup do
       add_admin_as_super_user
       login_as(:admin)
-      @@non_site_basket = create_new_basket({ :name => 'Non Site Basket' })
+      @@non_site_basket = create_new_basket(:name => 'Non Site Basket')
     end
 
     context "when there is only one admin in the basket" do

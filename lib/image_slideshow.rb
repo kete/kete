@@ -13,7 +13,7 @@ module ImageSlideshow
     # We have to use @template.content_tag in this case because we don't have direct access to
     # view helpers in this scope
     def slideshow_div
-      html = @template.content_tag('div', render_selected_image, { id: 'selected-image-display' })
+      html = @template.content_tag('div', render_selected_image, id: 'selected-image-display')
       html += slideshow_updater unless topic_slideshow?
       html
     end

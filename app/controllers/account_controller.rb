@@ -140,12 +140,12 @@ class AccountController < ApplicationController
       end
     end
 
-    redirect_back_or_default({
+    redirect_back_or_default(
                                locale: params[:user][:locale],
                                urlified_name: @site_basket.urlified_name,
                                controller: 'account',
                                action: 'index'
-                             })
+                             )
   rescue ActiveRecord::RecordInvalid
     render action: 'signup'
   end
@@ -192,9 +192,9 @@ class AccountController < ApplicationController
         render :update do |page|
           page.replace_html params[:avatar_id],
                             avatar_tag(
-                              User.new({ email: params[:email] || String.new }),
+                              User.new(email: params[:email] || String.new),
                               { size: 30, rating: 'G', gravatar_default_url: '/images/no-avatar.png' },
-                              { width: 30, height: 30, alt: t('account_controller.fetch_gravatar.your_gravatar') }
+                              width: 30, height: 30, alt: t('account_controller.fetch_gravatar.your_gravatar')
                             )
         end
       end
@@ -241,13 +241,13 @@ class AccountController < ApplicationController
     if @user.update_attributes(params[:user])
 
       flash[:notice] = t('account_controller.update.user_updated')
-      redirect_to({
+      redirect_to(
                     locale: params[:user][:locale],
                     urlified_name: @site_basket.urlified_name,
                     controller: 'account',
                     action: 'show',
                     id: @user
-                  })
+                  )
     else
       logger.debug('what is problem')
       render action: 'edit'
@@ -396,7 +396,7 @@ class AccountController < ApplicationController
       # The other fills in for the selected portrait not in this list.
       logger.debug("Portrait Order: #{portrait_ids.inspect}")
       # Move everything to position one (so that the one that isn't updated remains the selected)
-      UserPortraitRelation.update_all({ position: 1 }, { user_id: current_user })
+      UserPortraitRelation.update_all({ position: 1 }, user_id: current_user)
       # Get all of the portrait relations in one query
       portrait_list = current_user.user_portrait_relations
       # For each of the portrait ids, update their position based on the array index

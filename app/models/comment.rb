@@ -108,7 +108,7 @@ class Comment < ActiveRecord::Base
     else
       children.each do |comment|
         # Use update_all instead of self.update_attribute to avoid validations and callbacks
-        Comment.update_all("#{parent_column_name} = NULL", { id: comment.id })
+        Comment.update_all("#{parent_column_name} = NULL", id: comment.id)
       end
     end
   end

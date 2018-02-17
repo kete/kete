@@ -4,7 +4,7 @@ class CachingTest < ActionController::IntegrationTest
   context "The homepage cache" do
     setup do
       enable_production_mode
-      @@cache_basket = create_new_basket({ :name => 'Cache Basket' })
+      @@cache_basket = create_new_basket(:name => 'Cache Basket')
       @@cache_basket.update_attribute(:index_page_link_to_index_topic_as, 'full topic and comments')
 
       add_admin_as_super_user
@@ -67,10 +67,9 @@ class CachingTest < ActionController::IntegrationTest
         )
         check_cache_current_for(@topic)
         @topic = update_item(
-          @topic, {
+          @topic, 
             :title => 'Homepage 3 Updated Title',
             :description => 'Homepage 3 Updated Description'
-          }
         )
       end
 
@@ -103,17 +102,17 @@ class CachingTest < ActionController::IntegrationTest
 
     context "when recent topics are enabled" do
       setup do
-        @@cache_basket.update_attributes({
+        @@cache_basket.update_attributes(
                                            :index_page_number_of_recent_topics => 5,
                                            :index_page_recent_topics_as => 'headlines'
-                                         })
+                                         )
       end
 
       teardown do
-        @@cache_basket.update_attributes({
+        @@cache_basket.update_attributes(
                                            :index_page_number_of_recent_topics => 0,
                                            :index_page_recent_topics_as => nil
-                                         })
+                                         )
       end
 
       context "and when the basket has a topic added" do
@@ -141,10 +140,9 @@ class CachingTest < ActionController::IntegrationTest
           )
           check_recent_topics_includes(@topic)
           @topic = update_item(
-            @topic, {
+            @topic, 
               :title => 'Recent Topic 2 Updated Title',
               :description => 'Recent Topic 2 Updated Description'
-            }
           )
         end
 
@@ -196,11 +194,10 @@ class CachingTest < ActionController::IntegrationTest
           )
           check_cache_current_for(@topic)
           @topic = update_item(
-            @topic, {
+            @topic, 
               :title => 'Private Title',
               :description => 'Private Description',
               :private_true => true
-            }
           )
         end
 
@@ -211,35 +208,33 @@ class CachingTest < ActionController::IntegrationTest
         should "not link to private version unless user has permission" do
           check_viewing_private_version_of(@topic) # as admin
           logout
-          check_viewing_public_version_of(@topic, { :check_all_links => false })
+          check_viewing_public_version_of(@topic, :check_all_links => false)
           login_as('john')
-          check_viewing_public_version_of(@topic, { :check_all_links => false })
+          check_viewing_public_version_of(@topic, :check_all_links => false)
           login_as('joe')
           check_viewing_private_version_of(
-            @topic, {
+            @topic, 
               :check_all_links => false,
               :check_show_link => true
-            }
           )
         end
 
         should "default to public version when non member tries to access private version" do
           visit "/#{@topic.basket.urlified_name}/index_page?private=true"
-          check_viewing_private_version_of(@topic, { :on_topic_already => true }) # as admin
+          check_viewing_private_version_of(@topic,  :on_topic_already => true ) # as admin
           logout
           visit "/#{@topic.basket.urlified_name}/index_page?private=true"
-          check_viewing_public_version_of(@topic, { :on_topic_already => true, :check_all_links => false })
+          check_viewing_public_version_of(@topic, :on_topic_already => true, :check_all_links => false)
           login_as('john')
           visit "/#{@topic.basket.urlified_name}/index_page?private=true"
-          check_viewing_public_version_of(@topic, { :on_topic_already => true, :check_all_links => false })
+          check_viewing_public_version_of(@topic, :on_topic_already => true, :check_all_links => false)
           login_as('joe')
           visit "/#{@topic.basket.urlified_name}/index_page?private=true"
           check_viewing_private_version_of(
-            @topic, {
+            @topic, 
               :on_topic_already => true,
               :check_all_links => false,
               :check_show_link => true
-            }
           )
         end
 
@@ -254,21 +249,20 @@ class CachingTest < ActionController::IntegrationTest
 
           should "show private homepage automatically unless user is less than member" do
             visit "/#{@topic.basket.urlified_name}"
-            check_viewing_private_version_of(@topic, { :on_topic_already => true }) # as admin
+            check_viewing_private_version_of(@topic,  :on_topic_already => true ) # as admin
             logout
             visit "/#{@topic.basket.urlified_name}"
-            check_viewing_public_version_of(@topic, { :on_topic_already => true, :check_all_links => false })
+            check_viewing_public_version_of(@topic, :on_topic_already => true, :check_all_links => false)
             login_as('john')
             visit "/#{@topic.basket.urlified_name}"
-            check_viewing_public_version_of(@topic, { :on_topic_already => true, :check_all_links => false })
+            check_viewing_public_version_of(@topic, :on_topic_already => true, :check_all_links => false)
             login_as('joe')
             visit "/#{@topic.basket.urlified_name}"
             check_viewing_private_version_of(
-              @topic, {
+              @topic, 
                 :on_topic_already => true,
                 :check_all_links => false,
                 :check_show_link => true
-              }
             )
           end
         end
@@ -279,7 +273,7 @@ class CachingTest < ActionController::IntegrationTest
   context "The topic show cache" do
     setup do
       enable_production_mode
-      @@cache_basket = create_new_basket({ :name => 'Cache Basket' })
+      @@cache_basket = create_new_basket(:name => 'Cache Basket')
       add_admin_as_super_user
       add_joe_as_member_to(@@cache_basket)
       add_john
@@ -301,7 +295,7 @@ class CachingTest < ActionController::IntegrationTest
       end
 
       should "be populated with the new topic" do
-        check_cache_current_for(@topic, { :on_topic_already => true, :check_show_link => false })
+        check_cache_current_for(@topic, :on_topic_already => true, :check_show_link => false)
       end
     end
 
@@ -313,12 +307,11 @@ class CachingTest < ActionController::IntegrationTest
             :description => 'Topic 2 Description'
           }, @@cache_basket
         )
-        check_cache_current_for(@topic, { :on_topic_already => true, :check_show_link => false })
+        check_cache_current_for(@topic, :on_topic_already => true, :check_show_link => false)
         @topic = update_item(
-          @topic, {
+          @topic, 
             :title => 'Topic 2 Updated Title',
             :description => 'Topic 2 Updated Description'
-          }
         )
       end
 
@@ -326,7 +319,7 @@ class CachingTest < ActionController::IntegrationTest
         # NOTE: this will fail if you are running only this file's tests
         # and the test from with test directory
         # cd .. and run tests again
-        check_cache_current_for(@topic, { :on_topic_already => true, :check_show_link => false })
+        check_cache_current_for(@topic, :on_topic_already => true, :check_show_link => false)
         body_should_not_contain "Topic 2 Title"
         body_should_not_contain "Topic 2 Description"
       end
@@ -340,7 +333,7 @@ class CachingTest < ActionController::IntegrationTest
             :description => 'Topic 3 Description'
           }, @@cache_basket
         )
-        check_cache_current_for(@topic, { :on_topic_already => true, :check_show_link => false })
+        check_cache_current_for(@topic, :on_topic_already => true, :check_show_link => false)
         controller = zoom_class_controller(@topic.class.name)
         @topic_url = "/#{@topic.basket.urlified_name}/#{controller}/show/#{@topic.id}"
         @topic = delete_item(@topic)
@@ -372,46 +365,45 @@ class CachingTest < ActionController::IntegrationTest
               :private_false => true
             }, @@cache_basket
           )
-          check_cache_current_for(@topic, { :on_topic_already => true, :check_show_link => false })
+          check_cache_current_for(@topic, :on_topic_already => true, :check_show_link => false)
           @topic = update_item(
-            @topic, {
+            @topic, 
               :title => 'Private Title',
               :description => 'Private Description',
               :private_true => true
-            }
           )
         end
 
         should "cache seperate privacies" do
-          check_viewing_private_version_of(@topic, { :on_topic_already => true, :check_show_link => false })
+          check_viewing_private_version_of(@topic, :on_topic_already => true, :check_show_link => false)
         end
 
         should "not link to private version unless user has permission" do
           visit "/#{@topic.basket.urlified_name}/topics/show/#{@topic.to_param}"
-          check_viewing_public_version_of(@topic, { :on_topic_already => true, :check_show_link => false }) # as admin
+          check_viewing_public_version_of(@topic,  :on_topic_already => true, :check_show_link => false ) # as admin
           logout
           visit "/#{@topic.basket.urlified_name}/topics/show/#{@topic.to_param}"
-          check_viewing_public_version_of(@topic, { :on_topic_already => true, :check_all_links => false })
+          check_viewing_public_version_of(@topic, :on_topic_already => true, :check_all_links => false)
           login_as('john')
           visit "/#{@topic.basket.urlified_name}/topics/show/#{@topic.to_param}"
-          check_viewing_public_version_of(@topic, { :on_topic_already => true, :check_all_links => false })
+          check_viewing_public_version_of(@topic, :on_topic_already => true, :check_all_links => false)
           login_as('joe')
           visit "/#{@topic.basket.urlified_name}/topics/show/#{@topic.to_param}"
-          check_viewing_public_version_of(@topic, { :on_topic_already => true, :check_show_link => false })
+          check_viewing_public_version_of(@topic, :on_topic_already => true, :check_show_link => false)
         end
 
         should "default to public version when non member tries to access private version" do
           visit "/#{@topic.basket.urlified_name}/topics/show/#{@topic.to_param}?private=true"
-          check_viewing_private_version_of(@topic, { :on_topic_already => true, :check_show_link => false }) # as admin
+          check_viewing_private_version_of(@topic,  :on_topic_already => true, :check_show_link => false ) # as admin
           logout
           visit "/#{@topic.basket.urlified_name}/topics/show/#{@topic.to_param}?private=true"
-          check_viewing_public_version_of(@topic, { :on_topic_already => true, :check_all_links => false })
+          check_viewing_public_version_of(@topic, :on_topic_already => true, :check_all_links => false)
           login_as('john')
           visit "/#{@topic.basket.urlified_name}/topics/show/#{@topic.to_param}?private=true"
-          check_viewing_public_version_of(@topic, { :on_topic_already => true, :check_all_links => false })
+          check_viewing_public_version_of(@topic, :on_topic_already => true, :check_all_links => false)
           login_as('joe')
           visit "/#{@topic.basket.urlified_name}/topics/show/#{@topic.to_param}?private=true"
-          check_viewing_private_version_of(@topic, { :on_topic_already => true, :check_show_link => false })
+          check_viewing_private_version_of(@topic, :on_topic_already => true, :check_show_link => false)
         end
       end
 
@@ -425,27 +417,24 @@ class CachingTest < ActionController::IntegrationTest
             }, @@cache_basket
           )
           @topic = update_item(
-            @topic, {
+            @topic, 
               :title => 'Public SPAM',
               :description => 'Public SPAM',
               :private_false => true
-            }
           )
           check_viewing_public_version_of(@topic, :on_topic_already => true, :check_show_link => false)
           @topic = update_item(
-            @topic, {
+            @topic, 
               :title => 'Private Title',
               :description => 'Private Description',
               :private_true => true
-            }
           )
           @topic.private_version!
           @topic = update_item(
-            @topic, {
+            @topic, 
               :title => 'Private SPAM',
               :description => 'Private SPAM',
               :private_true => true
-            }
           )
           check_viewing_private_version_of(@topic, :on_topic_already => true, :check_show_link => false)
           @topic.public_version!
@@ -495,7 +484,7 @@ class CachingTest < ActionController::IntegrationTest
     check_cache_current_for(item, options)
     if item.has_private_version?
       item.private_version!
-      check_cache_current_for(item, options.merge({ :check_should_not => true }))
+      check_cache_current_for(item, options.merge(:check_should_not => true))
       item.public_version! if item.is_private? # make sure we revert it back to public version for the next test
     end
   end
@@ -508,7 +497,7 @@ class CachingTest < ActionController::IntegrationTest
       click_link "Private Version"
       options[:on_topic_already] = true
     end
-    check_cache_current_for(item, options.merge({ :check_should_not => true }))
+    check_cache_current_for(item, options.merge(:check_should_not => true))
     item.private_version! if item.has_private_version?
     check_cache_current_for(item, options)
     body_should_contain "Public version (live)"
