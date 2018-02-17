@@ -25,7 +25,7 @@ module Merge
       # prune attributes that shouldn't be messed with
       ok_to_update = %w(title short_summary description)
 
-      attributes_to_update = Hash.new
+      attributes_to_update = {}
       attributes.each do |k, v|
         next unless ok_to_update.include?(k)
         attributes_to_update[k] = v
@@ -34,7 +34,7 @@ module Merge
       # extended_content is a special case
       # since it contains nested values in xml
       # that are instantiated into virtual attributes
-      structured_extended_content_thus_far = Hash.new
+      structured_extended_content_thus_far = {}
 
       # work through the versions' and accumulate values
       source_versions.each do |version_number|

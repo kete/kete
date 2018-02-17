@@ -14,7 +14,7 @@ module RelatedItemsTestUnitHelper
         should 'be able to be added as a content item relation to a topic' do
           ContentItemRelation.new_relation_to_topic(@topic_related_to, @related_item)
 
-          relations = Array.new
+          relations = []
           unless @base_class == 'Topic'
             relations = @topic_related_to.send(@base_class.tableize)
           else

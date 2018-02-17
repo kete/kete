@@ -8,8 +8,8 @@ module RequiredSoftware
     # from http://www.depixelate.com/2006/8/9/quick-tip-ensuring-required-gems-and-libs-are-available
     # --- [ check that we have all the gems and libs we need ] ---
     def missing_libs(required_software, lib_type = 'gems', args = {})
-      missing_libs = Array.new
-      required_libs = Hash.new
+      missing_libs = []
+      required_libs = {}
 
       required_software[lib_type].each do |key, value|
         next if !args[:exclude].blank? && args[:exclude].include?(key)
@@ -52,7 +52,7 @@ module RequiredSoftware
     # if standard rails things like mysql aren't installed, the server won't start up
     # so they don't need to be done here
     def missing_commands(required_software)
-      missing_commands = Array.new
+      missing_commands = []
       required_commands = required_software['commands']
 
       required_commands.each do |pretty_name, command_test|

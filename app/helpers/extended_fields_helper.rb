@@ -408,7 +408,7 @@ module ExtendedFieldsHelper
 
   # Generates label XHTML
   def extended_field_label(extended_field, required = false)
-    options = required ? { class: 'required' } : Hash.new
+    options = required ? { class: 'required' } : {}
     required_icon = required ? ' <em>*</em>' : ''
 
     label_tag(id_for_extended_field(extended_field), display_label_for(extended_field) + required_icon, options)

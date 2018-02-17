@@ -5,7 +5,7 @@ module ProfilesHelper
   # If a new record, for each form type, create a dropdown with the rule types
   # when the rule type is 'some', dropdown the rules selection settings
   def rules_form_column(record, input_name)
-    html = String.new
+    html = ''
     if record.new_record?
       html = '<div id="rules_forms" style="display: inline-block; margin-left: 2em;">'
       type_options = [[t('profiles_helper.rules_form_column.choose_included_fields'), '']] + Profile.type_options
@@ -70,7 +70,7 @@ module ProfilesHelper
   # generates a checkbox with appropriate id and name, and adds an
   # section collapse/expand arrow underneath it
   def rules_allowed_check_box(name)
-    @profile_sections ||= Array.new
+    @profile_sections ||= []
     @profile_sections << name
 
     content = check_box_tag(

@@ -128,7 +128,7 @@ module KeteAuthorisationSettings
     # get controller and action from url
     # strip off query string before submitting to routing
     url = url.split('?')[0]
-    from_url = String.new
+    from_url = ''
     begin
       from_url = ActionController::Routing::Routes.recognize_path(url, method: :get)
     rescue
@@ -221,7 +221,7 @@ module KeteAuthorisationSettings
   private
 
   def update_basket_permissions_hash
-    @basket_access_hash = logged_in? ? current_user.basket_permissions : Hash.new
+    @basket_access_hash = logged_in? ? current_user.basket_permissions : {}
   end
 
   def current_user_is?(at_least_setting, basket = @current_basket)

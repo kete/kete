@@ -4,7 +4,7 @@ module ZoomHelpers
     # optionally takes a additional_options array
     # which are added at the start
     def zoom_controllers_as_options(start_with_additional_options = nil)
-      options = Array.new
+      options = []
       if !start_with_additional_options.nil?
         start_with_additional_options.each do |additional_option|
           options << [additional_option[0], additional_option[1]]

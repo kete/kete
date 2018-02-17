@@ -1,6 +1,6 @@
 module MembersHelper
   def admin_actions_correct_list_item(user, action_key, action_label, tool_count)
-    html_string = String.new
+    html_string = ''
 
     case action_key
     when 'destroy'

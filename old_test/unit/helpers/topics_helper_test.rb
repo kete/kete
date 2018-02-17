@@ -44,7 +44,7 @@ class TopicsHelperTest < ActionView::TestCase
 
       # define method and basket var that some of our dependent helpers expect
       def params
-        Hash.new
+        {}
       end
 
       @site_basket = Basket.first

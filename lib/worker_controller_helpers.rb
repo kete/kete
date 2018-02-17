@@ -22,7 +22,7 @@ module WorkerControllerHelpers
       stub = options[:stub]
       key = options[:key]
 
-      parts = stub.present? ? [stub] : Array.new
+      parts = stub.present? ? [stub] : []
 
       if key.is_a?(Array)
         parts += key

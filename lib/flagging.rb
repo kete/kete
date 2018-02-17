@@ -460,7 +460,7 @@ module Flagging
       end
     end
 
-    def find_non_pending(type = :all, conditions_string = String.new)
+    def find_non_pending(type = :all, conditions_string = '')
       if conditions_string.blank?
         conditions_string = 'title != :pending_title'
         conditions_string += ' or description is not null' if name != 'Comment'

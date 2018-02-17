@@ -1,6 +1,6 @@
 # Basic configuration class for external search sources
 class ExternalSearchSources
-  @@settings = Hash.new
+  @@settings = {}
   def self.settings;        @@settings;              end
 
   def self.[](key);         @@settings[key];         end

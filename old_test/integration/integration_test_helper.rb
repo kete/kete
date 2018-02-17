@@ -58,8 +58,8 @@ class ActionController::IntegrationTest
   @@basket_count = Basket.count
 
   # setup object creation variables for use later
-  @@users_created = Array.new
-  @@baskets_created = Array.new
+  @@users_created = []
+  @@baskets_created = []
 
   # Attempt to logout. Can be called anywhere (even without being logged in).
   def logout
@@ -207,7 +207,7 @@ class ActionController::IntegrationTest
     # it calls this method and because of some funkyness in ruby, setting defaults in the options above is
     # replaced by nil, rather than the value so instead of setting it there, we set them here instead,
     # which should provide better support
-    options = Hash.new if options.nil?
+    options = {} if options.nil?
     basket = @@site_basket if basket.nil?
     is_homepage_topic = false if is_homepage_topic.nil?
     zoom_class = 'Topic' if zoom_class.nil?
@@ -586,9 +586,9 @@ class ActionController::IntegrationTest
     end
     # at the end of tests, we get rid of all baskets and users created to prevent naming collisions
     @@users_created.each { |user| user.destroy }
-    @@users_created = Array.new
+    @@users_created = []
     @@baskets_created.each { |basket| basket.destroy }
-    @@baskets_created = Array.new
+    @@baskets_created = []
     # we need to ensure at the end of tests that we are left with only the users and baskets we started
     # the tests with. If there are more, they were added outside of the helpers, and this cannot be
     # permitted, or you'll run into unaccounted issues later with basket/login names already existing
@@ -651,8 +651,8 @@ class ActionController::IntegrationTest
     elsif method_name =~ /^add_(\w+)_as_(\w+)_to$/
       # add_bob_as_moderator_to(@@site_basket)
       # can take single basket, or an array of them
-      baskets = args[0] || Array.new
-      args = args[1] || Hash.new
+      baskets = args[0] || []
+      args = args[1] || {}
       @user = create_new_user({ :login => $1 }.merge(args))
       baskets = [baskets] unless baskets.kind_of?(Array)
       baskets.each { |basket| @user.has_role($2, basket) }
@@ -660,7 +660,7 @@ class ActionController::IntegrationTest
       eval("@#{$1} = @user")
     elsif method_name =~ /^add_(\w+)_as_super_user$/
       # add_bob_as_super_user
-      args = args[0] || Hash.new
+      args = args[0] || {}
       @user = create_new_user({ :login => $1 }.merge(args))
       @user.has_role('site_admin', @@site_basket)
       @user.has_role('tech_admin', @@site_basket)
@@ -676,7 +676,7 @@ class ActionController::IntegrationTest
         login = $1
         add_to_baskets = true
       end
-      args = args[0] || Hash.new
+      args = args[0] || {}
       @user = create_new_user({ :login => login }.merge(args))
       @user.add_as_member_to_default_baskets if add_to_baskets
       @@users_created << @user
@@ -734,7 +734,7 @@ class ActionController::IntegrationTest
   # to a hash suitable to post as params
   # as if checkboxes of ids with value true
   def item_checkbox_hash_from(*ids)
-    item_checkbox_hash = Hash.new
+    item_checkbox_hash = {}
     ids.each { |id| item_checkbox_hash[id.to_s] = "true" }
     item_checkbox_hash
   end

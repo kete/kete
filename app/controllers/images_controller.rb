@@ -52,7 +52,7 @@ class ImagesController < ApplicationController
 
     # There appears to be a bug in either Passenger or Rack that causes blank params with no
     # decendant values to be removed from the params hash by the time it reaches Rails
-    params[:image_file] = Hash.new unless params[:image_file]
+    params[:image_file] = {} unless params[:image_file]
 
     # handle problems with image file first
     @image_file = ImageFile.new(params[:image_file].merge({

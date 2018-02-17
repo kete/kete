@@ -2,7 +2,7 @@ module SearchDcDateFormulator
   unless included_modules.include? SearchDcDateFormulator
 
     def dc_date_display_of(dc_dates)
-      return String.new unless SystemSetting.dc_date_display_on_search_results?
+      return '' unless SystemSetting.dc_date_display_on_search_results?
       content_tag(:div, select_and_format_dc_dates_from(dc_dates), class: 'generic-result-dc-dates')
     end
 
@@ -25,7 +25,7 @@ module SearchDcDateFormulator
       return dc_date unless [Time, DateTime].include?(dc_date.class)
       # convert it to local time if the method is available (not available on dates < 1900)
       dc_date = dc_date.localtime if dc_date.respond_to?(:localtime)
-      date_bits = Array.new
+      date_bits = []
       I18n.t('date.order').each do |order|
         case order
         when :year
@@ -40,7 +40,7 @@ module SearchDcDateFormulator
     end
 
     def resolve_to_circa_if_present(dc_dates)
-      dates = Array.new
+      dates = []
       while dc_dates.size > 0 do
         date = dc_dates.shift
         # if we have a circa date, 2 dc:dates are added. One 5 years before, one 5 years after, and the
@@ -58,7 +58,7 @@ module SearchDcDateFormulator
     end
 
     def format_to_locales_specification(dc_dates)
-      dates = Array.new
+      dates = []
       while dc_dates.size > 0 do
         date = dc_dates.shift
         if [Time, DateTime].include?(date.class)

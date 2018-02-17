@@ -17,7 +17,7 @@ module PreviousSearches
             { id: s.id, title: s.title, url: s.url }
           end
       else
-        @previous_searches ||= session[:searches] || Array.new
+        @previous_searches ||= session[:searches] || []
       end
     end
 
@@ -37,7 +37,7 @@ module PreviousSearches
           current_user.searches.create(title: search[:title], url: search[:url])
         end
       end
-      session[:searches] = Array.new
+      session[:searches] = []
     end
 
     def save_current_search
@@ -55,7 +55,7 @@ module PreviousSearches
           @search.save
         end
       else
-        session[:searches] ||= Array.new
+        session[:searches] ||= []
         previous_same_search = session[:searches].find { |s| s[:url] == url }
         if previous_same_search
           index_in_searches = session[:searches].index(previous_same_search)
@@ -71,7 +71,7 @@ module PreviousSearches
       if logged_in?
         id ? current_user.searches.find(id).destroy : current_user.searches.destroy_all
       else
-        id ? session[:searches].delete_at(id) : session[:searches] = Array.new
+        id ? session[:searches].delete_at(id) : session[:searches] = []
       end
     end
 
@@ -86,7 +86,7 @@ module PreviousSearches
     def short_search_title_from_params
       zoom_class = zoom_class_from_controller(params[:controller_name_for_zoom_class])
       plural_item_type = zoom_class_plural_humanize(zoom_class)
-      title_parts = Array.new
+      title_parts = []
       title_parts << libt(:search_terms, search_terms: params[:search_terms]) if params[:action] == 'for'
       title_parts << libt(:topic_type, topic_type_name: @topic_type.name) if @topic_type
       title_parts << libt(:tag, tag_name: @tag.name) if @tag

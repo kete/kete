@@ -38,7 +38,7 @@ class DfcXmlImporterWorker < BackgrounDRb::MetaWorker
         Nokogiri::XML::Builder.new(encoding: 'UTF-8') do |xml|
           xml.records do
             rows.each do |row|
-              fields = Hash.new
+              fields = {}
 
               row.search('field').each do |field|
                 value = field.inner_text.strip
@@ -63,7 +63,7 @@ class DfcXmlImporterWorker < BackgrounDRb::MetaWorker
                   xml.safe_send(field_name, value)
                 end
 
-                title_parts, filename_without_ext = Array.new, fields['Filename'].split('.').first
+                title_parts, filename_without_ext = [], fields['Filename'].split('.').first
 
                 case (fields['Record_Type'] || '').downcase
                 when 'archives', 'publication'

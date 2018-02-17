@@ -240,14 +240,14 @@ module FlaggingController
 
       @contributor_index = 0
 
-      @item_taggings = Hash.new
+      @item_taggings = {}
       taggings = Tagging.all(conditions: ["taggable_type = ? AND taggable_id IN (?) AND context = 'flags'", "#{@item.class.name}::Version", @versions])
       taggings.each do |tagging|
-        @item_taggings[tagging[:taggable_id]] ||= Array.new
+        @item_taggings[tagging[:taggable_id]] ||= []
         @item_taggings[tagging[:taggable_id]] << tagging.tag
       end
 
-      @users = Hash.new
+      @users = {}
 
       # one template (with logic) for all controllers
       render template: 'topics/history'
@@ -265,8 +265,8 @@ module FlaggingController
         @creator = @item.creator
         @last_contributor = @submitter || @creator
         @preview_version = @item.versions.find_by_version(@version)
-        @flags = Array.new
-        @flag_messages = Array.new
+        @flags = []
+        @flag_messages = []
         @preview_version.taggings.each do |tagging|
           @flags << tagging.tag.name
           @flag_messages << tagging.message if !tagging.message.blank?
@@ -304,7 +304,7 @@ module FlaggingController
       if !params[:message].blank? && !params[:message][0].blank?
         @message = params[:message][0]
       else
-        @message = String.new
+        @message = ''
       end
       @item_url = correct_url_for(@item)
       @submitter = @item.submitter_of(@version) if !@version.nil?

@@ -68,7 +68,7 @@ class Array
       raise error_msg
     end
 
-    name_and_counts = Hash.new
+    name_and_counts = {}
 
     attr_ids = collect { |item| item.send(attr_name_id) }
     attr_types = attr_name.to_s.classify.constantize.all(conditions: { id: attr_ids })
@@ -107,7 +107,7 @@ module I18n
     @@available_locales_with_labels ||=
       begin
            locales_file = File.join(Rails.root.to_s, 'config', 'locales', 'en.yml')
-           return Hash.new unless File.exist?(locales_file)
+           return {} unless File.exist?(locales_file)
            YAML.load(IO.read(locales_file)).stringify_keys
          end
   end

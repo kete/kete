@@ -5,7 +5,7 @@ module RelatedItems
     def related_items_hash
       @related_items_hash ||=
         begin
-               related_items_hash = Hash.new
+               related_items_hash = {}
                related_items_hash['Topic'] = is_a?(Topic) ? related_topics : topics
 
                if is_a?(Topic)

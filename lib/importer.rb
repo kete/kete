@@ -65,9 +65,9 @@ module Importer
 
     def importer_simple_setup
       @successful = false
-      @import_field_to_extended_field_map = Hash.new
-      @description_end_templates = Hash.new
-      @collections_to_skip = Array.new
+      @import_field_to_extended_field_map = {}
+      @description_end_templates = {}
+      @collections_to_skip = []
       @results = {
         do_work_time: Time.now.to_s,
         done_with_do_work: false,
@@ -190,7 +190,7 @@ module Importer
     end
 
     def importer_fetch_related_topics(related_topic_identifier, params, options = {})
-      related_topics = Array.new
+      related_topics = []
 
       related_topics += importer_locate_existing_items(options)
 
@@ -251,14 +251,14 @@ module Importer
           # add some smarts for handling fields that are multiple
           # assumes comma separated values
 
-          params[zoom_class_for_params]['extended_content_values'] = Hash.new if \
+          params[zoom_class_for_params]['extended_content_values'] = {} if \
             params[zoom_class_for_params]['extended_content_values'].nil?
 
           if %w{choice autocomplete}.include?(extended_field.ftype)
-            params[zoom_class_for_params]['extended_content_values'][extended_field.label_for_params] ||= Hash.new
+            params[zoom_class_for_params]['extended_content_values'][extended_field.label_for_params] ||= {}
             if extended_field.multiple
               value.split(',').each_with_index do |multiple_choice, multiple_index|
-                params[zoom_class_for_params]['extended_content_values'][extended_field.label_for_params][(multiple_index + 1).to_s] ||= Hash.new
+                params[zoom_class_for_params]['extended_content_values'][extended_field.label_for_params][(multiple_index + 1).to_s] ||= {}
                 multiple_choice.strip.split('->').each_with_index do |choice, choice_index|
                   params[zoom_class_for_params]['extended_content_values'][extended_field.label_for_params][(multiple_index + 1).to_s][(choice_index + 1).to_s] = choice.strip
                 end
@@ -302,7 +302,7 @@ module Importer
             if extended_field.multiple
               multiple_values = value.split(',')
               m_field_count = 1
-              params[zoom_class_for_params]['extended_content_values'][extended_field.label_for_params] = Hash.new
+              params[zoom_class_for_params]['extended_content_values'][extended_field.label_for_params] = {}
               multiple_values.each do |m_field_value|
                 circa = m_field_value =~ /(circa|c.?\d+)/i # circa 2010, c 2010, c.2010
                 m_field_value = (m_field_value =~ /(\d+)/ && $1) if circa
@@ -319,7 +319,7 @@ module Importer
             if extended_field.multiple
               multiple_values = value.split(',')
               m_field_count = 1
-              params[zoom_class_for_params]['extended_content_values'][extended_field.label_for_params] = Hash.new
+              params[zoom_class_for_params]['extended_content_values'][extended_field.label_for_params] = {}
               multiple_values.each do |m_field_value|
                 params[zoom_class_for_params]['extended_content_values'][extended_field.label_for_params][m_field_count] = m_field_value.to_s.strip
                 m_field_count += 1
@@ -388,13 +388,13 @@ module Importer
       item_key = options[:item_key].to_sym
       item_class = options[:item_class]
 
-      extra_fields = options[:extra_fields] || Array.new
+      extra_fields = options[:extra_fields] || []
       extra_fields << 'tag_list'
       extra_fields << 'uploaded_data'
 
       extra_fields << 'url'
 
-      replacement_hash = Hash.new
+      replacement_hash = {}
 
       params[item_key].keys.each do |field_key|
         # we only want real topic columns, not pseudo ones that are handled by extended_content xml
@@ -520,8 +520,8 @@ module Importer
         filename: nil
       }.merge(options)
 
-      conditions = Array.new
-      params = Hash.new
+      conditions = []
+      params = {}
 
       if options[:title].present?
         conditions << '(LOWER(title) = :title)'
@@ -574,7 +574,7 @@ module Importer
       current_record = @results[:records_processed] + 1
       logger.info("starting record #{current_record}")
 
-      record_hash = Hash.new
+      record_hash = {}
       # if a file is passed in, we assume embedded metadata
       # (or filename and form settings)
       # will be what we derive our hash values from
@@ -671,7 +671,7 @@ module Importer
       # move all hash keys to upcase
       # we use this to smooth some legacy code in past perfect import
       if upcase
-        new_record_hash = Hash.new
+        new_record_hash = {}
         record_hash.each do |key, value|
           key = key.upcase if key.is_a?(String)
           new_record_hash[key] = value
@@ -856,7 +856,7 @@ module Importer
 
       # initialize the subhash in params
       # clears it out if it does already
-      params[zoom_class_for_params] = Hash.new
+      params[zoom_class_for_params] = {}
 
       if options[:basket_id].nil?
         params[zoom_class_for_params][:basket_id] = @current_basket.id
@@ -867,7 +867,7 @@ module Importer
       # check extended_field.import_field_synonyms
       # for which extended field to map the import_field to
       # special cases for title, short_summary, and description
-      record_hash = Hash.new
+      record_hash = {}
       if options[:record_hash].nil?
         record_hash = importer_xml_record_to_hash(record)
       else
@@ -875,7 +875,7 @@ module Importer
       end
 
       field_count = 1
-      @tag_list_array = Array.new
+      @tag_list_array = []
       # add support for all items during this import getting a set of tags
       # added to every item in addition to the specific ones for the item
       @tag_list_array = @import.base_tags.split(',').collect { |tag| tag.strip } if !@import.base_tags.blank?
@@ -887,7 +887,7 @@ module Importer
         importer_field_methods = (YAML.load(File.read(import_field_methods_file)) || {})[@import_type.to_s]
 
         if importer_field_methods.is_a?(Hash)
-          additional_fields_derived_from_processing_values = Hash.new
+          additional_fields_derived_from_processing_values = {}
           record_hash.each do |record_field, record_value|
             if record_value.present? && importer_field_methods[record_field.downcase]
               field_modifier = eval(importer_field_methods[record_field.downcase])
@@ -942,7 +942,7 @@ module Importer
         end
       end
 
-      description = String.new
+      description = ''
       # used to give use better html output for descriptions
       if !params[zoom_class_for_params][:description].nil?
         description = RedCloth.new params[zoom_class_for_params][:description]
@@ -1149,7 +1149,7 @@ module Importer
       # that calls xml builder directly, rather than using partial template
       # HACK, conflict with symbol vs string for hash key
       # duplicate
-      temp_params = Hash.new
+      temp_params = {}
       temp_params[:topic] = topic_params['topic']
       topic_params = importer_extended_fields_update_hash_for_item(item_key: 'topic', params: temp_params)
 

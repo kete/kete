@@ -33,7 +33,7 @@ module Embedded
         logger.info('Embedded metadata harvesting skipped.  Details are: ' + $!.message)
         return
       end
-      embedded_hash = Hash.new
+      embedded_hash = {}
       mini_exiftool.tags.collect { |tag_name| embedded_hash[tag_name] = mini_exiftool[tag_name] }
       embedded = embedded_hash
 
@@ -51,7 +51,7 @@ module Embedded
       relevant_settings = SystemSetting.find(:all, conditions: conditions)
 
       # work through the settings and get their derived constant name
-      standard_attribute_synonyms = Hash.new
+      standard_attribute_synonyms = {}
       relevant_settings.each do |setting|
         # this will make the key the attribute name as a string
         # and the value corresponding array for synonyms

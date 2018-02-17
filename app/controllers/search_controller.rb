@@ -220,7 +220,7 @@ class SearchController < ApplicationController
     @search.zoom_db = ZoomDb.find_by_database_name(zoom_database)
     @zoom_connection = @search.zoom_db.open_connection
 
-    @result_sets = Hash.new
+    @result_sets = {}
 
     # EOIN: put our new search stuff here
 
@@ -242,7 +242,7 @@ class SearchController < ApplicationController
   end
 
   def load_results(from_result_set)
-    @results = Array.new
+    @results = []
 
     # protect against malformed requests
     # for a start record that is more than the numbers of matching records, return a 404
@@ -553,7 +553,7 @@ class SearchController < ApplicationController
 
     case params[:function]
     when 'find'
-      @results = Array.new
+      @results = []
       @search_terms = params[:search_terms]
       search unless @search_terms.blank?
       unless @results.empty?
@@ -670,7 +670,7 @@ class SearchController < ApplicationController
     when 'add'
       @verb = t('search_controller.find_related.add')
       @next_action = 'link'
-      @results = Array.new
+      @results = []
 
       # Run a search if necessary
       # this will update @results
@@ -686,7 +686,7 @@ class SearchController < ApplicationController
           'previous_page', 'next_page']
 
         pagination_methods =
-          pagination_methods.inject(Hash.new) do |hash, method_name|
+          pagination_methods.inject({}) do |hash, method_name|
             hash[method_name] = @results.send(method_name)
             hash
           end

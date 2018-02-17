@@ -56,7 +56,7 @@ module FriendlyUrls
         elsif attributes.include?('label')
           attributes['label']
         else
-          String.new
+          ''
                       end
 
       id_for_url = topic_version ? topic_id.to_s : id.to_s

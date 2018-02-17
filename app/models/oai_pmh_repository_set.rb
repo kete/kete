@@ -42,7 +42,7 @@ class OaiPmhRepositorySet < ActiveRecord::Base
   end
 
   def generated_sets
-    sets = Array.new
+    sets = []
     unless dynamic?
       sets << create_set
     else
@@ -81,7 +81,7 @@ class OaiPmhRepositorySet < ActiveRecord::Base
   # this evaluates user submitted code
   # should only be open to tech admin
   def matching_specs(item)
-    values = Array.new
+    values = []
     # dynamic value should return an array of names
     # static should return a string
     if dynamic?
@@ -90,7 +90,7 @@ class OaiPmhRepositorySet < ActiveRecord::Base
       values << value
     end
 
-    specs = Array.new
+    specs = []
     values.each do |for_value|
       specs << full_spec(for_value) if test_match_with(item, for_value)
     end
@@ -113,7 +113,7 @@ class OaiPmhRepositorySet < ActiveRecord::Base
   private
 
   def generate_dynamic_sets
-    generated = Array.new
+    generated = []
     options_for_generated_sets.each { |options_hash| generated << create_set(options_hash) }
     generated
   end
@@ -124,7 +124,7 @@ class OaiPmhRepositorySet < ActiveRecord::Base
   end
 
   def options_for_generated_sets
-    @options_for_generated_sets = Array.new
+    @options_for_generated_sets = []
     return @options_for_generated_sets unless dynamic?
 
     # because this oai_pmh_repository_set is dynamic

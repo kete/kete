@@ -226,7 +226,7 @@ class Basket < ActiveRecord::Base
     tag_direction = ['asc', 'desc'].include?(options[:direction]) ? options[:direction] : (tag_order == 'alphabetical' ? 'asc' : 'desc')
     private_tags = options[:allow_private] || false
 
-    return Array.new unless !tag_limit || tag_limit > 0 # false = no limit, 0 = no tags
+    return [] unless !tag_limit || tag_limit > 0 # false = no limit, 0 = no tags
 
     case tag_order
     when 'alphabetical'
@@ -415,12 +415,12 @@ class Basket < ActiveRecord::Base
     when 'at least admin'
       has_site_admins_or_admins
     else
-      Array.new
+      []
     end
   end
 
   def array_to_options_list_with_defaults(options_array, default_value, site_admin = true, pluralize = false)
-    select_options = String.new
+    select_options = ''
     options_array.each do |option|
       label = option[0]
       value = option[1]
@@ -478,7 +478,7 @@ class Basket < ActiveRecord::Base
   end
 
   def moderation_select_options(default = nil)
-    select_options = String.new
+    select_options = ''
     [
       [I18n.t('basket_model.moderate_before_approved'), true],
       [I18n.t('basket_model.moderate_on_flagged'), false]].each do |option|
@@ -524,7 +524,7 @@ class Basket < ActiveRecord::Base
   end
 
   def possible_themes
-    @possible_themes = Array.new
+    @possible_themes = []
     themes_dir = Dir.new(THEMES_ROOT)
     themes_dir.each do |listing|
       path_to_theme_dir = THEMES_ROOT + '/' + listing
@@ -538,7 +538,7 @@ class Basket < ActiveRecord::Base
   end
 
   def font_family_select_options(default = nil)
-    select_options = String.new
+    select_options = ''
     [
       [I18n.t('basket_model.font_use_theme_default'), ''],
       [I18n.t('basket_model.font_sans_serif'), 'sans-serif'],
@@ -637,7 +637,7 @@ class Basket < ActiveRecord::Base
     ZOOM_CLASSES.each do |zoom_class|
       versions = Module.class_eval(zoom_class + '::Version').find_all_by_basket_id(self)
       versions.each do |version|
-        new_version_comment = version.version_comment.nil? ? String.new : version.version_comment + '. '
+        new_version_comment = version.version_comment.nil? ? '' : version.version_comment + '. '
         new_version_comment += I18n.t('basket_model.now_in_site_basket', basket_name: name)
 
         version.update_attributes(basket_id: 1, version_comment: new_version_comment)

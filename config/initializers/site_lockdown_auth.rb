@@ -1,4 +1,4 @@
-SITE_LOCKDOWN = Hash.new
+SITE_LOCKDOWN = {}
 
 @auth_credentials_file = File.join(Rails.root, 'config/site_lockdown_auth_credentials.yml')
 if File.exist?(@auth_credentials_file)

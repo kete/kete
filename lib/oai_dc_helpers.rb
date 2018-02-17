@@ -38,7 +38,7 @@ module OaiDcHelpers
       if is_a?(Topic)
         # topics can be on either side of the content_item_relation join model
         # so to get all possible relations, you have to combine them
-        all_relations = Array.new
+        all_relations = []
 
         # we only need the last from normal content relations and child content relations
         # to compare, not all of each
@@ -71,7 +71,7 @@ module OaiDcHelpers
     # assumes public zoom_db
     def oai_dc_xml_oai_set_specs(xml)
       # get the sets that match the item
-      set_specs = Array.new
+      set_specs = []
       ZoomDb.find(1).active_sets.each do |base_set|
         set_specs += base_set.matching_specs(self)
       end
@@ -250,7 +250,7 @@ module OaiDcHelpers
 
     def oai_dc_xml_dc_format(xml)
       # item's content type is the default
-      format = String.new
+      format = ''
       html_classes = %w(Topic Comment WebLink)
       case self.class.name
       when 'StillImage'
