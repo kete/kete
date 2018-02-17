@@ -663,7 +663,7 @@ module Importer
     def importer_xml_record_to_hash(record, upcase = false)
       record_hash = Hash.from_xml(record.to_s)
 
-      # HACK to go down one more level
+      # HACK: to go down one more level
       record_hash.keys.each do |record_field|
         record_hash = record_hash[record_field]
       end
@@ -706,7 +706,7 @@ module Importer
 
       IO.foreach(path_to_original_file) do |line|
         line = remove_non_unix_new_lines(line)
-        # HACK to seriously trim down accession records
+        # HACK: to seriously trim down accession records
         # and make them in a form we can search easily
         # only add non-fat to our fat_free_file
         #  && !line.blank?
