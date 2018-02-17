@@ -10,7 +10,7 @@ HasValue.load_overwrites!
 
 require File.expand_path(File.dirname(__FILE__) + "/common_test_methods")
 
-load_testing_libs({ :exclude => ['webrat'] })
+load_testing_libs(:exclude => ['webrat'])
 verify_zebra_changes_allowed
 bootstrap_zebra_with_initial_records
 

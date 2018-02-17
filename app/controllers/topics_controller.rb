@@ -109,7 +109,7 @@ class TopicsController < ApplicationController
       case where_to_redirect
       when 'show_related'
         flash[:notice] = t('topics_controller.create.created_related')
-        redirect_to_related_item(@relate_to_item, { private: (params[:related_item_private] && params[:related_item_private] == 'true' && permitted_to_view_private_items?) })
+        redirect_to_related_item(@relate_to_item, private: (params[:related_item_private] && params[:related_item_private] == 'true' && permitted_to_view_private_items?))
       when 'basket'
         redirect_to action: 'add_index_topic',
                     controller: 'baskets',

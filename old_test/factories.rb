@@ -71,7 +71,7 @@ end
 #
 Factory.define :profile do |p|
   p.name 'Test Profile'
-  p.rules({ 'edit' => { 'rule_type' => 'none' } })
+  p.rules('edit' => { 'rule_type' => 'none' })
 end
 
 #

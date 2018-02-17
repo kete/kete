@@ -7,7 +7,7 @@ module ImageSlideshowTestHelper
             setup do
               3.times { |i| create_new_still_image_with(title: "site basket image #{i + 1}") }
 
-              @different_basket = create_new_basket({ name: 'different basket' })
+              @different_basket = create_new_basket(name: 'different basket')
 
               3.times do |i|
                 create_new_still_image_with(
@@ -38,7 +38,7 @@ module ImageSlideshowTestHelper
           context 'The topic related image slideshow' do
             context 'when several images are related to a topic' do
               setup do
-                @non_site_basket_1 = create_new_basket({ name: 'basket 1' })
+                @non_site_basket_1 = create_new_basket(name: 'basket 1')
 
                 @topic = Topic.create(title: 'Parent Topic', topic_type_id: TopicType.first, basket_id: @non_site_basket_1.id)
                 @topic.creator = User.first
@@ -59,7 +59,7 @@ module ImageSlideshowTestHelper
                   3.times do |i|
                     create_new_image_relation_to(
                       @topic,
-                      basket_id: create_new_basket({ name: "basket #{i + 1}" }).id,
+                      basket_id: create_new_basket(name: "basket #{i + 1}").id,
                       title: "Child Image in Another Basket #{i + 1}"
                     )
                   end
@@ -89,7 +89,7 @@ module ImageSlideshowTestHelper
 
           # initial population and correct values (clicking play button)
           get :selected_image, selected_image_params
-          check_slideshow_values_correct(options.merge({ current: 0 }))
+          check_slideshow_values_correct(options.merge(current: 0))
 
           unless options[:total]
             # simulate auto slideshow progression (used by slideshow via JS)
@@ -97,10 +97,10 @@ module ImageSlideshowTestHelper
             check_slideshow_values_correct(options)
 
             get :selected_image, selected_image_params
-            check_slideshow_values_correct(options.merge({ current: nil }))
+            check_slideshow_values_correct(options.merge(current: nil))
             # check it loops back to the first one
             get :selected_image, selected_image_params
-            check_slideshow_values_correct(options.merge({ current: 0 }))
+            check_slideshow_values_correct(options.merge(current: 0))
           end
 
           # test next button

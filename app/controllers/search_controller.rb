@@ -306,7 +306,7 @@ class SearchController < ApplicationController
     # get the item
     # we use should_be_exact rather than _equals_completely method here
     # because relations have a key index on them and should be exact uses that
-    @search.pqf_query.relations_include(url_for_dc_identifier(@source_item, { force_http: true, minimal: true }), should_be_exact: true) if !@source_item.nil?
+    @search.pqf_query.relations_include(url_for_dc_identifier(@source_item, force_http: true, minimal: true), should_be_exact: true) if !@source_item.nil?
 
     # this looks in the dc_subject index in the z30.50 server
     @search.pqf_query.subjects_equals_completely(@tag.name.to_s) if !@tag.nil?
@@ -446,11 +446,11 @@ class SearchController < ApplicationController
 
     if !params[:search_terms].blank?
       # we are searching
-      location_hash.merge!({
+      location_hash.merge!(
                              search_terms_slug: to_search_terms_slug(params[:search_terms]),
                              search_terms: params[:search_terms],
                              action: 'for'
-                           })
+                           )
     else
       # we are viewing all
       location_hash[:action] = 'all'
@@ -480,7 +480,7 @@ class SearchController < ApplicationController
       location_hash[:limit_to_choice] = params[:limit_to_choice]
     end
     if !params[:extended_field].blank?
-      location_hash.merge({ extended_field: params[:extended_field] })
+      location_hash.merge(extended_field: params[:extended_field])
     end
 
     if !params[:topic_type].blank?

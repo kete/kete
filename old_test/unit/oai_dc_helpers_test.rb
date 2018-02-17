@@ -28,7 +28,7 @@ class OaiDcHelpersTest < ActiveSupport::TestCase
       should "send back correct xml for #{zoom_class}" do
         builder = Nokogiri::XML::Builder.new
         builder.root do |xml|
-          @item.oai_dc_xml_dc_relations_and_subjects(xml, { :host => "www.example.com" })
+          @item.oai_dc_xml_dc_relations_and_subjects(xml, :host => "www.example.com")
         end
 
         expect = "<dc:subject><![CDATA[Parent Topic]]></dc:subject><dc:relation>http://www.example.com/site/topics/show/#{@parent.id}</dc:relation>"

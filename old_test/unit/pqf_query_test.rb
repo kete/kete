@@ -152,24 +152,24 @@ class PqfQueryTest < ActiveSupport::TestCase
 
   def test_oai_datestamp_between
     # Check we get the right result for searching between two dates
-    assert_equal "@and #{@dtcs['on_or_after']}#{@dts['oai_datestamp']}\"2008-01-01 00:00:00\" #{@dtcs['on_or_before']}#{@dts['oai_datestamp']}\"2008-12-31 23:59:59\"", @pqf_query.oai_datestamp_between({ :beginning => '2008-01-01 00:00:00', :ending => '2008-12-31 23:59:59', :only_return_as_string => true })
+    assert_equal "@and #{@dtcs['on_or_after']}#{@dts['oai_datestamp']}\"2008-01-01 00:00:00\" #{@dtcs['on_or_before']}#{@dts['oai_datestamp']}\"2008-12-31 23:59:59\"", @pqf_query.oai_datestamp_between(:beginning => '2008-01-01 00:00:00', :ending => '2008-12-31 23:59:59', :only_return_as_string => true)
   end
 
   def test_oai_datestamp_comparison
     # Check we get the right result for between two dates, after date, and before date searches
-    assert_equal "@and #{@dtcs['on_or_after']}#{@dts['oai_datestamp']}\"2008-01-01 00:00:00\" #{@dtcs['on_or_before']}#{@dts['oai_datestamp']}\"2008-12-31 23:59:59\"", @pqf_query.oai_datestamp_comparison({ :beginning => '2008-01-01 00:00:00', :ending => '2008-12-31 23:59:59', :only_return_as_string => true })
-    assert_equal "#{@dtcs['on_or_after']}#{@dts['oai_datestamp']}\"2008-01-01 00:00:00\"", @pqf_query.oai_datestamp_comparison({ :beginning => '2008-01-01 00:00:00', :only_return_as_string => true })
-    assert_equal "#{@dtcs['on_or_before']}#{@dts['oai_datestamp']}\"2008-12-31 23:59:59\"", @pqf_query.oai_datestamp_comparison({ :ending => '2008-12-31 23:59:59', :only_return_as_string => true })
+    assert_equal "@and #{@dtcs['on_or_after']}#{@dts['oai_datestamp']}\"2008-01-01 00:00:00\" #{@dtcs['on_or_before']}#{@dts['oai_datestamp']}\"2008-12-31 23:59:59\"", @pqf_query.oai_datestamp_comparison(:beginning => '2008-01-01 00:00:00', :ending => '2008-12-31 23:59:59', :only_return_as_string => true)
+    assert_equal "#{@dtcs['on_or_after']}#{@dts['oai_datestamp']}\"2008-01-01 00:00:00\"", @pqf_query.oai_datestamp_comparison(:beginning => '2008-01-01 00:00:00', :only_return_as_string => true)
+    assert_equal "#{@dtcs['on_or_before']}#{@dts['oai_datestamp']}\"2008-12-31 23:59:59\"", @pqf_query.oai_datestamp_comparison(:ending => '2008-12-31 23:59:59', :only_return_as_string => true)
   end
 
   def test_creators_or_contributors_include
     # Check we get the right result for searching by creator or contributors of name 'admin'
-    assert_equal "@or #{@as['creators']}#{@qas['partial']}\"admin\" #{@as['contributors']}#{@qas['partial']}\"admin\"", @pqf_query.creators_or_contributors_include("admin", { :only_return_as_string => true })
+    assert_equal "@or #{@as['creators']}#{@qas['partial']}\"admin\" #{@as['contributors']}#{@qas['partial']}\"admin\"", @pqf_query.creators_or_contributors_include("admin", :only_return_as_string => true)
   end
 
   def test_creators_or_contributors_equals_completely
     # Check we get the right result for searching by creator or contributors of name 'admin'
-    assert_equal "@or #{@as['creators']}#{@qas['complete']}\"admin\" #{@as['contributors']}#{@qas['complete']}\"admin\"", @pqf_query.creators_or_contributors_equals_completely("admin", { :only_return_as_string => true })
+    assert_equal "@or #{@as['creators']}#{@qas['complete']}\"admin\" #{@as['contributors']}#{@qas['complete']}\"admin\"", @pqf_query.creators_or_contributors_equals_completely("admin", :only_return_as_string => true)
   end
 
   def test_title_or_any_text_includes
@@ -188,7 +188,7 @@ class PqfQueryTest < ActiveSupport::TestCase
   def test_push_to_appropriate_variables
     # Check that values passed in are concatenated and accessable via to_S
     @pqf_query.title_or_any_text_includes("One Two")
-    @pqf_query.oai_datestamp_comparison({ :beginning => '2008-01-01 00:00:00', :ending => '2008-12-31 23:59:59' })
+    @pqf_query.oai_datestamp_comparison(:beginning => '2008-01-01 00:00:00', :ending => '2008-12-31 23:59:59')
     @pqf_query.creators_or_contributors_include("admin")
     expect = "@and @and #{@qas['relevance']}@or #{@as['title']} @and  \"One\" \"Two\" #{@as['any_text']} @and  \"One\" \"Two\"  @and #{@dtcs['on_or_after']}#{@dts['oai_datestamp']}\"2008-01-01 00:00:00\" #{@dtcs['on_or_before']}#{@dts['oai_datestamp']}\"2008-12-31 23:59:59\" @or #{@as['creators']}#{@qas['partial']}\"admin\" #{@as['contributors']}#{@qas['partial']}\"admin\" "
     assert_equal expect, @pqf_query.to_s

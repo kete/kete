@@ -8,7 +8,7 @@ class ModerationTest < ActionController::IntegrationTest
 
       # Create a super-user account to perform moderator actions
       add_sarah_as_super_user
-      login_as('sarah', 'test', { :logout_first => true })
+      login_as('sarah', 'test', :logout_first => true)
 
       # Add a new basket to test moderation in
       @basket = new_basket
@@ -18,13 +18,13 @@ class ModerationTest < ActionController::IntegrationTest
       User.find_by_login('paul').add_as_member_to_default_baskets
 
       # Switch basket to the super-user to continue..
-      login_as('sarah', 'test', { :logout_first => true })
+      login_as('sarah', 'test', :logout_first => true)
     end
 
     context "a fully moderated basket" do
       setup do
         turn_on_full_moderation(@basket)
-        login_as('paul', 'test', { :logout_first => true })
+        login_as('paul', 'test', :logout_first => true)
       end
 
       should "create a new item and have it moderated" do
@@ -135,7 +135,7 @@ class ModerationTest < ActionController::IntegrationTest
       context "as a moderator" do
         setup do
           add_jenny_as_moderator_to(@basket)
-          login_as('jenny', 'test', { :logout_first => true })
+          login_as('jenny', 'test', :logout_first => true)
         end
 
         should "revert to first version, supply additional content and have version made live immediately" do
@@ -180,7 +180,7 @@ class ModerationTest < ActionController::IntegrationTest
     should_not_appear_in_search_results(@topic)
 
     # Login as a super-user and moderate (accept) the version.
-    login_as('sarah', 'test', { :logout_first => true })
+    login_as('sarah', 'test', :logout_first => true)
     moderate_restore(@topic, :version => 1)
 
     @topic.reload
@@ -191,13 +191,13 @@ class ModerationTest < ActionController::IntegrationTest
   def create_a_new_topic_with_several_approved_versions
     create_a_new_pending_topic_and_accept_it
 
-    login_as('paul', 'test', { :logout_first => true })
+    login_as('paul', 'test', :logout_first => true)
 
     update_item(@topic, :title => "Title has been changed.")
     assert_equal @topic.versions.find_by_version(1).title, @topic.title
     should_appear_once_in_search_results(@topic, :title => @topic.versions.find_by_version(1).title)
 
-    login_as('sarah', 'test', { :logout_first => true })
+    login_as('sarah', 'test', :logout_first => true)
     moderate_restore(@topic, :version => 4)
 
     @topic.reload

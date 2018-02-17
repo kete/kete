@@ -24,14 +24,14 @@ class TopicTypesControllerTest < ActionController::TestCase
     get :index, index_path
     assert_redirect_to :action => 'list'
 
-    get :list, index_path({ :action => 'list' })
+    get :list, index_path(:action => 'list')
     assert_viewing_template 'topic_types/list'
     assert_var_assigned true
     assert_equal 5, assigns(:topic_types).size
   end
 
   def test_new
-    get :new, new_path({ :parent_id => 1 })
+    get :new, new_path(:parent_id => 1)
     assert_viewing_template 'topic_types/new'
     assert_var_assigned
   end
@@ -40,7 +40,7 @@ class TopicTypesControllerTest < ActionController::TestCase
     create_record
     assert_var_assigned
     assert_attributes_same_as @new_model
-    assert_redirect_to(edit_path({ :id => assigns(:topic_type).id }))
+    assert_redirect_to(edit_path(:id => assigns(:topic_type).id))
     assert_equal 'Topic type was successfully created.', flash[:notice]
   end
 
@@ -54,13 +54,13 @@ class TopicTypesControllerTest < ActionController::TestCase
     update_record
     assert_var_assigned
     assert_attributes_same_as @updated_model
-    assert_redirect_to(edit_path({ :id => assigns(:topic_type).id }))
+    assert_redirect_to(edit_path(:id => assigns(:topic_type).id))
     assert_equal 'Topic type was successfully updated.', flash[:notice]
   end
 
   def test_destroy
-    destroy_record({ :id => 4 })
-    assert_redirect_to(index_path({ :action => 'list' }))
+    destroy_record(:id => 4)
+    assert_redirect_to(index_path(:action => 'list'))
     assert_equal 'Topic type was successfully deleted.', flash[:notice]
   end
 
@@ -83,7 +83,7 @@ class TopicTypesControllerTest < ActionController::TestCase
 
     # a simple test to make sure this worked... there should no longer be any available fields
     assert_equal @place_type.available_fields.size, 0
-    assert_redirect_to(edit_path({ :id => @place_type.id }))
+    assert_redirect_to(edit_path(:id => @place_type.id))
   end
 
   # this test reordering without using acts_as_tree functionality
@@ -119,6 +119,6 @@ class TopicTypesControllerTest < ActionController::TestCase
     assert_equal @person_type.topic_type_to_field_mappings.first.id, org_last_mapping_id, "The reorder_fields_for_topic_type action didn't swap first and last positions as expected."
     assert_equal @person_type.topic_type_to_field_mappings.last.id, org_first_mapping_id, "The reorder_fields_for_topic_type action didn't swap first and last positions as expected."
     # this will need to change to edit, possibly
-    assert_redirect_to(edit_path({ :id => @person_type.id }))
+    assert_redirect_to(edit_path(:id => @person_type.id))
   end
 end

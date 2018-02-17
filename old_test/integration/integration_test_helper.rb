@@ -98,7 +98,7 @@ class ActionController::IntegrationTest
     else
       # we just want the user to have an authenticated state
       # no need to go through all the requests, etc.
-      visit "/site/account/login", :post, { :login => username.to_s, :password => password }
+      visit "/site/account/login", :post, :login => username.to_s, :password => password
     end
 
     body_should_contain("Logged in successfully") if options[:test_success] && !options[:should_fail_login]

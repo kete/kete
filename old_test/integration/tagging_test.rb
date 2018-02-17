@@ -23,7 +23,7 @@ class TaggingTest < ActionController::IntegrationTest
           when "Video"
             @item = new_video { attach_file "video_uploaded_data", "teststrip.mpg", "video/mpeg" }
           when "WebLink"
-            @item = new_web_link({ :url => "http://google.co.nz/#{rand * 100}" })
+            @item = new_web_link(:url => "http://google.co.nz/#{rand * 100}")
           when "Document"
             @item = new_document { attach_file "document_uploaded_data", "test.pdf" }
           else

@@ -8,10 +8,9 @@ class AccountTest < ActionController::IntegrationTest
 
     should "be able to login" do
       login_as(
-        'paul', 'test', {
+        'paul', 'test', 
           :navigate_to_login => true,
           :by_form => true
-        }
       )
       body_should_contain "Logged in successfully"
       should_be_on_site_homepage
@@ -19,10 +18,9 @@ class AccountTest < ActionController::IntegrationTest
 
     should "should have details displayed on the menu" do
       login_as(
-        'paul', 'test', {
+        'paul', 'test', 
           :navigate_to_login => true,
           :by_form => true
-        }
       )
       body_should_contain "paul"
       body_should_contain "Logout"
@@ -30,11 +28,10 @@ class AccountTest < ActionController::IntegrationTest
 
     should "fail login with incorrect credentials" do
       login_as(
-        'incorrect', 'login', {
+        'incorrect', 'login', 
           :navigate_to_login => true,
           :by_form => true,
           :should_fail_login => true
-        }
       )
       body_should_contain "Your password or login do not match our records. Please try again."
     end
@@ -48,7 +45,7 @@ class AccountTest < ActionController::IntegrationTest
 
     should "be redirected back to last tried location when logged in" do
       visit "/site/baskets/choose_type"
-      login_as('paul', 'test', { :by_form => true })
+      login_as('paul', 'test', :by_form => true)
       url_should_contain "/site/baskets/choose_type"
       body_should_contain "What would you like to add?"
     end
@@ -71,10 +68,9 @@ class AccountTest < ActionController::IntegrationTest
         visit "/"
         visit "/site/account/login"
         login_as(
-          'paul', 'test', {
+          'paul', 'test', 
             :navigate_to_login => false,
             :by_form => true
-          }
         )
         url_should_contain Regexp.new("/$")
       end
@@ -85,10 +81,10 @@ class AccountTest < ActionController::IntegrationTest
         @@site_basket.update_attribute(:show_privacy_controls, true)
         login_as('paul')
         @item =
-          new_still_image({
+          new_still_image(
                             :private_true => true,
                             :file_private_true => true
-                          }) { attach_file "image_file_uploaded_data", "white.jpg" }
+                          ) { attach_file "image_file_uploaded_data", "white.jpg" }
       end
 
       teardown do
@@ -102,7 +98,7 @@ class AccountTest < ActionController::IntegrationTest
         visit @item.original_file.public_filename.to_s
         body_should_contain 'Error 401: Unauthorized'
         visit "/site/account/login"
-        login_as('paul', 'test', { :navigate_to_login => false, :by_form => true })
+        login_as('paul', 'test', :navigate_to_login => false, :by_form => true)
         url_should_contain "/site/images/show/#{@item.id}"
       end
     end

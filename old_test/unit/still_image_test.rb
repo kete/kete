@@ -50,7 +50,7 @@ class StillImageTest < ActiveSupport::TestCase
   end
 
   def test_associations_work
-    still_image = StillImage.create(@new_model.merge({ :file_private => true }))
+    still_image = StillImage.create(@new_model.merge(:file_private => true))
     still_image.image_files.create(@new_image_file.merge(:file_private => still_image.file_private))
     still_image.image_files.first.thumbnails.each do |thumb|
       thumb.still_image_id = still_image.id
@@ -70,18 +70,18 @@ class StillImageTest < ActiveSupport::TestCase
 
   def test_updates_image_file_locations_on_update
     # Create the scenario
-    still_image = new_still_image({ :file_private => true }, { :file_private => true })
+    still_image = new_still_image({ :file_private => true }, :file_private => true)
 
     # Check that original is private after create
     file_private_should_be(true, still_image)
 
     # Update everything to public
-    still_image.update_attributes!({ :file_private => false })
+    still_image.update_attributes!(:file_private => false)
     still_image.reload
     file_private_should_be(false, still_image)
 
     # Change everything to private again and check that it does not work
-    still_image.update_attributes!({ :file_private => true })
+    still_image.update_attributes!(:file_private => true)
     still_image.reload
     file_private_should_be(false, still_image)
 
@@ -91,7 +91,7 @@ class StillImageTest < ActiveSupport::TestCase
     #
 
     # setup private still image
-    still_image = new_still_image({ :private => true }, { :item_private => true })
+    still_image = new_still_image({ :private => true }, :item_private => true)
 
     # Check that original and thumbnails are private after create
     thumbnails_of(still_image).each do |image|
@@ -99,7 +99,7 @@ class StillImageTest < ActiveSupport::TestCase
     end
 
     # Update everything to public
-    still_image.update_attributes!({ :private => false })
+    still_image.update_attributes!(:private => false)
     still_image.reload
     thumbnails_of(still_image).each do |image|
       assert_equal false, image.file_private?
@@ -107,7 +107,7 @@ class StillImageTest < ActiveSupport::TestCase
 
     # Try and change everything to private again and check that it
     # does not work for original or thumbnails.
-    still_image.update_attributes!({ :private => true, :file_private => true })
+    still_image.update_attributes!(:private => true, :file_private => true)
     still_image.reload
     thumbnails_of(still_image).each do |image|
       assert_equal false, image.file_private?
