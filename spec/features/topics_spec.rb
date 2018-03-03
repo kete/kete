@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-feature 'A logged in user', js: true do
+describe 'A logged in user', js: true do
   let(:user) { FactoryGirl.create(:user, :activated, :with_default_baskets) }
 
   it 'can add a new Topic' do
