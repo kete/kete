@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-feature 'User registration', js: true do
+describe 'User registration', js: true do
   it 'An anonymous user can register for an account' do
     user = FactoryGirl.attributes_for(:user)
 
