@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module ImageSlideshow
   unless included_modules.include? ImageSlideshow
     def self.included(klass)

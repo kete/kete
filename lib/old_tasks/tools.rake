@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # lib/tasks/tools.rake
 #
 # miscellaneous tools for kete (clearing robots.txt file)

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'spec_helper'
 
 include ActionDispatch::TestProcess # module that provides #fixture_file_upload

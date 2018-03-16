@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # Site Administrators only, for setting up profiles
 # currently only used for basket profiles
 # (i.e. setting what basket options a basket admin can change)

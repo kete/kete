@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # capistrano recipes specific to apache server
 # Adapted from Capistrano Bells plugin (http://github.com/nakajima/capistrano-bells)
 

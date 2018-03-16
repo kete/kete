@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'importer'
 class DfcXmlImporterWorker < BackgrounDRb::MetaWorker
   set_worker_name :dfc_xml_importer_worker

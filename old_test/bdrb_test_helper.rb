@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require File.dirname(__FILE__) + '/test_helper'
 WORKER_ROOT = RAILS_ROOT + "/lib/workers"
 $LOAD_PATH.unshift(WORKER_ROOT)

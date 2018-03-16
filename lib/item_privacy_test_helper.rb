@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # James Stradling <james@katipo.co.nz>
 # 2008-04-15
 

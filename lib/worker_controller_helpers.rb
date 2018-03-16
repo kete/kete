@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # used by controllers that manage backgroundrb workers
 module WorkerControllerHelpers
   unless included_modules.include? WorkerControllerHelpers

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # convenience methods to DRY up calling generic muted worker
 module GenericMutedWorkerCallingHelpers
   unless included_modules.include? GenericMutedWorkerCallingHelpers

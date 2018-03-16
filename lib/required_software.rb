@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module RequiredSoftware
   unless included_modules.include? RequiredSoftware
     def load_required_software

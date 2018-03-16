@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # To run these specs:
 #
 #     # ensure you have sample data loaded into kete_horowhenua

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # useful methods for testing extended content related functionality
 # assumes @new_model and @base_class vars, as in standard Kete item unit tests
 module ExtendedContentHelpersForTestSetUp

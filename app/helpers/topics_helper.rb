@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module TopicsHelper
   def topic_type_breadcrumb_for(topic)
     html = '<ul class="breadcrumb">'

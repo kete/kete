@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # lib/tasks/manage_gems.rake
 #
 # tasks related to required gems and software, some may need to be run with sudo

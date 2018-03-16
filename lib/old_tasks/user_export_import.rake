@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # lib/tasks/user_export_import.rake
 #
 # export/import users data and roles
