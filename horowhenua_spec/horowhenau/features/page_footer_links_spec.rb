@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-feature "Page footer Links" do
+describe "Page footer Links" do
   it "displays the links" do
     visit "/"
     expect(page).to have_text 'Accessibility'
