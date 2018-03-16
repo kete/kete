@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-feature "History" do
+describe "History" do
   examples = {
     audio:    '/en/site/audio/2-anzac-speech-by-dominique-cooreman',
     video:    '/en/site/video/58-mayors-duffys-speech-it-ended-with-a-bang',

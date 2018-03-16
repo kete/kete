@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-feature "Home Tag list" do
+describe "Home Tag list" do
   it "All-tags link on homepage works" do
     visit "/"
     within("#tags-headline") do
@@ -37,7 +37,7 @@ feature "Home Tag list" do
   end
 end
 
-feature "Content-Item list" do
+describe "Content-Item list" do
   it "viewing tagged items by type" do
     visit "/en/site/topics/2453-te-takere-begins-with-an-open-day-in-the-old-countdown-building"
 
