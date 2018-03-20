@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module MayBeUploadAsServiceController
   unless included_modules.include? MayBeUploadAsServiceController
     def self.included(klass)

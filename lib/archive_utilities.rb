@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module ArchiveUtilities
   unless included_modules.include? ArchiveUtilities
     # probably won't work on Windoze

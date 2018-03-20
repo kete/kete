@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class Video < ActiveRecord::Base
   include PgSearch
   include PgSearchCustomisations

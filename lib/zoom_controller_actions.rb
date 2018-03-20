@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module ZoomControllerActions
   unless included_modules.include? ZoomControllerActions
     include WorkerControllerHelpers

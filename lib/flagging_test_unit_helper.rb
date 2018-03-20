@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # TODO: add coverage of basic flagging functionality
 # non-fully moderated tests
 # fully moderated tests

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module ExtendedFieldsHelpers
   unless included_modules.include? ExtendedFieldsHelpers
     # move any problematic punctuation that will mess up our xml

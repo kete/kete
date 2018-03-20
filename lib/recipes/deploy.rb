@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # general capistrano recipes to restart application server
 
 namespace :deploy do

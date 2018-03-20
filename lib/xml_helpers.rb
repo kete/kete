@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module XmlHelpers
   unless included_modules.include? XmlHelpers
 

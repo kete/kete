@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'test_helper'
 # TODO: replace with mock if we start using mocks more frequently
 require 'ostruct'

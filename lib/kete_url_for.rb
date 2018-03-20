@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 include ZoomControllerHelpers
 include XmlHelpers
 include Utf8UrlFor

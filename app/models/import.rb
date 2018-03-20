@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class Import < ActiveRecord::Base
   IMPORTS_DIR = Rails.root + '/imports/'
   VALID_ARCHIVE_CLASSES = ATTACHABLE_CLASSES

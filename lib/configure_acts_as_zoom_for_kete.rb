@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 # module ConfigureActsAsZoomForKete
 #   # oai_record is a virtual attribute that holds the topic's entire content
 #   # as xml formated how we like it

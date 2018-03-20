@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # test/unit/content_item_relation_test.rb tests that that join model works
 # this is meant to test that each zoom class can use the content item relation join model
 # except comments (that don't use content_item_relations)

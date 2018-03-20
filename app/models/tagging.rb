@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class Tagging < ActiveRecord:: Base
   # The acts-as-taggable-on gem creates a `taggings` table in the DB but it does not
   # create a `Tagging model. It used to create this model and the old Kete

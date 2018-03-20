@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module FlaggingController
   unless included_modules.include? FlaggingController
     # set up our helper methods

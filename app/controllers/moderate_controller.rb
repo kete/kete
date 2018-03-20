@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class ModerateController < ApplicationController
   # everything else is handled by application.rb
   before_filter :login_required, only: %i[list index rss]

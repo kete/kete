@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class AudioRecording < ActiveRecord::Base
   include PgSearch
   include PgSearchCustomisations

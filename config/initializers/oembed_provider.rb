@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 # !! Re-enable on switch to rails 3.2:
 ## Walter McGinnis, 2011-02-15
 ## because of load order, these can't be added to config/initializers

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module ConfigureAsKeteContentItem
   unless included_modules.include? ConfigureAsKeteContentItem
     def self.included(klass)
