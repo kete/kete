@@ -1,7 +1,7 @@
 require 'spec_helper'
 
-feature 'Membership management', js: true do
-  scenario 'Admin can view membership list' do
+describe 'Membership management', js: true do
+  it 'Admin can view membership list' do
     sign_in
     within '#basket-toolbox' do
       click_on 'members'
