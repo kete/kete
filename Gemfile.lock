@@ -173,7 +173,7 @@ GEM
     json (1.8.6)
     kgio (2.11.2)
     libxml-ruby (3.1.0)
-    loofah (2.2.0)
+    loofah (2.2.1)
       crass (~> 1.0.2)
       nokogiri (>= 1.5.9)
     mail (2.5.5)
@@ -383,6 +383,7 @@ DEPENDENCIES
   jquery-rails (~> 3.1.1)
   kete-feedzirra!
   libxml-ruby
+  loofah (>= 2.2.1)
   mime-types
   mini_exiftool (< 2.0.0)
   nokogiri (>= 1.8.2)
@@ -421,9 +422,7 @@ DEPENDENCIES
   xml-simple
   ya2yaml
 
-
 RUBY VERSION
    ruby 2.3.3p222
-
 BUNDLED WITH
    1.16.1
