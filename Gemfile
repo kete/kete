@@ -231,5 +231,5 @@ end
 
 # Security updates
 # https://github.com/tenderlove/psych/pull/187
-gem 'psych', '> 2.0.5'
 gem 'loofah', '>= 2.2.1'
+gem 'psych', '> 2.0.5'
