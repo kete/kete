@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # Basic configuration class for external search sources
 class ExternalSearchSources
   @@settings = {}

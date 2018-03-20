@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # Requirements for XML conversion of extended fields
 require 'rexml/document'
 require 'builder'

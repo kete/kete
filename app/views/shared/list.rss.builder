@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # ROB:
 #
 # * If an item's tags/contributors/related_items is updated, or the item is changed

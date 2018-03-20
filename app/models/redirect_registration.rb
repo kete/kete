@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # This feature should accommodate these use cases (all accept status, but will default to 301):
 #
 # * complete source url redirects to complete target url with status (e.g. old site urls mapped to new Kete version of content OR Kete item moved to a new basket)

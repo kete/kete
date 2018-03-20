@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 SystemSetting.find(:all).each do |setting|
   set_constant(setting.constant_name.to_sym, setting.constant_value)
 end

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # lib/tasks/extract_fixtures.rake
 #
 # copied and modified from

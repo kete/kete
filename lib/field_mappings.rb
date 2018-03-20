@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module FieldMappings
   unless included_modules.include? FieldMappings
 

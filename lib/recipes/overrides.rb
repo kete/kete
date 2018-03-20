@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # Override capistrano methods here (with description as to why and mark the lines added/changed)
 
 # We need to append env PATH=$PATH to the sudo command to ensure the environment is passed through

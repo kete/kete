@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'kete_url_for'
 
 module KeteTestUnitHelper

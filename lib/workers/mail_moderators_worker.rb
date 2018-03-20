@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class MailModeratorsWorker < BackgrounDRb::MetaWorker
   set_worker_name :mail_moderators_worker
   def create(args = nil)

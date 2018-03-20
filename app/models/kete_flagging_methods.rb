@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module KeteFlaggingMethods
   # ROB:  The existing special-flagging (public/pending/etc) in kete is going to be removed.
   # 			this is a place to stick any code for working with theses.

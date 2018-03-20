@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # convenience methods for classes that have related items
 module RelatedItems
   unless included_modules.include? RelatedItems

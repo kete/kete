@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module KeteTestFunctionalHelper
   unless included_modules.include? KeteTestFunctionalHelper
 

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # for small imports, we allow zip, tar, and gzip files to be uploaded
 class ImportArchiveFile < ActiveRecord::Base
   belongs_to :import

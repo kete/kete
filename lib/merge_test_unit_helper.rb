@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # functionality for merging versions of an item
 # to create a new version
 module MergeTestUnitHelper

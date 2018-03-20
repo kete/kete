@@ -1,4 +1,6 @@
 #!/usr/bin/env ruby
+# frozen_string_literal: true
+
 # The config/locales/en.yml file has multiple nested includes. Kill it!
 # ex:
 #    en.base.thing: thing

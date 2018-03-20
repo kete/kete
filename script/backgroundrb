@@ -1,4 +1,5 @@
 #!/usr/bin/env ruby
+# frozen_string_literal: true
 
 RAILS_HOME = File.expand_path(File.join(File.dirname(__FILE__), '..'))
 

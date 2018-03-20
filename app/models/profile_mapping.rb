@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # = ProfileMapping
 #
 # How we declare whether a model has a profile. See Profile.

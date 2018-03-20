@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # include ActionController::UrlWriter is already included in flagging
 # methods that are needed for oembed_provider in providable models
 module KeteCommonOembedSupport

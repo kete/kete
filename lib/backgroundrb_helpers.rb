@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module BackgroundrbHelpers
   unless included_modules.include? BackgroundrbHelpers
 

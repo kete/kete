@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # config/unicorn.rb
 
 rails_env = ENV['RAILS_ENV'] || 'production'

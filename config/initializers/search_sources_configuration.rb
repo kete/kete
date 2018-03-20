@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 ExternalSearchSources[:authorized_role] = 'site_admin'
 ExternalSearchSources[:unauthorized_path] = "/#{SystemSetting.default_basket}"
 ExternalSearchSources[:default_url_options] = { urlified_name: SystemSetting.default_basket }

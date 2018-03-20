@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require File.dirname(__FILE__) + '/selenium_test_helper'
 
 class ConfigurationTest < ActionController::IntegrationTest

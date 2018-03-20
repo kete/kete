@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class UserObserver < ActiveRecord::Observer
   def after_create(user)
     if SystemSetting.require_activation?

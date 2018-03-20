@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # ROB: This is a possible candidate for converting to a presenter.
 
 module RssHelper

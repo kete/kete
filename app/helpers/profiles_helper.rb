@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # this is mainly to do with setting up our custom active scaffold stuff
 module ProfilesHelper
   # Override for ActiveScaffold rules column for basket profiles

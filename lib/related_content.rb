@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module RelatedContent
   # this is where we handled "related to"
   # all our content items are related to topics
