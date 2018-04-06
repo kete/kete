@@ -177,7 +177,8 @@ module ImageSlideshow
       prefix = topic_slideshow? ? 'still_images.' : ''
       { conditions: [
         "((#{prefix}basket_id IN (:basket_ids)) OR ((#{PUBLIC_CONDITIONS}) AND (#{prefix}file_private = :file_private OR #{prefix}file_private is null)))",
-        { basket_ids: @basket_access_hash.collect { |b| b[1][:id] }, file_private: false }] }
+        { basket_ids: @basket_access_hash.collect { |b| b[1][:id] }, file_private: false }
+      ] }
     end
 
     # Finds all basket images scoped to the correct still image collection

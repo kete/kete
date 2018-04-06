@@ -683,7 +683,8 @@ class SearchController < ApplicationController
         # Store pagination information, we'll need this later
         pagination_methods = [
           'total_entries', 'total_pages', 'current_page',
-          'previous_page', 'next_page']
+          'previous_page', 'next_page'
+        ]
 
         pagination_methods =
           pagination_methods.inject({}) do |hash, method_name|

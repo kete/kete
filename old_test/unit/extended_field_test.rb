@@ -102,7 +102,8 @@ class ExtendedFieldTest < ActiveSupport::TestCase
     ExtendedField.find_available_fields(@person_type, 'TopicType').each do |field|
       fcount = TopicTypeToFieldMapping.count :conditions => [
         "extended_field_id = :extended_field_id and topic_type_id = :topic_type_id",
-        { :extended_field_id => field.id, :topic_type_id => @person_type.id }]
+        { :extended_field_id => field.id, :topic_type_id => @person_type.id }
+      ]
       assert_equal fcount, 0, "find_available_fields list is returning a field that has already been mapped to this topic_type."
     end
   end
@@ -112,7 +113,8 @@ class ExtendedFieldTest < ActiveSupport::TestCase
     ExtendedField.find_available_fields(@user_type, 'ContentType').each do |field|
       fcount = TopicTypeToFieldMapping.count :conditions => [
         "extended_field_id = :extended_field_id and topic_type_id = :topic_type_id",
-        { :extended_field_id => field.id, :topic_type_id => @user_type.id }]
+        { :extended_field_id => field.id, :topic_type_id => @user_type.id }
+      ]
       assert_equal fcount, 0, "find_available_fields list is returning a field that has already been mapped to this content_type."
     end
   end

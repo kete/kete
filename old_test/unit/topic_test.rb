@@ -395,7 +395,8 @@ class TopicTest < ActiveSupport::TestCase
         father.title,
         url_for_dc_identifier(father),
         mother.title,
-        url_for_dc_identifier(mother)]
+        url_for_dc_identifier(mother)
+      ]
 
       t.extended_content_values = default_extended_values_plus("relatives" => {
                                                                  "1" => "#{f_title} (#{f_url})",
@@ -414,7 +415,8 @@ class TopicTest < ActiveSupport::TestCase
                                                      "xml_element_name" => "dc:description",
                                                      "label" => m_title,
                                                      "value" => m_url
-                                                   }]] })
+                                                   }]
+                                                 ] })
       assert_equal expected_hash, t.structured_extended_content
     end
   end
@@ -460,7 +462,8 @@ class TopicTest < ActiveSupport::TestCase
     for_topic_with(TopicType.find_by_name("Person"), { :label => "Address", :multiple => true }) do |t|
       t.structured_extended_content = default_expected_hash_plus("address" => [
                                                                    ["The Parade"],
-                                                                   ["Island Bay"]])
+                                                                   ["Island Bay"]
+                                                                 ])
 
       assert t.valid?
 
@@ -534,7 +537,8 @@ class TopicTest < ActiveSupport::TestCase
         father.title,
         url_for_dc_identifier(father),
         mother.title,
-        url_for_dc_identifier(mother)]
+        url_for_dc_identifier(mother)
+      ]
 
       t.structured_extended_content = default_expected_hash_plus("relatives" => [
                                                                    [{
@@ -544,7 +548,8 @@ class TopicTest < ActiveSupport::TestCase
                                                                    [{
                                                                      "label" => m_title,
                                                                      "value" => m_url
-                                                                   }]])
+                                                                   }]
+                                                                 ])
 
       expected_value = "<first_names xml_element_name=\"dc:description\">Joe</first_names><last_name>Bloggs</last_name><place_of_birth xml_element_name=\"dc:subject\"></place_of_birth><relatives_multiple><1><relatives xml_element_name=\"dc:description\" label=\"#{f_title}\">#{f_url}</relatives></1><2><relatives xml_element_name=\"dc:description\" label=\"#{m_title}\">#{m_url}</relatives></2></relatives_multiple>"
 
@@ -723,7 +728,8 @@ class TopicTest < ActiveSupport::TestCase
         father.title,
         url_for_dc_identifier(father),
         mother.title,
-        url_for_dc_identifier(mother)]
+        url_for_dc_identifier(mother)
+      ]
 
       t.structured_extended_content = default_expected_hash_plus("relatives" => [
                                                                    [{
@@ -733,7 +739,8 @@ class TopicTest < ActiveSupport::TestCase
                                                                    [{
                                                                      "label" => m_title,
                                                                      "value" => m_url
-                                                                   }]])
+                                                                   }]
+                                                                 ])
 
       assert_equal "Joe", t.first_names
       assert_nil t.place_of_birth
@@ -747,7 +754,8 @@ class TopicTest < ActiveSupport::TestCase
           'label' => m_title,
           'xml_element_name' => 'dc:description',
           'value' => m_url
-        }]]
+        }]
+      ]
 
       assert_equal relatives, t.relatives
 
@@ -758,7 +766,8 @@ class TopicTest < ActiveSupport::TestCase
         step_dad.title,
         url_for_dc_identifier(step_dad),
         step_bro.title,
-        url_for_dc_identifier(step_bro)]
+        url_for_dc_identifier(step_bro)
+      ]
 
       t.relatives = ["#{sd_title} (#{sd_url})", "#{sb_title} (#{sb_url})"]
       relatives_2 = [
@@ -771,7 +780,8 @@ class TopicTest < ActiveSupport::TestCase
           'label' => sb_title,
           'xml_element_name' => 'dc:description',
           'value' => sb_url
-        }]]
+        }]
+      ]
 
       assert_equal relatives_2, t.relatives
 
