@@ -8,7 +8,8 @@ class ConfigureController < ApplicationController
     section finish
     done_with_settings zoom_dbs_edit
     zoom_dbs_update start_zebra
-    index]
+    index
+  ]
 
   permit 'tech_admin of :site'
   permit 'site_admin of :site', only: %i[add_link_to_kete_net send_information get_site_linking_progress]

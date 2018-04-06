@@ -58,7 +58,8 @@ class Profile < ActiveRecord::Base
     [
       [I18n.t('profile_model.type_options.none'), 'none'],
       [I18n.t('profile_model.type_options.all'), 'all'],
-      [I18n.t('profile_model.type_options.select_below'), 'some']]
+      [I18n.t('profile_model.type_options.select_below'), 'some']
+    ]
   end
 
   # send @rules to profile.setting(:rules) for storage

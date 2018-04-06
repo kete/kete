@@ -48,14 +48,16 @@ class SearchSource < ActiveRecord::Base
       [I18n.t('search_source_model.or_positions.no_or_syntax'), 'none'],
       [I18n.t('search_source_model.or_positions.before_terms'), 'before'],
       [I18n.t('search_source_model.or_positions.between_terms'), 'between'],
-      [I18n.t('search_source_model.or_positions.after_terms'), 'after']]
+      [I18n.t('search_source_model.or_positions.after_terms'), 'after']
+    ]
   end
 
   def self.case_values
     [
       [I18n.t('search_source_model.case_values.doesnt_matter'), ''],
       [I18n.t('search_source_model.case_values.uppercase'), 'upper'],
-      [I18n.t('search_source_model.case_values.lowercase'), 'lower']]
+      [I18n.t('search_source_model.case_values.lowercase'), 'lower']
+    ]
   end
 
   def source_url

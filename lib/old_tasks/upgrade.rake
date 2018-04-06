@@ -32,7 +32,8 @@ namespace :kete do
     'kete:upgrade:change_inset_to_position',
     'kete:upgrade:set_null_private_only_mappings_to_false',
     'kete:upgrade:set_default_import_archive_set_policy',
-    'kete:upgrade:add_missing_users']
+    'kete:upgrade:add_missing_users'
+  ]
   namespace :upgrade do
     desc 'Privacy Controls require that Comment#commentable_private be set.  Update existing comments to have this data.'
     task update_existing_comments_commentable_private: :environment do
@@ -474,7 +475,8 @@ namespace :kete do
       'kete:upgrade:add_bmp_to_images',
       'kete:upgrade:add_eps_to_images',
       'kete:upgrade:add_psd_and_gimp_to_images_and_documents',
-      'kete:upgrade:add_file_mime_type_variants']
+      'kete:upgrade:add_file_mime_type_variants'
+    ]
 
     desc 'Adds psd variants if needed to images and documents'
     task add_psd_and_gimp_to_images_and_documents: :environment do
@@ -567,7 +569,8 @@ namespace :kete do
         'application/vnd.oasis.opendocument.presentation',
         'application/vnd.oasis.opendocument.spreadsheet',
         'application/vnd.oasis.opendocument.text',
-        'application/vnd.oasis.opendocument.text-web']
+        'application/vnd.oasis.opendocument.text-web'
+      ]
 
       setting = SystemSetting.find_by_name('Document Content Types')
       oo_types.each do |type|

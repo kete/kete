@@ -11,7 +11,8 @@ class SiteLockdownAuthTest < ActionController::IntegrationTest
         '/site/all/topics',
         '/site/baskets/choose_type',
         '/site/all/topics/rss.xml',
-        "/#{@topic.basket.urlified_name}/topics/show/#{@topic.id}"]
+        "/#{@topic.basket.urlified_name}/topics/show/#{@topic.id}"
+      ]
     end
 
     context "when a site has http credentials, it" do
