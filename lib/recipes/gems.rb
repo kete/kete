@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # capistrano recipes to manage gems
 
 namespace :deploy do

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class WebLink < ActiveRecord::Base
   include PgSearch
   include PgSearchCustomisations

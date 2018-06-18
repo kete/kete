@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 ##
 # id must be the id attribute of the editor instance (without the #) e.g.
 #     <textarea id="foo" ...></textarea>

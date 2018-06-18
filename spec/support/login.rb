@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 def login(user)
   visit '/'
   click_on 'Login'

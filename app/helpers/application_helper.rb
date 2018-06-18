@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # Controls needed for Gravatar support throughout the site
 require 'avatar/view/action_view_support'
 

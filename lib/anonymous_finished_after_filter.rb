@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module AnonymousFinishedAfterFilter
   unless included_modules.include? AnonymousFinishedAfterFilter
     def self.included(klass)

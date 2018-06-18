@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # lib/tasks/redirects.rb
 #
 # utitlities for importing redirect_registrations

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # a registry of expected values
 # providing this so they can be replaced when necessary by add-ons
 # where expected values may changes depending on whether add-on is installed or not

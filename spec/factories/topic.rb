@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 FactoryGirl.define do
   factory :topic do
     # Tell FactoryGirl that `creator: ...` argument is *not* a model attribute

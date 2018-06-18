@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class VideoController < ApplicationController
   include ExtendedContentController
   include MayBeUploadAsServiceController

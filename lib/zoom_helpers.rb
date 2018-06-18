@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module ZoomHelpers
   unless included_modules.include? ZoomHelpers
     # class methods for options for different attributes

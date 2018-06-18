@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class MembersController < ApplicationController
   permit 'site_admin or admin of :current_basket', except: %i[index list join remove rss]
 

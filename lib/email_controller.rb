@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module EmailController
   unless included_modules.include? EmailController
     # this module DOES NOT cover the following (they must be added per controller)

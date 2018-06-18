@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module SiteLinking
   unless included_modules.include? SiteLinking
     def set_kete_net_urls

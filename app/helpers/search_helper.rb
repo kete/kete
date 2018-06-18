@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module SearchHelper
   # check for context, construct urls accordingly
 

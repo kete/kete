@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # James - 2008-09-12
 
 # Rake tasks to repair Kete data to ensure integrity

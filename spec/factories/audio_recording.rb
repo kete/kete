@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 FactoryGirl.define do
   factory :audio_recording do
     title "Ruby's Rock Steady"
