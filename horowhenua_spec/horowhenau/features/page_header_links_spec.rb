@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-feature "Page Header Basket-Links" do
+describe "Page Header Basket-Links" do
   it "Adopt an Anzac can be followed" do
     visit "/"
     click_link "Baskets List"
@@ -38,7 +38,7 @@ feature "Page Header Basket-Links" do
   end
 end
 
-feature "Links are not rendered as escaped html" do
+describe "Links are not rendered as escaped html" do
   it "for basket Trevor Heath Photography basket" do
     visit "/"
     click_link "Baskets List"
@@ -54,7 +54,7 @@ feature "Links are not rendered as escaped html" do
   end
 end
 
-feature "Page header navigation Links" do
+describe "Page header navigation Links" do
   it "Home can be followed" do
     visit "/"
     click_link "Home"
