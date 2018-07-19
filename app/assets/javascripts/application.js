@@ -15,30 +15,20 @@
  *
  */
 
-var setupTinyMCE = function () {
-
+var setupTinyMCE = function() {
   var options = {
-    'selector': 'textarea.tinymce',
-    'menubar': false,
-    'toolbar': [
-      'bold, italic, underline, strikethrough, separator, justifyleft, justifycenter, justifyright, justifyfull, separator, subscript, superscript, separator, indent, outdent, separator',
-      'bullist, numlist, forecolor, backcolor, separator, link, unlink, separator, undo, redo, removeformat, separator, code, formatselect, fontselect, fontsizeselect, separator',
-      'image, table, cut, copy, paste, fullscreen, selectall, media'
-    ],
-    'tools': 'inserttable',
-    'plugins': 'contextmenu, image, paste, table, fullscreen, textcolor, link'
+    selector: 'textarea.tinymce',
+    menubar: false,
+    toolbar: ['bold, italic, underline, strikethrough, separator, justifyleft, justifycenter, justifyright, justifyfull, separator, subscript, superscript, separator, indent, outdent, separator', 'bullist, numlist, forecolor, backcolor, separator, link, unlink, separator, undo, redo, removeformat, separator, code, formatselect, fontselect, fontsizeselect, separator', 'image, table, cut, copy, paste, fullscreen, selectall, media'],
+    tools: 'inserttable',
+    plugins: 'contextmenu, image, paste, table, fullscreen, textcolor, link',
   };
 
   if (typeof tinyMCE === 'object') {
-
     tinyMCE.init(options);
-
   }
-
 };
 
-$(document).ready(function () {
-
+$(document).ready(function() {
   setupTinyMCE();
-
 });
