@@ -87,9 +87,9 @@ end
 def zebra_running?(zebra_db)
   zoom_db = ZoomDb.find_by_database_name(zebra_db)
   Topic.process_query(:zoom_db => zoom_db, :query => "@attr 1=_ALLRECORDS @attr 2=103 ''")
-  return true
+  true
 rescue
-  return false
+  false
 end
 
 # To change a constant, use this method. It removes any existing constant and
