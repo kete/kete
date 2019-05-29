@@ -3,7 +3,6 @@
   - account_hash = { :controller => 'account' }
 
   - if !logged_in?
-    %li.first= link_to_register(t('layouts.application.register'), account_hash.merge({ urlified_name: 'site', action: 'signup' }), { :tabindex => '2' })
     %li= link_to_login(t('layouts.application.login'), account_hash.merge({ urlified_name: 'site', action: 'login' }), { :tabindex => '2' })
 
   - else
